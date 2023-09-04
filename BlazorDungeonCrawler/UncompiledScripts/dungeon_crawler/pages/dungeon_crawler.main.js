@@ -7,21 +7,22 @@
         let stageRows = dungeon_crawler.core.globals.stageRows;
 
         //set stage dimentions
+        //  height
         let stageHeight = stageCols * hexagonHeight;
 
-        //todo: calculate grid width with maths 
-        let stageWidth = ((stageRows - 1) * hexagonWidth);
+        //  width
+        let hexWidthQuaters = hexagonWidth / 4;
+        let stageWidth = stageRows * (hexWidthQuaters * 3) + hexWidthQuaters;
 
         $('#stage').css({ 'height': `${stageHeight}px`, 'width': `${stageWidth}px` });
 
         //set board
         let hexagonLeft = 0, hexagonTop = 0, hexColumn = 0;
+    
+        //  due to the orientation of our board we miss one hex for every other grid row
+        let tileCount = (stageCols * stageRows) - Math.ceil((stageRows + 1) / 2);
 
         hexagonTop -= hexagonHeight / 2;
-
-        //todo: calculate tileCount with maths
-        let tileCount = (stageCols * stageRows) - 3;
-
         for (var i = 0; i < tileCount; i++) {
             hexagonTop += hexagonHeight;
 
