@@ -36,22 +36,31 @@
 
     #stage .hexagon-tile {
         position: absolute;
-
-        border: 1px solid red;
-
         height: 90px;
         width: 100px;
-
         background-image: url('../images/tiles/blank.png');
         background-repeat: no-repeat;
         background-position: center;
     }
 
         #stage .hexagon-tile span {
+            position: absolute;
+            top: 15px;
+            left: 20px;
             font-size: 30px;
             font-family: monospace;
             color: #fff;
-            text-align: center;
             display: block;
-            margin: 25px 0 0 0;
+            border: 1px solid blue;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+            text-align: center;
         }
+
+            #stage .hexagon-tile span:active,
+            #stage .hexagon-tile span:hover,
+            #stage .hexagon-tile span:focus {
+                color: black;
+                cursor: grab;
+            }
