@@ -14,4 +14,8 @@
     <Folder Include="wwwroot\images\tiles\" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="java -jar &quot;$(ProjectDir)\wwwroot\uncompiled_scripts\resources\closure-compiler-v20200719.jar&quot; --compilation_level BUNDLE --warning_level VERBOSE &quot;$(ProjectDir)\wwwroot\uncompiled_scripts\dungeon_crawler\classes\dungeon_crawler.core.js&quot; &quot;$(ProjectDir)\wwwroot\uncompiled_scripts\dungeon_crawler\classes\dungeon_crawler.core.globals.js&quot; &quot;$(ProjectDir)\wwwroot\uncompiled_scripts\dungeon_crawler\pages\dungeon_crawler.main.js&quot; --js_output_file &quot;$(ProjectDir)\wwwroot\scripts\dungeon_crawler.min.js&quot;" />
+  </Target>
+
 </Project>

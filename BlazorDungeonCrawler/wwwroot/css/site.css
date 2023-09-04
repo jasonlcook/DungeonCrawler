@@ -27,8 +27,22 @@
         content: "An error has occurred."
     }
 
-#myCanvas {
+#stage {
+    position: relative;
     border: 1px solid red;
     display: block;
     margin: 0 auto;
 }
+
+    #stage .hexagon-tile {
+        position: absolute;
+
+        border: 1px solid red;
+
+        height: 90px;
+        width: 100px;
+
+        background-image: url('../images/tiles/blank.png');
+        background-repeat: no-repeat;
+        background-position: center;
+    }
