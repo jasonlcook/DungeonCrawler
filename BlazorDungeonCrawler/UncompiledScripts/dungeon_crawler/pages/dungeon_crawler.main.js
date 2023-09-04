@@ -3,42 +3,49 @@
         let hexagonHeight = dungeon_crawler.core.globals.hexHeight;
         let hexagonWidth = dungeon_crawler.core.globals.hexWidth;
 
+        let stageCols = dungeon_crawler.core.globals.stageCols;
+        let stageRows = dungeon_crawler.core.globals.stageRows;
+
         //set stage dimentions
-        let stageHeight = dungeon_crawler.core.globals.stageCols * hexagonHeight;
-        let stageWidth = dungeon_crawler.core.globals.stageRows * hexagonWidth;
+        let stageHeight = stageCols * hexagonHeight;
+
+        //todo: calculate grid width with maths 
+        let stageWidth = ((stageRows - 1) * hexagonWidth);
 
         $('#stage').css({ 'height': `${stageHeight}px`, 'width': `${stageWidth}px` });
 
         //set board
-        let hexagonTop, hexagonLeft;
+        let hexagonLeft = 0, hexagonTop = 0, hexColumn = 0;
 
-        //middle
-        hexagonLeft = (stageWidth / 2) - (hexagonWidth / 2);
-        for (var i = 1; i < 11; i++) {
-            hexagonTop = stageHeight - hexagonHeight * i;
-            dungeon_crawler.main.drawHexagon(hexagonLeft, hexagonTop);
+        hexagonTop -= hexagonHeight / 2;
 
-        }
+        //todo: calculate tileCount with maths
+        let tileCount = (stageCols * stageRows) - 3;
 
-        //left
-        for (var i = 1; i < 10; i++) {
-            hexagonTop = stageHeight - ((hexagonHeight / 2) + hexagonHeight * i);
-            hexagonLeft = (stageWidth / 2) - (hexagonWidth + (hexagonWidth / 4));
+        for (var i = 0; i < tileCount; i++) {
+            hexagonTop += hexagonHeight;
 
-            dungeon_crawler.main.drawHexagon(hexagonLeft, hexagonTop);
-        }
+            if (hexagonTop >= stageHeight - (hexagonWidth / 2)) {
+                //move tile along one place
+                hexagonLeft += (hexagonWidth / 4) * 3;
 
-        //right
-        for (var i = 1; i < 10; i++) {
-            hexagonTop = stageHeight - ((hexagonHeight / 2) + hexagonHeight * i);
-            hexagonLeft = ((stageWidth / 2) + (hexagonWidth / 4));
+                //reset top
+                if ((hexColumn % 2) == 1) {
+                    hexagonTop = hexagonHeight - (hexagonHeight / 2);
+                } else {
+                    hexagonTop = 0;
+                }
 
-            dungeon_crawler.main.drawHexagon(hexagonLeft, hexagonTop);
+                //add column
+                hexColumn += 1;
+            }
+
+            dungeon_crawler.main.drawHexagon(i, hexagonLeft, hexagonTop);
         }
     },
 
-    drawHexagon(left, top) {
-        $('#stage').append(`<div class="hexagon-tile" style="left: ${left}px; top: ${top}px"></div>`);
+    drawHexagon(index, left, top) {
+        $('#stage').append(`<div class="hexagon-tile" style="left: ${left}px; top: ${top}px"><span>${index}</span></div>`);
     }
 };
 
