@@ -6,6 +6,7 @@
         dungeon_crawler.core.globals.currentLevel = level;
 
         dungeon_crawler.main.setTiles(level.stageCols, level.stageRows);
+        dungeon_crawler.core.globals.currentLevel.setSpawn();
 
         dungeon_crawler.main.setStage();
     },
@@ -49,19 +50,60 @@
 
                 //add column
                 hexColumn += 1;
-            }            
+            }
 
             dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes[0], hexagonLeft, hexagonTop))
         }
     },
 
     setStage() {
-        let tile, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
+        let tileTypeClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
 
         for (var i = 0; i < tiles.length; i++) {
+            tileTypeClass = 'hexagon-tile-hidden';
+            tileText = '';
+
             tile = tiles.get(i);
 
-            $('#stage').append(`<div class="hexagon-tile" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tile.Index}</span></div>`);
+            if (!tile.Hidden) {
+                if (typeof tile.Hidden == 'undefined' || tile.Hidden == null) {
+                    tileTypeClass = 'hexagon-tile-unknown';
+                } else {
+                    tileText = tile.Index;
+
+                    switch (tile.Type) {
+                        //entrance
+                        case dungeon_crawler.core.globals.tileTypes['entrance']:
+                            tileTypeClass = 'hexagon-tile-entrance';
+                            break;
+                        //exit
+                        case dungeon_crawler.core.globals.tileTypes['exit']:
+                            tileTypeClass = 'hexagon-tile-exit';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['stairs_ascending']:
+                            tileTypeClass = 'hexagon-tile-stairs-ascending';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['stairs_descending']:
+                            tileTypeClass = 'hexagon-tile-stairs-descending';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['fight']:
+                            tileTypeClass = 'hexagon-tile-fight';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['loot']:
+                            tileTypeClass = 'hexagon-tile-loot';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['protection']:
+                            tileTypeClass = 'hexagon-tile-protection';
+                            break;
+                        default:
+                        case dungeon_crawler.core.globals.tileTypes['unknown']:
+                            tileTypeClass = 'hexagon-tile-unknown';
+                            break;
+                    }
+                }                
+            }
+
+            $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
         }
     }
 };

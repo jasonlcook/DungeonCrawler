@@ -29,7 +29,6 @@
 
 #stage {
     position: relative;
-    border: 1px solid red;
     display: block;
     margin: 0 auto;
 }
@@ -38,10 +37,46 @@
         position: absolute;
         height: 90px;
         width: 100px;
-        background-image: url('../images/tiles/blank.png');
+        background-image: url('../images/tiles/unknown.png');
         background-repeat: no-repeat;
         background-position: center;
     }
+
+        #stage .hexagon-tile.hexagon-tile-unknown {
+            background-image: url('../images/tiles/unknown.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-hidden {
+            background-image: url('../images/tiles/hidden.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-entrance {
+            background-image: url('../images/tiles/stairs_ascending.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-exit {
+            background-image: url('../images/tiles/exit.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-stairs-ascending {
+            background-image: url('../images/tiles/stairs_ascending.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-stairs-descending {
+            background-image: url('../images/tiles/stairs_descending.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-fight {
+            background-image: url('../images/tiles/fight.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-loot {
+            background-image: url('../images/tiles/loot.png');
+        }
+
+        #stage .hexagon-tile.hexagon-tile-protection {
+            background-image: url('../images/tiles/protection.png');
+        }
 
         #stage .hexagon-tile span {
             position: absolute;
@@ -51,7 +86,6 @@
             font-family: monospace;
             color: #fff;
             display: block;
-            border: 1px solid blue;
             width: 60px;
             height: 60px;
             margin: 0 auto;
