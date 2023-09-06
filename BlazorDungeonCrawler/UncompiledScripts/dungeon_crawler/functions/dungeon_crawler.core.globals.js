@@ -10,4 +10,7 @@
     stageWidth: null,
 
     eventBindings: null,
+
+    currentLevel: null,
+    adventurer: null
 }; 

@@ -1,20 +1,31 @@
 ﻿dungeon_crawler.main = {
     startup() {
+        //generate level
         let level = new Level();
+
         level.loadFirstLevel();
 
         dungeon_crawler.core.globals.currentLevel = level;
 
+        //generate adventurer
+        dungeon_crawler.main.generateAdventurer();
+
+        //set level and adventurer details
+        dungeon_crawler.main.setDetails();
+
+        //set tiles
         dungeon_crawler.main.setTiles(level.stageCols, level.stageRows);
 
+        //set spawn location
         dungeon_crawler.core.globals.currentLevel.setSpawn();
+
 
         dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
 
-        dungeon_crawler.main.setDetails();
 
         dungeon_crawler.main.setStage();
 
+        //
         dungeon_crawler.main.bindEvents();
 
         dungeon_crawler.main.setStartText();
@@ -112,9 +123,9 @@
     //  3, 6:   No change
     getRepeatTileType() {
         //roll to see if tile populated
-        let score = dungeon_crawler.main.roleSafeDie();
+        let value = dungeon_crawler.main.roleSafeDie();
 
-        switch (score) {
+        switch (value) {
             case 1:
             case 2:
                 return dungeon_crawler.main.selectMonster();
@@ -127,15 +138,15 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Unexpected tile table role "${score}"`);
+        dungeon_crawler.core.outputError(`Unexpected tile table role "${value}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
     //Monster difficulty selection
     selectMonster() {
-        let score = dungeon_crawler.main.roleDangerDie();
+        let value = dungeon_crawler.main.roleDangerDie();
 
-        switch (score) {
+        switch (value) {
             case 1:
             case 2:
             case 3:
@@ -147,7 +158,7 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Unexpected monster table role "${score}"`);
+        dungeon_crawler.core.outputError(`Unexpected monster table role "${value}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
@@ -156,9 +167,9 @@
     //  4 - 5:  Potion
     //  6:      Protection
     selectLoot() {
-        let score = dungeon_crawler.main.roleSafeDie();
+        let value = dungeon_crawler.main.roleSafeDie();
 
-        switch (score) {
+        switch (value) {
             case 1:
             case 2:
             case 3:
@@ -171,7 +182,7 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Unexpected loot table role "${score}"`);
+        dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
@@ -312,10 +323,24 @@
         }
     },
 
-    setDetails() {
-        $('#current-level').html(`${dungeon_crawler.core.globals.currentLevel.level} (${dungeon_crawler.core.globals.currentLevel.difficulty})`);
+    //Adventurer
+    generateAdventurer() {
+        let health = dungeon_crawler.main.roleSafeDie();
+        let strength = dungeon_crawler.main.roleSafeDie();
+        let armour = dungeon_crawler.main.roleSafeDie();
+
+        dungeon_crawler.main.startingAdventurerText(health, strength, armour);
+
+        dungeon_crawler.core.globals.adventurer = new Adventurer(health, strength, armour);
     },
 
+    setDetails() {
+        $('#current-level').html(`${dungeon_crawler.core.globals.currentLevel.level} (${dungeon_crawler.core.globals.currentLevel.difficulty})`);
+
+        $('#current-health').html(`${dungeon_crawler.core.globals.adventurer.getHealth()}`);
+        $('#current-strength').html(`${dungeon_crawler.core.globals.adventurer.getStrength()}`);
+        $('#current-armour').html(`${dungeon_crawler.core.globals.adventurer.getArmour()}`);
+    },
 
     resetSafeDieValue() {
         $('#current-dice-safe').html('');
@@ -363,10 +388,19 @@
     },
 
     //Log
-    setStartText() {
-        let message = dungeon_crawler.log.generateStartText();
+    //  Story
+
+    //  Adventurer
+    startingAdventurerText(health, strength, armour) {
+        let message = dungeon_crawler.log.generateStartingAdventurerText(health, strength, armour);
         dungeon_crawler.main.setLog(message);
     },
+
+    //      Health
+
+    //      Strength
+
+    //      Armour
     
     setLog(message) {
         $('#log').prepend(`<div class="entry">${message}</div>`);
