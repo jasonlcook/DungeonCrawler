@@ -23,7 +23,7 @@
 
         let dispacter, type, handler, name;
 
-        dispacter = $('#stage .hexagon-tile');
+        dispacter = $('#stage .hexagon-tile span');
         type = 'click';
         handler = dungeon_crawler.main.tileClick;
         name = 'tile_click';
@@ -47,7 +47,10 @@
                 dungeon_crawler.core.globals.currentLevel.tiles.currentIndex = selectedTile.Index;
                 selectedTile.Current = true;
                 selectedTile.Hidden = false;
-                selectedTile.Type = dungeon_crawler.main.getNextTileType();
+
+                if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['unknown']) {
+                    selectedTile.Type = dungeon_crawler.main.getNextTileType();
+                }
 
                 dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
                 dungeon_crawler.main.setStage();
@@ -60,8 +63,96 @@
         }
     },
 
+    //Tile select
+    //  1 - 3:  Monster
+    //  4, 5:   Empty
+    //  6:      Loot
     getNextTileType() {
+        //roll to see if tile populated
+        let score = dungeon_crawler.main.roleSafeDie();
+
+        switch (score) {
+            case 1:
+            case 2:
+            case 3:
+                return dungeon_crawler.main.selectMonster();
+                break;
+            case 6:
+                return dungeon_crawler.main.selectLoot();
+                break;
+            case 4:
+            case 5:
+                return dungeon_crawler.core.globals.tileTypes['empty'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected tile table role "${score}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    //Monster difficulty selection
+    selectMonster() {
+        let score = dungeon_crawler.main.roleDangerDie();
+
+        switch (score) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                //add ememy 
+                return dungeon_crawler.core.globals.tileTypes['fight'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected monster table role "${score}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    //Loot select
+    //  1 - 3:  Loot
+    //  4 - 5:  Potion
+    //  6:      Protection
+    selectLoot() {
+        let score = dungeon_crawler.main.roleDangerDie();
+
+        switch (score) {
+            case 1:
+            case 2:
+            case 3:
+                return dungeon_crawler.core.globals.tileTypes['loot'];            
+            case 4:
+            case 5:
+                return dungeon_crawler.core.globals.tileTypes['potion'];
+            case 6:
+                return dungeon_crawler.core.globals.tileTypes['protection'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected loot table role "${score}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    //Dice
+    roleSafeDie() {
+        return dungeon_crawler.main.roleDSix();
+    },
+
+    roleDangerDie() {
+        return dungeon_crawler.main.roleDSix();
+    },
+
+    roleDSix() {
+        return dungeon_crawler.main.roleDie(6);
+    },
+
+    roleDTwenty() {
+        return dungeon_crawler.main.roleDie(20);
+    },
+
+    roleDie(max) {
+        return Math.floor(Math.random() * (max)) + 1;
     },
 
     setTiles(stageCols, stageRows) {
@@ -109,7 +200,7 @@
                 hexRow += 1;
             }
 
-            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes[0], hexRow, hexColumn, hexagonLeft, hexagonTop))
+            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop))
         }
     },
 
