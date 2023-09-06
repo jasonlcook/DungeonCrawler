@@ -122,6 +122,16 @@
                 background-image: url('../images/tiles/empty_selected.png');
             }
 
+        #stage .hexagon-tile.hexagon-tile-potion {
+            background-image: url('../images/tiles/potion.png');
+        }
+
+            #stage .hexagon-tile.hexagon-tile-potion.hexagon-tile-selectable {
+                background-image: url('../images/tiles/potion_selected.png');
+            }
+
+
+
         #stage .hexagon-tile span {
             position: absolute;
             top: 15px;

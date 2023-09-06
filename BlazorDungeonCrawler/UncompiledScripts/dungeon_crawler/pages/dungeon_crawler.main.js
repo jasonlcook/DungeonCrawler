@@ -157,6 +157,9 @@
                         case dungeon_crawler.core.globals.tileTypes['empty']:
                             tileTypeClass = 'hexagon-tile-empty';
                             break;
+                        case dungeon_crawler.core.globals.tileTypes['potion']:
+                            tileTypeClass = 'hexagon-tile-potion';
+                            break;
                         default:
                         case dungeon_crawler.core.globals.tileTypes['unknown']:
                             tileTypeClass = 'hexagon-tile-unknown';
