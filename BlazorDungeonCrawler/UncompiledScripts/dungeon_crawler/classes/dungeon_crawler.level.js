@@ -19,5 +19,8 @@
 
         spawnTitle.Hidden = false;
         spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['entrance'];
+        spawnTitle.Current = true;
+
+        this.tiles.currentIndex = spawnIndex;
     }
 }; 

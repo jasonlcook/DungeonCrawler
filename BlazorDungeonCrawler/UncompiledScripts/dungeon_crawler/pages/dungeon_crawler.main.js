@@ -6,7 +6,9 @@
         dungeon_crawler.core.globals.currentLevel = level;
 
         dungeon_crawler.main.setTiles(level.stageCols, level.stageRows);
+
         dungeon_crawler.core.globals.currentLevel.setSpawn();
+        dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
 
         dungeon_crawler.main.setStage();
     },
@@ -18,15 +20,15 @@
         //set stage dimentions
         //  height
         let stageHeight = stageCols * hexagonHeight;
+        dungeon_crawler.core.globals.stageHeight = stageHeight;
 
         //  width
         let hexWidthQuaters = hexagonWidth / 4;
         let stageWidth = stageRows * (hexWidthQuaters * 3) + hexWidthQuaters;
-
-        $('#stage').css({ 'height': `${stageHeight}px`, 'width': `${stageWidth}px` });
+        dungeon_crawler.core.globals.stageWidth = stageWidth;
 
         //set board
-        let hexagonLeft = 0, hexagonTop = 0, hexColumn = 0;
+        let hexagonLeft = 0, hexagonTop = 0, hexRow = -1, hexColumn = 0;
 
         //  due to the orientation of our board we miss one hex for every other grid row
         let tileCount = (stageCols * stageRows) - Math.ceil((stageRows + 1) / 2);
@@ -43,34 +45,41 @@
 
                 //reset top
                 if ((hexColumn % 2) == 1) {
+                    //long
                     hexagonTop = hexagonHeight - (hexagonHeight / 2);
                 } else {
+                    //short
                     hexagonTop = 0;
                 }
 
+                hexRow = 0;
+
                 //add column
                 hexColumn += 1;
+            } else {
+                hexRow += 1;
             }
 
-            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes[0], hexagonLeft, hexagonTop))
+            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes[0], hexRow, hexColumn, hexagonLeft, hexagonTop))
         }
     },
 
     setStage() {
+        $('#stage').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
+
         let tileTypeClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
 
         for (var i = 0; i < tiles.length; i++) {
             tileTypeClass = 'hexagon-tile-hidden';
-            tileText = '';
 
             tile = tiles.get(i);
+
+            tileText = `${tile.Row} - ${tile.Column}`;
 
             if (!tile.Hidden) {
                 if (typeof tile.Hidden == 'undefined' || tile.Hidden == null) {
                     tileTypeClass = 'hexagon-tile-unknown';
                 } else {
-                    tileText = tile.Index;
-
                     switch (tile.Type) {
                         //entrance
                         case dungeon_crawler.core.globals.tileTypes['entrance']:
@@ -100,8 +109,12 @@
                             tileTypeClass = 'hexagon-tile-unknown';
                             break;
                     }
-                }                
+                }
             }
+
+            if (tile.Selectable) {
+                tileTypeClass = 'hexagon-tile-selectable';
+            }   
 
             $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
         }

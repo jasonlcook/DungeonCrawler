@@ -42,6 +42,10 @@
         background-position: center;
     }
 
+        #stage .hexagon-tile.hexagon-tile-selectable {
+            background-image: url('../images/tiles/selectable.png');
+        }
+
         #stage .hexagon-tile.hexagon-tile-unknown {
             background-image: url('../images/tiles/unknown.png');
         }
@@ -82,7 +86,7 @@
             position: absolute;
             top: 15px;
             left: 20px;
-            font-size: 30px;
+            font-size: 10px;
             font-family: monospace;
             color: #fff;
             display: block;
@@ -92,9 +96,9 @@
             text-align: center;
         }
 
-            #stage .hexagon-tile span:active,
-            #stage .hexagon-tile span:hover,
-            #stage .hexagon-tile span:focus {
-                color: black;
-                cursor: grab;
-            }
+        #stage .hexagon-tile.hexagon-tile-selectable span:active,
+        #stage .hexagon-tile.hexagon-tile-selectable span:hover,
+        #stage .hexagon-tile.hexagon-tile-selectable span:focus {
+            color: black;
+            cursor: grab;
+        }
