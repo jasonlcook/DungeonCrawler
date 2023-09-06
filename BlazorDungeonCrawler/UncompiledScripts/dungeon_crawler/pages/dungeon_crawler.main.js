@@ -54,7 +54,17 @@
                 selectedTile.Hidden = false;
 
                 if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['unknown']) {
+                    //if new tile then roll for content
                     selectedTile.Type = dungeon_crawler.main.getNextTileType();
+                } else {
+                    if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTile.Type == dungeon_crawler.core.globals.tileTypes['fight']) {
+                        //if tile has already been placed roll for monster encounter
+                        let repeatTile = dungeon_crawler.main.getRepeatTileType();
+
+                        if (repeatTile != null) {
+                            selectedTile.Type = repeatTile;
+                        }
+                    }
                 }
 
                 dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
@@ -88,6 +98,30 @@
             case 4:
             case 5:
                 return dungeon_crawler.core.globals.tileTypes['empty'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected tile table role "${score}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    //Tile select
+    //  1, 2:   Monster
+    //  3, 6:   No change
+    getRepeatTileType() {
+        //roll to see if tile populated
+        let score = dungeon_crawler.main.roleSafeDie();
+
+        switch (score) {
+            case 1:
+            case 2:
+                return dungeon_crawler.main.selectMonster();
+                break;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                return null;
                 break;
         }
 
