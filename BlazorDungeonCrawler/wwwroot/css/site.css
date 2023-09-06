@@ -42,45 +42,85 @@
         background-position: center;
     }
 
-        #stage .hexagon-tile.hexagon-tile-selectable {
-            background-image: url('../images/tiles/selectable.png');
-        }
-
         #stage .hexagon-tile.hexagon-tile-unknown {
             background-image: url('../images/tiles/unknown.png');
         }
+
+            #stage .hexagon-tile.hexagon-tile-unknown.hexagon-tile-selectable {
+                background-image: url('../images/tiles/unknown_selected.png');
+            }
 
         #stage .hexagon-tile.hexagon-tile-hidden {
             background-image: url('../images/tiles/hidden.png');
         }
 
+            #stage .hexagon-tile.hexagon-tile-hidden.hexagon-tile-selectable {
+                background-image: url('../images/tiles/hidden_selected.png');
+            }
+
         #stage .hexagon-tile.hexagon-tile-entrance {
             background-image: url('../images/tiles/stairs_ascending.png');
         }
+
+            #stage .hexagon-tile.hexagon-tile-entrance.hexagon-tile-selectable {
+                background-image: url('../images/tiles/stairs_ascending_selected.png');
+            }
 
         #stage .hexagon-tile.hexagon-tile-exit {
             background-image: url('../images/tiles/exit.png');
         }
 
+            #stage .hexagon-tile.hexagon-tile-exit.hexagon-tile-selectable {
+                background-image: url('../images/tiles/exit_selected.png');
+            }
+
         #stage .hexagon-tile.hexagon-tile-stairs-ascending {
             background-image: url('../images/tiles/stairs_ascending.png');
         }
+
+            #stage .hexagon-tile.hexagon-tile-stairs-ascending.hexagon-tile-selectable {
+                background-image: url('../images/tiles/stairs_ascending_selected.png');
+            }
 
         #stage .hexagon-tile.hexagon-tile-stairs-descending {
             background-image: url('../images/tiles/stairs_descending.png');
         }
 
+            #stage .hexagon-tile.hexagon-tile-stairs-descending.hexagon-tile-selectable {
+                background-image: url('../images/tiles/stairs_descending_selected.png');
+            }
+
         #stage .hexagon-tile.hexagon-tile-fight {
             background-image: url('../images/tiles/fight.png');
         }
+
+            #stage .hexagon-tile.hexagon-tile-fight.hexagon-tile-selectable {
+                background-image: url('../images/tiles/fight_selected.png');
+            }
 
         #stage .hexagon-tile.hexagon-tile-loot {
             background-image: url('../images/tiles/loot.png');
         }
 
+            #stage .hexagon-tile.hexagon-tile-loot.hexagon-tile-selectable {
+                background-image: url('../images/tiles/loot_selected.png');
+            }
+
         #stage .hexagon-tile.hexagon-tile-protection {
             background-image: url('../images/tiles/protection.png');
         }
+
+            #stage .hexagon-tile.hexagon-tile-protection.hexagon-tile-selectable {
+                background-image: url('../images/tiles/protection_selected.png');
+            }
+
+        #stage .hexagon-tile.hexagon-tile-empty {
+            background-image: url('../images/tiles/empty.png');
+        }
+
+            #stage .hexagon-tile.hexagon-tile-empty.hexagon-tile-selectable {
+                background-image: url('../images/tiles/empty_selected.png');
+            }
 
         #stage .hexagon-tile span {
             position: absolute;

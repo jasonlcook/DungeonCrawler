@@ -116,10 +116,11 @@
     setStage() {
         $('#stage').html('').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
 
-        let tileTypeClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
+        let tileTypeClass, tileSelectableClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
 
         for (var i = 0; i < tiles.length; i++) {
             tileTypeClass = 'hexagon-tile-hidden';
+            tileSelectableClass = '';
 
             tile = tiles.get(i);
 
@@ -153,6 +154,9 @@
                         case dungeon_crawler.core.globals.tileTypes['protection']:
                             tileTypeClass = 'hexagon-tile-protection';
                             break;
+                        case dungeon_crawler.core.globals.tileTypes['empty']:
+                            tileTypeClass = 'hexagon-tile-empty';
+                            break;
                         default:
                         case dungeon_crawler.core.globals.tileTypes['unknown']:
                             tileTypeClass = 'hexagon-tile-unknown';
@@ -162,10 +166,10 @@
             }
 
             if (tile.Selectable) {
-                tileTypeClass = 'hexagon-tile-selectable';
+                tileSelectableClass = 'hexagon-tile-selectable';
             }
 
-            $('#stage').append(`<div data-identity="${tile.Id}" class="hexagon-tile ${tileTypeClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
+            $('#stage').append(`<div data-identity="${tile.Id}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
         }
     }
 };
