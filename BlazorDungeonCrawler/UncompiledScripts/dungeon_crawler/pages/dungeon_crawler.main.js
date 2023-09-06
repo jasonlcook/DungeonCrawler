@@ -8,9 +8,60 @@
         dungeon_crawler.main.setTiles(level.stageCols, level.stageRows);
 
         dungeon_crawler.core.globals.currentLevel.setSpawn();
+
         dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
 
         dungeon_crawler.main.setStage();
+
+        dungeon_crawler.main.bindEvents();
+    },
+
+    bindEvents() {
+        if (typeof dungeon_crawler.core.globals.eventBindings == 'undefined' || dungeon_crawler.core.globals.eventBindings == null) {
+            dungeon_crawler.core.globals.eventBindings = new EventBindings();
+        }
+
+        let dispacter, type, handler, name;
+
+        dispacter = $('#stage .hexagon-tile');
+        type = 'click';
+        handler = dungeon_crawler.main.tileClick;
+        name = 'tile_click';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        dungeon_crawler.core.globals.eventBindings.bindEvents();
+    },
+
+    tileClick(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            let id = $(event.target.parentElement).attr('data-identity');
+            let selectedTile = dungeon_crawler.core.globals.currentLevel.tiles.getById(id);
+
+            if (selectedTile.Selectable) {
+                //deselect previous tile
+                let previousIndex = dungeon_crawler.core.globals.currentLevel.tiles.currentIndex;
+                let previousTile = dungeon_crawler.core.globals.currentLevel.tiles.get(previousIndex);
+                previousTile.Current = false;
+
+                dungeon_crawler.core.globals.currentLevel.tiles.currentIndex = selectedTile.Index;
+                selectedTile.Current = true;
+                selectedTile.Hidden = false;
+                selectedTile.Type = dungeon_crawler.main.getNextTileType();
+
+                dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
+                dungeon_crawler.main.setStage();
+
+                dungeon_crawler.core.globals.eventBindings.unbindEvents();
+                dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
+
+                dungeon_crawler.main.bindEvents();
+            }
+        }
+    },
+
+    getNextTileType() {
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
     setTiles(stageCols, stageRows) {
@@ -32,8 +83,6 @@
 
         //  due to the orientation of our board we miss one hex for every other grid row
         let tileCount = (stageCols * stageRows) - Math.ceil((stageRows + 1) / 2);
-
-        dungeon_crawler.core.globals.currentLevel.tiles = new Tiles();
 
         hexagonTop -= hexagonHeight / 2;
         for (var i = 0; i < tileCount; i++) {
@@ -65,7 +114,7 @@
     },
 
     setStage() {
-        $('#stage').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
+        $('#stage').html('').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
 
         let tileTypeClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
 
@@ -114,9 +163,9 @@
 
             if (tile.Selectable) {
                 tileTypeClass = 'hexagon-tile-selectable';
-            }   
+            }
 
-            $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
+            $('#stage').append(`<div data-identity="${tile.Id}" class="hexagon-tile ${tileTypeClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
         }
     }
 };

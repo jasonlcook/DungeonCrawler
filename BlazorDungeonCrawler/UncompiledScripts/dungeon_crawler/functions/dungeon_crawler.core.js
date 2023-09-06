@@ -13,5 +13,14 @@ dungeon_crawler.core = {
 
     generateGuid() {
         return URL.createObjectURL(new Blob()).substr(-36);
-    }
+    },
+
+    outputToConsole(message) {
+        console.log(message);
+    },
+
+    outputError(message) {
+        let title = 'Error';
+        dungeon_crawler.core.outputToConsole(`${title}: ${message}`);
+    },
 }

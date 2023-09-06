@@ -20,6 +20,17 @@
         }
     }
 
+    getById(id) {
+        let tile;
+        for (var i = 0; i < this.tiles.length; i++) {
+            tile = this.tiles[i];
+
+            if (tile.Id == id) {
+                return tile;
+            }           
+        }
+    }
+
     setSelectables() {
         let current = this.tiles[this.currentIndex];
         let currentRow = current.Row;
@@ -29,6 +40,7 @@
 
         for (var i = 0; i < this.tiles.length; i++) {
             tile = this.tiles[i];
+            tile.Selectable = false;
 
             currentTileRow = tile.Row;
             previousTileRow = currentTileRow - 1;

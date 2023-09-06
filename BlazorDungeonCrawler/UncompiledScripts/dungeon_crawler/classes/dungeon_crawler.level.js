@@ -7,7 +7,7 @@
     }
 
     loadFirstLevel() {
-        this.tiles = null;
+        this.tiles = new Tiles();
 
         this.stageRows = 9;
         this.stageCols = 7;
