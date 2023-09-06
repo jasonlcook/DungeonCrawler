@@ -16,6 +16,8 @@
         dungeon_crawler.main.setStage();
 
         dungeon_crawler.main.bindEvents();
+
+        dungeon_crawler.main.setStartText();
     },
 
     bindEvents() {
@@ -358,6 +360,16 @@
         }
 
         return `<div class="die ${diceClass}"></div>`;
+    },
+
+    //Log
+    setStartText() {
+        let message = dungeon_crawler.log.generateStartText();
+        dungeon_crawler.main.setLog(message);
+    },
+    
+    setLog(message) {
+        $('#log').prepend(`<div class="entry">${message}</div>`);
     }
 };
 

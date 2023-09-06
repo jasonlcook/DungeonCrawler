@@ -142,10 +142,18 @@
                     background-image: url('../images/dice/danger/six.png');
                 }
 
-
-        #play-area .details .log {
-            overflow: hidden;
+        #play-area .details #log {
+            text-align: left;
+            padding: 5px 10px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 270px;
         }
+        }
+
+            #play-area .details #log .entry {
+                margin: 0 0 5px 0;
+            }
 
     #play-area .dungon {
         border-color: #000;
