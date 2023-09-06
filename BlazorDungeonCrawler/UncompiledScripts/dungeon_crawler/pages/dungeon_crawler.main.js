@@ -120,13 +120,13 @@
     //  4 - 5:  Potion
     //  6:      Protection
     selectLoot() {
-        let score = dungeon_crawler.main.roleAdditionalSafeDie();
+        let score = dungeon_crawler.main.roleSafeDie();
 
         switch (score) {
             case 1:
             case 2:
             case 3:
-                return dungeon_crawler.core.globals.tileTypes['loot'];            
+                return dungeon_crawler.core.globals.tileTypes['loot'];
             case 4:
             case 5:
                 return dungeon_crawler.core.globals.tileTypes['potion'];
@@ -143,12 +143,6 @@
     roleSafeDie() {
         let value = dungeon_crawler.main.roleDSix();
         dungeon_crawler.main.setSafeDieValue(value);
-        return value;
-    },
-
-    roleAdditionalSafeDie() {
-        let value = dungeon_crawler.main.roleDSix();
-        dungeon_crawler.main.setAdditionalSafeDieValue(value);
         return value;
     },
 
@@ -288,23 +282,48 @@
 
 
     resetSafeDieValue() {
-        dungeon_crawler.main.setSafeDieValue(0);
+        $('#current-dice-safe').html('');
     },
 
     setSafeDieValue(value) {
-        $('#current-dice-safe').html(value);
-    },
-
-    setAdditionalSafeDieValue(value) {
-        $('#current-dice-safe').append(`, ${value}`);
+        let dieHTML = dungeon_crawler.main.getDieHTML(value);
+        $('#current-dice-safe').append(dieHTML);
     },
 
     resetDangerDieValue() {
-        dungeon_crawler.main.setDangerDieValue(0);
+        $('#current-dice-danger').html('');
     },
 
     setDangerDieValue(value) {
-        $('#current-dice-danger').html(value);
+        let dieHTML = dungeon_crawler.main.getDieHTML(value);
+        $('#current-dice-danger').append(dieHTML);
+    },
+
+    getDieHTML(value) {
+        let diceClass = "empty";
+
+        switch (value) {
+            case 1:
+                diceClass = "one";
+                break;
+            case 2:
+                diceClass = "two";
+                break;
+            case 3:
+                diceClass = "three";
+                break;
+            case 4:
+                diceClass = "four";
+                break;
+            case 5:
+                diceClass = "five";
+                break;
+            case 6:
+                diceClass = "six";
+                break;
+        }
+
+        return `<div class="die ${diceClass}"></div>`;
     }
 };
 
