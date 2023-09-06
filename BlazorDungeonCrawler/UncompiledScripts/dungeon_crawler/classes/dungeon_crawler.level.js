@@ -2,12 +2,18 @@
     constructor() {
         this.tiles;
 
+        this.level;
+        this.difficulty;
+
         this.stageRows;
         this.stageCols;
     }
 
     loadFirstLevel() {
         this.tiles = new Tiles();
+
+        this.level = 1;
+        this.difficulty = 1;
 
         this.stageRows = 9;
         this.stageCols = 7;

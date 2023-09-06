@@ -11,6 +11,8 @@
 
         dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
 
+        dungeon_crawler.main.setDetails();
+
         dungeon_crawler.main.setStage();
 
         dungeon_crawler.main.bindEvents();
@@ -39,6 +41,9 @@
             let selectedTile = dungeon_crawler.core.globals.currentLevel.tiles.getById(id);
 
             if (selectedTile.Selectable) {
+                dungeon_crawler.main.resetSafeDieValue();
+                dungeon_crawler.main.resetDangerDieValue();
+
                 //deselect previous tile
                 let previousIndex = dungeon_crawler.core.globals.currentLevel.tiles.currentIndex;
                 let previousTile = dungeon_crawler.core.globals.currentLevel.tiles.get(previousIndex);
@@ -115,7 +120,7 @@
     //  4 - 5:  Potion
     //  6:      Protection
     selectLoot() {
-        let score = dungeon_crawler.main.roleDangerDie();
+        let score = dungeon_crawler.main.roleAdditionalSafeDie();
 
         switch (score) {
             case 1:
@@ -136,11 +141,21 @@
 
     //Dice
     roleSafeDie() {
-        return dungeon_crawler.main.roleDSix();
+        let value = dungeon_crawler.main.roleDSix();
+        dungeon_crawler.main.setSafeDieValue(value);
+        return value;
+    },
+
+    roleAdditionalSafeDie() {
+        let value = dungeon_crawler.main.roleDSix();
+        dungeon_crawler.main.setAdditionalSafeDieValue(value);
+        return value;
     },
 
     roleDangerDie() {
-        return dungeon_crawler.main.roleDSix();
+        let value = dungeon_crawler.main.roleDSix();
+        dungeon_crawler.main.setDangerDieValue(value);
+        return value;
     },
 
     roleDSix() {
@@ -265,6 +280,31 @@
 
             $('#stage').append(`<div data-identity="${tile.Id}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
         }
+    },
+
+    setDetails() {
+        $('#current-level').html(`${dungeon_crawler.core.globals.currentLevel.level} (${dungeon_crawler.core.globals.currentLevel.difficulty})`);
+    },
+
+
+    resetSafeDieValue() {
+        dungeon_crawler.main.setSafeDieValue(0);
+    },
+
+    setSafeDieValue(value) {
+        $('#current-dice-safe').html(value);
+    },
+
+    setAdditionalSafeDieValue(value) {
+        $('#current-dice-safe').append(`, ${value}`);
+    },
+
+    resetDangerDieValue() {
+        dungeon_crawler.main.setDangerDieValue(0);
+    },
+
+    setDangerDieValue(value) {
+        $('#current-dice-danger').html(value);
     }
 };
 
