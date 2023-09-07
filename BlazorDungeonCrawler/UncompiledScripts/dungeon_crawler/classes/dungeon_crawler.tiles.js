@@ -79,8 +79,14 @@
                     }
                 }
             }
+        }
+    }
 
-
+    unsetSelectables() {
+        let tile;
+        for (var i = 0; i < this.tiles.length; i++) {
+            tile = this.tiles[i];
+            tile.Selectable = false;
         }
     }
 }; 
