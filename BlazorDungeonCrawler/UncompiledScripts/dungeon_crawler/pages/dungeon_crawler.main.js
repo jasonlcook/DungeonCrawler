@@ -3,7 +3,7 @@
         //generate level
         let level = new Level();
 
-        level.loadFirstLevel();
+        level.loadLevel(1);
 
         dungeon_crawler.core.globals.currentLevel = level;
 
@@ -410,7 +410,7 @@
     },
 
     setDetails() {
-        $('#current-level').html(`${dungeon_crawler.core.globals.currentLevel.level} (${dungeon_crawler.core.globals.currentLevel.difficulty})`);
+        $('#current-level').html(dungeon_crawler.core.globals.currentLevel.level);
 
         dungeon_crawler.main.updateAdventurerHealth();
         dungeon_crawler.main.updateAdventurerStrength();
