@@ -1,6 +1,7 @@
 ﻿class Adventurer {
     constructor(health, strength, armour) {
         this.HealthBase = health;
+        this.HealthInitial = health;
         this.AuraPotion = 0;
         this.AuraPotionDuration = 0;
 
@@ -22,8 +23,29 @@
         return this.HealthBase + this.AuraPotion;
     }
 
-    setAuraPotion(value) {
-        return this.AuraPotion += value;
+    //if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
+    setAuraPotion(potionValue) {
+        let regainedHealth = 0;
+
+        //check if damage has been taken
+        if (this.HealthBase < this.HealthInitial) {
+            let damageTaken = this.HealthInitial - this.HealthBase;
+
+            if (damageTaken >= potionValue) {
+                //if damage taken is more (than the potion value) add potion value to the current health
+                this.HealthBase += potionValue;
+                regainedHealth = potionValue;
+            } else {
+                //if damage taken is less (than the potion value) heal the damage and use the remaining points as Aura
+                this.AuraPotion += potionValue - damageTaken;
+                this.HealthBase = this.HealthInitial;
+                regainedHealth = damageTaken;
+            }
+        } else {
+            this.AuraPotion += potionValue;
+        }
+
+        return regainedHealth;
     }
 
     setAuraPotionDuration(value) {

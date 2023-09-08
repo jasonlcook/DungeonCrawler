@@ -415,7 +415,11 @@
 
         switch (potionType) {
             case dungeon_crawler.core.globals.potionType['aura']:
-                dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
+                let regainedHealth = dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
+                if (regainedHealth > 0) {
+                    dungeon_crawler.main.usePotionHealingText(regainedHealth);
+                }                
+
                 dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);
                 dungeon_crawler.main.updateAdventurerHealth();
                 break;
@@ -672,6 +676,11 @@
     //          Potion
     usePotionText(potionType, potionSize, potionDuration) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateUsePotionText(potionType, potionSize, potionDuration));
+    },
+
+    //              Cure
+    usePotionHealingText(regainedHealth) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generatePotionHealingText(regainedHealth));
     },
 
     //      Stairs down
