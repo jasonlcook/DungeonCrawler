@@ -180,12 +180,12 @@
     },
 
     generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        let message = `You attack the ${enemyType} with a <span style="font-weight: bold;">${adventurerAttackValue}</span> (${adventurerRoll} + ${adventurerDamage}). `;
+        let message = `You attack the ${enemyType} with a <span class="attack-text">${adventurerAttackValue}</span> (${adventurerRoll} + ${adventurerDamage}). `;
 
         if (wounds != null) {
-            message += `The ${enemyType} takes <span style="color:red;">${wounds}</span> damage after failing to avoid you with <span style="font-weight: bold;">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
+            message += `The ${enemyType} takes <span class="wounds-text">${wounds}</span> damage after failing to avoid you with <span class="attack-text">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
         } else {
-            message += `The ${enemyType} avoids your attack with a <span style="font-weight: bold;">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
+            message += `The ${enemyType} avoids your attack with a <span class="attack-text">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
         }
 
         return message;
@@ -196,12 +196,12 @@
     },
 
     generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds) {
-        let message = `The ${enemyType} attacks with a <span style="font-weight: bold;">${enemyAttackValue}</span> (${enemyRoll} + ${enemyDamage}). `;
+        let message = `The ${enemyType} attacks with a <span class="attack-text">${enemyAttackValue}</span> (${enemyRoll} + ${enemyDamage}). `;
 
         if (wounds != null) {
-            message += `You takes <span style="color:red;">${wounds}</span> damage after failing to avoid with <span style="font-weight: bold;">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
+            message += `You takes <span class="wounds-text">${wounds}</span> damage after failing to avoid with <span class="attack-text">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
         } else {
-            message += `You avoid the ${enemyType} with a <span style="font-weight: bold;">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
+            message += `You avoid the ${enemyType} with a <span class="attack-text">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
         }
 
         return message;

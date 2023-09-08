@@ -68,79 +68,78 @@
             #play-area .details .dice #current-dice-safe,
             #play-area .details .dice #current-dice-danger {
                 padding: 10px 0;
-
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
             }
 
-            #play-area .details .dice #current-dice-safe .die,
-            #play-area .details .dice #current-dice-danger .die {
-                width: 50px;
-                height: 50px;
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: contain;
-            }
-
-            #play-area .details .dice #current-dice-safe .die {
-                background-image: url('../images/dice/safe/empty.png');
-            }
-
-                #play-area .details .dice #current-dice-safe .die.one {
-                    background-image: url('../images/dice/safe/one.png');
+                #play-area .details .dice #current-dice-safe .die,
+                #play-area .details .dice #current-dice-danger .die {
+                    width: 50px;
+                    height: 50px;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: contain;
                 }
 
-
-                #play-area .details .dice #current-dice-safe .die.two {
-                    background-image: url('../images/dice/safe/two.png');
+                #play-area .details .dice #current-dice-safe .die {
+                    background-image: url('../images/dice/safe/empty.png');
                 }
 
-                #play-area .details .dice #current-dice-safe .die.three {
-                    background-image: url('../images/dice/safe/three.png');
+                    #play-area .details .dice #current-dice-safe .die.one {
+                        background-image: url('../images/dice/safe/one.png');
+                    }
+
+
+                    #play-area .details .dice #current-dice-safe .die.two {
+                        background-image: url('../images/dice/safe/two.png');
+                    }
+
+                    #play-area .details .dice #current-dice-safe .die.three {
+                        background-image: url('../images/dice/safe/three.png');
+                    }
+
+                    #play-area .details .dice #current-dice-safe .die.four {
+                        background-image: url('../images/dice/safe/four.png');
+                    }
+
+                    #play-area .details .dice #current-dice-safe .die.five {
+                        background-image: url('../images/dice/safe/five.png');
+                    }
+
+                    #play-area .details .dice #current-dice-safe .die.six {
+                        background-image: url('../images/dice/safe/six.png');
+                    }
+
+
+                #play-area .details .dice #current-dice-danger .die {
+                    background-image: url('../images/dice/danger/empty.png');
                 }
 
-                #play-area .details .dice #current-dice-safe .die.four {
-                    background-image: url('../images/dice/safe/four.png');
-                }
-
-                #play-area .details .dice #current-dice-safe .die.five {
-                    background-image: url('../images/dice/safe/five.png');
-                }
-
-                #play-area .details .dice #current-dice-safe .die.six {
-                    background-image: url('../images/dice/safe/six.png');
-                }
+                    #play-area .details .dice #current-dice-danger .die.one {
+                        background-image: url('../images/dice/danger/one.png');
+                    }
 
 
-            #play-area .details .dice #current-dice-danger .die {
-                background-image: url('../images/dice/danger/empty.png');
-            }
+                    #play-area .details .dice #current-dice-danger .die.two {
+                        background-image: url('../images/dice/danger/two.png');
+                    }
 
-                #play-area .details .dice #current-dice-danger .die.one {
-                    background-image: url('../images/dice/danger/one.png');
-                }
+                    #play-area .details .dice #current-dice-danger .die.three {
+                        background-image: url('../images/dice/danger/three.png');
+                    }
 
+                    #play-area .details .dice #current-dice-danger .die.four {
+                        background-image: url('../images/dice/danger/four.png');
+                    }
 
-                #play-area .details .dice #current-dice-danger .die.two {
-                    background-image: url('../images/dice/danger/two.png');
-                }
+                    #play-area .details .dice #current-dice-danger .die.five {
+                        background-image: url('../images/dice/danger/five.png');
+                    }
 
-                #play-area .details .dice #current-dice-danger .die.three {
-                    background-image: url('../images/dice/danger/three.png');
-                }
-
-                #play-area .details .dice #current-dice-danger .die.four {
-                    background-image: url('../images/dice/danger/four.png');
-                }
-
-                #play-area .details .dice #current-dice-danger .die.five {
-                    background-image: url('../images/dice/danger/five.png');
-                }
-
-                #play-area .details .dice #current-dice-danger .die.six {
-                    background-image: url('../images/dice/danger/six.png');
-                }
+                    #play-area .details .dice #current-dice-danger .die.six {
+                        background-image: url('../images/dice/danger/six.png');
+                    }
 
         #play-area .details #log {
             text-align: left;
@@ -149,11 +148,18 @@
             overflow-y: auto;
             max-height: 270px;
         }
-        }
 
             #play-area .details #log .entry {
                 margin: 0 0 5px 0;
             }
+
+                #play-area .details #log .entry .wounds-text {
+                    color: red;
+                }
+
+                #play-area .details #log .entry .attack-text {
+                    font-weight: bold;
+                }
 
     #play-area .dungon {
         border-color: #000;
@@ -272,19 +278,19 @@
                         background-image: url('../images/tiles/maguffin_selected.png');
                     }
 
-#play-area .dungon #stage .hexagon-tile span {
-    position: absolute;
-    top: 15px;
-    left: 20px;
-    font-size: 10px;
-    font-family: monospace;
-    color: #fff;
-    display: block;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    text-align: center;
-}
+                #play-area .dungon #stage .hexagon-tile span {
+                    position: absolute;
+                    top: 15px;
+                    left: 20px;
+                    font-size: 10px;
+                    font-family: monospace;
+                    color: #fff;
+                    display: block;
+                    width: 60px;
+                    height: 60px;
+                    margin: 0 auto;
+                    text-align: center;
+                }
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:active,
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:hover,
