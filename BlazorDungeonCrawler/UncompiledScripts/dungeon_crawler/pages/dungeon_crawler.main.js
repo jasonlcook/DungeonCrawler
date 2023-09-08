@@ -246,7 +246,7 @@
     },
 
     //Loot select
-    //  1 - 3:  Loot
+    //  1 - 3:  Chest
     //  4 - 5:  Potion
     //  6:      Protection
     selectLoot() {
@@ -256,7 +256,7 @@
             case 1:
             case 2:
             case 3:
-                return dungeon_crawler.core.globals.tileTypes['loot'];
+                return dungeon_crawler.core.globals.tileTypes['chest'];
             case 4:
             case 5:
                 return dungeon_crawler.core.globals.tileTypes['potion'];
@@ -378,8 +378,8 @@
                         case dungeon_crawler.core.globals.tileTypes['fight']:
                             tileTypeClass = 'hexagon-tile-fight';
                             break;
-                        case dungeon_crawler.core.globals.tileTypes['loot']:
-                            tileTypeClass = 'hexagon-tile-loot';
+                        case dungeon_crawler.core.globals.tileTypes['chest']:
+                            tileTypeClass = 'hexagon-tile-chest';
                             break;
                         case dungeon_crawler.core.globals.tileTypes['protection']:
                             tileTypeClass = 'hexagon-tile-protection';
