@@ -26,8 +26,6 @@ class EventBindings {
             let eventBinding = new EventBinding();
             eventBinding.mapListener(dispacter, type, handler, name);
 
-            dungeon_crawler.core.outputToConsole(`Registered event "${eventBinding.Name}"`);
-
             this._eventBindings.push(eventBinding);
 
             this._eventBindingNames.push(name);
@@ -58,8 +56,6 @@ class EventBindings {
                 if (!eventBinding.Bound) {
                     eventBinding.Dispacter.on(eventBinding.Type, eventBinding.Handler);
                     eventBinding.Bound = true;
-
-                    dungeon_crawler.core.outputToConsole(`Event bound: "${eventBinding.Name}"`);
                 } else {
                     dungeon_crawler.core.outputToConsole(`Event "${eventBinding.Name}" already bound.`);
                 }
@@ -74,8 +70,6 @@ class EventBindings {
                 eventBinding = this._eventBindings[i];
                 eventBinding.Dispacter.off(eventBinding.Type, eventBinding.Handler);
                 eventBinding.Bound = false;
-
-                dungeon_crawler.core.outputToConsole(`Event unbound: "${eventBinding.Name}"`);
             }
         }
     }
