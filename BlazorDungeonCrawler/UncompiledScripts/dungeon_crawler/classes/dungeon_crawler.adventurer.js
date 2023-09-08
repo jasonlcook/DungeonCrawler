@@ -11,7 +11,6 @@
         this.StrengthPotionDuration = 0;
 
         this.ProtectionBase = protection;
-
         
         this.ShieldPotion = 0;
         this.ShieldPotionDuration = 0;
@@ -117,7 +116,7 @@
     }
 
     //Protection
-    getArmour() {
+    getProtection() {
         return this.ProtectionBase + this.ShieldPotion;
     }
 
@@ -129,7 +128,7 @@
         return this.ShieldPotionDuration += value;
     }
 
-    decrementArmourPotionDuration() {
+    decrementShieldPotionDuration() {
         if (this.ShieldPotionDuration > 0) {
             this.ShieldPotionDuration -= 1;
 
@@ -144,8 +143,8 @@
         return false;
     }
 
-    getArmourDescription() {
-        let message = `${this.getArmour()}`;
+    getProtectionDescription() {
+        let message = `${this.getProtection()}`;
 
         if (this.ShieldPotion > 0) {
             message += ` (${this.ProtectionBase} + ${this.ShieldPotion}) ${this.ShieldPotionDuration}`;
@@ -165,17 +164,17 @@
         let auraPotionDammage = 0;
         let adventurerDammage = 0;
 
-        //take dammage to Shield potion
+        //take dammage to shield potion
         if (this.ShieldPotion > 0) {
             if (dammagePoints < this.ShieldPotion) {
                 shieldPotionDammage = dammagePoints;
                 remainingDammagePoints = 0;
 
-                //armour potion took all damage points
+                //shield potion took all damage points
                 this.ShieldPotion -= dammagePoints;
             } else {
 
-                //armour potion took some damage points
+                //shield potion took some damage points
                 shieldPotionDammage = this.ShieldPotion;
                 remainingDammagePoints = dammagePoints - this.ShieldPotion;
 
@@ -185,17 +184,17 @@
             dammagePoints = remainingDammagePoints;
         }
 
-        //take dammage to Aura potion
+        //take dammage to aura potion
         if (dammagePoints > 0 && this.AuraPotion > 0) {
             if (dammagePoints < this.AuraPotion) {
                 auraPotionDammage = dammagePoints;
                 remainingDammagePoints = 0;
 
-                //armour potion took all damage points
+                //aura potion took all damage points
                 this.AuraPotion -= dammagePoints;
             } else {
 
-                //armour potion took some damage points
+                //aura potion took some damage points
                 auraPotionDammage = this.AuraPotion;
                 remainingDammagePoints = dammagePoints - this.AuraPotion;
 
