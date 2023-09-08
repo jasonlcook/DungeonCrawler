@@ -29,9 +29,11 @@ class EventBindings {
             this._eventBindings.push(eventBinding);
 
             this._eventBindingNames.push(name);
-        } else {
-            dungeon_crawler.core.outputToConsole(`Event "${name}" already bound`);
+
+            return;
         }
+
+        dungeon_crawler.core.outputError(`Event "${name}" already bound`);
     }
 
     getElementWithName(name) {
@@ -57,7 +59,7 @@ class EventBindings {
                     eventBinding.Dispacter.on(eventBinding.Type, eventBinding.Handler);
                     eventBinding.Bound = true;
                 } else {
-                    dungeon_crawler.core.outputToConsole(`Event "${eventBinding.Name}" already bound.`);
+                    dungeon_crawler.core.outputError(`Event "${eventBinding.Name}" already bound.`);
                 }
             }
         }
