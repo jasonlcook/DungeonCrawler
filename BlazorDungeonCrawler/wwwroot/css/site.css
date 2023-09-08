@@ -193,11 +193,11 @@
                     }
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-entrance {
-                    background-image: url('../images/tiles/stairs_ascending.png');
+                    background-image: url('../images/tiles/entrance.png');
                 }
 
                     #play-area .dungon #stage .hexagon-tile.hexagon-tile-entrance.hexagon-tile-selectable {
-                        background-image: url('../images/tiles/stairs_ascending_selected.png');
+                        background-image: url('../images/tiles/entrance_selected.png');
                     }
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-exit {
@@ -264,21 +264,27 @@
                         background-image: url('../images/tiles/potion_selected.png');
                     }
 
-
-
-                #play-area .dungon #stage .hexagon-tile span {
-                    position: absolute;
-                    top: 15px;
-                    left: 20px;
-                    font-size: 10px;
-                    font-family: monospace;
-                    color: #fff;
-                    display: block;
-                    width: 60px;
-                    height: 60px;
-                    margin: 0 auto;
-                    text-align: center;
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-macguffin {
+                    background-image: url('../images/tiles/maguffin.png');
                 }
+
+                    #play-area .dungon #stage .hexagon-tile.hexagon-tile-macguffin.hexagon-tile-selectable {
+                        background-image: url('../images/tiles/maguffin_selected.png');
+                    }
+
+#play-area .dungon #stage .hexagon-tile span {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 10px;
+    font-family: monospace;
+    color: #fff;
+    display: block;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    text-align: center;
+}
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:active,
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:hover,

@@ -10,7 +10,7 @@
 
         this.enemies;
 
-        this.InCombat;
+        this.stairsDeployed;
     }
 
     loadLevel(value) {
@@ -51,15 +51,21 @@
 
         this.availableEnemies = dungeon_crawler.core.enemies.getAvailableEnemies(this.level);
 
-        this.InCombat = false;
+        this.stairsDeployed = false;
     }
 
-    setSpawn() {
+    setSpawn(level) {
         let spawnIndex = Math.floor(Math.random() * this.tiles.length);
         let spawnTitle = this.tiles.get(spawnIndex);
 
         spawnTitle.Hidden = false;
-        spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['entrance'];
+
+        if (level > 1) {
+            spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['stairs_ascending'];
+        } else {
+            spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['entrance'];
+        }
+
         spawnTitle.Current = true;
 
         this.tiles.currentIndex = spawnIndex;

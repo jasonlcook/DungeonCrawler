@@ -3,7 +3,7 @@
     hexHeight: 90,
     hexWidth: 100,
 
-    tileTypes: dungeon_crawler.core.createEnum(['unknown', 'entrance', 'exit', 'stairs_ascending', 'stairs_descending', 'fight', 'loot', 'protection', 'empty', 'potion']),
+    tileTypes: dungeon_crawler.core.createEnum(['unknown', 'entrance', 'exit', 'stairs_ascending', 'stairs_descending', 'fight', 'loot', 'protection', 'empty', 'potion', 'macguffin']),
     
     //Vars
     stageHeight: null,
@@ -13,5 +13,13 @@
 
     currentLevel: null,
     adventurer: null,
-    currentEnemy: null
+    currentEnemy: null,
+
+    InCombat: false,
+    onStairs: false,
+
+    macguffinFound: false,
+
+    levels: [],
+    lastLevel: 10
 }; 

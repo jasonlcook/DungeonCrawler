@@ -1,6 +1,9 @@
 ﻿class Tiles {
     constructor() {
         this.tiles = [];
+
+        this.explored = 0;
+
         this.currentIndex;
     }
 
@@ -27,7 +30,7 @@
 
             if (tile.Id == id) {
                 return tile;
-            }           
+            }
         }
     }
 
@@ -36,6 +39,24 @@
     //  4, 5:   Empty
     //  6:      Loot
     getNextTileType() {
+        this.explored += 1;
+
+        if (!dungeon_crawler.core.globals.currentLevel.stairsDeployed) {
+            let quadsExplored = Math.floor(this.tiles.length / 4);
+
+            if (this.explored > quadsExplored) {
+                // 50/50 change of stairs being deplyed or if over 3/4 exposed then just show the damn stairs
+                if ((Math.floor(Math.random() * 2) == 0) || this.explored > quadsExplored * 3) {
+                    if (dungeon_crawler.core.globals.currentLevel.level < dungeon_crawler.core.globals.lastLevel) {                        
+                        return dungeon_crawler.core.globals.tileTypes['stairs_descending'];
+                    } else {
+
+                        return dungeon_crawler.core.globals.tileTypes['macguffin'];
+                    }                    
+                }
+            }
+        }
+
         //roll to see if tile populated
         let value = dungeon_crawler.main.roleSafeDie();
 
@@ -43,7 +64,7 @@
             case 1:
             case 2:
             case 3:
-                dungeon_crawler.core.globals.currentLevel.InCombat = true;
+                dungeon_crawler.core.globals.InCombat = true;
                 return dungeon_crawler.core.globals.tileTypes['fight'];
                 break;
             case 6:
@@ -69,7 +90,7 @@
         switch (value) {
             case 1:
             case 2:
-                dungeon_crawler.core.globals.currentLevel.InCombat = true;
+                dungeon_crawler.core.globals.InCombat = true;
                 return dungeon_crawler.core.globals.tileTypes['fight'];
                 break;
             case 3:

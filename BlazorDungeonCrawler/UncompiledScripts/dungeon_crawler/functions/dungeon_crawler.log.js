@@ -1,10 +1,95 @@
 ﻿dungeon_crawler.log = {
     generateStartingAdventurerText(healthValue, strengthValue, armourValue) {
-        let healthLevel = dungeon_crawler.log.getStrengthText(healthValue);
+        let healthLevel = dungeon_crawler.log.getHealthText(healthValue);
         let strengthLevel = dungeon_crawler.log.getStrengthText(strengthValue);
         let armourLevel = dungeon_crawler.log.getArmourText(armourValue);
 
         return `You have been offerd as a sacrifices to the dungeon and are in ${healthLevel} health and feel ${strengthLevel} wearing your ${armourLevel}.`;
+    },
+
+    //todo: embiggenate text
+    generateStairsDownText(level) {
+        switch (level) {
+            case 2:
+                return 'You descend to the second level';
+                break;
+            case 3:
+                return 'You descend to the third level';
+                break;
+            case 4:
+                return 'You descend to the fourth level';
+                break;
+            case 5:
+                return 'You descend to the fith level';
+                break;
+            case 6:
+                return 'You descend to the sixth level';
+                break;
+            case 7:
+                return 'You descend to the sevent level';
+                break;
+            case 8:
+                return 'You descend to the eigth level';
+                break;
+            case 9:
+                return 'You descend to the ninth level';
+                break;
+            case 10:
+                return 'You descend to the final level';
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Generate stairs descend text error with value ${level}`);
+    },
+
+    //todo: embiggenate text
+    generateStairsUpText(level) {
+        switch (level) {
+            case 1:
+                return 'You ascend to the first level';
+                break;
+            case 2:
+                return 'You ascend to the second level';
+                break;
+            case 3:
+                return 'You ascend to the third level';
+                break;
+            case 4:
+                return 'You ascend to the fourth level';
+                break;
+            case 5:
+                return 'You ascend to the fith level';
+                break;
+            case 7:
+                return 'You ascend to the sixth level';
+                break;
+            case 8:
+                return 'You ascend to the sevent level';
+                break;
+            case 9:
+                return 'You ascend to the eigth level';
+                break;
+            case 10:
+                return 'You ascend to the ninth level';
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Generate stairs ascend text error with value ${level}`);
+    },
+
+    //todo: embiggenate text
+    generateMacGuffinText() {
+        return 'You found the thing.  Now good luck getting back out.';
+    },
+
+    //todo: embiggenate text
+    generateExitWithoutMacGuffinText() {
+        return 'You can not leave without the MacGuffin.';
+    },
+
+    //todo: embiggenate text
+    generateExitWithMacGuffinText() {
+        return 'As you leave with the MacGuffin the real prize is the possible friends we made along the way.';
     },
 
     getHealthText(healthValue) {
@@ -23,6 +108,7 @@
                 break;
         }
 
+        dungeon_crawler.core.outputError(`Generate health text error with value ${healthValue}`);
     },
 
     getStrengthText(strengthValue) {
@@ -40,6 +126,8 @@
                 return 'powerful';
                 break;
         }
+
+        dungeon_crawler.core.outputError(`Generate strength text error with value ${strengthValue}`);
     },
 
     getArmourText(armourValue) {
@@ -57,6 +145,8 @@
                 return 'armour';
                 break;
         }
+
+        dungeon_crawler.core.outputError(`Generate armour text error with value ${armourValue}`);
     },
 
     //todo: use healt, strength and armour values in text
