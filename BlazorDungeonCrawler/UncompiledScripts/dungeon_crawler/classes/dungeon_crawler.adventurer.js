@@ -1,5 +1,5 @@
 ﻿class Adventurer {
-    constructor(health, strength, armour) {
+    constructor(health, strength, protection) {
         this.HealthBase = health;
         this.HealthInitial = health;
         this.AuraPotion = 0;
@@ -10,12 +10,11 @@
         this.StrengthPotion = 0;
         this.StrengthPotionDuration = 0;
 
-        //todo: change ArmourBase to ProtectionBase
-        this.ArmourBase = armour;
+        this.ProtectionBase = protection;
 
-        //todo: change ArmourPotion to ShieldPotion
-        this.ArmourPotion = 0;
-        this.ArmourPotionDuration = 0;
+        
+        this.ShieldPotion = 0;
+        this.ShieldPotionDuration = 0;
 
         this.IsAlive = true;
     }
@@ -119,24 +118,24 @@
 
     //Protection
     getArmour() {
-        return this.ArmourBase + this.ArmourPotion;
+        return this.ProtectionBase + this.ShieldPotion;
     }
 
-    setArmourPotion(value) {
-        return this.ArmourPotion += value;
+    setShieldPotion(value) {
+        return this.ShieldPotion += value;
     }
 
-    setArmourPotionDuration(value) {
-        return this.ArmourPotionDuration += value;
+    setShieldPotionDuration(value) {
+        return this.ShieldPotionDuration += value;
     }
 
     decrementArmourPotionDuration() {
-        if (this.ArmourPotionDuration > 0) {
-            this.ArmourPotionDuration -= 1;
+        if (this.ShieldPotionDuration > 0) {
+            this.ShieldPotionDuration -= 1;
 
-            if (this.ArmourPotionDuration <= 0) {
-                this.ArmourPotionDuration = 0;
-                this.ArmourPotion = 0;
+            if (this.ShieldPotionDuration <= 0) {
+                this.ShieldPotionDuration = 0;
+                this.ShieldPotion = 0;
             }
 
             return true;
@@ -148,8 +147,8 @@
     getArmourDescription() {
         let message = `${this.getArmour()}`;
 
-        if (this.ArmourPotion > 0) {
-            message += ` (${this.ArmourBase} + ${this.ArmourPotion}) ${this.ArmourPotionDuration}`;
+        if (this.ShieldPotion > 0) {
+            message += ` (${this.ProtectionBase} + ${this.ShieldPotion}) ${this.ShieldPotionDuration}`;
         }
 
         return message;
@@ -167,20 +166,20 @@
         let adventurerDammage = 0;
 
         //take dammage to Shield potion
-        if (this.ArmourPotion > 0) {
-            if (dammagePoints < this.ArmourPotion) {
+        if (this.ShieldPotion > 0) {
+            if (dammagePoints < this.ShieldPotion) {
                 shieldPotionDammage = dammagePoints;
                 remainingDammagePoints = 0;
 
                 //armour potion took all damage points
-                this.ArmourPotion -= dammagePoints;
+                this.ShieldPotion -= dammagePoints;
             } else {
 
                 //armour potion took some damage points
-                shieldPotionDammage = this.ArmourPotion;
-                remainingDammagePoints = dammagePoints - this.ArmourPotion;
+                shieldPotionDammage = this.ShieldPotion;
+                remainingDammagePoints = dammagePoints - this.ShieldPotion;
 
-                this.ArmourPotion = 0;
+                this.ShieldPotion = 0;
             }
 
             dammagePoints = remainingDammagePoints;

@@ -437,8 +437,8 @@
                 dungeon_crawler.main.updateAdventurerStrength();
                 break;
             case dungeon_crawler.core.globals.potionType['sheild']:
-                dungeon_crawler.core.globals.adventurer.setArmourPotion(sizeValue);
-                dungeon_crawler.core.globals.adventurer.setArmourPotionDuration(durationValue);
+                dungeon_crawler.core.globals.adventurer.setShieldPotion(sizeValue);
+                dungeon_crawler.core.globals.adventurer.setShieldPotionDuration(durationValue);
                 dungeon_crawler.main.updateAdventurerArmour();
                 break;
             default:
