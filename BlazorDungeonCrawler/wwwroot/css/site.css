@@ -232,12 +232,12 @@
                         background-image: url('../images/tiles/fight_selected.png');
                     }
 
-                #play-area .dungon #stage .hexagon-tile.hexagon-tile-loot {
-                    background-image: url('../images/tiles/loot.png');
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-chest {
+                    background-image: url('../images/tiles/chest.png');
                 }
 
-                    #play-area .dungon #stage .hexagon-tile.hexagon-tile-loot.hexagon-tile-selectable {
-                        background-image: url('../images/tiles/loot_selected.png');
+                    #play-area .dungon #stage .hexagon-tile.hexagon-tile-chest.hexagon-tile-selectable {
+                        background-image: url('../images/tiles/chest_selected.png');
                     }
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-protection {

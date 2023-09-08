@@ -102,15 +102,7 @@
             //new tile
             let nextTileType = dungeon_crawler.core.globals.currentLevel.tiles.getNextTileType();
 
-            if (nextTileType == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
-                let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
-
-                dungeon_crawler.main.generateLevel(nextlevel);
-                dungeon_crawler.main.stairsDownText(nextlevel);
-
-                dungeon_crawler.core.globals.onStairs = false;
-                dungeon_crawler.core.globals.currentLevel.stairsDeployed = true;
-            } else if (nextTileType == dungeon_crawler.core.globals.tileTypes['macguffin']) {
+            if (nextTileType == dungeon_crawler.core.globals.tileTypes['macguffin']) {
                 dungeon_crawler.core.globals.macguffinFound = true;
 
                 dungeon_crawler.main.macGuffinText();
@@ -122,17 +114,16 @@
             if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
                 if (!dungeon_crawler.core.globals.macguffinFound) {
                     dungeon_crawler.main.exitWithoutMacGuffinText();
-                } else if (dungeon_crawler.core.globals.macguffinFound) {
+                } else {
                     dungeon_crawler.main.endGamge();
                     dungeon_crawler.main.exitWithMacGuffinText();
+                    return;
                 }
-            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
+            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {                
                 let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
 
                 dungeon_crawler.main.generateLevel(previouslevel);
                 dungeon_crawler.main.stairsUpText(previouslevel);
-
-                dungeon_crawler.core.globals.onStairs = false;
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
                 let repeatTile = dungeon_crawler.core.globals.currentLevel.tiles.getRepeatTileType();
@@ -142,6 +133,15 @@
                 }
             }
         }
+
+        if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
+            dungeon_crawler.core.globals.currentLevel.stairsDeployed = true;
+
+            let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
+
+            dungeon_crawler.main.generateLevel(nextlevel);
+            dungeon_crawler.main.stairsDownText(nextlevel);
+        } 
 
         dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
         dungeon_crawler.main.setStage();

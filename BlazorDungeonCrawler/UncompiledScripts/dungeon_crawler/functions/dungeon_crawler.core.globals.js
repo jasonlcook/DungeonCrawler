@@ -16,7 +16,6 @@
     currentEnemy: null,
 
     InCombat: false,
-    onStairs: false,
 
     macguffinFound: false,
 
