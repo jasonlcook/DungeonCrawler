@@ -4,17 +4,17 @@ class Enemy {
         this.Type;
 
         this.Health;
-        this.Strength;
+        this.Damage;
         this.Protection;
 
         this.IsAlive;
     }
 
-    generateEnemy(type, healthDice, strengthDice, protectionDice) {
+    generateEnemy(type, healthDice, damageDice, protectionDice) {
         this.Type = type;
 
         this.Health = this.secretRoll(healthDice);
-        this.Strength = this.secretRoll(strengthDice);
+        this.Damage = this.secretRoll(damageDice);
         this.Protection = this.secretRoll(protectionDice);
 
         this.IsAlive = true;
@@ -44,8 +44,8 @@ class Enemy {
         return this.Health;
     }
 
-    getStrength() {
-        return this.Strength;
+    getDamage() {
+        return this.Damage;
     }
 
     getProtection() {

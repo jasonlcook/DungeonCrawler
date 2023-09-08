@@ -1,14 +1,13 @@
 ﻿class Adventurer {
-    constructor(health, strength, protection) {
+    constructor(health, damage, protection) {
         this.HealthBase = health;
         this.HealthInitial = health;
         this.AuraPotion = 0;
         this.AuraPotionDuration = 0;
 
-        //todo: change Strength to Damage
-        this.StrengthBase = strength;
-        this.StrengthPotion = 0;
-        this.StrengthPotionDuration = 0;
+        this.DamageBase = damage;
+        this.DamagePotion = 0;
+        this.DamagePotionDuration = 0;
 
         this.ProtectionBase = protection;
         
@@ -77,26 +76,26 @@
         return message;
     }
 
-    //Strength
-    getStrength() {
-        return this.StrengthBase + this.StrengthPotion;
+    //Damage
+    getDamage() {
+        return this.DamageBase + this.DamagePotion;
     }
 
-    setStrengthPotion(value) {
-        return this.StrengthPotion += value;
+    setDamagePotion(value) {
+        return this.DamagePotion += value;
     }
 
-    setStrengthPotionDuration(value) {
-        return this.StrengthPotionDuration += value;
+    setDamagePotionDuration(value) {
+        return this.DamagePotionDuration += value;
     }
 
-    decrementStrengthPotionDuration() {
-        if (this.StrengthPotionDuration > 0) {
-            this.StrengthPotionDuration -= 1;
+    decrementDamagePotionDuration() {
+        if (this.DamagePotionDuration > 0) {
+            this.DamagePotionDuration -= 1;
 
-            if (this.StrengthPotionDuration <= 0) {
-                this.StrengthPotionDuration = 0;
-                this.StrengthPotion = 0;
+            if (this.DamagePotionDuration <= 0) {
+                this.DamagePotionDuration = 0;
+                this.DamagePotion = 0;
             }
 
             return true;
@@ -105,11 +104,11 @@
         return false;
     }
 
-    getStrengthDescription() {
-        let message = `${this.getStrength()}`;
+    getDamageDescription() {
+        let message = `${this.getDamage()}`;
 
-        if (this.StrengthPotion > 0) {
-            message += ` (${this.StrengthBase} + ${this.StrengthPotion}) ${this.StrengthPotionDuration}`;
+        if (this.DamagePotion > 0) {
+            message += ` (${this.DamageBase} + ${this.DamagePotion}) ${this.DamagePotionDuration}`;
         }
 
         return message;

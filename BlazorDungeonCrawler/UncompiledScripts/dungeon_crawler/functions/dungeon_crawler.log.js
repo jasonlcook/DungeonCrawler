@@ -1,10 +1,10 @@
 ﻿dungeon_crawler.log = {
-    generateStartingAdventurerText(healthValue, strengthValue, protectionValue) {
+    generateStartingAdventurerText(healthValue, damageValue, protectionValue) {
         let healthLevel = dungeon_crawler.log.getHealthText(healthValue);
-        let strengthLevel = dungeon_crawler.log.getStrengthText(strengthValue);
+        let damageLevel = dungeon_crawler.log.getDamageText(damageValue);
         let protectionLevel = dungeon_crawler.log.getProtectionText(protectionValue);
 
-        return `You have been offerd as a sacrifices to the dungeon and are in ${healthLevel} health and feel ${strengthLevel} wearing your ${protectionLevel}.`;
+        return `You have been offerd as a sacrifices to the dungeon and are in ${healthLevel} health and feel ${damageLevel} wearing your ${protectionLevel}.`;
     },
 
     //todo: embiggenate text
@@ -117,8 +117,8 @@
         dungeon_crawler.core.outputError(`Generate health text error with value ${healthValue}`);
     },
 
-    getStrengthText(strengthValue) {
-        switch (strengthValue) {
+    getDamageText(damageValue) {
+        switch (damageValue) {
             case 1:
             case 2:
             case 3:
@@ -133,7 +133,7 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Generate strength text error with value ${strengthValue}`);
+        dungeon_crawler.core.outputError(`Generate damage text error with value ${damageValue}`);
     },
 
     getProtectionText(protectionValue) {
@@ -163,13 +163,13 @@
         return `You regained ${regainedHealth} health points.`;
     },
 
-    //todo: use healt, strength and protection values in text
-    generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, strengthValue, protectionValue) {
+    //todo: use healt, damage and protection values in text
+    generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, damageValue, protectionValue) {
         //let healthLevel = dungeon_crawler.log.getHealthText(healthValue);
-        //let strengthLevel = dungeon_crawler.log.getStrengthText(strengthValue);
+        //let damageLevel = dungeon_crawler.log.getDamageText(damageValue);
         //let protectionLevel = dungeon_crawler.log.getProtectionText(protectionValue);
 
-        //return `You encounter a ${strengthLevel} ${name} wearing ${protectionLevel} in ${healthLevel} health.`;
+        //return `You encounter a ${damageLevel} ${name} wearing ${protectionLevel} in ${healthLevel} health.`;
 
         let message = `A ${name} surprises you.`;
         if (adventurerInitiatesCombat) {
@@ -179,8 +179,8 @@
         return message;
     },
 
-    generateAdventurerAttackText(enemyType, adventurerRoll, adventurerStrength, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        let message = `You attack the ${enemyType} with a <span style="font-weight: bold;">${adventurerAttackValue}</span> (${adventurerRoll} + ${adventurerStrength}). `;
+    generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
+        let message = `You attack the ${enemyType} with a <span style="font-weight: bold;">${adventurerAttackValue}</span> (${adventurerRoll} + ${adventurerDamage}). `;
 
         if (wounds != null) {
             message += `The ${enemyType} takes <span style="color:red;">${wounds}</span> damage after failing to avoid you with <span style="font-weight: bold;">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
@@ -195,8 +195,8 @@
         return `You died to a ${enemyType}.`;
     },
 
-    generateEnemyAttackText(enemyType, enemyRoll, enemyStrength, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds) {
-        let message = `The ${enemyType} attacks with a <span style="font-weight: bold;">${enemyAttackValue}</span> (${enemyRoll} + ${enemyStrength}). `;
+    generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds) {
+        let message = `The ${enemyType} attacks with a <span style="font-weight: bold;">${enemyAttackValue}</span> (${enemyRoll} + ${enemyDamage}). `;
 
         if (wounds != null) {
             message += `You takes <span style="color:red;">${wounds}</span> damage after failing to avoid with <span style="font-weight: bold;">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;

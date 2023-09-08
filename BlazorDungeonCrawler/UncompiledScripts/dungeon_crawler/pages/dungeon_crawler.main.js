@@ -89,8 +89,8 @@
             dungeon_crawler.main.updateAdventurerHealth();
         }
 
-        if (dungeon_crawler.core.globals.adventurer.decrementStrengthPotionDuration()) {
-            dungeon_crawler.main.updateAdventurerStrength();
+        if (dungeon_crawler.core.globals.adventurer.decrementDamagePotionDuration()) {
+            dungeon_crawler.main.updateAdventurerDamage();
         }
 
         if (dungeon_crawler.core.globals.adventurer.decrementShieldPotionDuration()) {
@@ -198,7 +198,7 @@
 
         //todo: use monster difficulty role to generate monsters
         let currentEnemy = new Enemy();
-        currentEnemy.generateEnemy(enemy.type, enemy.healthDice, enemy.strengthDice, enemy.protectionDice);
+        currentEnemy.generateEnemy(enemy.type, enemy.healthDice, enemy.damageDice, enemy.protectionDice);
 
         dungeon_crawler.main.resetDiceValues();
         let adventurerScore = dungeon_crawler.main.roleSafeDie();
@@ -212,12 +212,12 @@
 
         let enemyType = currentEnemy.getType();
 
-        dungeon_crawler.main.monsterEncounterText(adventurerInitiatesCombat, enemyType, currentEnemy.getHealth(), currentEnemy.getStrength(), currentEnemy.getProtection());
+        dungeon_crawler.main.monsterEncounterText(adventurerInitiatesCombat, enemyType, currentEnemy.getHealth(), currentEnemy.getDamage(), currentEnemy.getProtection());
 
-        let adventurerStrength = dungeon_crawler.core.globals.adventurer.getStrength();
+        let adventurerDamage = dungeon_crawler.core.globals.adventurer.getDamage();
         let adventurerProtection = dungeon_crawler.core.globals.adventurer.getProtection();
 
-        let enemyStrength = currentEnemy.getStrength();
+        let enemyDamage = currentEnemy.getDamage();
         let enemyProtection = currentEnemy.getProtection();
 
         let adventurerRoll, enemyRoll, attackValue, avoidValue, wounds;
@@ -227,7 +227,7 @@
             wounds = null;
             if (adventurerInitiatesCombat) {
                 adventurerRoll = dungeon_crawler.main.roleSafeDie();
-                attackValue = adventurerRoll + adventurerStrength;
+                attackValue = adventurerRoll + adventurerDamage;
 
                 enemyRoll = dungeon_crawler.main.roleDangerDie();
                 avoidValue = enemyRoll + enemyProtection;
@@ -237,7 +237,7 @@
                     currentEnemy.reciveWounds(wounds);
                 }
 
-                dungeon_crawler.main.adventurerAttackText(enemyType, adventurerRoll, adventurerStrength, attackValue, enemyRoll, enemyProtection, avoidValue, wounds);
+                dungeon_crawler.main.adventurerAttackText(enemyType, adventurerRoll, adventurerDamage, attackValue, enemyRoll, enemyProtection, avoidValue, wounds);
             }
 
             //Monster fight
@@ -245,7 +245,7 @@
             wounds = null;
             if (currentEnemy.isAlive()) {
                 enemyRoll = dungeon_crawler.main.roleDangerDie();
-                attackValue = enemyRoll + enemyStrength;
+                attackValue = enemyRoll + enemyDamage;
 
                 adventurerRoll = dungeon_crawler.main.roleSafeDie();
                 avoidValue = adventurerRoll + adventurerProtection;
@@ -264,7 +264,7 @@
                     dungeon_crawler.main.updateAdventurerProtection();
                 }
 
-                dungeon_crawler.main.enemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds);
+                dungeon_crawler.main.enemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds);
             }
 
             adventurerInitiatesCombat = true;
@@ -317,7 +317,7 @@
 
     //  Potion
     //  1 - 2:  Sheild (Protection)
-    //  3 - 4:  Strength
+    //  3 - 4:  Damage
     //  5 - 6:  Aura (Health)
     selectPotionType() {
         let value = dungeon_crawler.main.roleSafeDie();
@@ -329,7 +329,7 @@
                 break;
             case 3:
             case 4:
-                return dungeon_crawler.core.globals.potionType['strength'];
+                return dungeon_crawler.core.globals.potionType['damage'];
                 break;
             case 5:
             case 6:
@@ -430,10 +430,10 @@
                 dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);
                 dungeon_crawler.main.updateAdventurerHealth();
                 break;
-            case dungeon_crawler.core.globals.potionType['strength']:
-                dungeon_crawler.core.globals.adventurer.setStrengthPotion(sizeValue);
-                dungeon_crawler.core.globals.adventurer.setStrengthPotionDuration(durationValue);
-                dungeon_crawler.main.updateAdventurerStrength();
+            case dungeon_crawler.core.globals.potionType['damage']:
+                dungeon_crawler.core.globals.adventurer.setDamagePotion(sizeValue);
+                dungeon_crawler.core.globals.adventurer.setDamagePotionDuration(durationValue);
+                dungeon_crawler.main.updateAdventurerDamage();
                 break;
             case dungeon_crawler.core.globals.potionType['sheild']:
                 dungeon_crawler.core.globals.adventurer.setShieldPotion(sizeValue);
@@ -590,12 +590,12 @@
     //Adventurer
     generateAdventurer() {
         let healthValue = dungeon_crawler.main.roleSafeDie() + dungeon_crawler.main.roleSafeDie();
-        let strengthValue = dungeon_crawler.main.roleSafeDie();
+        let damageValue = dungeon_crawler.main.roleSafeDie();
         let protectionValue = dungeon_crawler.main.roleSafeDie();
 
-        dungeon_crawler.main.startingAdventurerText(healthValue, strengthValue, protectionValue);
+        dungeon_crawler.main.startingAdventurerText(healthValue, damageValue, protectionValue);
 
-        dungeon_crawler.core.globals.adventurer = new Adventurer(healthValue, strengthValue, protectionValue);
+        dungeon_crawler.core.globals.adventurer = new Adventurer(healthValue, damageValue, protectionValue);
     },
 
     setLevelDetails() {
@@ -604,7 +604,7 @@
 
     setAdventurerDetails() {
         dungeon_crawler.main.updateAdventurerHealth();
-        dungeon_crawler.main.updateAdventurerStrength();
+        dungeon_crawler.main.updateAdventurerDamage();
         dungeon_crawler.main.updateAdventurerProtection();
     },
 
@@ -613,9 +613,9 @@
         $('#current-health').html(health);
     },
 
-    updateAdventurerStrength() {
-        let strength = dungeon_crawler.core.globals.adventurer.getStrengthDescription();
-        $('#current-strength').html(strength);
+    updateAdventurerDamage() {
+        let damage = dungeon_crawler.core.globals.adventurer.getDamageDescription();
+        $('#current-damage').html(damage);
     },
 
     updateAdventurerProtection() {
@@ -676,8 +676,8 @@
     //Log
     //  Story
     //      Adventurer
-    startingAdventurerText(health, strength, protection) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, strength, protection));
+    startingAdventurerText(health, damage, protection) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, damage, protection));
     },
 
     //          Potion
@@ -714,20 +714,20 @@
     },
 
     //  Combat
-    monsterEncounterText(adventurerInitiatesCombat, enemyType, health, strength, protection) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, strength, protection));
+    monsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection));
     },
 
-    adventurerAttackText(enemyType, adventurerRoll, adventurerStrength, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerStrength, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds));
+    adventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds));
     },
 
     adventurerDeathText(enemyType) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerDeathText(enemyType));
     },
 
-    enemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds));
+    enemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds));
     },
 
     enemyDeathText(enemyType) {
