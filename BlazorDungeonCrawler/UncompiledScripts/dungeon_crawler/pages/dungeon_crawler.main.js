@@ -253,8 +253,16 @@
 
                 if (attackValue > avoidValue) {
                     wounds = attackValue - avoidValue;
-                    dungeon_crawler.core.globals.adventurer.reciveWounds(wounds);
+
+                    //Damage will be dealt to Shield potion (if avalible), then Aura potion (if avalible) and finaly the Adventurer.  
+                    //The function will return the number of wounds taken by the Adventurer.
+                    let adventurerWounds = dungeon_crawler.core.globals.adventurer.reciveWounds(wounds);
+                    wounds = adventurerWounds;
+
                     dungeon_crawler.main.updateAdventurerHealth();
+
+                    //as the Shield potion may have taken dammage it too is updated
+                    dungeon_crawler.main.updateAdventurerArmour();
                 }
 
                 dungeon_crawler.main.enemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerArmour, avoidValue, wounds);
@@ -418,7 +426,7 @@
                 let regainedHealth = dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
                 if (regainedHealth > 0) {
                     dungeon_crawler.main.usePotionHealingText(regainedHealth);
-                }                
+                }
 
                 dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);
                 dungeon_crawler.main.updateAdventurerHealth();

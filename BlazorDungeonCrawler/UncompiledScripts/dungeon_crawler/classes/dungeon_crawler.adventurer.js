@@ -12,6 +12,8 @@
 
         //todo: change ArmourBase to ProtectionBase
         this.ArmourBase = armour;
+
+        //todo: change ArmourPotion to ShieldPotion
         this.ArmourPotion = 0;
         this.ArmourPotionDuration = 0;
 
@@ -158,14 +160,68 @@
         return this.IsAlive;
     }
 
-    //todo: add Aura and Sheld deplenishment first 
-    reciveWounds(value) {
-        let updatedHealth = this.HealthBase - value;
-        if (updatedHealth > 0) {
-            this.set = updatedHealth;
-        } else {
-            this.HealthBase = 0;
-            this.IsAlive = false;
+    reciveWounds(dammagePoints) {
+        let remainingDammagePoints = 0;
+        let shieldPotionDammage = 0;
+        let auraPotionDammage = 0;
+        let adventurerDammage = 0;
+
+        //take dammage to Shield potion
+        if (this.ArmourPotion > 0) {
+            if (dammagePoints < this.ArmourPotion) {
+                shieldPotionDammage = dammagePoints;
+                remainingDammagePoints = 0;
+
+                //armour potion took all damage points
+                this.ArmourPotion -= dammagePoints;
+            } else {
+
+                //armour potion took some damage points
+                shieldPotionDammage = this.ArmourPotion;
+                remainingDammagePoints = dammagePoints - this.ArmourPotion;
+
+                this.ArmourPotion = 0;
+            }
+
+            dammagePoints = remainingDammagePoints;
         }
+
+        //take dammage to Aura potion
+        if (dammagePoints > 0 && this.AuraPotion > 0) {
+            if (dammagePoints < this.AuraPotion) {
+                auraPotionDammage = dammagePoints;
+                remainingDammagePoints = 0;
+
+                //armour potion took all damage points
+                this.AuraPotion -= dammagePoints;
+            } else {
+
+                //armour potion took some damage points
+                auraPotionDammage = this.AuraPotion;
+                remainingDammagePoints = dammagePoints - this.AuraPotion;
+
+                this.AuraPotion = 0;
+            }
+
+            dammagePoints = remainingDammagePoints;
+        }
+
+        //take dammage to Adventurer
+        if (dammagePoints > 0) {
+            adventurerDammage = dammagePoints;
+
+            let updatedHealth = this.HealthBase - dammagePoints;
+
+            if (updatedHealth > 0) {
+                this.HealthBase = updatedHealth;
+            } else {
+                this.HealthBase = 0;
+                this.IsAlive = false;
+            }
+        }
+
+        // return {            'shieldPotionDammage': shieldPotionDammage, 'auraPotionDammage': auraPotionDammage, 'adventurerDammage': adventurerDammage         }
+
+        return adventurerDammage;
     }
 }; 
