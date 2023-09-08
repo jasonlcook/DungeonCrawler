@@ -154,6 +154,10 @@
 
         dungeon_crawler.core.outputError(`Generate armour text error with value ${armourValue}`);
     },
+        
+    generateUsePotionText(potionType, potionSize, potionDuration) {
+        return `You drink a ${potionSize} ${potionDuration} duration ${potionType} potion.`;
+    },
 
     //todo: use healt, strength and armour values in text
     generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, strengthValue, armourValue) {

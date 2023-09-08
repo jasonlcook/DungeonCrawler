@@ -18,9 +18,9 @@
     get(index) {
         if (index < this.tiles.length) {
             return this.tiles[index];
-        } else {
-            console.log(`Index "${index}" not found`);
         }
+
+        dungeon_crawler.core.outputError(`Index "${index}" not found`);
     }
 
     getById(id) {
@@ -37,7 +37,7 @@
     //Tile select
     //  1 - 3:  Monster
     //  4, 5:   Empty
-    //  6:      Loot
+    //  6:      Chest
     getNextTileType() {
         this.explored += 1;
 
@@ -67,12 +67,12 @@
                 dungeon_crawler.core.globals.InCombat = true;
                 return dungeon_crawler.core.globals.tileTypes['fight'];
                 break;
-            case 6:
-                return dungeon_crawler.main.selectLoot();
-                break;
             case 4:
             case 5:
                 return dungeon_crawler.core.globals.tileTypes['empty'];
+                break;
+            case 6:
+                return dungeon_crawler.core.globals.tileTypes['chest'];
                 break;
         }
 

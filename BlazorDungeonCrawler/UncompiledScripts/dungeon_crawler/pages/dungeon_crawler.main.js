@@ -83,6 +83,8 @@
     },
 
     movement(selectedTile) {
+        //todo: decrement andy potion effect counters
+
         dungeon_crawler.core.globals.InCombat = false;
 
         dungeon_crawler.main.resetDiceValues();
@@ -102,10 +104,36 @@
             //new tile
             let nextTileType = dungeon_crawler.core.globals.currentLevel.tiles.getNextTileType();
 
-            if (nextTileType == dungeon_crawler.core.globals.tileTypes['macguffin']) {
-                dungeon_crawler.core.globals.macguffinFound = true;
+            switch (nextTileType) {
+                case dungeon_crawler.core.globals.tileTypes['macguffin']:
+                    dungeon_crawler.core.globals.macguffinFound = true;
+                    dungeon_crawler.main.macGuffinText();
+                    break;
+                case dungeon_crawler.core.globals.tileTypes['chest']:
 
-                dungeon_crawler.main.macGuffinText();
+                    //todo: pause game on chest
+                    nextTileType = dungeon_crawler.main.selectLoot()
+
+                    switch (nextTileType) {
+                        case dungeon_crawler.core.globals.tileTypes['potion']:
+                            //todo: pause game on potion
+
+                            //health, strength or armour effects
+                            let potionType = dungeon_crawler.main.selectPotionType();
+                            let potionSize = dungeon_crawler.main.selectPotionSize();
+                            let potionDuration = dungeon_crawler.main.selectPotionDuration();
+
+                            dungeon_crawler.main.usePotion(potionType, potionSize, potionDuration);
+                            dungeon_crawler.main.usePotionText(potionType, potionSize, potionDuration);
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['protection']:
+                            //todo: pause game on protection
+
+
+                            break;
+                    }
+
+                    break;
             }
 
             selectedTile.Type = nextTileType;
@@ -119,7 +147,7 @@
                     dungeon_crawler.main.exitWithMacGuffinText();
                     return;
                 }
-            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {                
+            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
                 let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
 
                 dungeon_crawler.main.generateLevel(previouslevel);
@@ -141,7 +169,7 @@
 
             dungeon_crawler.main.generateLevel(nextlevel);
             dungeon_crawler.main.stairsDownText(nextlevel);
-        } 
+        }
 
         dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
         dungeon_crawler.main.setStage();
@@ -245,10 +273,9 @@
         return dungeon_crawler.main.roleDangerDie();
     },
 
-    //Loot select
-    //  1 - 3:  Chest
-    //  4 - 5:  Potion
-    //  6:      Protection
+    //Loot
+    //  1 - 3:  Potion
+    //  4 - 6:  Protection
     selectLoot() {
         let value = dungeon_crawler.main.roleSafeDie();
 
@@ -256,10 +283,10 @@
             case 1:
             case 2:
             case 3:
-                return dungeon_crawler.core.globals.tileTypes['chest'];
+                return dungeon_crawler.core.globals.tileTypes['potion'];
+                break;
             case 4:
             case 5:
-                return dungeon_crawler.core.globals.tileTypes['potion'];
             case 6:
                 return dungeon_crawler.core.globals.tileTypes['protection'];
                 break;
@@ -267,6 +294,134 @@
 
         dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    //  Potion
+    //  1 - 2:  Sheild (Protection)
+    //  3 - 4:  Strength
+    //  5 - 6:  Aura (Health)
+    selectPotionType() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+            case 2:
+                return dungeon_crawler.core.globals.potionType['sheild'];
+                break;
+            case 3:
+            case 4:
+                return dungeon_crawler.core.globals.potionType['strength'];
+                break;
+            case 5:
+            case 6:
+                return dungeon_crawler.core.globals.potionType['aura'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected potion table role "${value}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    selectPotionSize() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+            case 2:
+                return dungeon_crawler.core.globals.potionSize['vial'];
+                break;
+            case 3:
+            case 4:
+                return dungeon_crawler.core.globals.potionSize['flask'];
+                break;
+            case 5:
+            case 6:
+                return dungeon_crawler.core.globals.potionSize['bottle'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    selectPotionDuration() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+            case 2:
+                return dungeon_crawler.core.globals.potionDuration['short'];
+                break;
+            case 3:
+            case 4:
+                return dungeon_crawler.core.globals.potionDuration['medium'];
+                break;
+            case 5:
+            case 6:
+                return dungeon_crawler.core.globals.potionDuration['long'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
+        return dungeon_crawler.core.globals.tileTypes['unknown'];
+    },
+
+    usePotion(potionType, potionSize, potionDuration) {
+        let sizeValue = 0;
+        switch (potionSize) {
+            case dungeon_crawler.core.globals.potionSize['vial']:
+                sizeValue = 6;
+                break;
+            case dungeon_crawler.core.globals.potionSize['flask']:
+                sizeValue = 12;
+                break;
+            case dungeon_crawler.core.globals.potionSize['bottle']:
+                sizeValue = 18;
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected potion size "${potionSize}"`);
+                sizeValue = 0;
+                break;
+        }
+
+        let durationValue = 0;
+        switch (potionDuration) {
+            case dungeon_crawler.core.globals.potionDuration['short']:
+                durationValue = 10;
+                break;
+            case dungeon_crawler.core.globals.potionDuration['medium']:
+                durationValue = 20;
+                break;
+            case dungeon_crawler.core.globals.potionDuration['long']:
+                durationValue = 30;
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected potion duration "${potionDuration}"`);
+                durationValue = 0;
+                break;
+        }
+
+        switch (potionType) {
+            case dungeon_crawler.core.globals.potionType['aura']:
+                dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
+                dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);
+                dungeon_crawler.main.updateAdventurerHealth();
+                break;
+            case dungeon_crawler.core.globals.potionType['strength']:
+                dungeon_crawler.core.globals.adventurer.setStrengthPotion(sizeValue);
+                dungeon_crawler.core.globals.adventurer.setStrengthPotionDuration(durationValue);
+                dungeon_crawler.main.updateAdventurerStrength();
+                break;
+            case dungeon_crawler.core.globals.potionType['sheild']:
+                dungeon_crawler.core.globals.adventurer.setArmourPotion(sizeValue);
+                dungeon_crawler.core.globals.adventurer.setArmourPotionDuration(durationValue);
+                dungeon_crawler.main.updateAdventurerArmour();
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected potion type "${potionType}"`);
+                durationValue = 0;
+                break;
+        }
     },
 
     //Dice
@@ -431,17 +586,17 @@
     },
 
     updateAdventurerHealth() {
-        let health = dungeon_crawler.core.globals.adventurer.getHealth();
+        let health = dungeon_crawler.core.globals.adventurer.getHealthDescription();
         $('#current-health').html(health);
     },
 
-    updateAdventurerStrength(value) {
-        let strength = dungeon_crawler.core.globals.adventurer.getStrength();
+    updateAdventurerStrength() {
+        let strength = dungeon_crawler.core.globals.adventurer.getStrengthDescription();
         $('#current-strength').html(strength);
     },
 
-    updateAdventurerArmour(value) {
-        let armour = dungeon_crawler.core.globals.adventurer.getArmour();
+    updateAdventurerArmour() {
+        let armour = dungeon_crawler.core.globals.adventurer.getArmourDescription();
         $('#current-armour').html(armour);
     },
 
@@ -502,6 +657,11 @@
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, strength, armour));
     },
 
+    //          Potion
+    usePotionText(potionType, potionSize, potionDuration) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateUsePotionText(potionType, potionSize, potionDuration));
+    },
+        
     //      Stairs down
     stairsDownText(level) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsDownText(level));
