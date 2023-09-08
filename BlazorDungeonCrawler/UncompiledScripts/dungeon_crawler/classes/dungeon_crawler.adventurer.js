@@ -30,11 +30,26 @@
         return this.AuraPotionDuration += value;
     }
 
+    decrementAuraPotionDuration() {
+        if (this.AuraPotionDuration > 0) {
+            this.AuraPotionDuration -= 1;
+
+            if (this.AuraPotionDuration <= 0) {
+                this.AuraPotionDuration = 0;
+                this.AuraPotion = 0;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     getHealthDescription() {
         let message = `${this.getHealth()}`;
 
         if (this.AuraPotion > 0) {
-            message += ` (${this.HealthBase} + ${this.AuraPotion})`;
+            message += ` (${this.HealthBase} + ${this.AuraPotion}) ${this.AuraPotionDuration}`;
         }
 
         return message;
@@ -53,11 +68,26 @@
         return this.StrengthPotionDuration += value;
     }
 
+    decrementStrengthPotionDuration() {
+        if (this.StrengthPotionDuration > 0) {
+            this.StrengthPotionDuration -= 1;
+
+            if (this.StrengthPotionDuration <= 0) {
+                this.StrengthPotionDuration = 0;
+                this.StrengthPotion = 0;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     getStrengthDescription() {
         let message = `${this.getStrength()}`;
 
         if (this.StrengthPotion > 0) {
-            message += ` (${this.StrengthBase} + ${this.StrengthPotion})`;
+            message += ` (${this.StrengthBase} + ${this.StrengthPotion}) ${this.StrengthPotionDuration}`;
         }
 
         return message;
@@ -76,11 +106,26 @@
         return this.ArmourPotionDuration += value;
     }
 
+    decrementArmourPotionDuration() {
+        if (this.ArmourPotionDuration > 0) {
+            this.ArmourPotionDuration -= 1;
+
+            if (this.ArmourPotionDuration <= 0) {
+                this.ArmourPotionDuration = 0;
+                this.ArmourPotion = 0;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     getArmourDescription() {
         let message = `${this.getArmour()}`;
 
         if (this.ArmourPotion > 0) {
-            message += ` (${this.ArmourBase} + ${this.ArmourPotion})`;
+            message += ` (${this.ArmourBase} + ${this.ArmourPotion}) ${this.ArmourPotionDuration}`;
         }
 
         return message;

@@ -83,7 +83,19 @@
     },
 
     movement(selectedTile) {
-        //todo: decrement andy potion effect counters
+        //Potion effect
+        //  Both attempt to decorment and retun true if it was needed
+        if (dungeon_crawler.core.globals.adventurer.decrementAuraPotionDuration()) {
+            dungeon_crawler.main.updateAdventurerHealth();
+        }
+
+        if (dungeon_crawler.core.globals.adventurer.decrementStrengthPotionDuration()) {
+            dungeon_crawler.main.updateAdventurerStrength();
+        }
+
+        if (dungeon_crawler.core.globals.adventurer.decrementArmourPotionDuration()) {
+            dungeon_crawler.main.updateAdventurerArmour();
+        }
 
         dungeon_crawler.core.globals.InCombat = false;
 
@@ -661,7 +673,7 @@
     usePotionText(potionType, potionSize, potionDuration) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateUsePotionText(potionType, potionSize, potionDuration));
     },
-        
+
     //      Stairs down
     stairsDownText(level) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsDownText(level));
