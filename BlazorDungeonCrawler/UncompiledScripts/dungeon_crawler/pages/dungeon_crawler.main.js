@@ -74,6 +74,10 @@
 
             if (selectedTile.Selectable) {
                 dungeon_crawler.main.movement(selectedTile);
+
+                if (dungeon_crawler.core.globals.InCombat) {
+                    dungeon_crawler.main.combat();
+                }
             }
         }
     },
@@ -99,6 +103,12 @@
             let nextTileType = dungeon_crawler.core.globals.currentLevel.tiles.getNextTileType();
 
             if (nextTileType == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
+                let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
+
+                dungeon_crawler.main.generateLevel(nextlevel);
+                dungeon_crawler.main.stairsDownText(nextlevel);
+
+                dungeon_crawler.core.globals.onStairs = false;
                 dungeon_crawler.core.globals.currentLevel.stairsDeployed = true;
             } else if (nextTileType == dungeon_crawler.core.globals.tileTypes['macguffin']) {
                 dungeon_crawler.core.globals.macguffinFound = true;
@@ -111,12 +121,18 @@
             //reentering a tile
             if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
                 if (!dungeon_crawler.core.globals.macguffinFound) {
-                    dungeon_crawler.main.exitWithoutMacGuffinText()
+                    dungeon_crawler.main.exitWithoutMacGuffinText();
                 } else if (dungeon_crawler.core.globals.macguffinFound) {
-                    dungeon_crawler.main.exitWithMacGuffinText()
+                    dungeon_crawler.main.endGamge();
+                    dungeon_crawler.main.exitWithMacGuffinText();
                 }
-            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['macguffin']) {
-                dungeon_crawler.main.macGuffinText(level);
+            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
+                let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
+
+                dungeon_crawler.main.generateLevel(previouslevel);
+                dungeon_crawler.main.stairsUpText(previouslevel);
+
+                dungeon_crawler.core.globals.onStairs = false;
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
                 let repeatTile = dungeon_crawler.core.globals.currentLevel.tiles.getRepeatTileType();
@@ -134,100 +150,85 @@
         dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
 
         dungeon_crawler.main.bindEvents();
+    },
 
-        //todo: merge this with above new tile function
-        if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
-            let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
+    combat() {
+        let monsterDifficulty = dungeon_crawler.main.selectMonsterDifficulty();
 
-            dungeon_crawler.main.generateLevel(nextlevel);
-            dungeon_crawler.main.stairsDownText(nextlevel);
+        let enemy = dungeon_crawler.core.globals.currentLevel.getEnemy();
 
-            dungeon_crawler.core.globals.onStairs = false;
-        } else if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
-            let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
+        //todo: use monster difficulty role to generate monsters
+        let currentEnemy = new Enemy();
+        currentEnemy.generateEnemy(enemy.type, enemy.healthDice, enemy.strengthDice, enemy.armourDice);
 
-            dungeon_crawler.main.generateLevel(previouslevel);
-            dungeon_crawler.main.stairsUpText(previouslevel);
+        dungeon_crawler.main.resetDiceValues();
+        let adventurerScore = dungeon_crawler.main.roleSafeDie();
+        let monsterScore = dungeon_crawler.main.roleDangerDie();
 
-            dungeon_crawler.core.globals.onStairs = false;
-        } else if (dungeon_crawler.core.globals.InCombat) {
-            let monsterDifficulty = dungeon_crawler.main.selectMonsterDifficulty();
+        //If Adventurer wins the roll they starts combat
+        let adventurerInitiatesCombat = false;
+        if (adventurerScore > monsterScore) {
+            adventurerInitiatesCombat = true;
+        }
 
-            let enemy = dungeon_crawler.core.globals.currentLevel.getEnemy();
+        let enemyType = currentEnemy.getType();
 
-            //todo: use monster difficulty role to generate monsters
-            let currentEnemy = new Enemy();
-            currentEnemy.generateEnemy(enemy.type, enemy.healthDice, enemy.strengthDice, enemy.armourDice);
+        dungeon_crawler.main.monsterEncounterText(adventurerInitiatesCombat, enemyType, currentEnemy.getHealth(), currentEnemy.getStrength(), currentEnemy.getArmour());
 
+        let adventurerStrength = dungeon_crawler.core.globals.adventurer.getStrength();
+        let adventurerArmour = dungeon_crawler.core.globals.adventurer.getArmour();
+
+        let enemyStrength = currentEnemy.getStrength();
+        let enemyArmour = currentEnemy.getArmour();
+
+        let adventurerRoll, enemyRoll, attackValue, avoidValue, wounds;
+        do {
+            //Adventurer fight
             dungeon_crawler.main.resetDiceValues();
-            let adventurerScore = dungeon_crawler.main.roleSafeDie();
-            let monsterScore = dungeon_crawler.main.roleDangerDie();
+            wounds = null;
+            if (adventurerInitiatesCombat) {
+                adventurerRoll = dungeon_crawler.main.roleSafeDie();
+                attackValue = adventurerRoll + adventurerStrength;
 
-            //If Adventurer wins the roll they starts combat
-            let adventurerInitiatesCombat = false;
-            if (adventurerScore > monsterScore) {
-                adventurerInitiatesCombat = true;
-            }
+                enemyRoll = dungeon_crawler.main.roleDangerDie();
+                avoidValue = enemyRoll + enemyArmour;
 
-            let enemyType = currentEnemy.getType();
-
-            dungeon_crawler.main.monsterEncounterText(adventurerInitiatesCombat, enemyType, currentEnemy.getHealth(), currentEnemy.getStrength(), currentEnemy.getArmour());
-
-            let adventurerStrength = dungeon_crawler.core.globals.adventurer.getStrength();
-            let adventurerArmour = dungeon_crawler.core.globals.adventurer.getArmour();
-
-            let enemyStrength = currentEnemy.getStrength();
-            let enemyArmour = currentEnemy.getArmour();
-
-            let adventurerRoll, enemyRoll, attackValue, avoidValue, wounds;
-            do {
-                //Adventurer fight
-                dungeon_crawler.main.resetDiceValues();
-                wounds = null;
-                if (adventurerInitiatesCombat) {
-                    adventurerRoll = dungeon_crawler.main.roleSafeDie();
-                    attackValue = adventurerRoll + adventurerStrength;
-
-                    enemyRoll = dungeon_crawler.main.roleDangerDie();
-                    avoidValue = enemyRoll + enemyArmour;
-
-                    if (attackValue > avoidValue) {
-                        wounds = attackValue - avoidValue;
-                        currentEnemy.reciveWounds(wounds);
-                    }
-
-                    dungeon_crawler.main.adventurerAttackText(enemyType, adventurerRoll, adventurerStrength, attackValue, enemyRoll, enemyArmour, avoidValue, wounds);
+                if (attackValue > avoidValue) {
+                    wounds = attackValue - avoidValue;
+                    currentEnemy.reciveWounds(wounds);
                 }
 
-                //Monster fight
-                dungeon_crawler.main.resetDiceValues();
-                wounds = null;
-                if (currentEnemy.isAlive()) {
-                    enemyRoll = dungeon_crawler.main.roleDangerDie();
-                    attackValue = enemyRoll + enemyStrength;
+                dungeon_crawler.main.adventurerAttackText(enemyType, adventurerRoll, adventurerStrength, attackValue, enemyRoll, enemyArmour, avoidValue, wounds);
+            }
 
-                    adventurerRoll = dungeon_crawler.main.roleSafeDie();
-                    avoidValue = adventurerRoll + adventurerArmour;
+            //Monster fight
+            dungeon_crawler.main.resetDiceValues();
+            wounds = null;
+            if (currentEnemy.isAlive()) {
+                enemyRoll = dungeon_crawler.main.roleDangerDie();
+                attackValue = enemyRoll + enemyStrength;
 
-                    if (attackValue > avoidValue) {
-                        wounds = attackValue - avoidValue;
-                        dungeon_crawler.core.globals.adventurer.reciveWounds(wounds);
-                        dungeon_crawler.main.updateAdventurerHealth();
-                    }
+                adventurerRoll = dungeon_crawler.main.roleSafeDie();
+                avoidValue = adventurerRoll + adventurerArmour;
 
-                    dungeon_crawler.main.enemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerArmour, avoidValue, wounds);
+                if (attackValue > avoidValue) {
+                    wounds = attackValue - avoidValue;
+                    dungeon_crawler.core.globals.adventurer.reciveWounds(wounds);
+                    dungeon_crawler.main.updateAdventurerHealth();
                 }
 
-                adventurerInitiatesCombat = true;
-
-            } while (dungeon_crawler.core.globals.adventurer.isAlive() && currentEnemy.isAlive());
-
-            if (dungeon_crawler.core.globals.adventurer.isAlive()) {
-                dungeon_crawler.main.enemyDeathText(enemyType);
-            } else {
-                dungeon_crawler.main.adventurerDeathText(enemyType);
-                dungeon_crawler.main.endGamge();
+                dungeon_crawler.main.enemyAttackText(enemyType, enemyRoll, enemyStrength, attackValue, adventurerRoll, adventurerArmour, avoidValue, wounds);
             }
+
+            adventurerInitiatesCombat = true;
+
+        } while (dungeon_crawler.core.globals.adventurer.isAlive() && currentEnemy.isAlive());
+
+        if (dungeon_crawler.core.globals.adventurer.isAlive()) {
+            dungeon_crawler.main.enemyDeathText(enemyType);
+        } else {
+            dungeon_crawler.main.adventurerDeathText(enemyType);
+            dungeon_crawler.main.endGamge();
         }
     },
 
@@ -338,7 +339,7 @@
                 hexRow += 1;
             }
 
-            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop))
+            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop));
         }
     },
 
