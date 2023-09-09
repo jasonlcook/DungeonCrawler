@@ -2,6 +2,26 @@
     weaponType: dungeon_crawler.core.createEnum(['unknown', 'rock', 'club', 'dagger', 'mace', 'axe', 'sword']),
     weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'enchanted', 'flaming']),
 
+    getWeapon() {
+        let weponType = dungeon_crawler.weapon.selectWeaponType();
+        let weponCondition = null;
+        if (weponType !== dungeon_crawler.weapon.weaponType['rock'] && weponType !== dungeon_crawler.weapon.weaponType['club']) {
+            weponCondition = dungeon_crawler.weapon.selectWeaponCondition();
+        }
+
+        let weaponValue = dungeon_crawler.weapon.getWeaponValue(weponType, weponCondition);
+        let currentWeaponValue = dungeon_crawler.core.globals.adventurer.getWeapon();
+
+        if (weaponValue > currentWeaponValue) {
+            dungeon_crawler.core.globals.adventurer.setWeapon(weaponValue);
+            dungeon_crawler.main.setWeaponUseText(weponType, weponCondition, weaponValue);
+
+            dungeon_crawler.main.updateAdventurerDamage();
+        } else {
+            dungeon_crawler.main.setWeaponDiscardText(weponType, weponCondition, weaponValue);
+        }
+    },
+
     //Dice role
     //  Type
     //      1:      Rock

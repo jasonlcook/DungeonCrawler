@@ -3,6 +3,15 @@
     potionSize: dungeon_crawler.core.createEnum(['unknown', 'vial', 'flask', 'bottle']),
     potionDuration: dungeon_crawler.core.createEnum(['unknown', 'short', 'medium', 'long']),
 
+    getPotion() {
+        let potionType = dungeon_crawler.potion.selectPotionType();
+        let potionSize = dungeon_crawler.potion.selectPotionSize();
+        let potionDuration = dungeon_crawler.potion.selectPotionDuration();
+
+        dungeon_crawler.potion.usePotion(potionType, potionSize, potionDuration);
+        dungeon_crawler.main.usePotionText(potionType, potionSize, potionDuration);
+    },
+
     //Dice role
     //  Type
     //      1 - 2:  Sheild (Protection)

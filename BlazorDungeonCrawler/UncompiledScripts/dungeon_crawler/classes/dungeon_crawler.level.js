@@ -10,7 +10,7 @@
 
         this.enemies;
 
-        this.stairsDeployed;
+        this.endLevelTileDeployed;
     }
 
     loadLevel(value) {
@@ -51,7 +51,7 @@
 
         this.availableEnemies = dungeon_crawler.core.enemies.getAvailableEnemies(this.level);
 
-        this.stairsDeployed = false;
+        this.endLevelTileDeployed = false;
     }
 
     setSpawn(level) {

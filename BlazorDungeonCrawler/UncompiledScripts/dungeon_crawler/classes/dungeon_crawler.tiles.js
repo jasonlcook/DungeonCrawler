@@ -11,6 +11,7 @@
         return this.tiles.length;
     }
 
+    //element accessors 
     add(tile) {
         this.tiles.push(tile);
     }
@@ -34,39 +35,152 @@
         }
     }
 
-    //Tile select
-    //  1 - 3:  Monster
-    //  4, 5:   Empty
-    //  6:      Chest
-    getNextTileType() {
-        this.explored += 1;
+    movement(selectedTile) {
+        //Potion effect
+        //  Both attempt to decorment and retun true if it was needed
+        if (dungeon_crawler.core.globals.adventurer.decrementAuraPotionDuration()) {
+            dungeon_crawler.main.updateAdventurerHealth();
+        }
 
-        if (!dungeon_crawler.core.globals.currentLevel.stairsDeployed) {
-            let quadsExplored = Math.floor(this.tiles.length / 4);
+        if (dungeon_crawler.core.globals.adventurer.decrementDamagePotionDuration()) {
+            dungeon_crawler.main.updateAdventurerDamage();
+        }
 
-            if (this.explored > quadsExplored) {
-                // 50/50 change of stairs being deplyed or if over 3/4 exposed then just show the damn stairs
-                if ((Math.floor(Math.random() * 2) == 0) || this.explored > quadsExplored * 3) {
-                    if (dungeon_crawler.core.globals.currentLevel.level < dungeon_crawler.core.globals.lastLevel) {                        
-                        return dungeon_crawler.core.globals.tileTypes['stairs_descending'];
-                    } else {
+        if (dungeon_crawler.core.globals.adventurer.decrementShieldPotionDuration()) {
+            dungeon_crawler.main.updateAdventurerProtection();
+        }
 
-                        return dungeon_crawler.core.globals.tileTypes['macguffin'];
-                    }                    
+        dungeon_crawler.core.globals.InCombat = false;
+
+        dungeon_crawler.main.resetDiceValues();
+
+        //deselect previous tile
+        let previousIndex = this.currentIndex;
+        let previousTile = this.get(previousIndex);
+        previousTile.Current = false;
+
+        this.currentIndex = selectedTile.Index;
+        selectedTile.Current = true;
+        selectedTile.Hidden = false;
+
+        let selectedTileType = selectedTile.Type;
+
+        if (selectedTileType == dungeon_crawler.core.globals.tileTypes['unknown']) {
+
+            this.explored += 1;
+
+            let nextTileType = this.checkEndLevelTileDeployed();
+            if (nextTileType == null) {
+                nextTileType = this.selectTileType();
+            }
+
+            switch (nextTileType) {
+                case dungeon_crawler.core.globals.tileTypes['macguffin']:
+                    dungeon_crawler.core.globals.macguffinFound = true;
+                    dungeon_crawler.main.macGuffinText();
+                    break;
+                case dungeon_crawler.core.globals.tileTypes['chest']:
+
+                    //todo: pause game on chest
+                    nextTileType = dungeon_crawler.main.selectLoot()
+
+                    switch (nextTileType) {
+                        case dungeon_crawler.core.globals.tileTypes['potion']:
+                            //todo: pause game on potion
+                            dungeon_crawler.potion.getPotion();
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['protection']:
+                            //todo: pause game on protection
+                            dungeon_crawler.armour.getArmour();
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['weapon']:
+                            //todo: pause game on protection
+                            dungeon_crawler.weapon.getWeapon();
+                            break;
+                    }
+
+                    break;
+            }
+
+            selectedTile.Type = nextTileType;
+        } else {
+            //reentering a tile
+            if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
+                if (!dungeon_crawler.core.globals.macguffinFound) {
+                    dungeon_crawler.main.exitWithoutMacGuffinText();
+                } else {
+                    dungeon_crawler.main.endGamge();
+                    dungeon_crawler.main.exitWithMacGuffinText();
+                    return;
+                }
+            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
+                let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
+
+                dungeon_crawler.main.generateLevel(previouslevel);
+                dungeon_crawler.main.stairsUpText(previouslevel);
+            } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
+                //if tile has already been placed roll for monster encounter
+                let repeatTile = this.getRepeatTileType();
+
+                if (repeatTile != null) {
+                    selectedTile.Type = repeatTile;
                 }
             }
         }
 
-        //roll to see if tile populated
+        if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
+            dungeon_crawler.core.globals.currentLevel.stairsDeployed = true;
+
+            let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
+
+            dungeon_crawler.main.generateLevel(nextlevel);
+            dungeon_crawler.main.stairsDownText(nextlevel);
+        }
+
+        this.setSelectables();
+        dungeon_crawler.main.setStage();
+
+        dungeon_crawler.core.globals.eventBindings.unbindEvents();
+        dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
+
+        dungeon_crawler.main.bindEvents();
+    }
+
+    checkEndLevelTileDeployed() {
+        if (!dungeon_crawler.core.globals.currentLevel.endLevelTileDeployed) {
+            let quadsExplored = Math.floor(this.tiles.length / 4);
+
+            if (this.explored > quadsExplored) {
+                // 50/50 change of stairs being deplyed or if last tile then deply it
+                if ((Math.floor(Math.random() * 2) == 0) || this.explored >= this.tiles.length) {
+                    dungeon_crawler.core.globals.currentLevel.endLevelTileDeployed = true;
+
+                    if (dungeon_crawler.core.globals.currentLevel.level < dungeon_crawler.core.globals.lastLevel) {
+                        return dungeon_crawler.core.globals.tileTypes['stairs_descending'];
+                    } else {
+                        return dungeon_crawler.core.globals.tileTypes['macguffin'];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //Dice role
+    //  1 - 2:  Monster
+    //  2 - 5:  Empty
+    //  6:      Chest
+    selectTileType() {
         let value = dungeon_crawler.main.roleSafeDie();
 
         switch (value) {
             case 1:
             case 2:
-            case 3:
                 dungeon_crawler.core.globals.InCombat = true;
                 return dungeon_crawler.core.globals.tileTypes['fight'];
                 break;
+            case 3:
             case 4:
             case 5:
                 return dungeon_crawler.core.globals.tileTypes['empty'];
@@ -80,7 +194,6 @@
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     }
 
-    //Tile select
     //  1, 2:   Monster
     //  3, 6:   No change
     getRepeatTileType() {
