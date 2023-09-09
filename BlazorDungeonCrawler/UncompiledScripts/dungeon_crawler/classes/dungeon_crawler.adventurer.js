@@ -1,33 +1,33 @@
 ﻿class Adventurer {
     constructor(health, damage, protection) {
-        this.HealthBase = health;
-        this.HealthInitial = health;
-        this.AuraPotion = 0;
-        this.AuraPotionDuration = 0;
+        this._healthBase = health;
+        this._healthInitial = health;
+        this._auraPotion = 0;
+        this._auraPotionDuration = 0;
 
-        this.DamageBase = damage;
-        this.DamagePotion = 0;
-        this.DamagePotionDuration = 0;
+        this._damageBase = damage;
+        this._damagePotion = 0;
+        this._damagePotionDuration = 0;
 
-        this.ProtectionBase = protection;
-        this.ShieldPotion = 0;
-        this.ShieldPotionDuration = 0;
+        this._protectionBase = protection;
+        this._shieldPotion = 0;
+        this._shieldPotionDuration = 0;
 
-        this.Weapon = 0;
+        this._weapon = 0;
 
-        this.ArmourHelmet = 0;
-        this.ArmourBreastplate = 0;
-        this.ArmourVambrace = 0;
-        this.ArmourGauntlet = 0;
-        this.ArmourGreave = 0;
-        this.ArmourBoots = 0;
+        this._armourHelmet = 0;
+        this._armourBreastplate = 0;
+        this._armourVambrace = 0;
+        this._armourGauntlet = 0;
+        this._armourGreave = 0;
+        this._armourBoots = 0;
 
-        this.IsAlive = true;
+        this._isAlive = true;
     }
 
     //Health
     getHealth() {
-        return this.HealthBase + this.AuraPotion;
+        return this._healthBase + this._auraPotion;
     }
 
     //if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
@@ -35,37 +35,37 @@
         let regainedHealth = 0;
 
         //check if damage has been taken
-        if (this.HealthBase < this.HealthInitial) {
-            let damageTaken = this.HealthInitial - this.HealthBase;
+        if (this._healthBase < this._healthInitial) {
+            let damageTaken = this._healthInitial - this._healthBase;
 
             if (damageTaken >= potionValue) {
                 //if damage taken is more (than the potion value) add potion value to the current health
-                this.HealthBase += potionValue;
+                this._healthBase += potionValue;
                 regainedHealth = potionValue;
             } else {
                 //if damage taken is less (than the potion value) heal the damage and use the remaining points as Aura
-                this.AuraPotion += potionValue - damageTaken;
-                this.HealthBase = this.HealthInitial;
+                this._auraPotion += potionValue - damageTaken;
+                this._healthBase = this._healthInitial;
                 regainedHealth = damageTaken;
             }
         } else {
-            this.AuraPotion += potionValue;
+            this._auraPotion += potionValue;
         }
 
         return regainedHealth;
     }
 
     setAuraPotionDuration(value) {
-        return this.AuraPotionDuration += value;
+        return this._auraPotionDuration += value;
     }
 
     decrementAuraPotionDuration() {
-        if (this.AuraPotionDuration > 0) {
-            this.AuraPotionDuration -= 1;
+        if (this._auraPotionDuration > 0) {
+            this._auraPotionDuration -= 1;
 
-            if (this.AuraPotionDuration <= 0) {
-                this.AuraPotionDuration = 0;
-                this.AuraPotion = 0;
+            if (this._auraPotionDuration <= 0) {
+                this._auraPotionDuration = 0;
+                this._auraPotion = 0;
             }
 
             return true;
@@ -77,8 +77,8 @@
     getHealthDescription() {
         let message = `${this.getHealth()}`;
 
-        if (this.AuraPotion > 0) {
-            message += ` (${this.HealthBase} + ${this.AuraPotion}) ${this.AuraPotionDuration}`;
+        if (this._auraPotion > 0) {
+            message += ` (${this._healthBase} + ${this._auraPotion}) ${this._auraPotionDuration}`;
         }
 
         return message;
@@ -86,34 +86,34 @@
 
     //Damage
     getDamage() {
-        return this.DamageBase + this.Weapon + this.DamagePotion;
+        return this._damageBase + this._weapon + this._damagePotion;
     }
 
     //  Weapon
     getWeapon() {
-        return this.Weapon;
+        return this._weapon;
     }
 
     setWeapon(value) {
-        this.Weapon = value;
+        this._weapon = value;
     }
 
     //  Potion
     setDamagePotion(value) {
-        return this.DamagePotion += value;
+        return this._damagePotion += value;
     }
 
     setDamagePotionDuration(value) {
-        return this.DamagePotionDuration += value;
+        return this._damagePotionDuration += value;
     }
 
     decrementDamagePotionDuration() {
-        if (this.DamagePotionDuration > 0) {
-            this.DamagePotionDuration -= 1;
+        if (this._damagePotionDuration > 0) {
+            this._damagePotionDuration -= 1;
 
-            if (this.DamagePotionDuration <= 0) {
-                this.DamagePotionDuration = 0;
-                this.DamagePotion = 0;
+            if (this._damagePotionDuration <= 0) {
+                this._damagePotionDuration = 0;
+                this._damagePotion = 0;
             }
 
             return true;
@@ -125,12 +125,12 @@
     getDamageDescription() {
         let message = `${this.getDamage()}`;
 
-        if (this.Weapon > 0) {
-            message += ` (${this.Weapon})`;
+        if (this._weapon > 0) {
+            message += ` (${this._weapon})`;
         }
 
-        if (this.DamagePotion > 0) {
-            message += ` (${this.DamageBase} + ${this.DamagePotion}) ${this.DamagePotionDuration}`;
+        if (this._damagePotion > 0) {
+            message += ` (${this._damageBase} + ${this._damagePotion}) ${this._damagePotionDuration}`;
         }
 
         return message;
@@ -138,80 +138,80 @@
 
     //Protection
     getProtection() {
-        return this.ProtectionBase + this.ShieldPotion + this.ArmourHelmet + this.ArmourBreastplate + this.ArmourVambrace + this.ArmourGauntlet + this.ArmourGreave + this.ArmourBoots;
+        return this._protectionBase + this._shieldPotion + this._armourHelmet + this._armourBreastplate + this._armourVambrace + this._armourGauntlet + this._armourGreave + this._armourBoots;
     }
 
     //Armour
     //  Helmet
     getArmourHelmet() {
-        return this.ArmourHelmet;
+        return this._armourHelmet;
     }
 
     setArmourHelmet(value) {
-        return this.ArmourHelmet = value;
+        return this._armourHelmet = value;
     }
 
     //  Breastplate
     getArmourBreastplate() {
-        return this.ArmourBreastplate;
+        return this._armourBreastplate;
     }
 
     setArmourBreastplate(value) {
-        return this.ArmourBreastplate = value;
+        return this._armourBreastplate = value;
     }
 
     //  Vambrace
     getArmourVambrace() {
-        return this.ArmourVambrace;
+        return this._armourVambrace;
     }
 
     setArmourVambrace(value) {
-        return this.ArmourVambrace = value;
+        return this._armourVambrace = value;
     }
 
     //  Gauntlet
     getArmourGauntlet() {
-        return this.ArmourGauntlet;
+        return this._armourGauntlet;
     }
 
     setArmourGauntlet(value) {
-        return this.ArmourGauntlet = value;
+        return this._armourGauntlet = value;
     }
 
     //  Greave
     getArmourGreave() {
-        return this.ArmourGreave;
+        return this._armourGreave;
     }
 
     setArmourGreave(value) {
-        return this.ArmourGreave = value;
+        return this._armourGreave = value;
     }
 
     //  Boots
     getArmourBoots() {
-        return this.ArmourBoots;
+        return this._armourBoots;
     }
 
     setArmourBoots(value) {
-        return this.ArmourBoots = value;
+        return this._armourBoots = value;
     }
 
     //Shield potion
     setShieldPotion(value) {
-        return this.ShieldPotion += value;
+        return this._shieldPotion += value;
     }
 
     setShieldPotionDuration(value) {
-        return this.ShieldPotionDuration += value;
+        return this._shieldPotionDuration += value;
     }
 
     decrementShieldPotionDuration() {
-        if (this.ShieldPotionDuration > 0) {
-            this.ShieldPotionDuration -= 1;
+        if (this._shieldPotionDuration > 0) {
+            this._shieldPotionDuration -= 1;
 
-            if (this.ShieldPotionDuration <= 0) {
-                this.ShieldPotionDuration = 0;
-                this.ShieldPotion = 0;
+            if (this._shieldPotionDuration <= 0) {
+                this._shieldPotionDuration = 0;
+                this._shieldPotion = 0;
             }
 
             return true;
@@ -224,36 +224,36 @@
         let message = `${this.getProtection()}`;
 
         let messageArmourAddition = [];
-        if (this.ArmourHelmet > 0) {
-            messageArmourAddition.push(this.ArmourHelmet);
+        if (this._armourHelmet > 0) {
+            messageArmourAddition.push(this._armourHelmet);
         };
 
-        if (this.ArmourBreastplate > 0) {
-            messageArmourAddition.push(this.ArmourBreastplate);
+        if (this._armourBreastplate > 0) {
+            messageArmourAddition.push(this._armourBreastplate);
         };
 
-        if (this.ArmourVambrace > 0) {
-            messageArmourAddition.push(this.ArmourVambrace);
+        if (this._armourVambrace > 0) {
+            messageArmourAddition.push(this._armourVambrace);
         };
 
-        if (this.ArmourGauntlet > 0) {
-            messageArmourAddition.push(this.ArmourGauntlet);
+        if (this._armourGauntlet > 0) {
+            messageArmourAddition.push(this._armourGauntlet);
         };
 
-        if (this.ArmourGreave > 0) {
-            messageArmourAddition.push(this.ArmourGreave);
+        if (this._armourGreave > 0) {
+            messageArmourAddition.push(this._armourGreave);
         };
 
-        if (this.ArmourBoots > 0) {
-            messageArmourAddition.push(this.ArmourBoots);
+        if (this._armourBoots > 0) {
+            messageArmourAddition.push(this._armourBoots);
         };
 
         if (messageArmourAddition.length > 0) {
             message += ` (${messageArmourAddition.join(' + ')})`;
         }
 
-        if (this.ShieldPotion > 0) {
-            message += ` (${this.ProtectionBase} + ${this.ShieldPotion}) ${this.ShieldPotionDuration}`;
+        if (this._shieldPotion > 0) {
+            message += ` (${this._protectionBase} + ${this._shieldPotion}) ${this._shieldPotionDuration}`;
         }
 
         return message;
@@ -261,7 +261,7 @@
 
     //Mortis
     isAlive() {
-        return this.IsAlive;
+        return this._isAlive;
     }
 
     reciveWounds(dammagePoints) {
@@ -271,40 +271,40 @@
         let adventurerDammage = 0;
 
         //take dammage to shield potion
-        if (this.ShieldPotion > 0) {
-            if (dammagePoints < this.ShieldPotion) {
+        if (this._shieldPotion > 0) {
+            if (dammagePoints < this._shieldPotion) {
                 shieldPotionDammage = dammagePoints;
                 remainingDammagePoints = 0;
 
                 //shield potion took all damage points
-                this.ShieldPotion -= dammagePoints;
+                this._shieldPotion -= dammagePoints;
             } else {
 
                 //shield potion took some damage points
-                shieldPotionDammage = this.ShieldPotion;
-                remainingDammagePoints = dammagePoints - this.ShieldPotion;
+                shieldPotionDammage = this._shieldPotion;
+                remainingDammagePoints = dammagePoints - this._shieldPotion;
 
-                this.ShieldPotion = 0;
+                this._shieldPotion = 0;
             }
 
             dammagePoints = remainingDammagePoints;
         }
 
         //take dammage to aura potion
-        if (dammagePoints > 0 && this.AuraPotion > 0) {
-            if (dammagePoints < this.AuraPotion) {
+        if (dammagePoints > 0 && this._auraPotion > 0) {
+            if (dammagePoints < this._auraPotion) {
                 auraPotionDammage = dammagePoints;
                 remainingDammagePoints = 0;
 
                 //aura potion took all damage points
-                this.AuraPotion -= dammagePoints;
+                this._auraPotion -= dammagePoints;
             } else {
 
                 //aura potion took some damage points
-                auraPotionDammage = this.AuraPotion;
-                remainingDammagePoints = dammagePoints - this.AuraPotion;
+                auraPotionDammage = this._auraPotion;
+                remainingDammagePoints = dammagePoints - this._auraPotion;
 
-                this.AuraPotion = 0;
+                this._auraPotion = 0;
             }
 
             dammagePoints = remainingDammagePoints;
@@ -314,13 +314,13 @@
         if (dammagePoints > 0) {
             adventurerDammage = dammagePoints;
 
-            let updatedHealth = this.HealthBase - dammagePoints;
+            let updatedHealth = this._healthBase - dammagePoints;
 
             if (updatedHealth > 0) {
-                this.HealthBase = updatedHealth;
+                this._healthBase = updatedHealth;
             } else {
-                this.HealthBase = 0;
-                this.IsAlive = false;
+                this._healthBase = 0;
+                this._isAlive = false;
             }
         }
 
