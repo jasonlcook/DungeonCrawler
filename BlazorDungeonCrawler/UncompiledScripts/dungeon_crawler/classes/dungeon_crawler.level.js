@@ -137,7 +137,7 @@
 
         spawnTitle.setCurrent(true);
 
-        this._tiles.currentIndex = spawnIndex;
+        this._tiles.setCurrentIndex(spawnIndex) ;
     }
 
     getEnemy() {

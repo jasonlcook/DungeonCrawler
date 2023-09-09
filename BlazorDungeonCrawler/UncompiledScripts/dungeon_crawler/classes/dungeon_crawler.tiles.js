@@ -1,24 +1,22 @@
 ﻿class Tiles {
     constructor() {
-        this.tiles = [];
-
-        this.explored = 0;
-
-        this.currentIndex;
+        this._tiles = [];
+        this._explored = 0;
+        this._currentIndex;
     }
 
     get length() {
-        return this.tiles.length;
+        return this._tiles.length;
     }
 
     //element accessors 
     add(tile) {
-        this.tiles.push(tile);
+        this._tiles.push(tile);
     }
 
     get(index) {
-        if (index < this.tiles.length) {
-            return this.tiles[index];
+        if (index < this._tiles.length) {
+            return this._tiles[index];
         }
 
         dungeon_crawler.core.outputError(`Index "${index}" not found`);
@@ -26,13 +24,21 @@
 
     getById(id) {
         let tile;
-        for (var i = 0; i < this.tiles.length; i++) {
-            tile = this.tiles[i];
+        for (var i = 0; i < this._tiles.length; i++) {
+            tile = this._tiles[i];
 
             if (tile.getId() == id) {
                 return tile;
             }
         }
+    }
+
+    getCurrentIndex() {
+        return this._currentIndex;
+    }
+
+    setCurrentIndex(value) {
+        this._currentIndex = value;
     }
 
     movement(selectedTile) {
@@ -55,11 +61,11 @@
         dungeon_crawler.main.resetDiceValues();
 
         //deselect previous tile
-        let previousIndex = this.currentIndex;
+        let previousIndex = this._currentIndex;
         let previousTile = this.get(previousIndex);
         previousTile.setCurrent(false) ;
 
-        this.currentIndex = selectedTile.getIndex();
+        this._currentIndex = selectedTile.getIndex();
         selectedTile.setCurrent(true);
         selectedTile.setHidden(false)  ;
 
@@ -67,7 +73,7 @@
 
         if (selectedTileType == dungeon_crawler.core.globals.tileTypes['unknown']) {
 
-            this.explored += 1;
+            this._explored += 1;
 
             let nextTileType = this.checkEndLevelTileDeployed();
             if (nextTileType == null) {
@@ -148,11 +154,11 @@
 
     checkEndLevelTileDeployed() {
         if (!dungeon_crawler.core.globals.currentLevel.isEndLevelTileDeployed()) {
-            let quadsExplored = Math.floor(this.tiles.length / 4);
+            let quadsExplored = Math.floor(this._tiles.length / 4);
 
-            if (this.explored > quadsExplored) {
+            if (this._explored > quadsExplored) {
                 // 50/50 change of stairs being deplyed or if last tile then deply it
-                if ((Math.floor(Math.random() * 2) == 0) || this.explored >= this.tiles.length) {
+                if ((Math.floor(Math.random() * 2) == 0) || this._explored >= this._tiles.length) {
                     dungeon_crawler.core.globals.currentLevel.setsEndLevelTileAsDeployed();
 
                     if (dungeon_crawler.core.globals.currentLevel.getLevel() < dungeon_crawler.core.globals.lastLevel) {
@@ -219,14 +225,14 @@
     }
 
     setSelectables() {
-        let current = this.tiles[this.currentIndex];
+        let current = this._tiles[this._currentIndex];
         let currentRow = current.getRow();
         let currentColumn = current.getColumn();
 
         let tile, previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
 
-        for (var i = 0; i < this.tiles.length; i++) {
-            tile = this.tiles[i];
+        for (var i = 0; i < this._tiles.length; i++) {
+            tile = this._tiles[i];
             tile.setSelectable(false) ;
 
             currentTileRow = tile.getRow();
@@ -271,8 +277,8 @@
 
     unsetSelectables() {
         let tile;
-        for (var i = 0; i < this.tiles.length; i++) {
-            tile = this.tiles[i];
+        for (var i = 0; i < this._tiles.length; i++) {
+            tile = this._tiles[i];
             tile.setSelectable(false) ;
         }
     }
