@@ -130,25 +130,25 @@
                         case dungeon_crawler.core.globals.tileTypes['potion']:
                             //todo: pause game on potion
 
-                            let potionType = dungeon_crawler.main.selectPotionType();
-                            let potionSize = dungeon_crawler.main.selectPotionSize();
-                            let potionDuration = dungeon_crawler.main.selectPotionDuration();
+                            let potionType = dungeon_crawler.potion.selectPotionType();
+                            let potionSize = dungeon_crawler.potion.selectPotionSize();
+                            let potionDuration = dungeon_crawler.potion.selectPotionDuration();
 
-                            dungeon_crawler.main.usePotion(potionType, potionSize, potionDuration);
+                            dungeon_crawler.potion.usePotion(potionType, potionSize, potionDuration);
                             dungeon_crawler.main.usePotionText(potionType, potionSize, potionDuration);
                             break;
                         case dungeon_crawler.core.globals.tileTypes['protection']:
                             //todo: pause game on protection
 
-                            let armourType = dungeon_crawler.main.selectArmourType();
-                            let armourCondition = dungeon_crawler.main.selectArmourCondition();
+                            let armourType = dungeon_crawler.armour.selectArmourType();
+                            let armourCondition = dungeon_crawler.armour.selectArmourCondition();
 
-                            let armourValue = dungeon_crawler.main.getArmourValue(armourType, armourCondition);
+                            let armourValue = dungeon_crawler.armour.getArmourValue(armourType, armourCondition);
 
                             let currentArmourValue, keepArmour = false;
 
                             switch (armourType) {
-                                case dungeon_crawler.core.globals.armourType['helmet']:
+                                case dungeon_crawler.armour.armourType['helmet']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourHelmet();
 
                                     if (armourValue > currentArmourValue) {
@@ -157,7 +157,7 @@
                                     }
 
                                     break;
-                                case dungeon_crawler.core.globals.armourType['breastplate']:
+                                case dungeon_crawler.armour.armourType['breastplate']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourBreastplate();
 
                                     if (armourValue > currentArmourValue) {
@@ -166,7 +166,7 @@
                                     }
 
                                     break;
-                                case dungeon_crawler.core.globals.armourType['vambrace']:
+                                case dungeon_crawler.armour.armourType['vambrace']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourVambrace();
 
                                     if (armourValue > currentArmourValue) {
@@ -175,7 +175,7 @@
                                     }
 
                                     break;
-                                case dungeon_crawler.core.globals.armourType['gauntlet']:
+                                case dungeon_crawler.armour.armourType['gauntlet']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourGauntlet();
 
                                     if (armourValue > currentArmourValue) {
@@ -184,7 +184,7 @@
                                     }
 
                                     break;
-                                case dungeon_crawler.core.globals.armourType['greave']:
+                                case dungeon_crawler.armour.armourType['greave']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourGreave();
 
                                     if (armourValue > currentArmourValue) {
@@ -193,7 +193,7 @@
                                     }
 
                                     break;
-                                case dungeon_crawler.core.globals.armourType['boots']:
+                                case dungeon_crawler.armour.armourType['boots']:
                                     currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourBoots();
 
                                     if (armourValue > currentArmourValue) {
@@ -217,13 +217,13 @@
 
                             break;
                         case dungeon_crawler.core.globals.tileTypes['weapon']:
-                            let weponType = dungeon_crawler.main.selectWeponType();                            
+                            let weponType = dungeon_crawler.weapon.selectWeaponType();                            
                             let weponCondition = null;
-                            if (weponType !== dungeon_crawler.core.globals.weaponType['rock'] && weponType !== dungeon_crawler.core.globals.weaponType['club']) {
-                                 weponCondition = dungeon_crawler.main.selectWeponCondition();
+                            if (weponType !== dungeon_crawler.weapon.weaponType['rock'] && weponType !== dungeon_crawler.weapon.weaponType['club']) {
+                                weponCondition = dungeon_crawler.weapon.selectWeaponCondition();
                             }                            
 
-                            let weaponValue = dungeon_crawler.main.getWeaponValue(weponType, weponCondition);
+                            let weaponValue = dungeon_crawler.weapon.getWeaponValue(weponType, weponCondition);
                             let currentWeaponValue = dungeon_crawler.core.globals.adventurer.getWeapon();
 
                             if (weaponValue > currentWeaponValue) {
@@ -412,349 +412,6 @@
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
-    //  Potion
-    //  1 - 2:  Sheild (Protection)
-    //  3 - 4:  Damage
-    //  5 - 6:  Aura (Health)
-    selectPotionType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.core.globals.potionType['sheild'];
-                break;
-            case 3:
-            case 4:
-                return dungeon_crawler.core.globals.potionType['damage'];
-                break;
-            case 5:
-            case 6:
-                return dungeon_crawler.core.globals.potionType['aura'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected potion table role "${value}"`);
-        return dungeon_crawler.core.globals.potionType['unknown'];
-    },
-
-    selectPotionSize() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.core.globals.potionSize['vial'];
-                break;
-            case 3:
-            case 4:
-                return dungeon_crawler.core.globals.potionSize['flask'];
-                break;
-            case 5:
-            case 6:
-                return dungeon_crawler.core.globals.potionSize['bottle'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected potion size role "${value}"`);
-        return dungeon_crawler.core.globals.potionSize['unknown'];
-    },
-
-    selectPotionDuration() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.core.globals.potionDuration['short'];
-                break;
-            case 3:
-            case 4:
-                return dungeon_crawler.core.globals.potionDuration['medium'];
-                break;
-            case 5:
-            case 6:
-                return dungeon_crawler.core.globals.potionDuration['long'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected potion duration role "${value}"`);
-        return dungeon_crawler.core.globals.potionDuration['unknown'];
-    },
-
-    usePotion(potionType, potionSize, potionDuration) {
-        let sizeValue = 0;
-        switch (potionSize) {
-            case dungeon_crawler.core.globals.potionSize['vial']:
-                sizeValue = 6;
-                break;
-            case dungeon_crawler.core.globals.potionSize['flask']:
-                sizeValue = 12;
-                break;
-            case dungeon_crawler.core.globals.potionSize['bottle']:
-                sizeValue = 18;
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected potion size "${potionSize}"`);
-                sizeValue = 0;
-                break;
-        }
-
-        let durationValue = 0;
-        switch (potionDuration) {
-            case dungeon_crawler.core.globals.potionDuration['short']:
-                durationValue = 10;
-                break;
-            case dungeon_crawler.core.globals.potionDuration['medium']:
-                durationValue = 20;
-                break;
-            case dungeon_crawler.core.globals.potionDuration['long']:
-                durationValue = 30;
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected potion duration "${potionDuration}"`);
-                durationValue = 0;
-                break;
-        }
-
-        switch (potionType) {
-            case dungeon_crawler.core.globals.potionType['aura']:
-                let regainedHealth = dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
-                if (regainedHealth > 0) {
-                    dungeon_crawler.main.usePotionHealingText(regainedHealth);
-                }
-
-                dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);
-                dungeon_crawler.main.updateAdventurerHealth();
-                break;
-            case dungeon_crawler.core.globals.potionType['damage']:
-                dungeon_crawler.core.globals.adventurer.setDamagePotion(sizeValue);
-                dungeon_crawler.core.globals.adventurer.setDamagePotionDuration(durationValue);
-                dungeon_crawler.main.updateAdventurerDamage();
-                break;
-            case dungeon_crawler.core.globals.potionType['sheild']:
-                dungeon_crawler.core.globals.adventurer.setShieldPotion(sizeValue);
-                dungeon_crawler.core.globals.adventurer.setShieldPotionDuration(durationValue);
-                dungeon_crawler.main.updateAdventurerProtection();
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected potion type "${potionType}"`);
-                durationValue = 0;
-                break;
-        }
-    },
-
-    selectArmourType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-                return dungeon_crawler.core.globals.armourType['boots'];
-                break;
-            case 2:
-                return dungeon_crawler.core.globals.armourType['greave'];
-                break;
-            case 3:
-                return dungeon_crawler.core.globals.armourType['vambrace'];
-                break;
-            case 4:
-                return dungeon_crawler.core.globals.armourType['gauntlet'];
-                break;
-            case 5:
-                return dungeon_crawler.core.globals.armourType['helmet'];
-                break;
-            case 6:
-                return dungeon_crawler.core.globals.armourType['breastplate'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected armour type role "${value}"`);
-        return dungeon_crawler.core.globals.armourType['unknown'];
-    },
-
-    //todo: Add magical Conditions
-    selectArmourCondition() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.core.globals.armourCondition['rusty'];
-                break;
-            case 3:
-            case 4:
-            case 5:
-                return dungeon_crawler.core.globals.armourCondition['tarnished'];
-                break;
-            case 6:
-                return dungeon_crawler.core.globals.armourCondition['shiny'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected armour condition role "${value}"`);
-        return dungeon_crawler.core.globals.armourCondition['unknown'];
-    },
-
-    getArmourValue(armourType, armourCondition) {
-        let armourTypeValue = 0;
-        switch (armourType) {
-            case dungeon_crawler.core.globals.armourType['helmet']:
-                armourTypeValue = 4;
-                break;
-            case dungeon_crawler.core.globals.armourType['breastplate']:
-                armourTypeValue = 4;
-                break;
-            case dungeon_crawler.core.globals.armourType['vambrace']:
-                armourTypeValue = 2;
-                break;
-            case dungeon_crawler.core.globals.armourType['gauntlet']:
-                armourTypeValue = 3;
-                break;
-            case dungeon_crawler.core.globals.armourType['greave']:
-                armourTypeValue = 1;
-                break;
-            case dungeon_crawler.core.globals.armourType['boots']:
-                armourTypeValue = 1;
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected armour type "${armourType}"`);
-                armourTypeValue = 0;
-                break;
-        }
-
-        let armourConditionvalue = 0;
-        switch (armourCondition) {
-            case dungeon_crawler.core.globals.armourCondition['rusty']:
-                armourConditionvalue = 2;
-                break;
-            case dungeon_crawler.core.globals.armourCondition['tarnished']:
-                armourConditionvalue = 3;
-                break;
-            case dungeon_crawler.core.globals.armourCondition['shiny']:
-                armourConditionvalue = 4;
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected armour condition "${armourCondition}"`);
-                armourConditionvalue = 0;
-                break;
-        }
-
-        return armourTypeValue * armourConditionvalue;
-    },
-
-    selectWeponType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-                return dungeon_crawler.core.globals.weaponType['rock'];
-                break;
-            case 2:
-                return dungeon_crawler.core.globals.weaponType['club'];
-                break;
-            case 3:
-                return dungeon_crawler.core.globals.weaponType['dagger'];
-                break;
-            case 4:
-                return dungeon_crawler.core.globals.weaponType['mace'];
-                break;
-            case 5:
-                return dungeon_crawler.core.globals.weaponType['axe'];
-                break;
-            case 6:
-                return dungeon_crawler.core.globals.weaponType['sword'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected wepon type role "${value}"`);
-        return dungeon_crawler.core.globals.armourType['unknown'];
-    },
-
-    selectWeponCondition() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
-        switch (value) {
-            case 1:
-                return dungeon_crawler.core.globals.weaponCondition['broken'];
-                break;
-            case 2:
-                return dungeon_crawler.core.globals.weaponCondition['rusty'];
-                break;
-            case 3:
-                return dungeon_crawler.core.globals.weaponCondition['chipped'];
-                break;
-            case 4:
-                return dungeon_crawler.core.globals.weaponCondition['sharp'];
-                break;
-            case 5:
-                return dungeon_crawler.core.globals.weaponCondition['enchanted'];
-                break;
-            case 6:
-                return dungeon_crawler.core.globals.weaponCondition['flaming'];
-                break;
-        }
-
-        dungeon_crawler.core.outputError(`Unexpected wepon condition role "${value}"`);
-        return dungeon_crawler.core.globals.armourCondition['unknown'];
-    },
-
-    getWeaponValue(weponType, weponCondition) {
-        let weponTypeValue = 0;
-        switch (weponType) {
-            case dungeon_crawler.core.globals.weaponType['rock']:
-                weponTypeValue = 1;
-                break;
-            case dungeon_crawler.core.globals.weaponType['club']:
-                weponTypeValue = 2;
-                break;
-            case dungeon_crawler.core.globals.weaponType['dagger']:
-                weponTypeValue = 4;
-                break;
-            case dungeon_crawler.core.globals.weaponType['mace']:
-                weponTypeValue = 6;
-                break;
-            case dungeon_crawler.core.globals.weaponType['axe']:
-                weponTypeValue = 8;
-                break;
-            case dungeon_crawler.core.globals.weaponType['sword']:
-                weponTypeValue = 10;
-                break;
-            default:
-                dungeon_crawler.core.outputError(`Unexpected wepon type "${weponType}"`);
-                weponTypeValue = 0;
-                break;
-        }
-
-        let weponConditionValue = 1;
-        if (weponCondition != null) {
-            switch (weponCondition) {
-                case dungeon_crawler.core.globals.weaponCondition['broken']:
-                    weponConditionValue = 1;
-                    break;
-                case dungeon_crawler.core.globals.weaponCondition['rusty']:
-                    weponConditionValue = 2;
-                    break;
-                case dungeon_crawler.core.globals.weaponCondition['chipped']:
-                    weponConditionValue = 4;
-                    break;
-                case dungeon_crawler.core.globals.weaponCondition['sharp']:
-                    weponConditionValue = 6;
-                    break;
-                case dungeon_crawler.core.globals.weaponCondition['enchanted']:
-                    weponConditionValue = 8;
-                    break;
-                case dungeon_crawler.core.globals.weaponCondition['flaming']:
-                    weponConditionValue = 10;
-                    break;
-                default:
-                    dungeon_crawler.core.outputError(`Unexpected wepon condition "${weponCondition}"`);
-                    weponConditionValue = 0;
-                    break;
-            }
-        }        
-
-        return weponTypeValue * weponConditionValue;
-    },
 
     //Dice
     roleSafeDie() {

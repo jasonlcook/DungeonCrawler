@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js" />
+    <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.weapon.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemies.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBinding.js" />
@@ -24,10 +25,15 @@
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.level.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tile.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tiles.js" />
+    <None Remove="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.armour.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.log.js" />
+    <None Remove="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.potion.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.potion.js" />
+    <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.armour.js" />
+    <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.weapon.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.enemies.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js" />
@@ -44,7 +50,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="java -jar &quot;$(ProjectDir)\UncompiledScripts\resources\closure-compiler-v20200719.jar&quot; --compilation_level BUNDLE --warning_level VERBOSE &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.level.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tile.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tiles.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBinding.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBindings.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.core.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.core.globals.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.log.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.enemies.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\pages\dungeon_crawler.main.js&quot; --js_output_file &quot;$(ProjectDir)\wwwroot\scripts\dungeon_crawler.min.js&quot;" />
+    <Exec Command="java -jar &quot;$(ProjectDir)\UncompiledScripts\resources\closure-compiler-v20200719.jar&quot; --compilation_level BUNDLE --warning_level VERBOSE &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.level.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tile.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.tiles.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBinding.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBindings.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.core.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.core.globals.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.armour.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.potion.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.weapon.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.log.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.enemies.js&quot; &quot;$(ProjectDir)\UncompiledScripts\dungeon_crawler\pages\dungeon_crawler.main.js&quot; --js_output_file &quot;$(ProjectDir)\wwwroot\scripts\dungeon_crawler.min.js&quot;" />
   </Target>
 
 </Project>

@@ -4,17 +4,7 @@
     hexWidth: 100,
 
     tileTypes: dungeon_crawler.core.createEnum(['unknown', 'entrance', 'exit', 'stairs_ascending', 'stairs_descending', 'fight', 'chest', 'protection', 'empty', 'potion', 'macguffin']),
-
-    armourType: dungeon_crawler.core.createEnum(['unknown', 'helmet', 'breastplate', 'vambrace', 'gauntlet', 'greave', 'boots']),
-    armourCondition: dungeon_crawler.core.createEnum(['unknown', 'rusty', 'tarnished', 'shiny']),
-
-    weaponType: dungeon_crawler.core.createEnum(['unknown', 'rock', 'club', 'dagger', 'mace', 'axe', 'sword']),
-    weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'enchanted', 'flaming']),
-
-    potionType: dungeon_crawler.core.createEnum(['unknown', 'aura', 'damage', 'sheild']),
-    potionSize: dungeon_crawler.core.createEnum(['unknown', 'vial', 'flask', 'bottle']),
-    potionDuration: dungeon_crawler.core.createEnum(['unknown', 'short', 'medium', 'long']),
-
+    
     //Vars
     stageHeight: null,
     stageWidth: null,
