@@ -29,7 +29,7 @@
         for (var i = 0; i < this.tiles.length; i++) {
             tile = this.tiles[i];
 
-            if (tile.Id == id) {
+            if (tile.getId() == id) {
                 return tile;
             }
         }
@@ -57,13 +57,13 @@
         //deselect previous tile
         let previousIndex = this.currentIndex;
         let previousTile = this.get(previousIndex);
-        previousTile.Current = false;
+        previousTile.setCurrent(false) ;
 
-        this.currentIndex = selectedTile.Index;
-        selectedTile.Current = true;
-        selectedTile.Hidden = false;
+        this.currentIndex = selectedTile.getIndex();
+        selectedTile.setCurrent(true);
+        selectedTile.setHidden(false)  ;
 
-        let selectedTileType = selectedTile.Type;
+        let selectedTileType = selectedTile.getType();
 
         if (selectedTileType == dungeon_crawler.core.globals.tileTypes['unknown']) {
 
@@ -102,7 +102,7 @@
                     break;
             }
 
-            selectedTile.Type = nextTileType;
+            selectedTile.setType(nextTileType) ;
         } else {
             //reentering a tile
             if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
@@ -124,12 +124,12 @@
                 let repeatTile = this.getRepeatTileType();
 
                 if (repeatTile != null) {
-                    selectedTile.Type = repeatTile;
+                    selectedTile.setType(repeatTile);
                 }
             }
         }
 
-        if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
+        if (selectedTile.getType() == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
             
             let nextlevel = dungeon_crawler.core.globals.currentLevel.getNextlevel();
 
@@ -220,20 +220,20 @@
 
     setSelectables() {
         let current = this.tiles[this.currentIndex];
-        let currentRow = current.Row;
-        let currentColumn = current.Column;
+        let currentRow = current.getRow();
+        let currentColumn = current.getColumn();
 
         let tile, previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
 
         for (var i = 0; i < this.tiles.length; i++) {
             tile = this.tiles[i];
-            tile.Selectable = false;
+            tile.setSelectable(false) ;
 
-            currentTileRow = tile.Row;
+            currentTileRow = tile.getRow();
             previousTileRow = currentTileRow - 1;
             nextTileRow = currentTileRow + 1;
 
-            currentTileColumn = tile.Column;
+            currentTileColumn = tile.getColumn();
             previousTileColumn = currentTileColumn - 1;
             nextTileColumn = currentTileColumn + 1;
 
@@ -241,28 +241,28 @@
                 //previous and next column
                 if (previousTileColumn == currentColumn || nextTileColumn == currentColumn) {
                     if (previousTileRow == currentRow || currentTileRow == currentRow) {
-                        tile.Selectable = true;
+                        tile.setSelectable(true);
                     }
                 }
 
                 //curent column
                 if (currentTileColumn == currentColumn) {
                     if (previousTileRow == currentRow || nextTileRow == currentRow) {
-                        tile.Selectable = true;
+                        tile.setSelectable(true);
                     }
                 }
             } else {
                 //previous and next column
                 if (previousTileColumn == currentColumn || nextTileColumn == currentColumn) {
                     if (currentTileRow == currentRow || nextTileRow == currentRow) {
-                        tile.Selectable = true;
+                        tile.setSelectable(true);
                     }
                 }
 
                 //curent column
                 if (currentTileColumn == currentColumn) {
                     if (previousTileRow == currentRow || nextTileRow == currentRow) {
-                        tile.Selectable = true;
+                        tile.setSelectable(true);
                     }
                 }
             }
@@ -273,7 +273,7 @@
         let tile;
         for (var i = 0; i < this.tiles.length; i++) {
             tile = this.tiles[i];
-            tile.Selectable = false;
+            tile.setSelectable(false) ;
         }
     }
 }; 

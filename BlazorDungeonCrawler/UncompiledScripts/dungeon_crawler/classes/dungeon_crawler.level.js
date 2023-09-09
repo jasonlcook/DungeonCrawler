@@ -127,15 +127,15 @@
         let spawnIndex = Math.floor(Math.random() * this._tiles.length);
         let spawnTitle = this._tiles.get(spawnIndex);
 
-        spawnTitle.Hidden = false;
+        spawnTitle.setHidden(false);
 
         if (level > 1) {
-            spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['stairs_ascending'];
+            spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['stairs_ascending']);
         } else {
-            spawnTitle.Type = dungeon_crawler.core.globals.tileTypes['entrance'];
+            spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['entrance']);
         }
 
-        spawnTitle.Current = true;
+        spawnTitle.setCurrent(true);
 
         this._tiles.currentIndex = spawnIndex;
     }

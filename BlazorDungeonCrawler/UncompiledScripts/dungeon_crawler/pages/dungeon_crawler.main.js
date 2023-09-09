@@ -72,7 +72,7 @@
             let id = $(event.target.parentElement).attr('data-identity');
             let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(id);
 
-            if (selectedTile.Selectable) {
+            if (selectedTile.getSelectable()) {
                 dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
 
                 if (dungeon_crawler.core.globals.InCombat) {
@@ -80,7 +80,7 @@
                 }
             }
         }
-    },    
+    },
 
     combat() {
         let monsterDifficulty = dungeon_crawler.main.selectMonsterDifficulty();
@@ -295,61 +295,57 @@
 
             tile = tiles.get(i);
 
-            tileText = `${tile.Row} - ${tile.Column}`;
+            tileText = `${tile.getRow()} - ${tile.getColumn()}`;
 
-            if (!tile.Hidden) {
-                if (typeof tile.Hidden == 'undefined' || tile.Hidden == null) {
-                    tileTypeClass = 'hexagon-tile-unknown';
-                } else {
-                    switch (tile.Type) {
-                        //entrance
-                        case dungeon_crawler.core.globals.tileTypes['entrance']:
-                            tileTypeClass = 'hexagon-tile-entrance';
-                            break;
-                        //exit
-                        case dungeon_crawler.core.globals.tileTypes['exit']:
-                            tileTypeClass = 'hexagon-tile-exit';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['stairs_ascending']:
-                            tileTypeClass = 'hexagon-tile-stairs-ascending';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['stairs_descending']:
-                            tileTypeClass = 'hexagon-tile-stairs-descending';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['fight']:
-                            tileTypeClass = 'hexagon-tile-fight';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['chest']:
-                            tileTypeClass = 'hexagon-tile-chest';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['weapon']:
-                            tileTypeClass = 'hexagon-tile-weapon';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['protection']:
-                            tileTypeClass = 'hexagon-tile-protection';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['empty']:
-                            tileTypeClass = 'hexagon-tile-empty';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['potion']:
-                            tileTypeClass = 'hexagon-tile-potion';
-                            break;
-                        case dungeon_crawler.core.globals.tileTypes['macguffin']:
-                            tileTypeClass = 'hexagon-tile-macguffin';
-                            break;
-                        default:
-                        case dungeon_crawler.core.globals.tileTypes['unknown']:
-                            tileTypeClass = 'hexagon-tile-unknown';
-                            break;
-                    }
+            if (!tile.getHidden()) {
+                switch (tile.getType()) {
+                    //entrance
+                    case dungeon_crawler.core.globals.tileTypes['entrance']:
+                        tileTypeClass = 'hexagon-tile-entrance';
+                        break;
+                    //exit
+                    case dungeon_crawler.core.globals.tileTypes['exit']:
+                        tileTypeClass = 'hexagon-tile-exit';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['stairs_ascending']:
+                        tileTypeClass = 'hexagon-tile-stairs-ascending';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['stairs_descending']:
+                        tileTypeClass = 'hexagon-tile-stairs-descending';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['fight']:
+                        tileTypeClass = 'hexagon-tile-fight';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['chest']:
+                        tileTypeClass = 'hexagon-tile-chest';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['weapon']:
+                        tileTypeClass = 'hexagon-tile-weapon';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['protection']:
+                        tileTypeClass = 'hexagon-tile-protection';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['empty']:
+                        tileTypeClass = 'hexagon-tile-empty';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['potion']:
+                        tileTypeClass = 'hexagon-tile-potion';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['macguffin']:
+                        tileTypeClass = 'hexagon-tile-macguffin';
+                        break;
+                    default:
+                    case dungeon_crawler.core.globals.tileTypes['unknown']:
+                        tileTypeClass = 'hexagon-tile-unknown';
+                        break;
                 }
             }
 
-            if (tile.Selectable) {
+            if (tile.getSelectable()) {
                 tileSelectableClass = 'hexagon-tile-selectable';
             }
 
-            $('#stage').append(`<div data-identity="${tile.Id}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.X}px; top: ${tile.Y}px"><span>${tileText}</span></div>`);
+            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span>${tileText}</span></div>`);
         }
     },
 
