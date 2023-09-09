@@ -1,23 +1,23 @@
 ﻿//todo: rename enemy to monster
 class Enemy {
     constructor() {
-        this.Type;
+        this._type;
 
-        this.Health;
-        this.Damage;
-        this.Protection;
+        this._health;
+        this._damage;
+        this._protection;
 
-        this.IsAlive;
+        this._isAlive;
     }
 
     generateEnemy(type, healthDice, damageDice, protectionDice) {
-        this.Type = type;
+        this._type = type;
 
-        this.Health = this.secretRoll(healthDice);
-        this.Damage = this.secretRoll(damageDice);
-        this.Protection = this.secretRoll(protectionDice);
+        this._health = this.secretRoll(healthDice);
+        this._damage = this.secretRoll(damageDice);
+        this._protection = this.secretRoll(protectionDice);
 
-        this.IsAlive = true;
+        this._isAlive = true;
     }
 
     //this is a secret (DM) roll so no need to show the user
@@ -37,32 +37,32 @@ class Enemy {
     }
 
     getType() {
-        return this.Type;
+        return this._type;
     }
 
     getHealth() {
-        return this.Health;
+        return this._health;
     }
 
     getDamage() {
-        return this.Damage;
+        return this._damage;
     }
 
     getProtection() {
-        return this.Protection;
+        return this._protection;
     }
 
     isAlive() {
-        return this.IsAlive;
+        return this._isAlive;
     }
 
     reciveWounds(value) {
-        let currentHealth = this.Health - value;
+        let currentHealth = this._health - value;
         if (currentHealth > 0) {
-            this.Health = currentHealth;
+            this._health = currentHealth;
         } else {
-            this.Health = 0;
-            this.IsAlive = false;
+            this._health = 0;
+            this._isAlive = false;
         }
     }
 }; 
