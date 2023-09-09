@@ -140,7 +140,85 @@
                         case dungeon_crawler.core.globals.tileTypes['protection']:
                             //todo: pause game on protection
 
+                            let armourType = dungeon_crawler.main.selectArmourType();
+                            let armourCondition = dungeon_crawler.main.selectArmourCondition();
 
+                            let armourValue = dungeon_crawler.main.getArmourValue(armourType, armourCondition);
+
+                            let adventurerArmourAddition, keepArmourAddition = false;
+
+                            switch (armourType) {
+                                case dungeon_crawler.core.globals.armourType['helmet']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourHelmet();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourHelmet(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                case dungeon_crawler.core.globals.armourType['breastplate']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourBreastplate();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourBreastplate(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                case dungeon_crawler.core.globals.armourType['vambrace']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourVambrace();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourVambrace(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                case dungeon_crawler.core.globals.armourType['gauntlet']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourGauntlet();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourGauntlet(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                case dungeon_crawler.core.globals.armourType['greave']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourGreave();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourGreave(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                case dungeon_crawler.core.globals.armourType['boots']:
+                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourBoots();
+
+                                    if (armourValue > adventurerArmourAddition) {
+                                        dungeon_crawler.core.globals.adventurer.setArmourBoots(armourValue);
+                                        keepArmourAddition = true;
+                                    }
+
+                                    break;
+                                default:
+                                    dungeon_crawler.core.outputError(`Unexpected armour type "${armourType}"`);
+                                    armourTypevalue = 0;
+                                    break;
+                            }
+
+                            if (keepArmourAddition) {
+                                dungeon_crawler.main.setProtectionUseText(armourType, armourCondition, armourValue);
+                                dungeon_crawler.main.updateAdventurerProtection();
+                            } else {
+                                dungeon_crawler.main.setProtectionDiscardText(armourType, armourCondition, armourValue);
+                            }
+
+                            break;
+
+                        //todo: add wepons
+                        case dungeon_crawler.core.globals.tileTypes['wepons']:
                             break;
                     }
 
@@ -338,7 +416,7 @@
         }
 
         dungeon_crawler.core.outputError(`Unexpected potion table role "${value}"`);
-        return dungeon_crawler.core.globals.tileTypes['unknown'];
+        return dungeon_crawler.core.globals.potionType['unknown'];
     },
 
     selectPotionSize() {
@@ -359,8 +437,8 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
-        return dungeon_crawler.core.globals.tileTypes['unknown'];
+        dungeon_crawler.core.outputError(`Unexpected potion size role "${value}"`);
+        return dungeon_crawler.core.globals.potionSize['unknown'];
     },
 
     selectPotionDuration() {
@@ -381,8 +459,8 @@
                 break;
         }
 
-        dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
-        return dungeon_crawler.core.globals.tileTypes['unknown'];
+        dungeon_crawler.core.outputError(`Unexpected potion duration role "${value}"`);
+        return dungeon_crawler.core.globals.potionDuration['unknown'];
     },
 
     usePotion(potionType, potionSize, potionDuration) {
@@ -445,6 +523,103 @@
                 durationValue = 0;
                 break;
         }
+    },
+
+    selectArmourType() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+                return dungeon_crawler.core.globals.armourType['boots'];
+                break;
+            case 2:
+                return dungeon_crawler.core.globals.armourType['greave'];
+                break;
+            case 3:
+                return dungeon_crawler.core.globals.armourType['vambrace'];
+                break;
+            case 4:
+                return dungeon_crawler.core.globals.armourType['gauntlet'];
+                break;
+            case 5:
+                return dungeon_crawler.core.globals.armourType['helmet'];
+                break;
+            case 6:
+                return dungeon_crawler.core.globals.armourType['breastplate'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected armour type role "${value}"`);
+        return dungeon_crawler.core.globals.armourType['unknown'];
+    },
+
+    selectArmourCondition() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+            case 2:
+                return dungeon_crawler.core.globals.armourCondition['rusty'];
+                break;
+            case 3:
+            case 4:
+            case 5:
+                return dungeon_crawler.core.globals.armourCondition['tarnished'];
+                break;
+            case 6:
+                return dungeon_crawler.core.globals.armourCondition['shiny'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected armour condition role "${value}"`);
+        return dungeon_crawler.core.globals.armourCondition['unknown'];
+    },
+
+    getArmourValue(armourType, armourCondition) {
+        let armourTypevalue = 0;
+        switch (armourType) {
+            case dungeon_crawler.core.globals.armourType['helmet']:
+                armourTypevalue = 5;
+                break;
+            case dungeon_crawler.core.globals.armourType['breastplate']:
+                armourTypevalue = 6;
+                break;
+            case dungeon_crawler.core.globals.armourType['vambrace']:
+                armourTypevalue = 1;
+                break;
+            case dungeon_crawler.core.globals.armourType['gauntlet']:
+                armourTypevalue = 2;
+                break;
+            case dungeon_crawler.core.globals.armourType['greave']:
+                armourTypevalue = 1;
+                break;
+            case dungeon_crawler.core.globals.armourType['boots']:
+                armourTypevalue = 1;
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected armour type "${armourType}"`);
+                armourTypevalue = 0;
+                break;
+        }
+
+        let armourConditionvalue = 0;
+        switch (armourCondition) {
+            case dungeon_crawler.core.globals.armourCondition['rusty']:
+                armourTypevalue = 1;
+                break;
+            case dungeon_crawler.core.globals.armourCondition['tarnished']:
+                armourTypevalue = 2;
+                break;
+            case dungeon_crawler.core.globals.armourCondition['shiny']:
+                armourTypevalue = 3;
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected armour condition "${armourCondition}"`);
+                armourTypevalue = 0;
+                break;
+        }
+
+        return armourTypevalue * armourTypevalue;
     },
 
     //Dice
@@ -609,18 +784,15 @@
     },
 
     updateAdventurerHealth() {
-        let health = dungeon_crawler.core.globals.adventurer.getHealthDescription();
-        $('#current-health').html(health);
+        $('#current-health').html(dungeon_crawler.core.globals.adventurer.getHealthDescription());
     },
 
     updateAdventurerDamage() {
-        let damage = dungeon_crawler.core.globals.adventurer.getDamageDescription();
-        $('#current-damage').html(damage);
+        $('#current-damage').html(dungeon_crawler.core.globals.adventurer.getDamageDescription());
     },
 
     updateAdventurerProtection() {
-        let protection = dungeon_crawler.core.globals.adventurer.getProtectionDescription();
-        $('#current-protection').html(protection);
+        $('#current-protection').html(dungeon_crawler.core.globals.adventurer.getProtectionDescription());
     },
 
     resetDiceValues() {
@@ -678,6 +850,15 @@
     //      Adventurer
     startingAdventurerText(health, damage, protection) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, damage, protection));
+    },
+
+    //          Armour
+    setProtectionUseText(type, condition, armourValue) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionUseText(type, condition, armourValue));
+    },
+
+    setProtectionDiscardText(type, condition, armourValue) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionDiscardText(type, condition, armourValue));
     },
 
     //          Potion

@@ -163,6 +163,14 @@
         return `You regained ${regainedHealth} health points.`;
     },
 
+    generateProtectionUseText(type, condition, armourValue) {
+        return `You equip a ${condition} ${type} (${armourValue}).`;
+    },
+
+    generateProtectionDiscardText(type, condition, armourValue) {
+        return `You discard a ${condition} ${type} (${armourValue}).`;
+    },
+
     //todo: use healt, damage and protection values in text
     generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, damageValue, protectionValue) {
         //let healthLevel = dungeon_crawler.log.getHealthText(healthValue);

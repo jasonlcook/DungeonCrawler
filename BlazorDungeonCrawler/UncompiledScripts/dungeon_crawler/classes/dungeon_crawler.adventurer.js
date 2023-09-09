@@ -9,10 +9,16 @@
         this.DamagePotion = 0;
         this.DamagePotionDuration = 0;
 
-        this.ProtectionBase = protection;
-        
+        this.ProtectionBase = protection;        
         this.ShieldPotion = 0;
         this.ShieldPotionDuration = 0;
+
+        this.ArmourHelmet = 0;
+        this.ArmourBreastplate = 0;
+        this.ArmourVambrace = 0;
+        this.ArmourGauntlet = 0;
+        this.ArmourGreave = 0;
+        this.ArmourBoots = 0;
 
         this.IsAlive = true;
     }
@@ -116,9 +122,65 @@
 
     //Protection
     getProtection() {
-        return this.ProtectionBase + this.ShieldPotion;
+        return this.ProtectionBase + this.ShieldPotion + this.ArmourHelmet + this.ArmourBreastplate + this.ArmourVambrace + this.ArmourGauntlet + this.ArmourGreave + this.ArmourBoots;
     }
 
+    //Armour
+    //  Helmet
+    getArmourHelmet() {
+        return this.ArmourHelmet;
+    }
+
+    setArmourHelmet(value) {
+        return this.ArmourHelmet = value;
+    }
+
+    //  Breastplate
+    getArmourBreastplate() {
+        return this.ArmourBreastplate;
+    }
+
+    setArmourBreastplate(value) {
+        return this.ArmourBreastplate = value;
+    }
+
+    //  Vambrace
+    getArmourVambrace() {
+        return this.ArmourVambrace;
+    }
+
+    setArmourVambrace(value) {
+        return this.ArmourVambrace = value;
+    }
+
+    //  Gauntlet
+    getArmourGauntlet() {
+        return this.ArmourGauntlet;
+    }
+
+    setArmourGauntlet(value) {
+        return this.ArmourGauntlet = value;
+    }
+
+    //  Greave
+    getArmourGreave() {
+        return this.ArmourGreave;
+    }
+
+    setArmourGreave(value) {
+        return this.ArmourGreave = value;
+    }
+
+    //  Boots
+    getArmourBoots() {
+        return this.ArmourBoots;
+    }
+
+    setArmourBoots(value) {
+        return this.ArmourBoots = value;
+    }
+
+    //Shield potion
     setShieldPotion(value) {
         return this.ShieldPotion += value;
     }
@@ -144,6 +206,35 @@
 
     getProtectionDescription() {
         let message = `${this.getProtection()}`;
+
+        let messageArmourAddition = [];
+        if (this.ArmourHelmet > 0) {
+            messageArmourAddition.push(this.ArmourHelmet);
+        };
+
+        if (this.ArmourBreastplate > 0) {
+            messageArmourAddition.push(this.ArmourBreastplate);
+        };
+
+        if (this.ArmourVambrace > 0) {
+            messageArmourAddition.push(this.ArmourVambrace);
+        };
+
+        if (this.ArmourGauntlet > 0) {
+            messageArmourAddition.push(this.ArmourGauntlet);
+        };
+
+        if (this.ArmourGreave > 0) {
+            messageArmourAddition.push(this.ArmourGreave);
+        };
+
+        if (this.ArmourBoots > 0) {
+            messageArmourAddition.push(this.ArmourBoots);
+        };
+
+        if (messageArmourAddition.length > 0) {
+            message += ` (${messageArmourAddition.join(' + ')})`;
+        }
 
         if (this.ShieldPotion > 0) {
             message += ` (${this.ProtectionBase} + ${this.ShieldPotion}) ${this.ShieldPotionDuration}`;
@@ -217,7 +308,7 @@
             }
         }
 
-        // return {            'shieldPotionDammage': shieldPotionDammage, 'auraPotionDammage': auraPotionDammage, 'adventurerDammage': adventurerDammage         }
+        // return { 'shieldPotionDammage': shieldPotionDammage, 'auraPotionDammage': auraPotionDammage, 'adventurerDammage': adventurerDammage }
 
         return adventurerDammage;
     }
