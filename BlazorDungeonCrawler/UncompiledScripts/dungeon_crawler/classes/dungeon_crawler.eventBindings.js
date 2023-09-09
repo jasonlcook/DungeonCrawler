@@ -42,7 +42,7 @@ class EventBindings {
             for (let i = 0; i < this._eventBindings.length; i++) {
                 eventBinding = this._eventBindings[i];
 
-                if (eventBinding.Name == name) {
+                if (eventBinding.getName() == name) {
                     return eventBinding;
                 }
             }
@@ -56,10 +56,10 @@ class EventBindings {
                 eventBinding = this._eventBindings[i];
 
                 if (!eventBinding.Bound) {
-                    eventBinding.Dispacter.on(eventBinding.Type, eventBinding.Handler);
-                    eventBinding.Bound = true;
+                    eventBinding.setDispacterOn();
+                    eventBinding.setBound(true);
                 } else {
-                    dungeon_crawler.core.outputError(`Event "${eventBinding.Name}" already bound.`);
+                    dungeon_crawler.core.outputError(`Event "${eventBinding.getName()}" already bound.`);
                 }
             }
         }
@@ -70,8 +70,8 @@ class EventBindings {
             let eventBinding
             for (let i = 0; i < this._eventBindings.length; i++) {
                 eventBinding = this._eventBindings[i];
-                eventBinding.Dispacter.off(eventBinding.Type, eventBinding.Handler);
-                eventBinding.Bound = false;
+                eventBinding.setDispacterOff();
+                eventBinding.setBound(false);
             }
         }
     }
