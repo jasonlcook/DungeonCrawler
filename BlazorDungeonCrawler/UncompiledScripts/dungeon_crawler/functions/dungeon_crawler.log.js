@@ -92,6 +92,7 @@
         return 'As you leave with the MacGuffin the real prize is the possible friends we made along the way.';
     },
 
+    //todo: move this to main
     getHealthText(healthValue) {
         switch (healthValue) {
             case 1:
@@ -117,6 +118,7 @@
         dungeon_crawler.core.outputError(`Generate health text error with value ${healthValue}`);
     },
 
+    //todo: move this to main
     getDamageText(damageValue) {
         switch (damageValue) {
             case 1:
@@ -136,6 +138,7 @@
         dungeon_crawler.core.outputError(`Generate damage text error with value ${damageValue}`);
     },
 
+    //todo: move this to main
     getProtectionText(protectionValue) {
         switch (protectionValue) {
             case 1:
@@ -148,6 +151,7 @@
                 return 'clothes';
                 break;
             case 6:
+                //todo: add random armour parts
                 return 'armour';
                 break;
         }
@@ -157,6 +161,31 @@
 
     generateUsePotionText(potionType, potionSize, potionDuration) {
         return `You drink a ${potionSize} ${potionDuration} duration ${potionType} potion.`;
+    },
+
+    generateWeaponValuenUseText(type, condition, weaponValue) {
+        let message = 'You equip a';
+
+        if (condition !== null) {
+            message += ` ${condition}`;
+        }
+
+        message += ` ${type} (${weaponValue}).`;
+
+        return message;
+    },
+
+    generateWeaponDiscardText(type, condition, weaponValue) {
+        let message = 'You discard a';
+
+        if (condition !== null) {
+            message += ` ${condition}`;
+        }
+
+        message += ` ${type} (${weaponValue}).`;
+
+        return message;
+
     },
 
     generatePotionHealingText(regainedHealth) {
@@ -177,23 +206,23 @@
         //let damageLevel = dungeon_crawler.log.getDamageText(damageValue);
         //let protectionLevel = dungeon_crawler.log.getProtectionText(protectionValue);
 
-        //return `You encounter a ${damageLevel} ${name} wearing ${protectionLevel} in ${healthLevel} health.`;
+        //return `You encounter a ${ damageLevel } ${ name } wearing ${ protectionLevel } in ${ healthLevel } health.`;
 
         let message = `A ${name} surprises you.`;
         if (adventurerInitiatesCombat) {
             message = `You surprise a ${name}.`;
-        } 
+        }
 
         return message;
     },
 
     generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        let message = `You attack the ${enemyType} with a <span class="attack-text">${adventurerAttackValue}</span> (${adventurerRoll} + ${adventurerDamage}). `;
+        let message = `You attack the ${enemyType} with a < span class="attack-text" > ${adventurerAttackValue}</span > (${adventurerRoll} + ${adventurerDamage}).`;
 
         if (wounds != null) {
-            message += `The ${enemyType} takes <span class="wounds-text">${wounds}</span> damage after failing to avoid you with <span class="attack-text">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
+            message += `The ${enemyType} takes < span class="wounds-text" > ${wounds}</span > damage after failing to avoid you with <span class="attack-text">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
         } else {
-            message += `The ${enemyType} avoids your attack with a <span class="attack-text">${enemyAvoidValue}</span> (${enemyRoll} + ${enemyProtection}).`;
+            message += `The ${enemyType} avoids your attack with a < span class="attack-text" > ${enemyAvoidValue}</span > (${enemyRoll} + ${enemyProtection}).`;
         }
 
         return message;
@@ -204,12 +233,12 @@
     },
 
     generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds) {
-        let message = `The ${enemyType} attacks with a <span class="attack-text">${enemyAttackValue}</span> (${enemyRoll} + ${enemyDamage}). `;
+        let message = `The ${enemyType} attacks with a < span class="attack-text" > ${enemyAttackValue}</span > (${enemyRoll} + ${enemyDamage}).`;
 
         if (wounds != null) {
-            message += `You takes <span class="wounds-text">${wounds}</span> damage after failing to avoid with <span class="attack-text">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
+            message += `You takes < span class="wounds-text" > ${wounds}</span > damage after failing to avoid with <span class="attack-text">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
         } else {
-            message += `You avoid the ${enemyType} with a <span class="attack-text">${adventurerAvoidValue}</span> (${adventurerRoll} + ${adventurerProtection}).`;
+            message += `You avoid the ${enemyType} with a < span class="attack-text" > ${adventurerAvoidValue}</span > (${adventurerRoll} + ${adventurerProtection}).`;
         }
 
         return message;

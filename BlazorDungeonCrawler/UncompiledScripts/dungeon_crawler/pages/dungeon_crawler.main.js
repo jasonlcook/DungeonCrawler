@@ -145,60 +145,60 @@
 
                             let armourValue = dungeon_crawler.main.getArmourValue(armourType, armourCondition);
 
-                            let adventurerArmourAddition, keepArmourAddition = false;
+                            let currentArmourValue, keepArmour = false;
 
                             switch (armourType) {
                                 case dungeon_crawler.core.globals.armourType['helmet']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourHelmet();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourHelmet();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourHelmet(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
                                 case dungeon_crawler.core.globals.armourType['breastplate']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourBreastplate();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourBreastplate();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourBreastplate(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
                                 case dungeon_crawler.core.globals.armourType['vambrace']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourVambrace();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourVambrace();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourVambrace(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
                                 case dungeon_crawler.core.globals.armourType['gauntlet']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourGauntlet();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourGauntlet();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourGauntlet(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
                                 case dungeon_crawler.core.globals.armourType['greave']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourGreave();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourGreave();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourGreave(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
                                 case dungeon_crawler.core.globals.armourType['boots']:
-                                    adventurerArmourAddition = dungeon_crawler.core.globals.adventurer.getArmourBoots();
+                                    currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourBoots();
 
-                                    if (armourValue > adventurerArmourAddition) {
+                                    if (armourValue > currentArmourValue) {
                                         dungeon_crawler.core.globals.adventurer.setArmourBoots(armourValue);
-                                        keepArmourAddition = true;
+                                        keepArmour = true;
                                     }
 
                                     break;
@@ -208,7 +208,7 @@
                                     break;
                             }
 
-                            if (keepArmourAddition) {
+                            if (keepArmour) {
                                 dungeon_crawler.main.setProtectionUseText(armourType, armourCondition, armourValue);
                                 dungeon_crawler.main.updateAdventurerProtection();
                             } else {
@@ -216,9 +216,25 @@
                             }
 
                             break;
+                        case dungeon_crawler.core.globals.tileTypes['weapon']:
+                            let weponType = dungeon_crawler.main.selectWeponType();                            
+                            let weponCondition = null;
+                            if (weponType !== dungeon_crawler.core.globals.weaponType['rock'] && weponType !== dungeon_crawler.core.globals.weaponType['club']) {
+                                 weponCondition = dungeon_crawler.main.selectWeponCondition();
+                            }                            
 
-                        //todo: add wepons
-                        case dungeon_crawler.core.globals.tileTypes['wepons']:
+                            let weaponValue = dungeon_crawler.main.getWeaponValue(weponType, weponCondition);
+                            let currentWeaponValue = dungeon_crawler.core.globals.adventurer.getWeapon();
+
+                            if (weaponValue > currentWeaponValue) {
+                                dungeon_crawler.core.globals.adventurer.setWeapon(weaponValue);
+                                dungeon_crawler.main.setWeaponUseText(weponType, weponCondition, weaponValue);
+
+                                dungeon_crawler.main.updateAdventurerDamage();
+                            } else {
+                                dungeon_crawler.main.setWeaponDiscardText(weponType, weponCondition, weaponValue);
+                            }
+
                             break;
                     }
 
@@ -371,18 +387,21 @@
     },
 
     //Loot
-    //  1 - 3:  Potion
-    //  4 - 6:  Protection
+    //  1 - 2:  Potion
+    //  3 - 4:  Weapon
+    //  5 - 6:  Protection
     selectLoot() {
         let value = dungeon_crawler.main.roleSafeDie();
 
         switch (value) {
             case 1:
             case 2:
-            case 3:
                 return dungeon_crawler.core.globals.tileTypes['potion'];
                 break;
+            case 3:
             case 4:
+                return dungeon_crawler.core.globals.tileTypes['weapon'];
+                break;
             case 5:
             case 6:
                 return dungeon_crawler.core.globals.tileTypes['protection'];
@@ -553,6 +572,7 @@
         return dungeon_crawler.core.globals.armourType['unknown'];
     },
 
+    //todo: Add magical Conditions
     selectArmourCondition() {
         let value = dungeon_crawler.main.roleSafeDie();
 
@@ -576,50 +596,164 @@
     },
 
     getArmourValue(armourType, armourCondition) {
-        let armourTypevalue = 0;
+        let armourTypeValue = 0;
         switch (armourType) {
             case dungeon_crawler.core.globals.armourType['helmet']:
-                armourTypevalue = 5;
+                armourTypeValue = 4;
                 break;
             case dungeon_crawler.core.globals.armourType['breastplate']:
-                armourTypevalue = 6;
+                armourTypeValue = 4;
                 break;
             case dungeon_crawler.core.globals.armourType['vambrace']:
-                armourTypevalue = 1;
+                armourTypeValue = 2;
                 break;
             case dungeon_crawler.core.globals.armourType['gauntlet']:
-                armourTypevalue = 2;
+                armourTypeValue = 3;
                 break;
             case dungeon_crawler.core.globals.armourType['greave']:
-                armourTypevalue = 1;
+                armourTypeValue = 1;
                 break;
             case dungeon_crawler.core.globals.armourType['boots']:
-                armourTypevalue = 1;
+                armourTypeValue = 1;
                 break;
             default:
                 dungeon_crawler.core.outputError(`Unexpected armour type "${armourType}"`);
-                armourTypevalue = 0;
+                armourTypeValue = 0;
                 break;
         }
 
         let armourConditionvalue = 0;
         switch (armourCondition) {
             case dungeon_crawler.core.globals.armourCondition['rusty']:
-                armourTypevalue = 1;
+                armourConditionvalue = 2;
                 break;
             case dungeon_crawler.core.globals.armourCondition['tarnished']:
-                armourTypevalue = 2;
+                armourConditionvalue = 3;
                 break;
             case dungeon_crawler.core.globals.armourCondition['shiny']:
-                armourTypevalue = 3;
+                armourConditionvalue = 4;
                 break;
             default:
                 dungeon_crawler.core.outputError(`Unexpected armour condition "${armourCondition}"`);
-                armourTypevalue = 0;
+                armourConditionvalue = 0;
                 break;
         }
 
-        return armourTypevalue * armourTypevalue;
+        return armourTypeValue * armourConditionvalue;
+    },
+
+    selectWeponType() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+                return dungeon_crawler.core.globals.weaponType['rock'];
+                break;
+            case 2:
+                return dungeon_crawler.core.globals.weaponType['club'];
+                break;
+            case 3:
+                return dungeon_crawler.core.globals.weaponType['dagger'];
+                break;
+            case 4:
+                return dungeon_crawler.core.globals.weaponType['mace'];
+                break;
+            case 5:
+                return dungeon_crawler.core.globals.weaponType['axe'];
+                break;
+            case 6:
+                return dungeon_crawler.core.globals.weaponType['sword'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected wepon type role "${value}"`);
+        return dungeon_crawler.core.globals.armourType['unknown'];
+    },
+
+    selectWeponCondition() {
+        let value = dungeon_crawler.main.roleSafeDie();
+
+        switch (value) {
+            case 1:
+                return dungeon_crawler.core.globals.weaponCondition['broken'];
+                break;
+            case 2:
+                return dungeon_crawler.core.globals.weaponCondition['rusty'];
+                break;
+            case 3:
+                return dungeon_crawler.core.globals.weaponCondition['chipped'];
+                break;
+            case 4:
+                return dungeon_crawler.core.globals.weaponCondition['sharp'];
+                break;
+            case 5:
+                return dungeon_crawler.core.globals.weaponCondition['enchanted'];
+                break;
+            case 6:
+                return dungeon_crawler.core.globals.weaponCondition['flaming'];
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Unexpected wepon condition role "${value}"`);
+        return dungeon_crawler.core.globals.armourCondition['unknown'];
+    },
+
+    getWeaponValue(weponType, weponCondition) {
+        let weponTypeValue = 0;
+        switch (weponType) {
+            case dungeon_crawler.core.globals.weaponType['rock']:
+                weponTypeValue = 1;
+                break;
+            case dungeon_crawler.core.globals.weaponType['club']:
+                weponTypeValue = 2;
+                break;
+            case dungeon_crawler.core.globals.weaponType['dagger']:
+                weponTypeValue = 4;
+                break;
+            case dungeon_crawler.core.globals.weaponType['mace']:
+                weponTypeValue = 6;
+                break;
+            case dungeon_crawler.core.globals.weaponType['axe']:
+                weponTypeValue = 8;
+                break;
+            case dungeon_crawler.core.globals.weaponType['sword']:
+                weponTypeValue = 10;
+                break;
+            default:
+                dungeon_crawler.core.outputError(`Unexpected wepon type "${weponType}"`);
+                weponTypeValue = 0;
+                break;
+        }
+
+        let weponConditionValue = 1;
+        if (weponCondition != null) {
+            switch (weponCondition) {
+                case dungeon_crawler.core.globals.weaponCondition['broken']:
+                    weponConditionValue = 1;
+                    break;
+                case dungeon_crawler.core.globals.weaponCondition['rusty']:
+                    weponConditionValue = 2;
+                    break;
+                case dungeon_crawler.core.globals.weaponCondition['chipped']:
+                    weponConditionValue = 4;
+                    break;
+                case dungeon_crawler.core.globals.weaponCondition['sharp']:
+                    weponConditionValue = 6;
+                    break;
+                case dungeon_crawler.core.globals.weaponCondition['enchanted']:
+                    weponConditionValue = 8;
+                    break;
+                case dungeon_crawler.core.globals.weaponCondition['flaming']:
+                    weponConditionValue = 10;
+                    break;
+                default:
+                    dungeon_crawler.core.outputError(`Unexpected wepon condition "${weponCondition}"`);
+                    weponConditionValue = 0;
+                    break;
+            }
+        }        
+
+        return weponTypeValue * weponConditionValue;
     },
 
     //Dice
@@ -733,6 +867,9 @@
                             break;
                         case dungeon_crawler.core.globals.tileTypes['chest']:
                             tileTypeClass = 'hexagon-tile-chest';
+                            break;
+                        case dungeon_crawler.core.globals.tileTypes['weapon']:
+                            tileTypeClass = 'hexagon-tile-weapon';
                             break;
                         case dungeon_crawler.core.globals.tileTypes['protection']:
                             tileTypeClass = 'hexagon-tile-protection';
@@ -850,6 +987,15 @@
     //      Adventurer
     startingAdventurerText(health, damage, protection) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, damage, protection));
+    },
+
+    //          Weapon
+    setWeaponUseText(type, condition, weaponValue) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponValuenUseText(type, condition, weaponValue));
+    },
+
+    setWeaponDiscardText(type, condition, weaponValue) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponDiscardText(type, condition, weaponValue));
     },
 
     //          Armour

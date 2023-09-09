@@ -254,6 +254,14 @@
                         background-image: url('../images/tiles/protection_selected.png');
                     }
 
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-weapon {
+                    background-image: url('../images/tiles/weapons.png');
+                }
+
+                    #play-area .dungon #stage .hexagon-tile.hexagon-tile-weapon.hexagon-tile-selectable {
+                        background-image: url('../images/tiles/weapons_selected.png');
+                    }
+
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-empty {
                     background-image: url('../images/tiles/empty.png');
                 }

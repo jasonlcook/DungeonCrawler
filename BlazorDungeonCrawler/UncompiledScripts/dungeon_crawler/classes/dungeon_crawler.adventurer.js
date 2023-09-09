@@ -9,9 +9,11 @@
         this.DamagePotion = 0;
         this.DamagePotionDuration = 0;
 
-        this.ProtectionBase = protection;        
+        this.ProtectionBase = protection;
         this.ShieldPotion = 0;
         this.ShieldPotionDuration = 0;
+
+        this.Weapon = 0;
 
         this.ArmourHelmet = 0;
         this.ArmourBreastplate = 0;
@@ -84,9 +86,19 @@
 
     //Damage
     getDamage() {
-        return this.DamageBase + this.DamagePotion;
+        return this.DamageBase + this.Weapon + this.DamagePotion;
     }
 
+    //  Weapon
+    getWeapon() {
+        return this.Weapon;
+    }
+
+    setWeapon(value) {
+        this.Weapon = value;
+    }
+
+    //  Potion
     setDamagePotion(value) {
         return this.DamagePotion += value;
     }
@@ -112,6 +124,10 @@
 
     getDamageDescription() {
         let message = `${this.getDamage()}`;
+
+        if (this.Weapon > 0) {
+            message += ` (${this.Weapon})`;
+        }
 
         if (this.DamagePotion > 0) {
             message += ` (${this.DamageBase} + ${this.DamagePotion}) ${this.DamagePotionDuration}`;
