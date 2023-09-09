@@ -1,62 +1,131 @@
 ﻿class Level {
     //todo access class properies via getters
     constructor() {
-        this.tiles;
+        this._tiles;
 
-        this.level;
+        this._level;
 
-        this.stageRows;
-        this.stageCols;
+        this._stageRows;
+        this._stageCols;
 
-        this.enemies;
+        this._availableEnemies;
 
-        this.endLevelTileDeployed;
+        this._endLevelTileDeployed;
     }
 
-    loadLevel(value) {
-        this.tiles = new Tiles();
+    //Tiles
+    //  Add
+    getTiles() {
+        return this._tiles;
+    }
 
-        this.level = value;
+    //  Get by id
+    getTileById(tileId) {
+        return this._tiles.getById(tileId);
+    }
+
+    //  Set selectable
+    setSelectableTiles() {
+        this._tiles.setSelectables()
+    }
+
+    //  Set unselectable
+    setUnselectableTiles() {
+        this._tiles.unsetSelectables();
+    }
+
+    //  Set movement
+    tilesMovement(selectedTile) {
+        this._tiles.movement(selectedTile);
+    }
+
+    //Tile
+    addTile(tile) {
+        this._tiles.add(tile);
+    }
+
+    //Level
+    //  Get
+    getLevel() {
+        return this._level;
+    }
+
+    //  Next
+    getNextlevel() {
+        return this._level + 1;
+    }
+
+    //  Previous
+    getPreviouslevel() {
+        return this._level - 1;
+    }
+
+    //StageRows
+    getStageRows() {
+        return this._stageRows;
+    }
+
+    //StageCols
+    getStageCols() {
+        return this._stageCols;
+    }
+
+    //End level tile deployed
+    //  Set
+    setsEndLevelTileAsDeployed() {
+        this._endLevelTileDeployed = true;
+    }
+
+    //  Get
+    isEndLevelTileDeployed() {
+        return this._endLevelTileDeployed;
+    }
+
+    //Methods
+    loadLevel(value) {
+        this._tiles = new Tiles();
+
+        this._level = value;
 
         switch (value) {
             case 1:
-                this.stageRows = 3;
-                this.stageCols = 3;
+                this._stageRows = 3;
+                this._stageCols = 3;
                 break;
             case 2:
-                this.stageRows = 4;
-                this.stageCols = 5;
+                this._stageRows = 4;
+                this._stageCols = 5;
             case 3:
-                this.stageRows = 6;
-                this.stageCols = 7;
+                this._stageRows = 6;
+                this._stageCols = 7;
                 break;
             case 4:
-                this.stageRows = 8;
-                this.stageCols = 9;
+                this._stageRows = 8;
+                this._stageCols = 9;
                 break;
             case 5:
             case 6:
             case 7:
             case 8:
             case 9:
-                this.stageRows = 9;
-                this.stageCols = 11;
+                this._stageRows = 9;
+                this._stageCols = 11;
                 break;
             case 10:
-                this.stageRows = 10;
-                this.stageCols = 13;
+                this._stageRows = 10;
+                this._stageCols = 13;
                 break;
             default:
         }
 
-        this.availableEnemies = dungeon_crawler.core.enemies.getAvailableEnemies(this.level);
+        this._availableEnemies = dungeon_crawler.core.enemies.getAvailableEnemies(this._level);
 
-        this.endLevelTileDeployed = false;
+        this._endLevelTileDeployed = false;
     }
 
     setSpawn(level) {
-        let spawnIndex = Math.floor(Math.random() * this.tiles.length);
-        let spawnTitle = this.tiles.get(spawnIndex);
+        let spawnIndex = Math.floor(Math.random() * this._tiles.length);
+        let spawnTitle = this._tiles.get(spawnIndex);
 
         spawnTitle.Hidden = false;
 
@@ -68,11 +137,11 @@
 
         spawnTitle.Current = true;
 
-        this.tiles.currentIndex = spawnIndex;
+        this._tiles.currentIndex = spawnIndex;
     }
 
     getEnemy() {
-        let availableEnemyIndex = Math.floor(Math.random() * this.availableEnemies.length);
-        return this.availableEnemies[availableEnemyIndex];
+        let availableEnemyIndex = Math.floor(Math.random() * this._availableEnemies.length);
+        return this._availableEnemies[availableEnemyIndex];
     }
 }; 

@@ -19,7 +19,6 @@
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.weapon.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemies.js" />
-    <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBinding.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBindings.js" />
     <None Remove="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.level.js" />
@@ -35,7 +34,6 @@
     <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.armour.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.weapon.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\functions\dungeon_crawler.enemies.js" />
-    <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.enemy.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.adventurer.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBinding.js" />
     <Content Include="UncompiledScripts\dungeon_crawler\classes\dungeon_crawler.eventBindings.js" />

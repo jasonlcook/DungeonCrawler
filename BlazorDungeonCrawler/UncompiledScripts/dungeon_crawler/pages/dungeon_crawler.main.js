@@ -12,7 +12,7 @@
         let visitedLevel, visitedLevels = dungeon_crawler.core.globals.levels;
         for (var i = 0; i < visitedLevels.length; i++) {
             visitedLevel = visitedLevels[i];
-            if (visitedLevel.level == value) {
+            if (visitedLevel.getLevel() == value) {
                 currentVisitedLevel = visitedLevel;
             }
         }
@@ -26,10 +26,10 @@
             dungeon_crawler.core.globals.currentLevel = level;
 
             //set tiles
-            dungeon_crawler.main.setTiles(level.stageCols, level.stageRows);
+            dungeon_crawler.main.setTiles(level.getStageCols(), level.getStageRows());
 
             //set spawn location
-            dungeon_crawler.core.globals.currentLevel.setSpawn(level.level);
+            dungeon_crawler.core.globals.currentLevel.setSpawn(level.getLevel());
         } else {
             dungeon_crawler.core.globals.currentLevel = currentVisitedLevel;
             level = currentVisitedLevel;
@@ -37,7 +37,7 @@
 
         dungeon_crawler.main.setLevelDetails();
 
-        dungeon_crawler.core.globals.currentLevel.tiles.setSelectables();
+        dungeon_crawler.core.globals.currentLevel.setSelectableTiles();
 
         dungeon_crawler.main.setStage();
 
@@ -70,10 +70,10 @@
     tileClick(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
             let id = $(event.target.parentElement).attr('data-identity');
-            let selectedTile = dungeon_crawler.core.globals.currentLevel.tiles.getById(id);
+            let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(id);
 
             if (selectedTile.Selectable) {
-                dungeon_crawler.core.globals.currentLevel.tiles.movement(selectedTile);
+                dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
 
                 if (dungeon_crawler.core.globals.InCombat) {
                     dungeon_crawler.main.combat();
@@ -171,7 +171,7 @@
     },
 
     endGamge() {
-        dungeon_crawler.core.globals.currentLevel.tiles.unsetSelectables();
+        dungeon_crawler.core.globals.currentLevel.setUnselectableTiles();
         dungeon_crawler.main.setStage();
 
         dungeon_crawler.core.globals.eventBindings.unbindEvents();
@@ -280,14 +280,14 @@
                 hexRow += 1;
             }
 
-            dungeon_crawler.core.globals.currentLevel.tiles.add(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop));
+            dungeon_crawler.core.globals.currentLevel.addTile(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop));
         }
     },
 
     setStage() {
         $('#stage').html('').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
 
-        let tile, tileTypeClass, tileSelectableClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.tiles;
+        let tile, tileTypeClass, tileSelectableClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
 
         for (var i = 0; i < tiles.length; i++) {
             tileTypeClass = 'hexagon-tile-hidden';
@@ -365,7 +365,7 @@
     },
 
     setLevelDetails() {
-        $('#current-level').html(dungeon_crawler.core.globals.currentLevel.level);
+        $('#current-level').html(dungeon_crawler.core.globals.currentLevel.getLevel());
     },
 
     setAdventurerDetails() {

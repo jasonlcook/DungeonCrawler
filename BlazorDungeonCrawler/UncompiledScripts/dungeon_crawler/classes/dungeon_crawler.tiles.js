@@ -114,9 +114,10 @@
                     return;
                 }
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
-                let previouslevel = dungeon_crawler.core.globals.currentLevel.level - 1;
+                let previouslevel = dungeon_crawler.core.globals.currentLevel.getPreviouslevel(); 
 
                 dungeon_crawler.main.generateLevel(previouslevel);
+
                 dungeon_crawler.main.stairsUpText(previouslevel);
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
@@ -129,9 +130,8 @@
         }
 
         if (selectedTile.Type == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
-            dungeon_crawler.core.globals.currentLevel.stairsDeployed = true;
-
-            let nextlevel = dungeon_crawler.core.globals.currentLevel.level + 1;
+            
+            let nextlevel = dungeon_crawler.core.globals.currentLevel.getNextlevel();
 
             dungeon_crawler.main.generateLevel(nextlevel);
             dungeon_crawler.main.stairsDownText(nextlevel);
@@ -147,15 +147,15 @@
     }
 
     checkEndLevelTileDeployed() {
-        if (!dungeon_crawler.core.globals.currentLevel.endLevelTileDeployed) {
+        if (!dungeon_crawler.core.globals.currentLevel.isEndLevelTileDeployed()) {
             let quadsExplored = Math.floor(this.tiles.length / 4);
 
             if (this.explored > quadsExplored) {
                 // 50/50 change of stairs being deplyed or if last tile then deply it
                 if ((Math.floor(Math.random() * 2) == 0) || this.explored >= this.tiles.length) {
-                    dungeon_crawler.core.globals.currentLevel.endLevelTileDeployed = true;
+                    dungeon_crawler.core.globals.currentLevel.setsEndLevelTileAsDeployed();
 
-                    if (dungeon_crawler.core.globals.currentLevel.level < dungeon_crawler.core.globals.lastLevel) {
+                    if (dungeon_crawler.core.globals.currentLevel.getLevel() < dungeon_crawler.core.globals.lastLevel) {
                         return dungeon_crawler.core.globals.tileTypes['stairs_descending'];
                     } else {
                         return dungeon_crawler.core.globals.tileTypes['macguffin'];
