@@ -1,4 +1,4 @@
-﻿dungeon_crawler.log = {
+﻿dungeon_crawler.log_text = {
     //  Story
     //      Adventurer
     generateStartingAdventurerText(healthValue, damageValue, protectionValue) {
@@ -162,9 +162,9 @@
     //      Monster
     //          Combat
     generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, damageValue, protectionValue) {
-        //let healthLevel = dungeon_crawler.log.getHealthText(healthValue);
-        //let damageLevel = dungeon_crawler.log.getDamageText(damageValue);
-        //let protectionLevel = dungeon_crawler.log.getProtectionText(protectionValue);
+        //let healthLevel = dungeon_crawler.log_text.getHealthText(healthValue);
+        //let damageLevel = dungeon_crawler.log_text.getDamageText(damageValue);
+        //let protectionLevel = dungeon_crawler.log_text.getProtectionText(protectionValue);
 
         //return `You encounter a ${ damageLevel } ${ name } wearing ${ protectionLevel } in ${ healthLevel } health.`;
 

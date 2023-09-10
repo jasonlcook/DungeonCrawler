@@ -11,6 +11,8 @@
 
     eventBindings: null,
 
+    logs: new Logs(),
+
     currentLevel: null,
     adventurer: null,
     currentEnemy: null,

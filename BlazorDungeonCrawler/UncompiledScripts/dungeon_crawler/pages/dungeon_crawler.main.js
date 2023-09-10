@@ -1,6 +1,7 @@
 ﻿dungeon_crawler.main = {
     startup() {
-        //generate adventurer
+
+
         dungeon_crawler.main.generateAdventurer();
         dungeon_crawler.main.setAdventurerDetails();
 
@@ -207,12 +208,6 @@
 
         dungeon_crawler.core.outputError(`Unexpected loot table role "${value}"`);
         return dungeon_crawler.core.globals.tileTypes['unknown'];
-    },
-
-    //  Story
-    //      Adventurer
-    startingAdventurerText() {
-        dungeon_crawler.log.generateStartingAdventurerText(dungeon_crawler.core.globals.adventurer.getHealthText(), dungeon_crawler.core.globals.adventurer.getDamageText(), dungeon_crawler.core.globals.adventurer.getProtectionText());
     },
 
     //Dice
@@ -445,95 +440,114 @@
     },
 
     //Log
-    setLog(message) {
-        $('#log').prepend(`<div class="entry">${message}</div>`);
+    //  Story
+    //      Adventurer
+    startingAdventurerText() {
+        let message = dungeon_crawler.log_text.generateStartingAdventurerText(dungeon_crawler.core.globals.adventurer.getHealthText(), dungeon_crawler.core.globals.adventurer.getDamageText(), dungeon_crawler.core.globals.adventurer.getProtectionText());
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //  Adventurer
     //      Weapon
     //          Pickup
     setWeaponUseText(type, condition, weaponValue) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponValuenUseText(type, condition, weaponValue));
+        let message = dungeon_crawler.log_text.generateWeaponValuenUseText(type, condition, weaponValue);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //          Discard
     setWeaponDiscardText(type, condition, weaponValue) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponDiscardText(type, condition, weaponValue));
+        let message = dungeon_crawler.log_text.generateWeaponDiscardText(type, condition, weaponValue);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Armour
     //          Pickup
     setProtectionUseText(type, condition, armourValue) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionUseText(type, condition, armourValue));
+        let message = dungeon_crawler.log_text.generateProtectionUseText(type, condition, armourValue);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //          Discard
     setProtectionDiscardText(type, condition, armourValue) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionDiscardText(type, condition, armourValue));
+        let message = dungeon_crawler.log_text.generateProtectionDiscardText(type, condition, armourValue);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Potion
     //          Use
     usePotionText(potionType, potionSize, potionDuration) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateUsePotionText(potionType, potionSize, potionDuration));
+        let message = dungeon_crawler.log_text.generateUsePotionText(potionType, potionSize, potionDuration);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //          Heal
     usePotionHealingText(regainedHealth) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generatePotionHealingText(regainedHealth));
+        let message = dungeon_crawler.log_text.generatePotionHealingText(regainedHealth);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Combat
     adventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds));
+        let message = dungeon_crawler.log_text.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Death
     adventurerDeathText(enemyType) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerDeathText(enemyType));
+        let message = dungeon_crawler.log_text.generateAdventurerDeathText(enemyType);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //  Stairs
     //      Down
     stairsDownText(level) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsDownText(level));
+        let message = dungeon_crawler.log_text.generateStairsDownText(level);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Up
     stairsUpText(level) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsUpText(level));
+        let message = dungeon_crawler.log_text.generateStairsUpText(level);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //  MacGuffin
     //      Pickup
     macGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMacGuffinText());
+        let message = dungeon_crawler.log_text.generateMacGuffinText();
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Exit without
     exitWithoutMacGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithoutMacGuffinText());
+        let message = dungeon_crawler.log_text.generateExitWithoutMacGuffinText();
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Exit with
     exitWithMacGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithMacGuffinText());
+        let message = dungeon_crawler.log_text.generateExitWithMacGuffinText();
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //  Monster
     //      Combat
     monsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection));
+        let message = dungeon_crawler.log_text.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Attack
     enemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds));
+        let message = dungeon_crawler.log_text.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     },
 
     //      Death
     enemyDeathText(enemyType) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyDeathText(enemyType));
+        let message = dungeon_crawler.log_text.generateEnemyDeathText(enemyType);
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
     }
 };
 
