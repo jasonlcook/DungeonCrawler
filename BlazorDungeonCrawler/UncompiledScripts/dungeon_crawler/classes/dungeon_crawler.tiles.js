@@ -63,11 +63,11 @@
         //deselect previous tile
         let previousIndex = this._currentIndex;
         let previousTile = this.get(previousIndex);
-        previousTile.setCurrent(false) ;
+        previousTile.setCurrent(false);
 
         this._currentIndex = selectedTile.getIndex();
         selectedTile.setCurrent(true);
-        selectedTile.setHidden(false)  ;
+        selectedTile.setHidden(false);
 
         let selectedTileType = selectedTile.getType();
 
@@ -108,7 +108,7 @@
                     break;
             }
 
-            selectedTile.setType(nextTileType) ;
+            selectedTile.setType(nextTileType);
         } else {
             //reentering a tile
             if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
@@ -120,7 +120,7 @@
                     return;
                 }
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
-                let previouslevel = dungeon_crawler.core.globals.currentLevel.getPreviouslevel(); 
+                let previouslevel = dungeon_crawler.core.globals.currentLevel.getPreviouslevel();
 
                 dungeon_crawler.main.generateLevel(previouslevel);
 
@@ -137,10 +137,15 @@
 
         if (dungeon_crawler.core.globals.InCombat) {
             selectedTile.setType(dungeon_crawler.main.combat());
+
+            if (!dungeon_crawler.core.globals.adventurer.isAlive()) {
+                dungeon_crawler.main.endGamge();
+                return;
+            }
         }
 
         if (selectedTile.getType() == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
-            
+
             let nextlevel = dungeon_crawler.core.globals.currentLevel.getNextlevel();
 
             dungeon_crawler.main.generateLevel(nextlevel);
@@ -237,7 +242,7 @@
 
         for (var i = 0; i < this._tiles.length; i++) {
             tile = this._tiles[i];
-            tile.setSelectable(false) ;
+            tile.setSelectable(false);
 
             currentTileRow = tile.getRow();
             previousTileRow = currentTileRow - 1;
@@ -283,7 +288,7 @@
         let tile;
         for (var i = 0; i < this._tiles.length; i++) {
             tile = this._tiles[i];
-            tile.setSelectable(false) ;
+            tile.setSelectable(false);
         }
     }
 }; 

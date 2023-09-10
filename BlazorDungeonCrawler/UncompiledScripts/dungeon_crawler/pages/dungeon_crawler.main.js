@@ -161,12 +161,9 @@
 
         if (dungeon_crawler.core.globals.adventurer.isAlive()) {
             dungeon_crawler.main.enemyDeathText(enemyType);
-
             return dungeon_crawler.core.globals.tileTypes['fight_won'];
         } else {
             dungeon_crawler.main.adventurerDeathText(enemyType);
-            dungeon_crawler.main.endGamge();
-
             return dungeon_crawler.core.globals.tileTypes['adventurer_death'];
         }
     },
