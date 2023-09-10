@@ -1,7 +1,5 @@
 ﻿dungeon_crawler.main = {
     startup() {
-
-
         dungeon_crawler.main.generateAdventurer();
         dungeon_crawler.main.setAdventurerDetails();
 
@@ -58,6 +56,24 @@
 
         let dispacter, type, handler, name;
 
+        //log
+        //  mouse enter
+        dispacter = $('#log .entry');
+        type = 'mouseenter';
+        handler = dungeon_crawler.main.logEntryMouseEnter;
+        name = 'log_entry_mouse_enter';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        //  mouse leave
+        dispacter = $('#log .entry');
+        type = 'mouseleave';
+        handler = dungeon_crawler.main.logEntryMouseLeave;
+        name = 'log_entry_mouse_leave';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        //tile
         dispacter = $('#stage .hexagon-tile span');
         type = 'click';
         handler = dungeon_crawler.main.tileClick;
@@ -66,6 +82,33 @@
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
         dungeon_crawler.core.globals.eventBindings.bindEvents();
+    },
+
+    logEntryMouseEnter(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            let id = $(event.target).attr('data-identity');
+            let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(id);
+
+            let logActions = logEntry.getLogActions();
+
+            let logAction, letLogActionHtml = '<ol class="actions">';
+            for (var i = 0; i < logActions.length; i++) {
+                logAction = logActions[i];
+                letLogActionHtml += `<li class="action" data-identity="${logAction.getId()}">${logAction.getMessage()}</li>`;
+            }
+
+            letLogActionHtml += '</ol>';
+
+            $(event.target).append(letLogActionHtml);
+        }
+    },
+
+    logEntryMouseLeave(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            let id = $(event.target).attr('data-identity');
+
+            $(event.target).find('ol.actions').remove();
+        }
     },
 
     tileClick(event) {
@@ -104,7 +147,7 @@
         let battleLog = new LogEntry();
 
         let encounterText = dungeon_crawler.main.monsterEncounterText(adventurerInitiatesCombat, enemyType);
-        battleLog.addLogAction(new LogAction(round, encounterText, null, null));
+        battleLog.addLogAction(new LogAction(round, encounterText));
 
         let adventurerDamage = dungeon_crawler.core.globals.adventurer.getDamage();
         let adventurerProtection = dungeon_crawler.core.globals.adventurer.getProtection();
@@ -112,8 +155,9 @@
         let enemyDamage = currentEnemy.getDamage();
         let enemyProtection = currentEnemy.getProtection();
 
-        let adventurerRoll, enemyRoll, attackValue, avoidValue, wounds;
+        let adventurerRollValue, enemyRollValue, attackValue, avoidValue, wounds;
         let adventurerAttackAction, enemyAttackAction;
+        let adventurerRolls = [], enemyRolls = [];
 
         do {
             round += 1;
@@ -123,30 +167,42 @@
             wounds = null;
 
             if (adventurerInitiatesCombat) {
-                adventurerRoll = dungeon_crawler.main.roleSafeDie();
-                attackValue = adventurerRoll + adventurerDamage;
+                adventurerRolls.push(dungeon_crawler.main.roleSafeDie());
+                for (var i = 0; i < adventurerRolls.length; i++) {
+                    adventurerRollValue += adventurerRolls[i]
+                }
 
-                enemyRoll = dungeon_crawler.main.roleDangerDie();
-                avoidValue = enemyRoll + enemyProtection;
+                enemyRolls.push(dungeon_crawler.main.roleDangerDie());
+                for (var i = 0; i < enemyRolls.length; i++) {
+                    enemyRollValue += enemyRolls[i]
+                }
 
+                attackValue = adventurerRollValue + adventurerDamage;
+                avoidValue = enemyRollValue + enemyProtection;
                 if (attackValue > avoidValue) {
                     wounds = attackValue - avoidValue;
                     currentEnemy.reciveWounds(wounds);
                 }
 
-                adventurerAttackAction = dungeon_crawler.main.adventurerAttackText(round, enemyType, adventurerRoll, adventurerDamage, attackValue, enemyRoll, enemyProtection, avoidValue, wounds);
-                battleLog.addLogAction( adventurerAttackAction);
+                adventurerAttackAction = dungeon_crawler.main.adventurerAttackText(round, enemyType, adventurerRollValue, adventurerDamage, attackValue, enemyRollValue, enemyProtection, avoidValue, wounds);
+                battleLog.addLogAction(adventurerAttackAction, adventurerRolls, enemyRolls);
             }
 
             //Monster fight
             dungeon_crawler.main.resetDiceValues();
             wounds = null;
             if (currentEnemy.isAlive()) {
-                enemyRoll = dungeon_crawler.main.roleDangerDie();
-                attackValue = enemyRoll + enemyDamage;
+                enemyRolls.push(dungeon_crawler.main.roleDangerDie());
+                for (var i = 0; i < enemyRolls.length; i++) {
+                    enemyRollValue += enemyRolls[i]
+                }
+                attackValue = enemyRollValue + enemyDamage;
 
-                adventurerRoll = dungeon_crawler.main.roleSafeDie();
-                avoidValue = adventurerRoll + adventurerProtection;
+                adventurerRolls.push(dungeon_crawler.main.roleSafeDie());
+                for (var i = 0; i < adventurerRolls.length; i++) {
+                    adventurerRollValue += adventurerRolls[i]
+                }
+                avoidValue = adventurerRollValue + adventurerProtection;
 
                 if (attackValue > avoidValue) {
                     wounds = attackValue - avoidValue;
@@ -162,8 +218,8 @@
                     dungeon_crawler.main.updateAdventurerProtection();
                 }
 
-                enemyAttackAction = dungeon_crawler.main.enemyAttackText(round, enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds);
-                battleLog.addLogAction( enemyAttackAction);
+                enemyAttackAction = dungeon_crawler.main.enemyAttackText(round, enemyType, enemyRollValue, enemyDamage, attackValue, adventurerRollValue, adventurerProtection, avoidValue, wounds);
+                battleLog.addLogAction(enemyAttackAction, enemyRolls, adventurerRolls);
             }
 
             adventurerInitiatesCombat = true;
@@ -176,19 +232,19 @@
         let deathText, battleTileResult;
         if (dungeon_crawler.core.globals.adventurer.isAlive()) {
             deathText = dungeon_crawler.main.enemyDeathText(enemyType);
-            battleLog.addLogAction(new LogAction(round, deathText, null, null));
+            battleLog.addLogAction(new LogAction(round, deathText));
             battleLog.setTitle(deathText);
 
-            battleTileResult = dungeon_crawler.core.globals.tileTypes['fight_won'];      
+            battleTileResult = dungeon_crawler.core.globals.tileTypes['fight_won'];
         } else {
             deathText = dungeon_crawler.main.adventurerDeathText(enemyType);
-            battleLog.addLogAction(new LogAction(round, deathText, null, null));
+            battleLog.addLogAction(new LogAction(round, deathText));
             battleLog.setTitle(deathText);
 
-            battleTileResult = dungeon_crawler.core.globals.tileTypes['adventurer_death'];        
+            battleTileResult = dungeon_crawler.core.globals.tileTypes['adventurer_death'];
         }
 
-        dungeon_crawler.core.globals.logs.addEntry(battleLog); 
+        dungeon_crawler.core.globals.logs.addEntry(battleLog);
 
         return battleTileResult;
     },
@@ -309,15 +365,13 @@
     setStage() {
         $('#stage').html('').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
 
-        let tile, tileTypeClass, tileSelectableClass, tileText, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
+        let tile, tileTypeClass, tileSelectableClass, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
 
         for (var i = 0; i < tiles.length; i++) {
             tileTypeClass = 'hexagon-tile-hidden';
             tileSelectableClass = '';
 
             tile = tiles.get(i);
-
-            tileText = `${tile.getRow()} - ${tile.getColumn()}`;
 
             if (!tile.getHidden()) {
                 switch (tile.getType()) {
@@ -373,20 +427,51 @@
                 tileSelectableClass = 'hexagon-tile-selectable';
             }
 
-            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span>${tileText}</span></div>`);
+            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
         }
     },
 
     //Adventurer
     generateAdventurer() {
         let adventurer = new Adventurer();
-        adventurer.rollInitialHealth();
-        adventurer.rollInitialDamage();
-        adventurer.rollInitialProtection();
+
+        //Health
+        let healthValue = 0, healthRolls = [];
+
+        healthRolls.push(dungeon_crawler.main.roleSafeDie());
+        healthRolls.push(dungeon_crawler.main.roleSafeDie());
+
+        for (var i = 0; i < healthRolls.length; i++) {
+            healthValue += healthRolls[i]
+        }
+
+        adventurer.setInitialHealth(healthValue);
+
+        //Damage
+        let damageValue = 0, damageRolls = [];
+
+        damageRolls.push(dungeon_crawler.main.roleSafeDie());
+
+        for (var i = 0; i < damageRolls.length; i++) {
+            damageValue += damageRolls[i]
+        }
+
+        adventurer.setDamage(damageValue);
+
+        //Protection
+        let protectionValue = 0, protectionRolls = [];
+
+        protectionRolls.push(dungeon_crawler.main.roleSafeDie());
+
+        for (var i = 0; i < protectionRolls.length; i++) {
+            protectionValue += protectionRolls[i]
+        }
+
+        adventurer.setProtection(protectionValue);
 
         dungeon_crawler.core.globals.adventurer = adventurer;
 
-        dungeon_crawler.main.startingAdventurerText();
+        dungeon_crawler.main.startingAdventurerText(healthRolls, damageRolls, protectionRolls);
     },
 
     setLevelDetails() {
@@ -464,9 +549,20 @@
     //Log
     //  Story
     //      Adventurer
-    startingAdventurerText() {
+    startingAdventurerText(healthRolls, damageRolls, protectionRolls) {
+        let health = dungeon_crawler.core.globals.adventurer.getHealthBase();
+        let protection = dungeon_crawler.core.globals.adventurer.getProtectionBase();
+        let damage = dungeon_crawler.core.globals.adventurer.getDamage();
+
         let message = dungeon_crawler.log_text.generateStartingAdventurerText(dungeon_crawler.core.globals.adventurer.getHealthText(), dungeon_crawler.core.globals.adventurer.getDamageText(), dungeon_crawler.core.globals.adventurer.getProtectionText());
-        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(message));
+
+        let logEntry = new LogEntry(message)
+
+        logEntry.addLogAction(new LogAction(0, `Health roll ${health}`, healthRolls));
+        logEntry.addLogAction(new LogAction(1, `Protection roll ${protection}`, protectionRolls));
+        logEntry.addLogAction(new LogAction(2, `Damage roll ${damage}`, damageRolls));
+
+        dungeon_crawler.core.globals.logs.addEntry(logEntry);
     },
 
     //      Combat

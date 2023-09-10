@@ -26,6 +26,10 @@ class LogEntry {
         return this._id;
     }
 
+    getLogActions() {
+        return this._logActions;
+    }
+
     addLogAction(actions) {
         if (actions !== null) {
             this._logActions.push(actions);

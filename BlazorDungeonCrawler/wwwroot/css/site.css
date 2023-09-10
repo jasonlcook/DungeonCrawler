@@ -153,6 +153,14 @@
                 margin: 0 0 5px 0;
             }
 
+                #play-area .details #log .entry ol {
+                    
+                }
+
+                    #play-area .details #log .entry ol li.action {
+                        padding: 5px 0 0 0;
+                    }
+
                 #play-area .details #log .entry .wounds-text {
                     color: red;
                 }

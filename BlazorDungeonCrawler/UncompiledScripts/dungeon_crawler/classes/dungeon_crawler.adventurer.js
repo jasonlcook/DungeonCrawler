@@ -26,10 +26,13 @@
     }
 
     //Health
-    rollInitialHealth() {
-        let health = dungeon_crawler.main.roleSafeDie() + dungeon_crawler.main.roleSafeDie();
+    setInitialHealth(health) {
         this._healthBase = health;
         this._healthInitial = health;
+    }
+
+    getHealthBase() {
+        return this._healthBase;
     }
 
     getHealth() {
@@ -131,9 +134,12 @@
     }
 
     //Protection
-    rollInitialProtection() {
-        let protection = dungeon_crawler.main.roleSafeDie();
+    setProtection(protection) {
         this._protectionBase = protection;
+    }
+
+    getProtectionBase() {
+        return this._protectionBase;
     }
 
     getProtectionText() {
@@ -211,9 +217,12 @@
     }
 
     //Damage
-    rollInitialDamage() {
-        let damage = dungeon_crawler.main.roleSafeDie();
+    setDamage(damage) {
         this._damageBase = damage;
+    }
+
+    getDamage() {
+        return this._damageBase;
     }
 
     getDamageText() {
