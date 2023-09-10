@@ -8,9 +8,10 @@
 //      -   log action *
 
 class LogAction {
-    constructor(message, safeDice, dangerDice) {
-        this.message = message;
-        this.safeDice = safeDice;
-        this.dangerDice = dangerDice;
+    constructor(index, message, safeDice, dangerDice) {
+        this._index = index;
+        this._message = message;
+        this._safeDice = safeDice;
+        this._dangerDice = dangerDice;
     }
 }; 

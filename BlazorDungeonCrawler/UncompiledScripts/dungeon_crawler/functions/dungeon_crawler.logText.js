@@ -5,6 +5,16 @@
         return `You have been offerd as a sacrifices to the dungeon and are in ${healthValue} health and feel ${damageValue} wearing your ${protectionValue}.`;
     },
 
+    //      Combat
+    generateMonsterEncounterText(adventurerInitiatesCombat, name) {
+        let message = `A ${name} surprises you.`;
+        if (adventurerInitiatesCombat) {
+            message = `You surprise a ${name}.`;
+        }
+
+        return message;
+    },
+
     //          Weapon
     //              Pickup
     generateWeaponValuenUseText(type, condition, weaponValue) {
@@ -160,22 +170,6 @@
     },
 
     //      Monster
-    //          Combat
-    generateMonsterEncounterText(adventurerInitiatesCombat, name, healthValue, damageValue, protectionValue) {
-        //let healthLevel = dungeon_crawler.log_text.getHealthText(healthValue);
-        //let damageLevel = dungeon_crawler.log_text.getDamageText(damageValue);
-        //let protectionLevel = dungeon_crawler.log_text.getProtectionText(protectionValue);
-
-        //return `You encounter a ${ damageLevel } ${ name } wearing ${ protectionLevel } in ${ healthLevel } health.`;
-
-        let message = `A ${name} surprises you.`;
-        if (adventurerInitiatesCombat) {
-            message = `You surprise a ${name}.`;
-        }
-
-        return message;
-    },
-
     //          Attack
     generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds) {
         let message = `The ${enemyType} attacks with a < span class="attack-text" > ${enemyAttackValue}</span > (${enemyRoll} + ${enemyDamage}).`;

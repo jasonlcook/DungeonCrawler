@@ -8,16 +8,16 @@
 //      -   log action
 
 class Logs {
-    constructor( ) {
+    constructor() {
         this._logs = [];
     }
 
     addEntry(LogEntry) {
         this._logs.push(LogEntry);
-        this.setLog(LogEntry.getTile())
+        this.setLog(LogEntry.getId(), LogEntry.getTile())
     }
 
-    setLog(message) {
-        $('#log').prepend(`<div class="entry">${message}</div>`);
+    setLog(id, message) {
+        $('#log').prepend(`<div data-id="${id}" class="entry">${message}</div>`);
     }
 }; 
