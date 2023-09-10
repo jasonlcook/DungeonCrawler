@@ -61,6 +61,75 @@
         dungeon_crawler.core.outputError(`Generate health text error with value ${this._healthBase}`);
     }
 
+    reciveWounds(dammagePoints) {
+        let remainingDammagePoints = 0;
+        let shieldPotionDammage = 0;
+        let auraPotionDammage = 0;
+        let adventurerDammage = 0;
+
+        //take dammage to shield potion
+        if (this._shieldPotion > 0) {
+            if (dammagePoints < this._shieldPotion) {
+                shieldPotionDammage = dammagePoints;
+                remainingDammagePoints = 0;
+
+                //shield potion took all damage points
+                this._shieldPotion -= dammagePoints;
+            } else {
+
+                //shield potion took some damage points
+                shieldPotionDammage = this._shieldPotion;
+                remainingDammagePoints = dammagePoints - this._shieldPotion;
+
+                this._shieldPotion = 0;
+            }
+
+            dammagePoints = remainingDammagePoints;
+        }
+
+        //take dammage to aura potion
+        if (dammagePoints > 0 && this._auraPotion > 0) {
+            if (dammagePoints < this._auraPotion) {
+                auraPotionDammage = dammagePoints;
+                remainingDammagePoints = 0;
+
+                //aura potion took all damage points
+                this._auraPotion -= dammagePoints;
+            } else {
+
+                //aura potion took some damage points
+                auraPotionDammage = this._auraPotion;
+                remainingDammagePoints = dammagePoints - this._auraPotion;
+
+                this._auraPotion = 0;
+            }
+
+            dammagePoints = remainingDammagePoints;
+        }
+
+        //take dammage to Adventurer
+        if (dammagePoints > 0) {
+            adventurerDammage = dammagePoints;
+
+            let updatedHealth = this._healthBase - dammagePoints;
+
+            if (updatedHealth > 0) {
+                this._healthBase = updatedHealth;
+            } else {
+                this._healthBase = 0;
+                this._isAlive = false;
+            }
+        }
+
+        // return { 'shieldPotionDammage': shieldPotionDammage, 'auraPotionDammage': auraPotionDammage, 'adventurerDammage': adventurerDammage }
+
+        return adventurerDammage;
+    }
+
+    isAlive() {
+        return this._isAlive;
+    }
+
     //Protection
     rollInitialProtection() {
         let protection = dungeon_crawler.main.roleSafeDie();
@@ -222,8 +291,8 @@
         return this._protectionBase + this._shieldPotion + this._armourHelmet + this._armourBreastplate + this._armourVambrace + this._armourGauntlet + this._armourGreave + this._armourBoots;
     }
 
-    //Armour
-    //  Helmet
+    //  Armour
+    //      Helmet
     getArmourHelmet() {
         return this._armourHelmet;
     }
@@ -232,7 +301,7 @@
         return this._armourHelmet = value;
     }
 
-    //  Breastplate
+    //      Breastplate
     getArmourBreastplate() {
         return this._armourBreastplate;
     }
@@ -241,7 +310,7 @@
         return this._armourBreastplate = value;
     }
 
-    //  Vambrace
+    //      Vambrace
     getArmourVambrace() {
         return this._armourVambrace;
     }
@@ -250,7 +319,7 @@
         return this._armourVambrace = value;
     }
 
-    //  Gauntlet
+    //      Gauntlet
     getArmourGauntlet() {
         return this._armourGauntlet;
     }
@@ -259,7 +328,7 @@
         return this._armourGauntlet = value;
     }
 
-    //  Greave
+    //      Greave
     getArmourGreave() {
         return this._armourGreave;
     }
@@ -268,7 +337,7 @@
         return this._armourGreave = value;
     }
 
-    //  Boots
+    //      Boots
     getArmourBoots() {
         return this._armourBoots;
     }
@@ -277,7 +346,7 @@
         return this._armourBoots = value;
     }
 
-    //Shield potion
+    //  Shield potion
     setShieldPotion(value) {
         return this._shieldPotion += value;
     }
@@ -338,75 +407,5 @@
         }
 
         return message;
-    }
-
-    //Mortis
-    isAlive() {
-        return this._isAlive;
-    }
-
-    reciveWounds(dammagePoints) {
-        let remainingDammagePoints = 0;
-        let shieldPotionDammage = 0;
-        let auraPotionDammage = 0;
-        let adventurerDammage = 0;
-
-        //take dammage to shield potion
-        if (this._shieldPotion > 0) {
-            if (dammagePoints < this._shieldPotion) {
-                shieldPotionDammage = dammagePoints;
-                remainingDammagePoints = 0;
-
-                //shield potion took all damage points
-                this._shieldPotion -= dammagePoints;
-            } else {
-
-                //shield potion took some damage points
-                shieldPotionDammage = this._shieldPotion;
-                remainingDammagePoints = dammagePoints - this._shieldPotion;
-
-                this._shieldPotion = 0;
-            }
-
-            dammagePoints = remainingDammagePoints;
-        }
-
-        //take dammage to aura potion
-        if (dammagePoints > 0 && this._auraPotion > 0) {
-            if (dammagePoints < this._auraPotion) {
-                auraPotionDammage = dammagePoints;
-                remainingDammagePoints = 0;
-
-                //aura potion took all damage points
-                this._auraPotion -= dammagePoints;
-            } else {
-
-                //aura potion took some damage points
-                auraPotionDammage = this._auraPotion;
-                remainingDammagePoints = dammagePoints - this._auraPotion;
-
-                this._auraPotion = 0;
-            }
-
-            dammagePoints = remainingDammagePoints;
-        }
-
-        //take dammage to Adventurer
-        if (dammagePoints > 0) {
-            adventurerDammage = dammagePoints;
-
-            let updatedHealth = this._healthBase - dammagePoints;
-
-            if (updatedHealth > 0) {
-                this._healthBase = updatedHealth;
-            } else {
-                this._healthBase = 0;
-                this._isAlive = false;
-            }
-        }
-
-        // return { 'shieldPotionDammage': shieldPotionDammage, 'auraPotionDammage': auraPotionDammage, 'adventurerDammage': adventurerDammage }
-
-        return adventurerDammage;
     }
 }; 
