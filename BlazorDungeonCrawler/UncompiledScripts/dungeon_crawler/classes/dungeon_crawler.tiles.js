@@ -135,6 +135,10 @@
             }
         }
 
+        if (dungeon_crawler.core.globals.InCombat) {
+            selectedTile.setType(dungeon_crawler.main.combat());
+        }
+
         if (selectedTile.getType() == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
             
             let nextlevel = dungeon_crawler.core.globals.currentLevel.getNextlevel();

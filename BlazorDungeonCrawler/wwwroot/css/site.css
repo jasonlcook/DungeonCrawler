@@ -238,6 +238,14 @@
                         background-image: url('../images/tiles/fight_selected.png');
                     }
 
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-fight-won {
+                    background-image: url('../images/tiles/fight_won.png');
+                }
+
+                    #play-area .dungon #stage .hexagon-tile.hexagon-tile-fight-won.hexagon-tile-selectable {
+                        background-image: url('../images/tiles/fight_won_selected.png');
+                    }
+
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-chest {
                     background-image: url('../images/tiles/chest.png');
                 }
@@ -285,6 +293,14 @@
                     #play-area .dungon #stage .hexagon-tile.hexagon-tile-macguffin.hexagon-tile-selectable {
                         background-image: url('../images/tiles/maguffin_selected.png');
                     }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-adventurer-death {
+                    background-image: url('../images/tiles/death.png');
+                }
+
+
+
+
 
                 #play-area .dungon #stage .hexagon-tile span {
                     position: absolute;

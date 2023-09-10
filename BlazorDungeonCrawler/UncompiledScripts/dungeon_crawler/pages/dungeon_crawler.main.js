@@ -74,10 +74,6 @@
 
             if (selectedTile.getSelectable()) {
                 dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
-
-                if (dungeon_crawler.core.globals.InCombat) {
-                    dungeon_crawler.main.combat();
-                }
             }
         }
     },
@@ -164,9 +160,13 @@
 
         if (dungeon_crawler.core.globals.adventurer.isAlive()) {
             dungeon_crawler.main.enemyDeathText(enemyType);
+
+            return dungeon_crawler.core.globals.tileTypes['fight_won'];
         } else {
             dungeon_crawler.main.adventurerDeathText(enemyType);
             dungeon_crawler.main.endGamge();
+
+            return dungeon_crawler.core.globals.tileTypes['adventurer_death'];
         }
     },
 
@@ -321,6 +321,9 @@
                     case dungeon_crawler.core.globals.tileTypes['fight']:
                         tileTypeClass = 'hexagon-tile-fight';
                         break;
+                    case dungeon_crawler.core.globals.tileTypes['fight_won']:
+                        tileTypeClass = 'hexagon-tile-fight-won';
+                        break;
                     case dungeon_crawler.core.globals.tileTypes['chest']:
                         tileTypeClass = 'hexagon-tile-chest';
                         break;
@@ -338,6 +341,9 @@
                         break;
                     case dungeon_crawler.core.globals.tileTypes['macguffin']:
                         tileTypeClass = 'hexagon-tile-macguffin';
+                        break;
+                    case dungeon_crawler.core.globals.tileTypes['adventurer_death']:
+                        tileTypeClass = 'hexagon-tile-adventurer-death';
                         break;
                     default:
                     case dungeon_crawler.core.globals.tileTypes['unknown']:
