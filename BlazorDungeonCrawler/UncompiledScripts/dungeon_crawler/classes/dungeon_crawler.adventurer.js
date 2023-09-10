@@ -1,15 +1,15 @@
 ﻿class Adventurer {
-    constructor(health, damage, protection) {
-        this._healthBase = health;
-        this._healthInitial = health;
+    constructor( ) {
+        this._healthBase = 0;
+        this._healthInitial = 0;
         this._auraPotion = 0;
         this._auraPotionDuration = 0;
 
-        this._damageBase = damage;
+        this._damageBase = 0;
         this._damagePotion = 0;
         this._damagePotionDuration = 0;
 
-        this._protectionBase = protection;
+        this._protectionBase = 0;
         this._shieldPotion = 0;
         this._shieldPotionDuration = 0;
 
@@ -26,8 +26,65 @@
     }
 
     //Health
+    rollInitialHealth() {
+        let health = dungeon_crawler.main.roleSafeDie() + dungeon_crawler.main.roleSafeDie();
+        this._healthBase = health;
+        this._healthInitial = health;
+    }
+
     getHealth() {
         return this._healthBase + this._auraPotion;
+    }
+
+    getHealthText() {
+        switch (this._healthBase) {
+            case 1:
+            case 2:
+            case 3:
+                return 'poor';
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                return 'good';
+                break;
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+                return 'excellent';
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Generate health text error with value ${this._healthBase}`);
+    }
+
+    //Protection
+    rollInitialProtection() {
+        let protection = dungeon_crawler.main.roleSafeDie();
+        this._protectionBase = protection;
+    }
+
+    getProtectionText() {
+        switch (this._protectionBase) {
+            case 1:
+            case 2:
+            case 3:
+                return 'rags';
+                break;
+            case 4:
+            case 5:
+                return 'clothes';
+                break;
+            case 6:
+                //todo: add random armour parts
+                return 'armour';
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Generate protection text error with value ${this._protectionBase}`);
     }
 
     //if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
@@ -85,6 +142,30 @@
     }
 
     //Damage
+    rollInitialDamage() {
+        let damage = dungeon_crawler.main.roleSafeDie();
+        this._damageBase = damage;
+    }
+
+    getDamageText() {
+        switch (this._damageBase) {
+            case 1:
+            case 2:
+            case 3:
+                return 'vulnerable';
+                break;
+            case 4:
+            case 5:
+                return 'fine';
+                break;
+            case 6:
+                return 'powerful';
+                break;
+        }
+
+        dungeon_crawler.core.outputError(`Generate damage text error with value ${this._damageBase}`);
+    }
+
     getDamage() {
         return this._damageBase + this._weapon + this._damagePotion;
     }

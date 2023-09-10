@@ -209,6 +209,11 @@
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     },
 
+    //  Story
+    //      Adventurer
+    startingAdventurerText() {
+        dungeon_crawler.log.generateStartingAdventurerText(dungeon_crawler.core.globals.adventurer.getHealthText(), dungeon_crawler.core.globals.adventurer.getDamageText(), dungeon_crawler.core.globals.adventurer.getProtectionText());
+    },
 
     //Dice
     roleSafeDie() {
@@ -351,13 +356,14 @@
 
     //Adventurer
     generateAdventurer() {
-        let healthValue = dungeon_crawler.main.roleSafeDie() + dungeon_crawler.main.roleSafeDie();
-        let damageValue = dungeon_crawler.main.roleSafeDie();
-        let protectionValue = dungeon_crawler.main.roleSafeDie();
+        let adventurer = new Adventurer();
+        adventurer.rollInitialHealth();
+        adventurer.rollInitialDamage();
+        adventurer.rollInitialProtection();
 
-        dungeon_crawler.main.startingAdventurerText(healthValue, damageValue, protectionValue);
+        dungeon_crawler.core.globals.adventurer = adventurer;
 
-        dungeon_crawler.core.globals.adventurer = new Adventurer(healthValue, damageValue, protectionValue);
+        dungeon_crawler.main.startingAdventurerText();
     },
 
     setLevelDetails() {
@@ -433,86 +439,95 @@
     },
 
     //Log
-    //  Story
-    //      Adventurer
-    startingAdventurerText(health, damage, protection) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStartingAdventurerText(health, damage, protection));
+    setLog(message) {
+        $('#log').prepend(`<div class="entry">${message}</div>`);
     },
 
-    //          Weapon
+    //  Adventurer
+    //      Weapon
+    //          Pickup
     setWeaponUseText(type, condition, weaponValue) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponValuenUseText(type, condition, weaponValue));
     },
 
+    //          Discard
     setWeaponDiscardText(type, condition, weaponValue) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateWeaponDiscardText(type, condition, weaponValue));
     },
 
-    //          Armour
+    //      Armour
+    //          Pickup
     setProtectionUseText(type, condition, armourValue) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionUseText(type, condition, armourValue));
     },
 
+    //          Discard
     setProtectionDiscardText(type, condition, armourValue) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateProtectionDiscardText(type, condition, armourValue));
     },
 
-    //          Potion
+    //      Potion
+    //          Use
     usePotionText(potionType, potionSize, potionDuration) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateUsePotionText(potionType, potionSize, potionDuration));
     },
 
-    //              Cure
+    //          Heal
     usePotionHealingText(regainedHealth) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generatePotionHealingText(regainedHealth));
     },
 
-    //      Stairs down
-    stairsDownText(level) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsDownText(level));
-    },
-
-    //      Stairs up
-    stairsUpText(level) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsUpText(level));
-    },
-
-    //      MacGuffin
-    macGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMacGuffinText());
-    },
-
-    exitWithoutMacGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithoutMacGuffinText());
-    },
-
-    exitWithMacGuffinText() {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithMacGuffinText());
-    },
-
-    //  Combat
-    monsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection) {
-        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection));
-    },
-
+    //      Combat
     adventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds));
     },
 
+    //      Death
     adventurerDeathText(enemyType) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateAdventurerDeathText(enemyType));
     },
 
+    //  Stairs
+    //      Down
+    stairsDownText(level) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsDownText(level));
+    },
+
+    //      Up
+    stairsUpText(level) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateStairsUpText(level));
+    },
+
+    //  MacGuffin
+    //      Pickup
+    macGuffinText() {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMacGuffinText());
+    },
+
+    //      Exit without
+    exitWithoutMacGuffinText() {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithoutMacGuffinText());
+    },
+
+    //      Exit with
+    exitWithMacGuffinText() {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateExitWithMacGuffinText());
+    },
+
+    //  Monster
+    //      Combat
+    monsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection) {
+        dungeon_crawler.main.setLog(dungeon_crawler.log.generateMonsterEncounterText(adventurerInitiatesCombat, enemyType, health, damage, protection));
+    },
+
+    //      Attack
     enemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds));
     },
 
+    //      Death
     enemyDeathText(enemyType) {
         dungeon_crawler.main.setLog(dungeon_crawler.log.generateEnemyDeathText(enemyType));
-    },
-
-    setLog(message) {
-        $('#log').prepend(`<div class="entry">${message}</div>`);
     }
 };
 
