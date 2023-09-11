@@ -14,6 +14,7 @@ class LogAction {
         this._message = message;
         this._safeDice = safeDice;
         this._dangerDice = dangerDice;
+        this._logAction;
     }
 
     getId() {
@@ -34,5 +35,9 @@ class LogAction {
 
     getDangerDice() {
         return this._dangerDice;
+    }
+
+    addChildLogAction(logAction) {
+        this._logAction = logAction;
     }
 }; 

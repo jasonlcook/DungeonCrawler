@@ -9,30 +9,43 @@
 
 class Logs {
     constructor() {
-        this._logs = [];
+        this._logEntries = [];
     }
 
+    //Log entry
     addEntry(LogEntry) {
-        this._logs.push(LogEntry);
+        this._logEntries.push(LogEntry);
         this.setLog(LogEntry.getId(), LogEntry.getTile())
     }
 
     getLogEntryFromId(id) {
-        let log;
-        for (var i = 0; i < this._logs.length; i++) {
-            log = this._logs[i];
+        let logEntry;
+        for (var i = 0; i < this._logEntries.length; i++) {
+            logEntry = this._logEntries[i];
 
-            if (log.getId() == id) {
-                return log;
+            if (logEntry.getId() == id) {
+                return logEntry;
             }
         }
     }
 
+    //log action
     getLogAction() {
-        this._logs.getLogActions();
+        this._logEntries.getLogActions();
     }
 
     setLog(id, message) {
         $('#log').append(`<div data-identity="${id}" class="entry">${message}</div>`).animate({ scrollTop: $("#log").offset().top }, 2000);
+    }
+
+    getLogEntryActionFromId(logEntryId, logEntryActionId) {
+        let logEntry;
+        for (var i = 0; i < this._logEntries.length; i++) {
+            logEntry = this._logEntries[i];
+
+            if (logEntry.getId() == logEntryId) {
+                return logEntry.getLogActionFromId(logEntryActionId);
+            }
+        }
     }
 }; 

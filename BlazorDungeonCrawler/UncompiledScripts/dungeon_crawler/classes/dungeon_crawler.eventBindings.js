@@ -36,6 +36,27 @@ class EventBindings {
         dungeon_crawler.core.outputError(`Event "${name}" already bound`);
     }
 
+    removeEventBinding(name) {
+        if (typeof this._eventBindings != 'undefined' && this._eventBindings != null && this._eventBindings.length > 0) {
+            let eventBinding
+            for (let i = 0; i < this._eventBindings.length; i++) {
+                eventBinding = this._eventBindings[i];
+
+                if (eventBinding.getName() == name) {
+
+                    console.log(this._eventBindings);
+
+                    this._eventBindings.splice(i, 1);
+
+                    dungeon_crawler.core.outputError(`Event "${name}" removed from bindings`);
+
+                    console.log(this._eventBindings);
+                }
+            }
+        }
+
+    }
+
     getElementWithName(name) {
         if (typeof this._eventBindings != 'undefined' && this._eventBindings != null && this._eventBindings.length > 0) {
             let eventBinding
@@ -55,7 +76,7 @@ class EventBindings {
             for (let i = 0; i < this._eventBindings.length; i++) {
                 eventBinding = this._eventBindings[i];
 
-                if (!eventBinding.Bound) {
+                if (!eventBinding.getBound()) {
                     eventBinding.setDispacterOn();
                     eventBinding.setBound(true);
                 } else {
@@ -72,6 +93,20 @@ class EventBindings {
                 eventBinding = this._eventBindings[i];
                 eventBinding.setDispacterOff();
                 eventBinding.setBound(false);
+            }
+        }
+    }
+
+    unbindEvent(eventName) {
+        if (typeof this._eventBindings != 'undefined' && this._eventBindings != null && this._eventBindings.length > 0) {
+            let eventBinding
+            for (let i = 0; i < this._eventBindings.length; i++) {
+                eventBinding = this._eventBindings[i];
+
+                if (eventName == eventBinding.getName()) {
+                    eventBinding.setDispacterOff();
+                    eventBinding.setBound(false);
+                }
             }
         }
     }

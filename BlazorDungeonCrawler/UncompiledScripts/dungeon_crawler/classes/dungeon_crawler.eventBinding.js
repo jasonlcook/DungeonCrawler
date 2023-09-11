@@ -16,6 +16,10 @@ class EventBinding {
         this._dispacter.off(this._type, this._handler);
     }
 
+    getBound() {
+        return this._bound;
+    }
+
     setBound(value) {
         this._bound = value;
     }
@@ -23,7 +27,6 @@ class EventBinding {
     getName() {
         return this._name;
     }
-
 
     mapListener(dispacter, type, handler, name) {
         //Dispacter

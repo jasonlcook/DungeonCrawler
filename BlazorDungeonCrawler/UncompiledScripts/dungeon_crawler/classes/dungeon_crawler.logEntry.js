@@ -35,4 +35,15 @@ class LogEntry {
             this._logActions.push(actions);
         }
     }
+
+    getLogActionFromId(logActionId) {
+        let logAction;
+        for (var i = 0; i < this._logActions.length; i++) {
+            logAction = this._logActions[i];
+
+            if (logAction.getId() == logActionId) {
+                return logAction;
+            }
+        }
+    }
 }; 

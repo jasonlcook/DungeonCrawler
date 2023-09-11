@@ -57,23 +57,24 @@
         let dispacter, type, handler, name;
 
         //log
-        //  mouse enter
+        //  Entity (expand log entry's actions)
+        //      expand log actions
         dispacter = $('#log .entry');
-        type = 'mouseenter';
-        handler = dungeon_crawler.main.logEntryMouseEnter;
-        name = 'log_entry_mouse_enter';
+        type = 'click';
+        handler = dungeon_crawler.main.addActionsToLogEntry;
+        name = 'log_entry_action_expand';
 
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
-        //  mouse leave
+        //      remove log actions
         dispacter = $('#log .entry');
         type = 'mouseleave';
-        handler = dungeon_crawler.main.logEntryMouseLeave;
-        name = 'log_entry_mouse_leave';
+        handler = dungeon_crawler.main.removeActionsFromLogEntry;
+        name = 'log_entry_action_remove';
 
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
-        //tile
+        //Tile
         dispacter = $('#stage .hexagon-tile span');
         type = 'click';
         handler = dungeon_crawler.main.tileClick;
@@ -84,37 +85,125 @@
         dungeon_crawler.core.globals.eventBindings.bindEvents();
     },
 
-    logEntryMouseEnter(event) {
+    bindLogActionEvents() {
+        //dungeon_crawler.main.removeLogActionEvents();
+
+        let dispacter, type, handler, name;
+
+        //  Action (show action's dice roll)
+        //      show dice
+        dispacter = $('li.action');
+        type = 'mouseenter';
+        handler = dungeon_crawler.main.showActionRoll;
+        name = 'log_entry_action_dice_show';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        //      remove dice
+        dispacter = $('li.action');
+        type = 'mouseleave';
+        handler = dungeon_crawler.main.hideActionRoll;
+        name = 'log_entry_action_dice_hide';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        dungeon_crawler.core.globals.eventBindings.bindEvents();
+    },
+
+    removeLogActionEvents() {
+        dungeon_crawler.core.globals.eventBindings.unbindEvent('log_entry_action_dice_show');
+        dungeon_crawler.core.globals.eventBindings.removeEventBinding('log_entry_action_dice_show');
+        dungeon_crawler.core.globals.eventBindings.unbindEvent('log_entry_action_dice_hide');
+        dungeon_crawler.core.globals.eventBindings.removeEventBinding('log_entry_action_dice_show');
+    },
+
+    addActionsToLogEntry(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
-            let id = $(event.target).attr('data-identity');
-            let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(id);
+            //check if actions are already shown
+            if ($(event.target).find('.actions').length == 0) {
+                let logEntryId = $(event.target).attr('data-identity');
+                let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
 
-            let logActions = logEntry.getLogActions();
+                if (logEntry != null) {
+                    let logActions = logEntry.getLogActions();
 
-            let logAction, letLogActionHtml = '<ol class="actions">';
-            for (var i = 0; i < logActions.length; i++) {
-                logAction = logActions[i];
-                letLogActionHtml += `<li class="action" data-identity="${logAction.getId()}">${logAction.getMessage()}</li>`;
+                    if (logActions.length > 0) {
+                        let logMessage, logActionIndex, logAction, letLogActionHtml = '<ol class="actions">';
+                        for (var i = 0; i < logActions.length; i++) {
+                            logAction = logActions[i];
+                            logMessage = ''
+                            logActionIndex = logAction.getIndex();
+                            if (logActionIndex > 0) {
+                                logMessage = `${logAction.getIndex()} - `;
+                            }
+
+                            logMessage += logAction.getMessage();
+                            letLogActionHtml += `<li class="action" data-identity="${logAction.getId()}">${logMessage}</li>`;
+                        }
+
+                        letLogActionHtml += '</ol>';
+
+                        $(event.target).append(letLogActionHtml);
+
+                        dungeon_crawler.main.bindLogActionEvents();
+                    }
+                }
             }
-
-            letLogActionHtml += '</ol>';
-
-            $(event.target).append(letLogActionHtml);
         }
     },
 
-    logEntryMouseLeave(event) {
+    removeActionsFromLogEntry(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
-            let id = $(event.target).attr('data-identity');
-
-            $(event.target).find('ol.actions').remove();
+            $('#log .entry ol.actions').remove();
         }
+    },
+
+    showActionRoll(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            //check if actions are already shown
+            if ($(event.target).find('.actions').length == 0) {
+                let logEntryId = $(event.target).parents('.entry').attr('data-identity');
+                let logActionId = $(event.target).attr('data-identity');
+
+                let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
+                if (logEntry != null) {
+                    dungeon_crawler.main.resetDiceValues();
+
+                    let LogAction = logEntry.getLogActionFromId(logActionId);
+                    if (LogAction != null) {
+                        let safeDice = LogAction.getSafeDice();
+
+                        if (safeDice != null) {
+                            let safeDie;
+                            for (var i = 0; i < safeDice.length; i++) {
+                                safeDie = safeDice[i];
+                                dungeon_crawler.main.setSafeDieValue(safeDie);
+                            }
+                        }
+
+                        let dangerDice = LogAction.getDangerDice();
+
+                        if (dangerDice != null) {
+                            let dangerDie;
+                            for (var i = 0; i < dangerDice.length; i++) {
+                                dangerDie = dangerDice[i];
+                                dungeon_crawler.main.setDangerDieValue(dangerDie);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    hideActionRoll(event) {
+        dungeon_crawler.main.resetDiceValues();
     },
 
     tileClick(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
-            let id = $(event.target.parentElement).attr('data-identity');
-            let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(id);
+            let tileId = $(event.target.parentElement).attr('data-identity');
+            let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(tileId);
 
             if (selectedTile.getSelectable()) {
                 dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
@@ -157,22 +246,26 @@
 
         let adventurerRollValue, enemyRollValue, attackValue, avoidValue, wounds;
         let adventurerAttackAction, enemyAttackAction;
-        let adventurerRolls = [], enemyRolls = [];
+        let adventurerRolls, enemyRolls;
 
         do {
+            //Adventurer fight
             round += 1;
 
-            //Adventurer fight
-            dungeon_crawler.main.resetDiceValues();
-            wounds = null;
+            adventurerRollValue = 0;
+            enemyRollValue = 0;
+            attackValue = 0;
+            avoidValue = 0;
+            adventurerRolls = [];
+            enemyRolls = [];
 
             if (adventurerInitiatesCombat) {
-                adventurerRolls.push(dungeon_crawler.main.roleSafeDie());
+                adventurerRolls.push(dungeon_crawler.main.roleDSix());
                 for (var i = 0; i < adventurerRolls.length; i++) {
                     adventurerRollValue += adventurerRolls[i]
                 }
 
-                enemyRolls.push(dungeon_crawler.main.roleDangerDie());
+                enemyRolls.push(dungeon_crawler.main.roleDSix());
                 for (var i = 0; i < enemyRolls.length; i++) {
                     enemyRollValue += enemyRolls[i]
                 }
@@ -184,21 +277,26 @@
                     currentEnemy.reciveWounds(wounds);
                 }
 
-                adventurerAttackAction = dungeon_crawler.main.adventurerAttackText(round, enemyType, adventurerRollValue, adventurerDamage, attackValue, enemyRollValue, enemyProtection, avoidValue, wounds);
+                adventurerAttackAction = dungeon_crawler.main.adventurerAttackText(round, enemyType, adventurerRollValue, adventurerDamage, attackValue, enemyRollValue, enemyProtection, avoidValue, wounds, currentEnemy.getHealth());
                 battleLog.addLogAction(adventurerAttackAction, adventurerRolls, enemyRolls);
             }
 
             //Monster fight
-            dungeon_crawler.main.resetDiceValues();
-            wounds = null;
+            adventurerRollValue = 0;
+            enemyRollValue = 0;
+            attackValue = 0;
+            avoidValue = 0;
+            adventurerRolls = [];
+            enemyRolls = [];
+
             if (currentEnemy.isAlive()) {
-                enemyRolls.push(dungeon_crawler.main.roleDangerDie());
+                enemyRolls.push(dungeon_crawler.main.roleDSix());
                 for (var i = 0; i < enemyRolls.length; i++) {
                     enemyRollValue += enemyRolls[i]
                 }
                 attackValue = enemyRollValue + enemyDamage;
 
-                adventurerRolls.push(dungeon_crawler.main.roleSafeDie());
+                adventurerRolls.push(dungeon_crawler.main.roleDSix());
                 for (var i = 0; i < adventurerRolls.length; i++) {
                     adventurerRollValue += adventurerRolls[i]
                 }
@@ -218,7 +316,7 @@
                     dungeon_crawler.main.updateAdventurerProtection();
                 }
 
-                enemyAttackAction = dungeon_crawler.main.enemyAttackText(round, enemyType, enemyRollValue, enemyDamage, attackValue, adventurerRollValue, adventurerProtection, avoidValue, wounds);
+                enemyAttackAction = dungeon_crawler.main.enemyAttackText(round, enemyType, enemyRollValue, enemyDamage, attackValue, adventurerRollValue, adventurerProtection, avoidValue, wounds, dungeon_crawler.core.globals.adventurer.getHealth());
                 battleLog.addLogAction(enemyAttackAction, enemyRolls, adventurerRolls);
             }
 
@@ -253,8 +351,7 @@
         dungeon_crawler.core.globals.currentLevel.setUnselectableTiles();
         dungeon_crawler.main.setStage();
 
-        dungeon_crawler.core.globals.eventBindings.unbindEvents();
-        dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
+        dungeon_crawler.core.globals.eventBindings.unbindEvent('tile_click');
     },
 
     //Monster difficulty selection
@@ -497,29 +594,20 @@
     },
 
     resetDiceValues() {
-        dungeon_crawler.main.resetSafeDieValue();
-        dungeon_crawler.main.resetDangerDieValue();
-    },
-
-    resetSafeDieValue() {
-        $('#current-dice-safe').html('');
+        $('.dice').html('');
     },
 
     setSafeDieValue(value) {
-        let dieHTML = dungeon_crawler.main.getDieHTML(value);
-        $('#current-dice-safe').append(dieHTML);
-    },
-
-    resetDangerDieValue() {
-        $('#current-dice-danger').html('');
+        let dieHTML = dungeon_crawler.main.getDieHTML(value, 'safe');
+        $('.dice').append(dieHTML);
     },
 
     setDangerDieValue(value) {
-        let dieHTML = dungeon_crawler.main.getDieHTML(value);
-        $('#current-dice-danger').append(dieHTML);
+        let dieHTML = dungeon_crawler.main.getDieHTML(value, 'danger');
+        $('.dice').append(dieHTML);
     },
 
-    getDieHTML(value) {
+    getDieHTML(value, type) {
         let diceClass = "empty";
 
         switch (value) {
@@ -543,7 +631,7 @@
                 break;
         }
 
-        return `<div class="die ${diceClass}"></div>`;
+        return `<div class="die ${diceClass} ${type}"></div>`;
     },
 
     //Log
@@ -611,8 +699,8 @@
     },
 
     //      Combat
-    adventurerAttackText(round, enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds) {
-        let message = dungeon_crawler.log_text.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds);
+    adventurerAttackText(round, enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds, enemyHealth) {
+        let message = dungeon_crawler.log_text.generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds, enemyHealth);
         return new LogAction(round, message, adventurerRoll, enemyRoll)
     },
 
@@ -656,8 +744,8 @@
     //  Monster
     //      Combat
     //          Attack
-    enemyAttackText(round, enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds) {
-        let message = dungeon_crawler.log_text.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds);
+    enemyAttackText(round, enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds, adventurerHealth) {
+        let message = dungeon_crawler.log_text.generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, attackValue, adventurerRoll, adventurerProtection, avoidValue, wounds, adventurerHealth);
         return new LogAction(round, message, enemyRoll, adventurerRoll)
     },
 
