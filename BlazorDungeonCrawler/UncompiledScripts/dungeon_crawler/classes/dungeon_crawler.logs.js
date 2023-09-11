@@ -33,6 +33,6 @@ class Logs {
     }
 
     setLog(id, message) {
-        $('#log').prepend(`<div data-identity="${id}" class="entry">${message}</div>`);
+        $('#log').append(`<div data-identity="${id}" class="entry">${message}</div>`).animate({ scrollTop: $("#log").offset().top }, 2000);
     }
 }; 

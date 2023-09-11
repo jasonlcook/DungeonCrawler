@@ -94,26 +94,31 @@
                 break;
             case 2:
                 this._stageRows = 4;
-                this._stageCols = 5;
+                this._stageCols = 4;
             case 3:
-                this._stageRows = 6;
-                this._stageCols = 7;
-                break;
             case 4:
-                this._stageRows = 8;
-                this._stageCols = 9;
+                this._stageRows = 5;
+                this._stageCols = 5;
                 break;
             case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-                this._stageRows = 9;
-                this._stageCols = 11;
+                this._stageRows = 6;
+                this._stageCols = 6;
                 break;
+            case 6:
+                this._stageRows = 7;
+                this._stageCols = 7;
+                break;
+            case 7:
+                this._stageRows = 8;
+                this._stageCols = 7;
+                break;
+            case 8:
+                this._stageRows = 9;
+                this._stageCols = 7;
+            case 9:
             case 10:
                 this._stageRows = 10;
-                this._stageCols = 13;
+                this._stageCols = 7;
                 break;
             default:
         }
