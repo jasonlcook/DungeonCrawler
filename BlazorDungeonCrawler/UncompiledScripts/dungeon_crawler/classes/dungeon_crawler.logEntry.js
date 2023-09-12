@@ -30,9 +30,15 @@ class LogEntry {
         return this._logActions;
     }
 
-    addLogAction(actions) {
-        if (actions !== null) {
-            this._logActions.push(actions);
+    addLogAction(logAction) {
+        if (logAction !== null) {
+            this._logActions.push(logAction);
+        }
+    }
+
+    addLogActions(logActions) {
+        if (logActions !== null && logActions.length > 0) {
+            this._logActions.concat(logActions);
         }
     }
 

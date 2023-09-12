@@ -36,8 +36,4 @@ class LogAction {
     getDangerDice() {
         return this._dangerDice;
     }
-
-    addChildLogAction(logAction) {
-        this._logAction = logAction;
-    }
 }; 

@@ -83,7 +83,7 @@
             switch (nextTileType) {
                 case dungeon_crawler.core.globals.tileTypes['macguffin']:
                     dungeon_crawler.core.globals.macguffinFound = true;
-                    dungeon_crawler.main.macGuffinText();
+                    dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateMacGuffinText()));
                     break;
                 case dungeon_crawler.core.globals.tileTypes['chest']:
 
@@ -113,17 +113,17 @@
             //reentering a tile
             if (selectedTileType == dungeon_crawler.core.globals.tileTypes['entrance']) {
                 if (!dungeon_crawler.core.globals.macguffinFound) {
-                    dungeon_crawler.main.exitWithoutMacGuffinText();
+                    dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateExitWithoutMacGuffinText()));
                 } else {
-                    dungeon_crawler.main.exitWithMacGuffinText();
+                    dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateExitWithMacGuffinText()));
                     return;
                 }
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
                 let previouslevel = dungeon_crawler.core.globals.currentLevel.getPreviouslevel();
 
                 dungeon_crawler.main.generateLevel(previouslevel);
+                dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateStairsUpText(previouslevel)));
 
-                dungeon_crawler.main.stairsUpText(previouslevel);
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
                 let repeatTile = this.getRepeatTileType();
@@ -143,7 +143,9 @@
             let nextlevel = dungeon_crawler.core.globals.currentLevel.getNextlevel();
 
             dungeon_crawler.main.generateLevel(nextlevel);
-            dungeon_crawler.main.stairsDownText(nextlevel);
+
+            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateStairsDownText(nextlevel)));
+
         }
 
         if (dungeon_crawler.core.globals.adventurer.isAlive()) {

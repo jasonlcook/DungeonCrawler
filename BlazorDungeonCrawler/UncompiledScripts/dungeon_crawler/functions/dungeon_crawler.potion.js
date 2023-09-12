@@ -9,7 +9,8 @@
         let potionDuration = dungeon_crawler.potion.selectPotionDuration();
 
         dungeon_crawler.potion.usePotion(potionType, potionSize, potionDuration);
-        dungeon_crawler.main.usePotionText(potionType, potionSize, potionDuration);
+
+        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateUsePotionText(potionType, potionSize, potionDuration)));
     },
 
     //Dice role
@@ -132,7 +133,7 @@
             case dungeon_crawler.potion.potionType['aura']:
                 let regainedHealth = dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
                 if (regainedHealth > 0) {
-                    dungeon_crawler.main.usePotionHealingText(regainedHealth);
+                    dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generatePotionHealingText(regainedHealth)));
                 }
 
                 dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);

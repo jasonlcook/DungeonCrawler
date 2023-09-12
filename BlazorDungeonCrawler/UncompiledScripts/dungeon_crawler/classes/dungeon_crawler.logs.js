@@ -41,9 +41,11 @@ class Logs {
         if (logActions != null && logActions.length > 0) {
             logHtml += `<ol class="log-actions" hidden="hidden" style="display: none;">`
 
-            let logAction, logActionIndex, logMessage = '';
+            let logAction, logActionIndex, logMessage;
             for (var i = 0; i < logActions.length; i++) {
                 logAction = logActions[i];
+
+                logMessage = '';
 
                 logActionIndex = logAction.getIndex();
                 if (logActionIndex > 0) {
@@ -52,7 +54,12 @@ class Logs {
 
                 logMessage += logAction.getMessage();
 
-                logHtml += `<li class="log-action-message" data-identity="${logAction.getId()}">${logMessage}</li>`;
+                logHtml += `<li data-identity="${logAction.getId()}">`;
+                logHtml += `<span class="log-action-message">${logMessage }</span>`;
+
+
+                logHtml += `</li>`;
+
             }
             logHtml += `</ol>`
         }

@@ -72,10 +72,11 @@
         }
 
         if (keepArmour) {
-            dungeon_crawler.main.setProtectionUseText(armourType, armourCondition, armourValue);
+            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateProtectionUseText(armourType, armourCondition, armourValue)));
+
             dungeon_crawler.main.updateAdventurerProtection();
         } else {
-            dungeon_crawler.main.setProtectionDiscardText(armourType, armourCondition, armourValue);
+            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateProtectionDiscardText(armourType, armourCondition, armourValue)));
         }
     },
 

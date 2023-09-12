@@ -14,11 +14,12 @@
 
         if (weaponValue > currentWeaponValue) {
             dungeon_crawler.core.globals.adventurer.setWeapon(weaponValue);
-            dungeon_crawler.main.setWeaponUseText(weponType, weponCondition, weaponValue);
+           
+            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateWeaponValuenUseText(weponType, weponCondition, weaponValue)));
 
             dungeon_crawler.main.updateAdventurerDamage();
         } else {
-            dungeon_crawler.main.setWeaponDiscardText(weponType, weponCondition, weaponValue);
+            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateWeaponDiscardText(weponType, weponCondition, weaponValue)));
         }
     },
 
