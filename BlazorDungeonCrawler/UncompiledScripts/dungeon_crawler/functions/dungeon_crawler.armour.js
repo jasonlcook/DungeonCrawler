@@ -3,8 +3,12 @@
     armourCondition: dungeon_crawler.core.createEnum(['unknown', 'rusty', 'tarnished', 'shiny']),
 
     getArmour() {
-        let armourType = dungeon_crawler.armour.selectArmourType();
-        let armourCondition = dungeon_crawler.armour.selectArmourCondition();
+
+        let armourTypeValue = dungeon_crawler.main.roleDSix();
+        let armourType = dungeon_crawler.armour.selectArmourType(armourTypeValue);
+
+        let armourConditionValue = dungeon_crawler.main.roleDSix();
+        let armourCondition = dungeon_crawler.armour.selectArmourCondition(armourConditionValue);
 
         let armourValue = dungeon_crawler.armour.getArmourValue(armourType, armourCondition);
 
@@ -72,11 +76,19 @@
         }
 
         if (keepArmour) {
-            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateProtectionUseText(armourType, armourCondition, armourValue)));
+            let logEntry = new LogEntry(dungeon_crawler.log_text.generateProtectionUseText(armourType, armourCondition));
+
+            logEntry.addLogAction(new LogAction(0, `Armour type "${armourType}" (${armourTypeValue})`, [armourTypeValue]));
+            logEntry.addLogAction(new LogAction(0, `Armour condition "${armourCondition}" (${armourConditionValue})`, [armourConditionValue]));
+            logEntry.addLogAction(new LogAction(0, `Armour value "${armourValue}" (${armourValue})`, [armourValue]));
+
+            dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
             dungeon_crawler.main.updateAdventurerProtection();
         } else {
-            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateProtectionDiscardText(armourType, armourCondition, armourValue)));
+            let logEntry = new LogEntry(dungeon_crawler.log_text.generateProtectionDiscardText(armourType, armourCondition))
+
+            dungeon_crawler.core.globals.logs.addEntry(logEntry);
         }
     },
 
@@ -88,9 +100,7 @@
     //      4:      Gauntlet
     //      5:      Helmet
     //      6:      Breastplate
-    selectArmourType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectArmourType(value) {
         switch (value) {
             case 1:
                 return dungeon_crawler.armour.armourType['boots'];
@@ -120,9 +130,7 @@
     //      1 - 2:  Rusty
     //      3 - 5:  Tarnished
     //      6:      Shiny
-    selectArmourCondition() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectArmourCondition(value) {        
         switch (value) {
             case 1:
             case 2:

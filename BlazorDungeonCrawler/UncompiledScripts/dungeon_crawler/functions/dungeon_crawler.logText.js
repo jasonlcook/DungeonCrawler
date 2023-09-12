@@ -15,45 +15,62 @@
         return message;
     },
 
+    //      Tile
+    generateTileText(nextTileType) {
+        return `INSERT TILE TYPE (${nextTileType})`;
+    },
+
     //          Weapon
+    generateLootWeaponText() {
+        return 'You find a weapon';
+    },
+
     //              Pickup
-    generateWeaponValuenUseText(type, condition, weaponValue) {
+    generateWeaponValuenUseText(type, condition) {
         let message = 'You equip a';
 
         if (condition !== null) {
             message += ` ${condition}`;
         }
 
-        message += ` ${type} (${weaponValue}).`;
+        message += ` ${type}.`;
 
         return message;
     },
 
     //              Discard
-    generateWeaponDiscardText(type, condition, weaponValue) {
+    generateWeaponDiscardText(type, condition) {
         let message = 'You discard a';
 
         if (condition !== null) {
             message += ` ${condition}`;
         }
 
-        message += ` ${type} (${weaponValue}).`;
+        message += ` ${type}.`;
 
         return message;
     },
 
     //          Armour
+    generateLootArmourText() {
+        return 'You find some armour';
+    },
+
     //              Pickup
-    generateProtectionUseText(type, condition, armourValue) {
-        return `You equip a ${condition} ${type} (${armourValue}).`;
+    generateProtectionUseText(type, condition) {
+        return `You equip a ${condition} ${type}.`;
     },
 
     //              Discard
-    generateProtectionDiscardText(type, condition, armourValue) {
-        return `You discard a ${condition} ${type} (${armourValue}).`;
+    generateProtectionDiscardText(type, condition) {
+        return `You discard a ${condition} ${type}.`;
     },
 
     //          Potion
+    generateLootPotionText() {
+        return 'You find a potion';
+    },
+
     //              Use
     generateUsePotionText(potionType, potionSize, potionDuration) {
         return `You drink a ${potionSize} ${potionDuration} duration ${potionType} potion.`;

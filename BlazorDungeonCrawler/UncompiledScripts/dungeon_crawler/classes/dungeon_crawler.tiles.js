@@ -77,7 +77,13 @@
 
             let nextTileType = this.checkEndLevelTileDeployed();
             if (nextTileType == null) {
-                nextTileType = this.selectTileType();
+                let tileTypeValue = dungeon_crawler.main.roleDSix();
+                nextTileType = this.selectTileType(tileTypeValue);
+
+                let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(nextTileType));
+                logEntry.addLogAction(new LogAction(0, `Tile type "${nextTileType}" (${tileTypeValue})`, [tileTypeValue]));
+
+                dungeon_crawler.core.globals.logs.addEntry(logEntry);
             }
 
             switch (nextTileType) {
@@ -87,23 +93,28 @@
                     break;
                 case dungeon_crawler.core.globals.tileTypes['chest']:
 
-                    //todo: pause game on chest
-                    nextTileType = dungeon_crawler.main.selectLoot()
-
+                    let lootValue = dungeon_crawler.main.roleDSix();
+                    nextTileType = dungeon_crawler.main.selectLoot(lootValue);
+                    let logEntry;
                     switch (nextTileType) {
                         case dungeon_crawler.core.globals.tileTypes['potion']:
-                            //todo: pause game on potion
+                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootPotionText());
                             dungeon_crawler.potion.getPotion();
                             break;
+                        //todo: update tile from protection to armour
                         case dungeon_crawler.core.globals.tileTypes['protection']:
-                            //todo: pause game on protection
+                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootArmourText());
                             dungeon_crawler.armour.getArmour();
                             break;
                         case dungeon_crawler.core.globals.tileTypes['weapon']:
-                            //todo: pause game on protection
+                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootWeaponText());
                             dungeon_crawler.weapon.getWeapon();
                             break;
                     }
+
+                    logEntry.addLogAction(new LogAction(0, `You find "${nextTileType}" (${lootValue})`, [lootValue]));
+
+                    dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
                     break;
             }
@@ -126,11 +137,17 @@
 
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
-                let repeatTile = this.getRepeatTileType();
+                let repeatTileTypeValue = dungeon_crawler.main.roleDSix();
+                let repeatTile = this.getRepeatTileType(repeatTileTypeValue);
 
                 if (repeatTile != null) {
                     selectedTile.setType(repeatTile);
                 }
+
+                let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(repeatTile));
+                logEntry.addLogAction(new LogAction(0, `Tile type "${repeatTile}" (${repeatTileTypeValue})`, [repeatTileTypeValue]));
+
+                dungeon_crawler.core.globals.logs.addEntry(logEntry);
             }
         }
 
@@ -187,9 +204,7 @@
     //  1 - 2:  Monster
     //  2 - 5:  Empty
     //  6:      Chest
-    selectTileType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectTileType(value) {
         switch (value) {
             case 1:
             case 2:
@@ -212,10 +227,7 @@
 
     //  1, 2:   Monster
     //  3, 6:   No change
-    getRepeatTileType() {
-        //roll to see if tile populated
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    getRepeatTileType(value) {
         switch (value) {
             case 1:
             case 2:

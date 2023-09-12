@@ -4,13 +4,23 @@
     potionDuration: dungeon_crawler.core.createEnum(['unknown', 'short', 'medium', 'long']),
 
     getPotion() {
-        let potionType = dungeon_crawler.potion.selectPotionType();
-        let potionSize = dungeon_crawler.potion.selectPotionSize();
-        let potionDuration = dungeon_crawler.potion.selectPotionDuration();
+        let potionTypeValue = dungeon_crawler.main.roleDSix();
+        let potionType = dungeon_crawler.potion.selectPotionType(potionTypeValue);
+
+        let potionSizeValue = dungeon_crawler.main.roleDSix();
+        let potionSize = dungeon_crawler.potion.selectPotionSize(potionSizeValue);
+
+        let potionDurationValue = dungeon_crawler.main.roleDSix();
+        let potionDuration = dungeon_crawler.potion.selectPotionDuration(potionDurationValue);
 
         dungeon_crawler.potion.usePotion(potionType, potionSize, potionDuration);
 
-        dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateUsePotionText(potionType, potionSize, potionDuration)));
+        let logEntry = new LogEntry(dungeon_crawler.log_text.generateUsePotionText(potionType, potionSize, potionDuration));
+        logEntry.addLogAction(new LogAction(0, `Potion type "${potionType}" (${potionTypeValue})`, [potionTypeValue]));
+        logEntry.addLogAction(new LogAction(0, `Potion size "${potionSize}" (${potionSizeValue})`, [potionSizeValue]));
+        logEntry.addLogAction(new LogAction(0, `Potion duration "${potionDuration}" (${potionDurationValue})`, [potionDurationValue]));
+
+        dungeon_crawler.core.globals.logs.addEntry(logEntry);
     },
 
     //Dice role
@@ -18,9 +28,7 @@
     //      1 - 2:  Sheild (Protection)
     //      3 - 4:  Damage
     //      5 - 6:  Aura (Health)
-    selectPotionType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectPotionType(value) {
         switch (value) {
             case 1:
             case 2:
@@ -44,9 +52,7 @@
     //      1 - 2:  vial (small)
     //      3 - 4:  flask (medium)
     //      5 - 6:  bottle (large)
-    selectPotionSize() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectPotionSize(value) {
         switch (value) {
             case 1:
             case 2:
@@ -71,9 +77,7 @@
     //      1 - 2:  Short
     //      3 - 4:  Medium
     //      5 - 6:  Long
-    selectPotionDuration() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectPotionDuration(value) {
         switch (value) {
             case 1:
             case 2:
@@ -133,7 +137,8 @@
             case dungeon_crawler.potion.potionType['aura']:
                 let regainedHealth = dungeon_crawler.core.globals.adventurer.setAuraPotion(sizeValue);
                 if (regainedHealth > 0) {
-                    dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generatePotionHealingText(regainedHealth)));
+                    let logEntry = new LogEntry(dungeon_crawler.log_text.generatePotionHealingText(regainedHealth));
+                    dungeon_crawler.core.globals.logs.addEntry(logEntry);
                 }
 
                 dungeon_crawler.core.globals.adventurer.setAuraPotionDuration(durationValue);

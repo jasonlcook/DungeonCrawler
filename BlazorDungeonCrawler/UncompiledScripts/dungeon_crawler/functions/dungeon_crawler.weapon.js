@@ -3,10 +3,14 @@
     weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'enchanted', 'flaming']),
 
     getWeapon() {
-        let weponType = dungeon_crawler.weapon.selectWeaponType();
+        let weponTypeValue = dungeon_crawler.main.roleDSix();
+        let weponType = dungeon_crawler.weapon.selectWeaponType(weponTypeValue);
         let weponCondition = null;
+        let weponConditionValue = 0;
+
         if (weponType !== dungeon_crawler.weapon.weaponType['rock'] && weponType !== dungeon_crawler.weapon.weaponType['club']) {
-            weponCondition = dungeon_crawler.weapon.selectWeaponCondition();
+            weponConditionValue = dungeon_crawler.main.roleDSix();
+            weponCondition = dungeon_crawler.weapon.selectWeaponCondition(weponConditionValue);
         }
 
         let weaponValue = dungeon_crawler.weapon.getWeaponValue(weponType, weponCondition);
@@ -14,12 +18,21 @@
 
         if (weaponValue > currentWeaponValue) {
             dungeon_crawler.core.globals.adventurer.setWeapon(weaponValue);
-           
-            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateWeaponValuenUseText(weponType, weponCondition, weaponValue)));
+
+            let logEntry = new LogEntry(dungeon_crawler.log_text.generateWeaponValuenUseText(weponType, weponCondition));
+
+            logEntry.addLogAction(new LogAction(0, `Wepon type "${weponType}" (${weponTypeValue})`, [weponTypeValue]));
+
+            if (weponConditionValue > 0) {
+                logEntry.addLogAction(new LogAction(0, `Wepon condition "${weponCondition}" (${weponConditionValue})`, [weponConditionValue]));
+            }
+
+            dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
             dungeon_crawler.main.updateAdventurerDamage();
         } else {
-            dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateWeaponDiscardText(weponType, weponCondition, weaponValue)));
+            let logEntry = new LogEntry(dungeon_crawler.log_text.generateWeaponDiscardText(weponType, weponCondition));
+            dungeon_crawler.core.globals.logs.addEntry(logEntry);
         }
     },
 
@@ -31,9 +44,7 @@
     //      4:      Mace
     //      5:      Axe
     //      6:      Sword
-    selectWeaponType() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectWeaponType(value) {
         switch (value) {
             case 1:
                 return dungeon_crawler.weapon.weaponType['rock'];
@@ -66,9 +77,7 @@
     //      4:      Sharp
     //      5:      Enchanted
     //      6:      Flaming
-    selectWeaponCondition() {
-        let value = dungeon_crawler.main.roleSafeDie();
-
+    selectWeaponCondition(value) {
         switch (value) {
             case 1:
                 return dungeon_crawler.weapon.weaponCondition['broken'];
