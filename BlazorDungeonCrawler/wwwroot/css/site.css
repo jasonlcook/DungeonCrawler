@@ -181,6 +181,7 @@
                     #play-area .details #log .log-entry .log-actions .log-action-message {
                         margin: 5px;
                         padding: 2px 5px;
+                        display: block;
                     }
 
                     #play-area .details #log .log-entry .log-actions .log-action-message:active,
