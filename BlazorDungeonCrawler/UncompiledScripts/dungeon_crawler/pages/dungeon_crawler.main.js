@@ -59,7 +59,7 @@
         //log
         //  Entity (expand log entry's actions)
         //      expand log actions
-        dispacter = $('#log .entry');
+        dispacter = $('#log .log-entry .log-entry-message');
         type = 'click';
         handler = dungeon_crawler.main.addActionsToLogEntry;
         name = 'log_entry_action_expand';
@@ -67,12 +67,30 @@
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
         //      remove log actions
-        dispacter = $('#log .entry');
+        dispacter = $('#log .log-entry');
         type = 'mouseleave';
         handler = dungeon_crawler.main.removeActionsFromLogEntry;
         name = 'log_entry_action_remove';
 
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        //  Action (show action's dice roll)
+        //      show dice
+        dispacter = $('#log .log-entry .log-actions .log-action-message');
+        type = 'mouseenter';
+        handler = dungeon_crawler.main.showActionRoll;
+        name = 'log_entry_action_dice_show';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
+        //      remove dice
+        dispacter = $('#log .log-entry .log-actions');
+        type = 'mouseleave';
+        handler = dungeon_crawler.main.hideActionRoll;
+        name = 'log_entry_action_dice_hide';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
 
         //Tile
         dispacter = $('#stage .hexagon-tile span');
@@ -83,112 +101,54 @@
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
         dungeon_crawler.core.globals.eventBindings.bindEvents();
-    },
 
-    bindLogActionEvents() {
-        //dungeon_crawler.main.removeLogActionEvents();
-
-        let dispacter, type, handler, name;
-
-        //  Action (show action's dice roll)
-        //      show dice
-        dispacter = $('li.action');
-        type = 'mouseenter';
-        handler = dungeon_crawler.main.showActionRoll;
-        name = 'log_entry_action_dice_show';
-
-        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
-
-        //      remove dice
-        dispacter = $('li.action');
-        type = 'mouseleave';
-        handler = dungeon_crawler.main.hideActionRoll;
-        name = 'log_entry_action_dice_hide';
-
-        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
-
-        dungeon_crawler.core.globals.eventBindings.bindEvents();
-    },
-
-    removeLogActionEvents() {
-        dungeon_crawler.core.globals.eventBindings.unbindEvent('log_entry_action_dice_show');
-        dungeon_crawler.core.globals.eventBindings.removeEventBinding('log_entry_action_dice_show');
-        dungeon_crawler.core.globals.eventBindings.unbindEvent('log_entry_action_dice_hide');
-        dungeon_crawler.core.globals.eventBindings.removeEventBinding('log_entry_action_dice_show');
     },
 
     addActionsToLogEntry(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
             //check if actions are already shown
-            if ($(event.target).find('.actions').length == 0) {
-                let logEntryId = $(event.target).attr('data-identity');
-                let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
-
-                if (logEntry != null) {
-                    let logActions = logEntry.getLogActions();
-
-                    if (logActions.length > 0) {
-                        let logMessage, logActionIndex, logAction, letLogActionHtml = '<ol class="actions">';
-                        for (var i = 0; i < logActions.length; i++) {
-                            logAction = logActions[i];
-                            logMessage = ''
-                            logActionIndex = logAction.getIndex();
-                            if (logActionIndex > 0) {
-                                logMessage = `${logAction.getIndex()} - `;
-                            }
-
-                            logMessage += logAction.getMessage();
-                            letLogActionHtml += `<li class="action" data-identity="${logAction.getId()}">${logMessage}</li>`;
-                        }
-
-                        letLogActionHtml += '</ol>';
-
-                        $(event.target).append(letLogActionHtml);
-
-                        dungeon_crawler.main.bindLogActionEvents();
-                    }
-                }
+            let $logActions = $(event.target).siblings('.log-actions');
+            if ($logActions.length > 0) {
+                $logActions.show().removeAttr('hidden');
             }
         }
     },
 
+    //hide all log actions
     removeActionsFromLogEntry(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
-            $('#log .entry ol.actions').remove();
+            $('#log .log-entry ol.log-actions').hide().attr("hidden", true);
         }
     },
 
     showActionRoll(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
-            //check if actions are already shown
-            if ($(event.target).find('.actions').length == 0) {
-                let logEntryId = $(event.target).parents('.entry').attr('data-identity');
-                let logActionId = $(event.target).attr('data-identity');
+            let logEntryId = $(event.target).parents('.log-entry').attr('data-identity');
+            let logActionId = $(event.target).attr('data-identity');
 
-                let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
-                if (logEntry != null) {
-                    dungeon_crawler.main.resetDiceValues();
+            let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
+            if (logEntry != null) {
+                dungeon_crawler.main.resetDiceValues();
 
-                    let LogAction = logEntry.getLogActionFromId(logActionId);
-                    if (LogAction != null) {
-                        let safeDice = LogAction.getSafeDice();
+                let LogAction = logEntry.getLogActionFromId(logActionId);
+                if (LogAction != null) {
+                    let safeDice = LogAction.getSafeDice();
 
-                        if (safeDice != null) {
-                            let safeDie;
-                            for (var i = 0; i < safeDice.length; i++) {
-                                safeDie = safeDice[i];
-                                dungeon_crawler.main.setSafeDieValue(safeDie);
-                            }
+                    if (safeDice != null) {
+                        let safeDie;
+                        for (var i = 0; i < safeDice.length; i++) {
+                            safeDie = safeDice[i];
+                            dungeon_crawler.main.setSafeDieValue(safeDie);
                         }
+                    }
 
-                        let dangerDice = LogAction.getDangerDice();
+                    let dangerDice = LogAction.getDangerDice();
 
-                        if (dangerDice != null) {
-                            let dangerDie;
-                            for (var i = 0; i < dangerDice.length; i++) {
-                                dangerDie = dangerDice[i];
-                                dungeon_crawler.main.setDangerDieValue(dangerDie);
-                            }
+                    if (dangerDice != null) {
+                        let dangerDie;
+                        for (var i = 0; i < dangerDice.length; i++) {
+                            dangerDie = dangerDice[i];
+                            dungeon_crawler.main.setDangerDieValue(dangerDie);
                         }
                     }
                 }
@@ -345,13 +305,6 @@
         dungeon_crawler.core.globals.logs.addEntry(battleLog);
 
         return battleTileResult;
-    },
-
-    endGamge() {
-        dungeon_crawler.core.globals.currentLevel.setUnselectableTiles();
-        dungeon_crawler.main.setStage();
-
-        dungeon_crawler.core.globals.eventBindings.unbindEvent('tile_click');
     },
 
     //Monster difficulty selection

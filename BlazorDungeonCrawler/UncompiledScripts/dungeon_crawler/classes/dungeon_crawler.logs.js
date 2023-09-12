@@ -15,7 +15,7 @@ class Logs {
     //Log entry
     addEntry(LogEntry) {
         this._logEntries.push(LogEntry);
-        this.setLog(LogEntry.getId(), LogEntry.getTile())
+        this.setLog(LogEntry.getId(), LogEntry.getTile(), LogEntry.getLogActions());
     }
 
     getLogEntryFromId(id) {
@@ -34,8 +34,32 @@ class Logs {
         this._logEntries.getLogActions();
     }
 
-    setLog(id, message) {
-        $('#log').append(`<div data-identity="${id}" class="entry">${message}</div>`).animate({ scrollTop: $("#log").offset().top }, 2000);
+    setLog(id, message, logActions) {
+        let logHtml = `<div data-identity="${id}" class="log-entry">`
+        logHtml += `<span class='log-entry-message'>${message}</span>`
+
+        if (logActions != null && logActions.length > 0) {
+            logHtml += `<ol class="log-actions" hidden="hidden" style="display: none;">`
+
+            let logAction, logActionIndex, logMessage = '';
+            for (var i = 0; i < logActions.length; i++) {
+                logAction = logActions[i];
+
+                logActionIndex = logAction.getIndex();
+                if (logActionIndex > 0) {
+                    logMessage = `${logAction.getIndex()} - `;
+                }
+
+                logMessage += logAction.getMessage();
+
+                logHtml += `<li class="log-action-message" data-identity="${logAction.getId()}">${logMessage}</li>`;
+            }
+            logHtml += `</ol>`
+        }
+        logHtml += `</div>`
+
+
+        $('#log').append(logHtml).animate({ scrollTop: $("#log").offset().top }, 2000);
     }
 
     getLogEntryActionFromId(logEntryId, logEntryActionId) {

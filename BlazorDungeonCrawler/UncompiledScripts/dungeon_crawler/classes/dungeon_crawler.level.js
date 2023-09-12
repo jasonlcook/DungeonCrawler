@@ -29,11 +29,6 @@
         this._tiles.setSelectables()
     }
 
-    //  Set unselectable
-    setUnselectableTiles() {
-        this._tiles.unsetSelectables();
-    }
-
     //  Set movement
     tilesMovement(selectedTile) {
         this._tiles.movement(selectedTile);

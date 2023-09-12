@@ -64,8 +64,10 @@
             #play-area .details .adventurer .dice {
                 padding: 10px;
                 display: flex;
-                justify-content: space-between;
                 flex-wrap: wrap;
+                justify-content: space-around;
+                align-content: space-around;
+                align-items: center;
             }
 
                 #play-area .details .adventurer .dice .die {
@@ -143,8 +145,8 @@
             overflow: hidden scroll;
         }
 
-            #play-area .details #log .entry {
-                padding: 5px 0px;
+            #play-area .details #log .log-entry {
+                padding: 0 0 5px 0px;
                 border: none;
                 border-color: rgb(0, 0, 0);
                 border-width: 0 0 1px 0;
@@ -152,17 +154,23 @@
                 margin: 0 10px;
             }
 
-                #play-area .details #log .entry:active,
-                #play-area .details #log .entry:hover,
-                #play-area .details #log .entry:focus {
+                #play-area .details #log .log-entry:active,
+                #play-area .details #log .log-entry:hover,
+                #play-area .details #log .log-entry:focus {
                     background-color: aliceblue;
                 }
 
-                #play-area .details #log .entry:last-child {
+
+                #play-area .details #log .log-entry .log-entry-message {
+                    padding: 5px 10px;
+                    display: block;
+                }
+
+                #play-area .details #log .log-entry:last-child {
                     border: none;
                 }
 
-                #play-area .details #log .entry ol {
+                #play-area .details #log .log-entry .log-actions {
                     margin: 5px 0px;
                     border-color: rgb(0, 0, 0);
                     border-style: solid;
@@ -170,24 +178,16 @@
                     background-color: #fff;
                 }
 
-                    #play-area .details #log .entry ol li.action {
+                    #play-area .details #log .log-entry .log-actions .log-action-message {
                         margin: 5px;
                         padding: 2px 5px;
                     }
 
-                        #play-area .details #log .entry ol li.action:active,
-                        #play-area .details #log .entry ol li.action:hover,
-                        #play-area .details #log .entry ol li.action:focus {
-                            background-color: antiquewhite;
-                        }
-
-                #play-area .details #log .entry .wounds-text {
-                    color: red;
-                }
-
-                #play-area .details #log .entry .attack-text {
-                    font-weight: bold;
-                }
+                    #play-area .details #log .log-entry .log-actions .log-action-message:active,
+                    #play-area .details #log .log-entry .log-actions .log-action-message:hover,
+                    #play-area .details #log .log-entry .log-actions .log-action-message:focus {
+                        background-color: antiquewhite;
+                    }
 
     #play-area .dungon {
         border-color: rgb(0, 0, 0);
