@@ -115,7 +115,6 @@
                 if (!dungeon_crawler.core.globals.macguffinFound) {
                     dungeon_crawler.main.exitWithoutMacGuffinText();
                 } else {
-                    dungeon_crawler.main.endGamge();
                     dungeon_crawler.main.exitWithMacGuffinText();
                     return;
                 }
@@ -137,11 +136,6 @@
 
         if (dungeon_crawler.core.globals.InCombat) {
             selectedTile.setType(dungeon_crawler.main.combat());
-
-            if (!dungeon_crawler.core.globals.adventurer.isAlive()) {
-                dungeon_crawler.main.endGamge();
-                return;
-            }
         }
 
         if (selectedTile.getType() == dungeon_crawler.core.globals.tileTypes['stairs_descending']) {
@@ -152,7 +146,12 @@
             dungeon_crawler.main.stairsDownText(nextlevel);
         }
 
-        this.setSelectables();
+        if (dungeon_crawler.core.globals.adventurer.isAlive()) {
+            this.setSelectables();
+        } else {
+            this.unsetSelectables();
+        }
+
         dungeon_crawler.main.setStage();
 
         dungeon_crawler.core.globals.eventBindings.unbindEvents();
