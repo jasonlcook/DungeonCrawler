@@ -35,15 +35,30 @@ class Logs {
     }
 
     setLog(id, message, logActions) {
+        dungeon_crawler.main.resetDiceValues();
+
         let logHtml = `<div data-identity="${id}" class="log-entry">`
         logHtml += `<span class='log-entry-message'>${message}</span>`
 
         if (logActions != null && logActions.length > 0) {
             logHtml += `<ol class="log-actions" hidden="hidden" style="display: none;">`
 
-            let logAction, logActionIndex, logMessage;
+            let logAction, logActionSafeDice, logActionDangerDice, logActionIndex, logMessage;
             for (var i = 0; i < logActions.length; i++) {
                 logAction = logActions[i];
+
+                //Dice
+                //  Safe
+                logActionSafeDice = logAction.getSafeDice();
+                if (typeof logActionSafeDice != 'undefined' && logActionSafeDice != null && logActionSafeDice.length > 0 ) {
+                    dungeon_crawler.main.setSafeDice(logActionSafeDice);
+                }
+
+                //  Danger
+                logActionDangerDice = logAction.getDangerDice();
+                if (typeof logActionDangerDice != 'undefined' && logActionDangerDice != null && logActionDangerDice.length > 0) {
+                    dungeon_crawler.main.setDangerDice(logActionDangerDice);
+                }
 
                 logMessage = '';
 
@@ -55,9 +70,7 @@ class Logs {
                 logMessage += logAction.getMessage();
 
                 logHtml += `<li data-identity="${logAction.getId()}">`;
-                logHtml += `<span class="log-action-message">${logMessage }</span>`;
-
-
+                logHtml += `<span class="log-action-message">${logMessage}</span>`;
                 logHtml += `</li>`;
 
             }
@@ -65,8 +78,7 @@ class Logs {
         }
         logHtml += `</div>`
 
-
-        $('#log').append(logHtml).animate({ scrollTop: $("#log").offset().top }, 2000);
+        $('#log').append(logHtml).animate({ scrollTop: $("#log")[0].scrollHeight }, 500);
     }
 
     getLogEntryActionFromId(logEntryId, logEntryActionId) {

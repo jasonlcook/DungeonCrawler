@@ -73,7 +73,15 @@
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
         //log
-        //  Entity (expand log entry's actions)
+        //  Entry
+        //      Show log actions dice rolls
+        dispacter = $('#log .log-entry .log-entry-message');
+        type = 'mouseenter';
+        handler = dungeon_crawler.main.showLogActionsDice;
+        name = 'log_entry_action_dice';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
         //      expand log actions
         dispacter = $('#log .log-entry .log-entry-message');
         type = 'click';
@@ -298,6 +306,33 @@
                     }
                 }
                 break;
+        }
+    },
+
+    showLogActionsDice(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            dungeon_crawler.main.resetDiceValues();
+
+            let logEntryId = $(event.target).parents('.log-entry').attr('data-identity');
+            let logEntry = dungeon_crawler.core.globals.logs.getLogEntryFromId(logEntryId);
+
+            let logAction, logActions = logEntry.getLogActions();
+            for (var i = 0; i < logActions.length; i++) {
+                logAction = logActions[i];
+
+                //Dice
+                //  Safe
+                logActionSafeDice = logAction.getSafeDice();
+                if (typeof logActionSafeDice != 'undefined' && logActionSafeDice != null && logActionSafeDice.length > 0) {
+                    dungeon_crawler.main.setSafeDice(logActionSafeDice);
+                }
+
+                //  Danger
+                logActionDangerDice = logAction.getDangerDice();
+                if (typeof logActionDangerDice != 'undefined' && logActionDangerDice != null && logActionDangerDice.length > 0) {
+                    dungeon_crawler.main.setDangerDice(logActionDangerDice);
+                }
+            }
         }
     },
 
@@ -647,7 +682,7 @@
                 tileSelectableClass = 'hexagon-tile-selectable';
             }
 
-            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span>${tile.getRow()} - ${tile.getColumn()}</span></div>`);
+            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
         }
     },
 
@@ -730,9 +765,25 @@
         $('.dice').html('');
     },
 
+    setSafeDice(values) {
+        let value;
+        for (var i = 0; i < values.length; i++) {
+            value = values[i];
+            dungeon_crawler.main.setSafeDieValue(value);
+        }
+    },
+
     setSafeDieValue(value) {
         let dieHTML = dungeon_crawler.main.getDieHTML(value, 'safe');
         $('.dice').append(dieHTML);
+    },
+
+    setDangerDice(values) {
+        let value;
+        for (var i = 0; i < values.length; i++) {
+            value = values[i];
+            dungeon_crawler.main.setDangerDieValue(value);
+        }
     },
 
     setDangerDieValue(value) {
@@ -764,7 +815,9 @@
                 break;
         }
 
-        return `<div class="die ${diceClass} ${type}"></div>`;
+
+
+        return `<div class="die ${diceClass} ${type}" style="rotate: ${Math.floor(Math.random() * (180))}deg"></div>`;
     }
 };
 

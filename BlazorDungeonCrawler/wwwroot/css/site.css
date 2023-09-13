@@ -100,7 +100,7 @@
                     background-repeat: no-repeat;
                     background-position: center;
                     background-size: contain;
-                    padding: 0 0 5px 0;
+                    margin: 5px;
                 }
 
                     #play-area .details .adventurer .dice .die.safe {
@@ -167,6 +167,7 @@
             margin: 10px 10px 10px 0;
             height: 140px;
             overflow: hidden scroll;
+            width: 558px;
         }
 
             #play-area .details #log .log-entry {
