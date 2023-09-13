@@ -32,7 +32,7 @@
         this._hidden = value;
     }
 
-    getHidden() {
+    isHidden() {
         return this._hidden;
     }
 
@@ -64,7 +64,7 @@
          this._selectable = value;
     }
 
-    getSelectable() {
+    isSelectable() {
         return this._selectable;
     }
 }; 

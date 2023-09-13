@@ -6,6 +6,13 @@
         dungeon_crawler.main.generateLevel(1);
     },
 
+    restart() {
+        dungeon_crawler.core.globals.logs = new Logs();
+        dungeon_crawler.core.globals.levels = [];
+        $('#log').html('');
+        dungeon_crawler.main.startup();
+    },
+
     generateLevel(value) {
         let currentVisitedLevel = null;
         let visitedLevel, visitedLevels = dungeon_crawler.core.globals.levels;
@@ -56,6 +63,15 @@
 
         let dispacter, type, handler, name;
 
+        //Button
+        //  Advance
+        dispacter = $('#advance');
+        type = 'click';
+        handler = dungeon_crawler.main.advanceAdventurer;
+        name = 'auto_advance_adventurer';
+
+        dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
+
         //log
         //  Entity (expand log entry's actions)
         //      expand log actions
@@ -100,7 +116,189 @@
         dungeon_crawler.core.globals.eventBindings.addEventBinding(dispacter, type, handler, name);
 
         dungeon_crawler.core.globals.eventBindings.bindEvents();
+    },
 
+    advanceAdventurer(event) {
+        if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
+            if (dungeon_crawler.core.globals.adventurer.isAlive()) {
+                let tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
+                let selectablesTiles = tiles.getSelectables();
+
+                let selectedTile = null;
+
+                if (!dungeon_crawler.core.globals.macguffinFound) {
+                    //randomly selecte and hidden tile from the selectables
+                    let selectablesTile, selectableHiddenTiles = [];
+                    for (var i = 0; i < selectablesTiles.length; i++) {
+                        selectablesTile = selectablesTiles[i];
+
+                        if (selectablesTile.isHidden()) {
+                            selectableHiddenTiles.push(selectablesTile);
+                        }
+                    }
+
+                    selectablesTileIndex = Math.floor(Math.random() * (selectablesTiles.length));
+                    if (selectableHiddenTiles.length > 0) {
+                        selectablesTileIndex = Math.floor(Math.random() * (selectableHiddenTiles.length));
+                        selectedTile = selectableHiddenTiles[selectablesTileIndex];
+                    }
+                } else {
+                    //plot a course between current position and stairs
+                    let spawnCoordinates = dungeon_crawler.core.globals.currentLevel.getSpawnCoordinates();
+                    let spawnRow = spawnCoordinates['row'];
+                    let spawnColumn = spawnCoordinates['column'];
+
+                    let currentTile = tiles.get(tiles.getCurrentIndex());
+                    let currentRow = currentTile.getRow();
+                    let currentColumn = currentTile.getColumn();
+
+                    let directionOfTravel = dungeon_crawler.main.getDirectionOfTravel(spawnRow, spawnColumn, currentRow, currentColumn);
+
+                    console.log('directionOfTravel: ' + directionOfTravel);
+
+                    let selectablesTile, selectablesTileRow, selectablesTileColumn;
+                    for (var i = 0; i < selectablesTiles.length; i++) {
+                        selectablesTile = selectablesTiles[i];
+
+                        selectablesTileRow = selectablesTile.getRow();
+                        selectablesTileColumn = selectablesTile.getColumn();
+
+                        if (dungeon_crawler.main.matchesDirectionOfTravel(directionOfTravel, selectablesTileRow, selectablesTileColumn, currentRow, currentColumn)) {
+                            selectedTile = selectablesTile;
+                            break;
+                        }
+                    }
+                }
+
+                //if no desirable tile is slected just travel at random
+                if (selectedTile == null) {
+                    selectablesTileIndex = Math.floor(Math.random() * (selectablesTiles.length));
+                    selectedTile = selectablesTiles[selectablesTileIndex];
+                }
+
+                dungeon_crawler.main.moveToTile(selectedTile.getId());
+            } else {
+                dungeon_crawler.main.restart();
+            }
+        }
+    },
+
+    getDirectionOfTravel(spawnRow, spawnColumn, currentRow, currentColumn) {
+        if (currentColumn == spawnColumn) {
+            if (currentRow > spawnRow) {
+                return 'N';
+            } else {
+                return 'S';
+            }
+        } else if (currentColumn < spawnColumn) {
+            if (currentColumn % 2) {
+                //long one
+                if (currentRow > spawnRow) {
+                    return 'NE';
+                } else {
+                    return 'SE';
+                }
+            } else {
+                //short one
+                if (currentRow >= spawnRow) {
+                    return 'NE';
+                } else {
+                    return 'SE';
+                }
+            }
+        } else if (currentColumn > spawnColumn) {
+            if (currentColumn % 2) {
+                //long one
+                if (currentRow > spawnRow) {
+                    return 'NW';
+                } else {
+                    return 'SW';
+                }
+            } else {
+                //short one
+                if (currentRow >= spawnRow) {
+                    return 'NW';
+                } else {
+                    return 'SW';
+                }
+            }
+        }
+    },
+
+    matchesDirectionOfTravel(directionOfTravel, tileRow, tileColumn, currentRow, currentColumn) {
+        switch (directionOfTravel) {
+            case 'N':
+                if (currentColumn == tileColumn && currentRow > tileRow) {
+                    return true;
+                }
+                break;
+            case 'NE':
+                if (currentColumn < tileColumn) {
+                    if (currentColumn % 2) {
+                        //long one
+                        if (currentRow > tileRow) {
+                            return true;
+                        }
+                    } else {
+                        //short one
+                        if (currentRow == tileRow) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            case 'SE':
+                if (currentColumn < tileColumn) {
+                    if (currentColumn % 2) {
+                        //long one
+                        if (currentRow == tileRow) {
+                            return true;
+                        }
+
+                    } else {
+                        //short one
+                        if (currentRow < tileRow) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            case 'S':
+                if (currentColumn == tileColumn && currentRow < tileRow) {
+                    return true;
+                }
+                break;
+            case 'SW':
+                if (currentColumn > tileColumn) {
+                    if (currentColumn % 2) {
+                        //long one
+                        if (currentRow == tileRow) {
+                            return true;
+                        }
+                    } else {
+                        //short one
+                        if (currentRow < tileRow) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            case 'NW':
+                if (currentColumn > tileColumn) {
+                    if (currentColumn % 2) {
+                        //long one
+                        if (currentRow > tileRow) {
+                            return true;
+                        }
+                    } else {
+                        //short one
+                        if (currentRow == tileRow) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+        }
     },
 
     addActionsToLogEntry(event) {
@@ -162,17 +360,19 @@
     tileClick(event) {
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
             let tileId = $(event.target.parentElement).attr('data-identity');
-            let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(tileId);
+            dungeon_crawler.main.moveToTile(tileId);
+        }
+    },
 
-            if (selectedTile.getSelectable()) {
-                dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
-            }
+    moveToTile(tileId) {
+        let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(tileId);
+
+        if (selectedTile.isSelectable()) {
+            dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
         }
     },
 
     combat() {
-        let monsterDifficulty = dungeon_crawler.main.selectMonsterDifficulty();
-
         let enemy = dungeon_crawler.core.globals.currentLevel.getEnemy();
 
         //todo: use monster difficulty role to generate monsters
@@ -304,11 +504,6 @@
         return battleTileResult;
     },
 
-    //Monster difficulty selection
-    selectMonsterDifficulty() {
-        return dungeon_crawler.main.roleDangerDie();
-    },
-
     //Loot
     //  1 - 2:  Potion
     //  3 - 4:  Weapon
@@ -334,28 +529,8 @@
     },
 
     //Dice
-    roleSafeDie() {
-        let value = dungeon_crawler.main.roleDSix();
-        dungeon_crawler.main.setSafeDieValue(value);
-        return value;
-    },
-
-    roleDangerDie() {
-        let value = dungeon_crawler.main.roleDSix();
-        dungeon_crawler.main.setDangerDieValue(value);
-        return value;
-    },
-
     roleDSix() {
-        return dungeon_crawler.main.roleDie(6);
-    },
-
-    roleDTwenty() {
-        return dungeon_crawler.main.roleDie(20);
-    },
-
-    roleDie(max) {
-        return Math.floor(Math.random() * (max)) + 1;
+        return Math.floor(Math.random() * (6)) + 1;
     },
 
     setTiles(stageCols, stageRows) {
@@ -418,7 +593,7 @@
 
             tile = tiles.get(i);
 
-            if (!tile.getHidden()) {
+            if (!tile.isHidden()) {
                 switch (tile.getType()) {
                     //entrance
                     case dungeon_crawler.core.globals.tileTypes['entrance']:
@@ -468,11 +643,11 @@
                 }
             }
 
-            if (tile.getSelectable()) {
+            if (tile.isSelectable()) {
                 tileSelectableClass = 'hexagon-tile-selectable';
             }
 
-            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span>${tile.getRow()} - ${tile.getColumn()}</span></div>`);
         }
     },
 
@@ -483,8 +658,8 @@
         //Health
         let healthValue = 0, healthRolls = [];
 
-        healthRolls.push(dungeon_crawler.main.roleSafeDie());
-        healthRolls.push(dungeon_crawler.main.roleSafeDie());
+        healthRolls.push(dungeon_crawler.main.roleDSix());
+        healthRolls.push(dungeon_crawler.main.roleDSix());
 
         for (var i = 0; i < healthRolls.length; i++) {
             healthValue += healthRolls[i]
@@ -495,7 +670,7 @@
         //Damage
         let damageValue = 0, damageRolls = [];
 
-        damageRolls.push(dungeon_crawler.main.roleSafeDie());
+        damageRolls.push(dungeon_crawler.main.roleDSix());
 
         for (var i = 0; i < damageRolls.length; i++) {
             damageValue += damageRolls[i]
@@ -506,7 +681,7 @@
         //Protection
         let protectionValue = 0, protectionRolls = [];
 
-        protectionRolls.push(dungeon_crawler.main.roleSafeDie());
+        protectionRolls.push(dungeon_crawler.main.roleDSix());
 
         for (var i = 0; i < protectionRolls.length; i++) {
             protectionValue += protectionRolls[i]

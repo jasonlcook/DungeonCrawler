@@ -11,6 +11,9 @@
         this._availableEnemies;
 
         this._endLevelTileDeployed;
+
+        this._spawnLocationRow;
+        this._spawnLocationColumn;
     }
 
     //Tiles
@@ -76,6 +79,17 @@
         return this._endLevelTileDeployed;
     }
 
+    //Coordinates
+    //  Ascending
+    setSpawnCoordinates(row, column) {
+        this._spawnLocationRow = row;
+        this._spawnLocationColumn = column;
+    }
+
+    getSpawnCoordinates() {
+        return { 'row': this._spawnLocationRow, 'column': this._spawnLocationColumn };
+    }
+
     //Methods
     loadLevel(value) {
         this._tiles = new Tiles();
@@ -135,9 +149,11 @@
             spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['entrance']);
         }
 
+        this.setSpawnCoordinates(spawnTitle.getRow(), spawnTitle.getColumn())
+
         spawnTitle.setCurrent(true);
 
-        this._tiles.setCurrentIndex(spawnIndex) ;
+        this._tiles.setCurrentIndex(spawnIndex);
     }
 
     getEnemy() {

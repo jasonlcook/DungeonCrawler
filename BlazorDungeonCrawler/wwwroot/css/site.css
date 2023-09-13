@@ -29,10 +29,34 @@
 
 #play-area {
     border: 1px solid rgb(0, 0, 0);
-    flex-direction: row;
     width: min-content;
     margin: 0px auto;
+    font-size: 13px;
+    font-family: monospace;
 }
+
+    #play-area .button {
+        border-color: rgb(0, 0, 0);
+        border-width: 1px;
+        border-style: solid;
+        padding: 10px;
+        margin: 10px 10px 0 10px;
+    }
+
+        #play-area .button #advance {
+            background: none;
+            border: 1px solid #000;
+            padding: 5px 8px;
+            display: block;
+            margin: 0 auto;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+            #play-area .button #advance:hover,
+            #play-area .button #advance:focus {
+                background-color: aliceblue;
+            }
 
     #play-area .details {
         display: flex;
@@ -141,7 +165,7 @@
             border-style: solid;
             padding: 10px 0;
             margin: 10px 10px 10px 0;
-            max-height: 135px;
+            height: 140px;
             overflow: hidden scroll;
         }
 
@@ -184,11 +208,11 @@
                         display: block;
                     }
 
-                    #play-area .details #log .log-entry .log-actions .log-action-message:active,
-                    #play-area .details #log .log-entry .log-actions .log-action-message:hover,
-                    #play-area .details #log .log-entry .log-actions .log-action-message:focus {
-                        background-color: antiquewhite;
-                    }
+                        #play-area .details #log .log-entry .log-actions .log-action-message:active,
+                        #play-area .details #log .log-entry .log-actions .log-action-message:hover,
+                        #play-area .details #log .log-entry .log-actions .log-action-message:focus {
+                            background-color: antiquewhite;
+                        }
 
     #play-area .dungon {
         border-color: rgb(0, 0, 0);

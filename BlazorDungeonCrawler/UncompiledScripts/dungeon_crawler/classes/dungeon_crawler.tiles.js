@@ -185,7 +185,7 @@
 
             if (this._explored > quadsExplored) {
                 // 50/50 change of stairs being deplyed or if last tile then deply it
-                if ((Math.floor(Math.random() * 2) == 0) || this._explored >= this._tiles.length) {
+                if ((Math.floor(Math.random() * 2) == 0) || this._explored >= (this._tiles.length - 1)) {
                     dungeon_crawler.core.globals.currentLevel.setsEndLevelTileAsDeployed();
 
                     if (dungeon_crawler.core.globals.currentLevel.getLevel() < dungeon_crawler.core.globals.lastLevel) {
@@ -246,13 +246,25 @@
         return dungeon_crawler.core.globals.tileTypes['unknown'];
     }
 
+    getSelectables() {
+        let tile, selectableTiles = [];
+        for (var i = 0; i < this._tiles.length; i++) {
+            tile = this._tiles[i];
+
+            if (tile.isSelectable()) {
+                selectableTiles.push(tile);
+            }
+        }
+
+        return selectableTiles;
+    }
+
     setSelectables() {
         let current = this._tiles[this._currentIndex];
         let currentRow = current.getRow();
         let currentColumn = current.getColumn();
 
         let tile, previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
-
         for (var i = 0; i < this._tiles.length; i++) {
             tile = this._tiles[i];
             tile.setSelectable(false);
