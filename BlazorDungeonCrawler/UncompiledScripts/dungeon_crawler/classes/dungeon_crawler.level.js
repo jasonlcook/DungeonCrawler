@@ -102,31 +102,22 @@
                 this._stageCols = 3;
                 break;
             case 2:
-                this._stageRows = 4;
-                this._stageCols = 4;
             case 3:
-            case 4:
                 this._stageRows = 5;
                 this._stageCols = 5;
                 break;
+            case 4:
             case 5:
-                this._stageRows = 6;
-                this._stageCols = 6;
-                break;
-            case 6:
                 this._stageRows = 7;
                 this._stageCols = 7;
                 break;
             case 7:
-                this._stageRows = 8;
-                this._stageCols = 7;
-                break;
             case 8:
                 this._stageRows = 9;
                 this._stageCols = 7;
             case 9:
             case 10:
-                this._stageRows = 10;
+                this._stageRows = 11;
                 this._stageCols = 7;
                 break;
             default:
