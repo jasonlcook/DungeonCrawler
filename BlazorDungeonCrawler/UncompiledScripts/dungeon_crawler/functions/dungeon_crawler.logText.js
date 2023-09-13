@@ -83,15 +83,20 @@
 
     //          Combat
     generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds, enemyHealth) {
-        let message = `You attack the ${enemyType} with ${adventurerAttackValue} `;
+        let message = `You attack the ${enemyType} with a ${adventurerAttackValue} (${adventurerRoll} + Damage (${adventurerDamage})).`;
+
         if (wounds != null) {
+            message += `The ${enemyType} takes ${wounds} damage leaving them`;
+
             if (enemyHealth > 0) {
-                message += `they takes ${wounds} wounds leaving them with ${enemyHealth} health`;
+                message += ` with ${enemyHealth} health`;
             } else {
-                message += `they takes ${wounds} wounds and die`;
+                message += ` dead`;
             }
+
+            message += `, after failing to avoid you with ${enemyAvoidValue} (${enemyRoll} + Protection(${enemyProtection})).`;
         } else {
-            message += `they avoid you`;
+            message += `The ${enemyType} avoids your attack with a ${enemyAvoidValue} (${enemyRoll} + Protection (${enemyProtection})).`;
         }
 
         return message;
@@ -192,15 +197,18 @@
     //      Monster
     //          Attack
     generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds, adventurerHealth) {
-        let message = `The ${enemyType} attacks you with ${enemyAttackValue} `;
+        let message = `The ${enemyType} attacks with a ${enemyAttackValue} (${enemyRoll} + Damage (${enemyDamage})).`;
+
         if (wounds != null) {
             if (adventurerHealth > 0) {
-                message += `they inflict ${wounds} wounds leaving you with ${adventurerHealth} health`;
+                message += `You takes ${wounds} damage leaving you with ${adventurerHealth} health`;
             } else {
-                message += `they inflict ${wounds} wounds and you die`;
+                message += `You died taking ${wounds} damage`;
             }
+
+            message += `, after failing to avoid with ${adventurerAvoidValue} (${adventurerRoll} + Protection (${adventurerProtection})).`;
         } else {
-            message += `they avoid you`;
+            message += `You avoid the ${enemyType} with a ${adventurerAvoidValue} (${adventurerRoll} + Protection (${adventurerProtection})).`;
         }
 
         return message;

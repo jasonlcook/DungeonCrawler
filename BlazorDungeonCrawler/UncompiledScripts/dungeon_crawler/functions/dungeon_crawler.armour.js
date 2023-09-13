@@ -80,8 +80,7 @@
 
             logEntry.addLogAction(new LogAction(0, `Armour type "${armourType}" (${armourTypeValue})`, [armourTypeValue]));
             logEntry.addLogAction(new LogAction(0, `Armour condition "${armourCondition}" (${armourConditionValue})`, [armourConditionValue]));
-            logEntry.addLogAction(new LogAction(0, `Armour value "${armourValue}" (${armourValue})`, [armourValue]));
-
+            
             dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
             dungeon_crawler.main.updateAdventurerProtection();

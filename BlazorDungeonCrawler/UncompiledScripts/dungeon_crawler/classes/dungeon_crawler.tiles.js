@@ -80,10 +80,10 @@
                 let tileTypeValue = dungeon_crawler.main.roleDSix();
                 nextTileType = this.selectTileType(tileTypeValue);
 
-                let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(nextTileType));
-                logEntry.addLogAction(new LogAction(0, `Tile type "${nextTileType}" (${tileTypeValue})`, [tileTypeValue]));
+                //let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(nextTileType));
+                //logEntry.addLogAction(new LogAction(0, `Tile type "${nextTileType}" (${tileTypeValue})`, [tileTypeValue]));
 
-                dungeon_crawler.core.globals.logs.addEntry(logEntry);
+                //dungeon_crawler.core.globals.logs.addEntry(logEntry);
             }
 
             switch (nextTileType) {
@@ -95,26 +95,26 @@
 
                     let lootValue = dungeon_crawler.main.roleDSix();
                     nextTileType = dungeon_crawler.main.selectLoot(lootValue);
-                    let logEntry;
+                    //let logEntry;
                     switch (nextTileType) {
                         case dungeon_crawler.core.globals.tileTypes['potion']:
-                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootPotionText());
+                            //logEntry = new LogEntry(dungeon_crawler.log_text.generateLootPotionText());
                             dungeon_crawler.potion.getPotion();
                             break;
                         //todo: update tile from protection to armour
                         case dungeon_crawler.core.globals.tileTypes['protection']:
-                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootArmourText());
+                            //logEntry = new LogEntry(dungeon_crawler.log_text.generateLootArmourText());
                             dungeon_crawler.armour.getArmour();
                             break;
                         case dungeon_crawler.core.globals.tileTypes['weapon']:
-                            logEntry = new LogEntry(dungeon_crawler.log_text.generateLootWeaponText());
+                            //logEntry = new LogEntry(dungeon_crawler.log_text.generateLootWeaponText());
                             dungeon_crawler.weapon.getWeapon();
                             break;
                     }
 
-                    logEntry.addLogAction(new LogAction(0, `You find "${nextTileType}" (${lootValue})`, [lootValue]));
+                    //logEntry.addLogAction(new LogAction(0, `You find "${nextTileType}" (${lootValue})`, [lootValue]));
 
-                    dungeon_crawler.core.globals.logs.addEntry(logEntry);
+                    //dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
                     break;
             }
@@ -144,10 +144,10 @@
                     selectedTile.setType(repeatTile);
                 }
 
-                let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(repeatTile));
-                logEntry.addLogAction(new LogAction(0, `Tile type "${repeatTile}" (${repeatTileTypeValue})`, [repeatTileTypeValue]));
+                //let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(repeatTile));
+                //logEntry.addLogAction(new LogAction(0, `Tile type "${repeatTile}" (${repeatTileTypeValue})`, [repeatTileTypeValue]));
 
-                dungeon_crawler.core.globals.logs.addEntry(logEntry);
+                //dungeon_crawler.core.globals.logs.addEntry(logEntry);
             }
         }
 
@@ -181,7 +181,7 @@
 
     checkEndLevelTileDeployed() {
         if (!dungeon_crawler.core.globals.currentLevel.isEndLevelTileDeployed()) {
-            let quadsExplored = Math.floor(this._tiles.length / 4);
+            let quadsExplored = Math.floor(this._tiles.length / 4) * 2;
 
             if (this._explored > quadsExplored) {
                 // 50/50 change of stairs being deplyed or if last tile then deply it
