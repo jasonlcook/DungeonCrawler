@@ -1,5 +1,5 @@
 ﻿dungeon_crawler.armour = {
-    armourType: dungeon_crawler.core.createEnum(['unknown', 'helmet', 'breastplate', 'vambrace', 'gauntlet', 'greave', 'boots']),
+    armourType: dungeon_crawler.core.createEnum(['unknown', 'helmet', 'breastplate', 'gauntlet', 'greave', 'boots']),
     armourCondition: dungeon_crawler.core.createEnum(['unknown', 'rusty', 'tarnished', 'shiny']),
 
     getArmour() {
@@ -28,15 +28,6 @@
 
                 if (armourValue > currentArmourValue) {
                     dungeon_crawler.core.globals.adventurer.setArmourBreastplate(armourValue);
-                    keepArmour = true;
-                }
-
-                break;
-            case dungeon_crawler.armour.armourType['vambrace']:
-                currentArmourValue = dungeon_crawler.core.globals.adventurer.getArmourVambrace();
-
-                if (armourValue > currentArmourValue) {
-                    dungeon_crawler.core.globals.adventurer.setArmourVambrace(armourValue);
                     keepArmour = true;
                 }
 
@@ -79,7 +70,7 @@
 
             logEntry.addLogAction(new LogAction(0, `Armour type "${armourType}" (${armourTypeValue})`, [armourTypeValue]));
             logEntry.addLogAction(new LogAction(0, `Armour condition "${armourCondition}" (${armourConditionValue})`, [armourConditionValue]));
-            
+
             dungeon_crawler.core.globals.logs.addEntry(logEntry);
 
             dungeon_crawler.main.updateAdventurerProtection();
@@ -92,35 +83,73 @@
 
     //Dice role
     //  Type
-    //      1:      Boots
-    //      2:      Greave
-    //      3:      Vambrace
-    //      4:      Gauntlet
-    //      5:      Helmet
-    //      6:      Breastplate
+    //      Level 1 - 2
+    //          1 - 5:  Greave
+    //          6:      Boots
+
+    //      Level 3 - 4
+    //          1:      Greave
+    //          2 - 5:  Boots
+    //          6:      Gauntlet
+
+    //      Level 5 +
+    //          1:      Boots
+    //          2 - 3:  Gauntlet
+    //          4 - 5:  Helmet
+    //          6:      Breastplate
     selectArmourType(value) {
-        switch (value) {
-            case 1:
-                return dungeon_crawler.armour.armourType['boots'];
-                break;
-            case 2:
-                return dungeon_crawler.armour.armourType['greave'];
-                break;
-            case 3:
-                return dungeon_crawler.armour.armourType['vambrace'];
-                break;
-            case 4:
-                return dungeon_crawler.armour.armourType['gauntlet'];
-                break;
-            case 5:
-                return dungeon_crawler.armour.armourType['helmet'];
-                break;
-            case 6:
-                return dungeon_crawler.armour.armourType['breastplate'];
-                break;
+        let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
+        if (dungeonLevel > 4) {
+            //Level 5 +
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['boots'];
+                    break;
+                case 2:
+                case 3:
+                    return dungeon_crawler.weapon.weaponType['gauntlet'];
+                    break;
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['helmet'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['breastplate'];
+                    break;
+            }
+        } else if (dungeonLevel > 2) {
+            //Level 3 - 4
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['greave'];
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['boots'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['gauntlet'];
+                    break;
+            }
+        } else {
+            //      Level 1 - 2
+            switch (value) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['greave'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['boots'];
+                    break;
+            }
         }
 
-        dungeon_crawler.core.outputError(`Unexpected armour type role "${value}"`);
+        dungeon_crawler.core.outputError(`Unexpected armour type role "${value}" for level ${dungeonLevel}`);
         return dungeon_crawler.armour.armourType['unknown'];
     },
 
@@ -179,9 +208,6 @@
                 break;
             case dungeon_crawler.armour.armourType['breastplate']:
                 armourTypeValue = 4;
-                break;
-            case dungeon_crawler.armour.armourType['vambrace']:
-                armourTypeValue = 2;
                 break;
             case dungeon_crawler.armour.armourType['gauntlet']:
                 armourTypeValue = 3;

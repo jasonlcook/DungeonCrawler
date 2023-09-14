@@ -17,7 +17,6 @@
 
         this._armourHelmet = 0;
         this._armourBreastplate = 0;
-        this._armourVambrace = 0;
         this._armourGauntlet = 0;
         this._armourGreave = 0;
         this._armourBoots = 0;
@@ -297,7 +296,7 @@
 
     //Protection
     getProtection() {
-        return this._protectionBase + this._shieldPotion + this._armourHelmet + this._armourBreastplate + this._armourVambrace + this._armourGauntlet + this._armourGreave + this._armourBoots;
+        return this._protectionBase + this._shieldPotion + this._armourHelmet + this._armourBreastplate + this._armourGauntlet + this._armourGreave + this._armourBoots;
     }
 
     //  Armour
@@ -317,15 +316,6 @@
 
     setArmourBreastplate(value) {
         return this._armourBreastplate = value;
-    }
-
-    //      Vambrace
-    getArmourVambrace() {
-        return this._armourVambrace;
-    }
-
-    setArmourVambrace(value) {
-        return this._armourVambrace = value;
     }
 
     //      Gauntlet
@@ -389,10 +379,6 @@
 
         if (this._armourBreastplate > 0) {
             messageArmourAddition.push(this._armourBreastplate);
-        };
-
-        if (this._armourVambrace > 0) {
-            messageArmourAddition.push(this._armourVambrace);
         };
 
         if (this._armourGauntlet > 0) {
