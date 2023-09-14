@@ -132,19 +132,23 @@
         let spawnIndex = Math.floor(Math.random() * this._tiles.length);
         let spawnTitle = this._tiles.get(spawnIndex);
 
-        spawnTitle.setHidden(false);
+        if (spawnTitle !== null) {
+            spawnTitle.setHidden(false);
 
-        if (level > 1) {
-            spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['stairs_ascending']);
+            if (level > 1) {
+                spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['stairs_ascending']);
+            } else {
+                spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['entrance']);
+            }
+
+            this.setSpawnCoordinates(spawnTitle.getRow(), spawnTitle.getColumn())
+
+            spawnTitle.setCurrent(true);
+
+            this._tiles.setCurrentIndex(spawnIndex);
         } else {
-            spawnTitle.setType(dungeon_crawler.core.globals.tileTypes['entrance']);
+            dungeon_crawler.core.outputError(`Generate spawn tile with value ${spawnTitle}`);
         }
-
-        this.setSpawnCoordinates(spawnTitle.getRow(), spawnTitle.getColumn())
-
-        spawnTitle.setCurrent(true);
-
-        this._tiles.setCurrentIndex(spawnIndex);
     }
 
     getEnemy() {
