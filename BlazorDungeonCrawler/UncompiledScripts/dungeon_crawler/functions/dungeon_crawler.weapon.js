@@ -1,6 +1,6 @@
 ﻿dungeon_crawler.weapon = {
-    weaponType: dungeon_crawler.core.createEnum(['unknown', 'rock', 'club', 'dagger', 'mace', 'axe', 'sword']),
-    weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'enchanted', 'flaming']),
+    weaponType: dungeon_crawler.core.createEnum(['unknown', 'rock', 'club', 'mace', 'axe', 'sword']),
+    weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'flaming']),
 
     getWeapon() {
         let weponTypeValue = dungeon_crawler.main.roleDSix();
@@ -46,7 +46,7 @@
     //      Level 3 - 4
     //          1:      Rock
     //          2 - 5:  Club
-    //          6:      Dagger
+    //          6:      Mace
 
     //      Level 5 +
     //          1:      Club
@@ -55,7 +55,7 @@
     //          6:      Sword
     selectWeaponType(value) {
         let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
-        if (dungeonLevel > 5) {
+        if (dungeonLevel > 4) {
             //Level 5 +
             switch (value) {
                 case 1:
