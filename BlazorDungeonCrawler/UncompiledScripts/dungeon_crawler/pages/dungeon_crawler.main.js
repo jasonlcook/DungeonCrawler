@@ -640,9 +640,15 @@
                         break;
                     case dungeon_crawler.core.globals.tileTypes['stairs_ascending']:
                         tileTypeClass = 'hexagon-tile-stairs-ascending';
+                        if (dungeon_crawler.core.globals.macguffinFound) {
+                            tileTypeClass = 'hexagon-tile-stairs-ascending-active';
+                        }
                         break;
                     case dungeon_crawler.core.globals.tileTypes['stairs_descending']:
                         tileTypeClass = 'hexagon-tile-stairs-descending';
+                        if (!dungeon_crawler.core.globals.macguffinFound) {
+                            tileTypeClass = 'hexagon-tile-stairs-descending-active';
+                        }
                         break;
                     case dungeon_crawler.core.globals.tileTypes['fight']:
                         tileTypeClass = 'hexagon-tile-fight';
@@ -678,11 +684,12 @@
                 }
             }
 
-            if (tile.isSelectable()) {
-                tileSelectableClass = 'hexagon-tile-selectable';
-            }
+            $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+                        
 
-            $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${tileTypeClass} ${tileSelectableClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+            if (tile.isSelectable()) {
+                $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+            }            
         }
     },
 
