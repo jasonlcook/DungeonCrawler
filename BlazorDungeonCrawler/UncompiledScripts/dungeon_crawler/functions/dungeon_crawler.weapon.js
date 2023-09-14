@@ -131,34 +131,34 @@
             //Level 5 +
             switch (value) {
                 case 1:
-                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    return dungeon_crawler.weapon.weaponCondition['rusty'];
                     break;
                 case 2:
                 case 3:
-                    return dungeon_crawler.weapon.weaponType['chipped'];
+                    return dungeon_crawler.weapon.weaponCondition['chipped'];
                     break;
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['sharp'];
+                    return dungeon_crawler.weapon.weaponCondition['sharp'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['flaming'];
+                    return dungeon_crawler.weapon.weaponCondition['flaming'];
                     break;
             }
         } else if (dungeonLevel > 2) {
             //Level 3 - 4
             switch (value) {
                 case 1:
-                    return dungeon_crawler.weapon.weaponType['broken'];
+                    return dungeon_crawler.weapon.weaponCondition['broken'];
                     break;
                 case 2:
                 case 3:
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    return dungeon_crawler.weapon.weaponCondition['rusty'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['chipped'];
+                    return dungeon_crawler.weapon.weaponCondition['chipped'];
                     break;
             }
         } else {
@@ -169,10 +169,10 @@
                 case 3:
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['broken'];
+                    return dungeon_crawler.weapon.weaponCondition['broken'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    return dungeon_crawler.weapon.weaponCondition['rusty'];
                     break;
             }
         }

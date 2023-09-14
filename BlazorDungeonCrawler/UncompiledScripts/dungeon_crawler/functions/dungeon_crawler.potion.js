@@ -67,10 +67,10 @@
                 case 3:
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['vial'];
+                    return dungeon_crawler.potion.potionSize['vial'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['flask'];
+                    return dungeon_crawler.potion.potionSize['flask'];
                     break;
             }
         } else {

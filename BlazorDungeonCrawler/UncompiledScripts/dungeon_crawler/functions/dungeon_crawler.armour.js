@@ -103,34 +103,34 @@
             //Level 5 +
             switch (value) {
                 case 1:
-                    return dungeon_crawler.weapon.weaponType['boots'];
+                    return dungeon_crawler.armour.armourType['boots'];
                     break;
                 case 2:
                 case 3:
-                    return dungeon_crawler.weapon.weaponType['gauntlet'];
+                    return dungeon_crawler.armour.armourType['gauntlet'];
                     break;
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['helmet'];
+                    return dungeon_crawler.armour.armourType['helmet'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['breastplate'];
+                    return dungeon_crawler.armour.armourType['breastplate'];
                     break;
             }
         } else if (dungeonLevel > 2) {
             //Level 3 - 4
             switch (value) {
                 case 1:
-                    return dungeon_crawler.weapon.weaponType['greave'];
+                    return dungeon_crawler.armour.armourType['greave'];
                     break;
                 case 2:
                 case 3:
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['boots'];
+                    return dungeon_crawler.armour.armourType['boots'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['gauntlet'];
+                    return dungeon_crawler.armour.armourType['gauntlet'];
                     break;
             }
         } else {
@@ -141,10 +141,10 @@
                 case 3:
                 case 4:
                 case 5:
-                    return dungeon_crawler.weapon.weaponType['greave'];
+                    return dungeon_crawler.armour.armourType['greave'];
                     break;
                 case 6:
-                    return dungeon_crawler.weapon.weaponType['boots'];
+                    return dungeon_crawler.armour.armourType['boots'];
                     break;
             }
         }
