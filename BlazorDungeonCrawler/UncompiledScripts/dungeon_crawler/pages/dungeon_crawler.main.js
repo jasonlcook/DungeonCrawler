@@ -19,26 +19,13 @@
         for (var i = 0; i < visitedLevels.length; i++) {
             visitedLevel = visitedLevels[i];
             if (visitedLevel.getLevel() == value) {
-                currentVisitedLevel = visitedLevel;
+                dungeon_crawler.core.globals.currentLevel = currentVisitedLevel;
+                break;
             }
         }
 
-        let level;
         if (currentVisitedLevel == null) {
-            level = new Level();
-            level.loadLevel(value);
-
-            dungeon_crawler.core.globals.levels.push(level);
-            dungeon_crawler.core.globals.currentLevel = level;
-
-            //set tiles
-            dungeon_crawler.main.setTiles(level.getStageCols(), level.getStageRows());
-
-            //set spawn location
-            dungeon_crawler.core.globals.currentLevel.setSpawn(level.getLevel());
-        } else {
-            dungeon_crawler.core.globals.currentLevel = currentVisitedLevel;
-            level = currentVisitedLevel;
+            dungeon_crawler.core.globals.currentLevel = new Level(value);
         }
 
         dungeon_crawler.main.setLevelDetails();
@@ -485,7 +472,7 @@
 
                     if (wounds < 0) {
                         wounds = 0;
-                    } 
+                    }
 
                     currentEnemy.reciveWounds(wounds);
                 }
@@ -523,7 +510,7 @@
 
                     if (wounds < 0) {
                         wounds = 0;
-                    } 
+                    }
 
                     //Damage will be dealt to Shield potion (if avalible), then Aura potion (if avalible) and finaly the Adventurer.  
                     //The function will return the number of wounds taken by the Adventurer.
@@ -594,55 +581,6 @@
     //Dice
     roleDSix() {
         return Math.floor(Math.random() * (6)) + 1;
-    },
-
-    setTiles(stageCols, stageRows) {
-        let hexagonHeight = dungeon_crawler.core.globals.hexHeight;
-        let hexagonWidth = dungeon_crawler.core.globals.hexWidth;
-
-        //set stage dimentions
-        //  height
-        let stageHeight = stageCols * hexagonHeight;
-        dungeon_crawler.core.globals.stageHeight = stageHeight;
-
-        //  width
-        let hexWidthQuaters = hexagonWidth / 4;
-        let stageWidth = stageRows * (hexWidthQuaters * 3) + hexWidthQuaters;
-        dungeon_crawler.core.globals.stageWidth = stageWidth;
-
-        //set board
-        let hexagonLeft = 0, hexagonTop = 0, hexRow = -1, hexColumn = 0;
-
-        //  due to the orientation of our board we miss one hex for every other grid row
-        let tileCount = (stageCols * stageRows) - Math.ceil((stageRows + 1) / 2);
-
-        hexagonTop -= hexagonHeight / 2;
-        for (var i = 0; i < tileCount; i++) {
-            hexagonTop += hexagonHeight;
-
-            if (hexagonTop >= stageHeight - (hexagonWidth / 2)) {
-                //move tile along one place
-                hexagonLeft += (hexagonWidth / 4) * 3;
-
-                //reset top
-                if ((hexColumn % 2) == 1) {
-                    //long
-                    hexagonTop = hexagonHeight - (hexagonHeight / 2);
-                } else {
-                    //short
-                    hexagonTop = 0;
-                }
-
-                hexRow = 0;
-
-                //add column
-                hexColumn += 1;
-            } else {
-                hexRow += 1;
-            }
-
-            dungeon_crawler.core.globals.currentLevel.addTile(new Tile(i, dungeon_crawler.core.globals.tileTypes['unknown'], hexRow, hexColumn, hexagonLeft, hexagonTop));
-        }
     },
 
     setStage() {
