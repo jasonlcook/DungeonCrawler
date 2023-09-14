@@ -132,7 +132,7 @@
         let spawnIndex = Math.floor(Math.random() * this._tiles.length);
         let spawnTitle = this._tiles.get(spawnIndex);
 
-        if (spawnTitle !== null) {
+        if (typeof spawnTitle != 'undefined' && spawnTitle != null) {
             spawnTitle.setHidden(false);
 
             if (level > 1) {
