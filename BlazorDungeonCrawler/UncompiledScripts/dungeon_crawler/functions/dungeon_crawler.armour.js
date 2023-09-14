@@ -3,7 +3,6 @@
     armourCondition: dungeon_crawler.core.createEnum(['unknown', 'rusty', 'tarnished', 'shiny']),
 
     getArmour() {
-
         let armourTypeValue = dungeon_crawler.main.roleDSix();
         let armourType = dungeon_crawler.armour.selectArmourType(armourTypeValue);
 
@@ -126,26 +125,48 @@
     },
 
     //  Condition
-    //      1 - 2:  Rusty
-    //      3 - 5:  Tarnished
-    //      6:      Shiny
-    selectArmourCondition(value) {        
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.armour.armourCondition['rusty'];
-                break;
-            case 3:
-            case 4:
-            case 5:
-                return dungeon_crawler.armour.armourCondition['tarnished'];
-                break;
-            case 6:
-                return dungeon_crawler.armour.armourCondition['shiny'];
-                break;
+
+    //    Level 1 - 4
+    //        1 - 5:  Rusty
+    //        6:      Tarnished
+
+    //    Level 5 +
+    //        1 - 2:  Rusty
+    //        3 - 5:  Tarnished
+    //        6:      Shiny
+    selectArmourCondition(value) {
+        let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
+        if (dungeonLevel > 4) {
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.armour.armourCondition['rusty'];
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.armour.armourCondition['tarnished'];
+                    break;
+                case 6:
+                    return dungeon_crawler.armour.armourCondition['shiny'];
+                    break;
+            }
+        } else {
+            switch (value) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.armour.armourCondition['rusty'];
+                    break;
+                case 6:
+                    return dungeon_crawler.armour.armourCondition['tarnished'];
+                    break;
+            }
         }
 
-        dungeon_crawler.core.outputError(`Unexpected armour condition role "${value}"`);
+        dungeon_crawler.core.outputError(`Unexpected armour condition role "${value}" for level ${dungeonLevel}`);
         return dungeon_crawler.armour.armourCondition['unknown'];
     },
 
@@ -180,13 +201,13 @@
         let armourConditionvalue = 0;
         switch (armourCondition) {
             case dungeon_crawler.armour.armourCondition['rusty']:
-                armourConditionvalue = 2;
+                armourConditionvalue = 1;
                 break;
             case dungeon_crawler.armour.armourCondition['tarnished']:
-                armourConditionvalue = 3;
+                armourConditionvalue = 2;
                 break;
             case dungeon_crawler.armour.armourCondition['shiny']:
-                armourConditionvalue = 4;
+                armourConditionvalue = 3;
                 break;
             default:
                 dungeon_crawler.core.outputError(`Unexpected armour condition "${armourCondition}"`);

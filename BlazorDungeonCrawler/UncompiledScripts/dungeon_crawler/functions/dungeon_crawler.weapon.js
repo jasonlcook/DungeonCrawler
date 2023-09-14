@@ -37,69 +37,147 @@
     },
 
     //Dice role
+
     //  Type
-    //      1:      Rock
-    //      2:      Club
-    //      3:      Dagger
-    //      4:      Mace
-    //      5:      Axe
-    //      6:      Sword
+    //      Level 1 - 2
+    //          1 - 5:  Rock
+    //          6:      Club
+
+    //      Level 3 - 4
+    //          1:      Rock
+    //          2 - 5:  Club
+    //          6:      Dagger
+
+    //      Level 5 +
+    //          1:      Club
+    //          2 - 3:  Mace
+    //          4 - 5:  Axe
+    //          6:      Sword
     selectWeaponType(value) {
-        switch (value) {
-            case 1:
-                return dungeon_crawler.weapon.weaponType['rock'];
-                break;
-            case 2:
-                return dungeon_crawler.weapon.weaponType['club'];
-                break;
-            case 3:
-                return dungeon_crawler.weapon.weaponType['dagger'];
-                break;
-            case 4:
-                return dungeon_crawler.weapon.weaponType['mace'];
-                break;
-            case 5:
-                return dungeon_crawler.weapon.weaponType['axe'];
-                break;
-            case 6:
-                return dungeon_crawler.weapon.weaponType['sword'];
-                break;
+        let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
+        if (dungeonLevel > 5) {
+            //Level 5 +
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['club'];
+                    break;
+                case 2:
+                case 3:
+                    return dungeon_crawler.weapon.weaponType['mace'];
+                    break;
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['axe'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['sword'];
+                    break;
+            }
+        } else if (dungeonLevel > 2) {
+            //Level 3 - 4
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['rock'];
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['club'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['mace'];
+                    break;
+            }
+        } else {
+            //      Level 1 - 2
+            switch (value) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['rock'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['club'];
+                    break;
+            }
         }
 
-        dungeon_crawler.core.outputError(`Unexpected wepon type role "${value}"`);
+        dungeon_crawler.core.outputError(`Unexpected wepon type role "${value}" for level ${dungeonLevel}`);
         return dungeon_crawler.adventurer.armour.armourType['unknown'];
     },
 
-    //  Condition
-    //      1:      Broken
-    //      2:      Rusty
-    //      3:      Chipped
-    //      4:      Sharp
-    //      5:      Enchanted
-    //      6:      Flaming
+    //  Type
+    //      Level 1 - 2
+    //          1 - 5:  Broken
+    //          6:      Rusty
+
+    //      Level 3 - 4
+    //          1:      Broken
+    //          2 - 5:  Rusty
+    //          6:      Chipped
+
+    //      Level 5 +
+    //          1:      Rusty
+    //          2 - 3:  Chipped
+    //          4 - 5:  Sharp
+    //          6:      Flaming
+
     selectWeaponCondition(value) {
-        switch (value) {
-            case 1:
-                return dungeon_crawler.weapon.weaponCondition['broken'];
-                break;
-            case 2:
-                return dungeon_crawler.weapon.weaponCondition['rusty'];
-                break;
-            case 3:
-                return dungeon_crawler.weapon.weaponCondition['chipped'];
-                break;
-            case 4:
-                return dungeon_crawler.weapon.weaponCondition['sharp'];
-                break;
-            case 5:
-                return dungeon_crawler.weapon.weaponCondition['enchanted'];
-                break;
-            case 6:
-                return dungeon_crawler.weapon.weaponCondition['flaming'];
-                break;
+        let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
+        if (dungeonLevel > 4) {
+            //Level 5 +
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    break;
+                case 2:
+                case 3:
+                    return dungeon_crawler.weapon.weaponType['chipped'];
+                    break;
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['sharp'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['flaming'];
+                    break;
+            }
+        } else if (dungeonLevel > 2) {
+            //Level 3 - 4
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.weapon.weaponType['broken'];
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['chipped'];
+                    break;
+            }
+        } else {
+            //      Level 1 - 2
+            switch (value) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['broken'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['rusty'];
+                    break;
+            }
         }
 
-        dungeon_crawler.core.outputError(`Unexpected wepon condition role "${value}"`);
+        dungeon_crawler.core.outputError(`Unexpected wepon condition role "${value}" for level ${dungeonLevel}`);
         return dungeon_crawler.adventurer.armour.armourCondition['unknown'];
     },
 
@@ -113,17 +191,14 @@
             case dungeon_crawler.weapon.weaponType['club']:
                 weponTypeValue = 2;
                 break;
-            case dungeon_crawler.weapon.weaponType['dagger']:
-                weponTypeValue = 4;
-                break;
             case dungeon_crawler.weapon.weaponType['mace']:
-                weponTypeValue = 6;
+                weponTypeValue = 3;
                 break;
             case dungeon_crawler.weapon.weaponType['axe']:
-                weponTypeValue = 8;
+                weponTypeValue = 4;
                 break;
             case dungeon_crawler.weapon.weaponType['sword']:
-                weponTypeValue = 10;
+                weponTypeValue = 5;
                 break;
             default:
                 dungeon_crawler.core.outputError(`Unexpected wepon type "${weponType}"`);
@@ -141,13 +216,10 @@
                     weponConditionValue = 2;
                     break;
                 case dungeon_crawler.weapon.weaponCondition['chipped']:
-                    weponConditionValue = 4;
+                    weponConditionValue = 3;
                     break;
                 case dungeon_crawler.weapon.weaponCondition['sharp']:
-                    weponConditionValue = 6;
-                    break;
-                case dungeon_crawler.weapon.weaponCondition['enchanted']:
-                    weponConditionValue = 8;
+                    weponConditionValue = 4;
                     break;
                 case dungeon_crawler.weapon.weaponCondition['flaming']:
                     weponConditionValue = 10;

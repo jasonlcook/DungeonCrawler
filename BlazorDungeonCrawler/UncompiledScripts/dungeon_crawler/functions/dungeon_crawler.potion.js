@@ -48,27 +48,49 @@
         return dungeon_crawler.potion.potionType['unknown'];
     },
 
-    //  Size
-    //      1 - 2:  vial (small)
-    //      3 - 4:  flask (medium)
-    //      5 - 6:  bottle (large)
+    //  Type
+    //      Level 1 - 4
+    //          1 - 5:  Vial
+    //          6:      Flask
+
+    //      Level 5 +
+    //          1:      Vial
+    //          2 - 5:  Flask
+    //          6:      Bottle
     selectPotionSize(value) {
-        switch (value) {
-            case 1:
-            case 2:
-                return dungeon_crawler.potion.potionSize['vial'];
-                break;
-            case 3:
-            case 4:
-                return dungeon_crawler.potion.potionSize['flask'];
-                break;
-            case 5:
-            case 6:
-                return dungeon_crawler.potion.potionSize['bottle'];
-                break;
+        let dungeonLevel = dungeon_crawler.core.globals.currentLevel.getLevel();
+        if (dungeonLevel > 4) {
+            //Level 5 +
+            switch (value) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.weapon.weaponType['vial'];
+                    break;
+                case 6:
+                    return dungeon_crawler.weapon.weaponType['flask'];
+                    break;
+            }
+        } else {
+            switch (value) {
+                case 1:
+                    return dungeon_crawler.potion.potionSize['vial'];
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    return dungeon_crawler.potion.potionSize['flask'];
+                    break;
+                case 6:
+                    return dungeon_crawler.potion.potionSize['bottle'];
+                    break;
+            }
         }
 
-        dungeon_crawler.core.outputError(`Unexpected potion size role "${value}"`);
+        dungeon_crawler.core.outputError(`Unexpected potion size role "${value}" for level ${dungeonLevel}`);
         return dungeon_crawler.potion.potionType['unknown'];
     },
 
