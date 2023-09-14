@@ -1,5 +1,5 @@
 ﻿class Adventurer {
-    constructor( ) {
+    constructor() {
         this._healthBase = 0;
         this._healthInitial = 0;
         this._auraPotion = 0;
@@ -32,6 +32,10 @@
 
     getHealthBase() {
         return this._healthBase;
+    }
+
+    getHealthInitial() {
+        return this._healthInitial;
     }
 
     getHealth() {
@@ -206,7 +210,7 @@
     }
 
     getHealthDescription() {
-        let message = `${this.getHealth()}`;
+        let message = `${this.getHealth()} / ${this.getHealthInitial()}`;
 
         if (this._auraPotion > 0) {
             message += ` (${this._healthBase} + ${this._auraPotion}) ${this._auraPotionDuration}`;
