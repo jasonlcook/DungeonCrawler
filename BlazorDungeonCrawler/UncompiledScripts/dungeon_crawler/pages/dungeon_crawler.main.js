@@ -450,6 +450,7 @@
         let enemyDamage = currentEnemy.getDamage();
         let enemyProtection = currentEnemy.getProtection();
 
+        let adventurerWoundsInflicted = 0, adventurerWoundsReceived = 0;
         let adventurerRollValue, enemyRollValue, attackValue, avoidValue, wounds;
         let adventurerAttackAction, enemyAttackAction;
         let adventurerRolls, enemyRolls;
@@ -476,15 +477,23 @@
                     enemyRollValue += enemyRolls[i]
                 }
 
+                wounds = 0;
                 attackValue = adventurerRollValue + adventurerDamage;
                 avoidValue = enemyRollValue + enemyProtection;
                 if (attackValue > avoidValue) {
                     wounds = attackValue - avoidValue;
+
+                    if (wounds < 0) {
+                        wounds = 0;
+                    } 
+
                     currentEnemy.reciveWounds(wounds);
                 }
 
                 adventurerAttackAction = dungeon_crawler.log_text.generateAdventurerAttackText(enemyType, adventurerRollValue, adventurerDamage, attackValue, enemyRollValue, enemyProtection, avoidValue, wounds, currentEnemy.getHealth());
                 logEntry.addLogAction(new LogAction(round, adventurerAttackAction, adventurerRolls, enemyRolls));
+
+                adventurerWoundsInflicted += wounds;
             }
 
             //Monster fight
@@ -508,8 +517,13 @@
                 }
                 avoidValue = adventurerRollValue + adventurerProtection;
 
+                wounds = 0;
                 if (attackValue > avoidValue) {
                     wounds = attackValue - avoidValue;
+
+                    if (wounds < 0) {
+                        wounds = 0;
+                    } 
 
                     //Damage will be dealt to Shield potion (if avalible), then Aura potion (if avalible) and finaly the Adventurer.  
                     //The function will return the number of wounds taken by the Adventurer.
@@ -524,6 +538,8 @@
 
                 enemyAttackAction = dungeon_crawler.log_text.generateEnemyAttackText(enemyType, enemyRollValue, enemyDamage, attackValue, adventurerRollValue, adventurerProtection, avoidValue, wounds, dungeon_crawler.core.globals.adventurer.getHealth());
                 logEntry.addLogAction(new LogAction(round, enemyAttackAction, enemyRolls, adventurerRolls));
+
+                adventurerWoundsReceived += wounds;
             }
 
             adventurerInitiatesCombat = true;
@@ -536,12 +552,12 @@
         let deathText, battleTileResult;
         if (dungeon_crawler.core.globals.adventurer.isAlive()) {
             deathText = dungeon_crawler.log_text.generateEnemyDeathText(enemyType);
-            logEntry.setTitle(deathText);
+            logEntry.setTitle(deathText + ` Damage received ${adventurerWoundsReceived}.  Damage inflicted ${adventurerWoundsInflicted}`);
 
             battleTileResult = dungeon_crawler.core.globals.tileTypes['fight_won'];
         } else {
             deathText = dungeon_crawler.log_text.generateAdventurerDeathText(enemyType);
-            logEntry.setTitle(deathText);
+            logEntry.setTitle(deathText + ` Damage received ${adventurerWoundsReceived}.  Damage inflicted ${adventurerWoundsInflicted}`);
 
             battleTileResult = dungeon_crawler.core.globals.tileTypes['adventurer_death'];
         }
