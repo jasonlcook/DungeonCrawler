@@ -130,7 +130,19 @@
         if (event !== null && typeof event.target !== 'undefined' || event.target !== null) {
             if (dungeon_crawler.core.globals.adventurer.isAlive()) {
                 let tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
+
                 let selectablesTiles = tiles.getSelectables();
+
+                //If MacGuffin has not been found remove stairs ascending from selectable tiles
+                if (!dungeon_crawler.core.globals.macguffinFound) {
+                    let selectablesTile;
+                    for (var i = 0; i < selectablesTiles.length; i++) {
+                        selectablesTile = selectablesTiles[i];
+                        if (selectablesTile.getType() == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {
+                            selectablesTiles.splice(i, 1);
+                        }
+                    }
+                }
 
                 let selectedTile = null;
 
@@ -685,11 +697,11 @@
             }
 
             $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
-                        
+
 
             if (tile.isSelectable()) {
                 $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
-            }            
+            }
         }
     },
 
