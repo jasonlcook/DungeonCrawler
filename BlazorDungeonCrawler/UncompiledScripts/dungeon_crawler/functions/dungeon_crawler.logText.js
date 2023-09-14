@@ -85,7 +85,7 @@
     generateAdventurerAttackText(enemyType, adventurerRoll, adventurerDamage, adventurerAttackValue, enemyRoll, enemyProtection, enemyAvoidValue, wounds, enemyHealth) {
         let message = `You attack the ${enemyType} with a ${adventurerAttackValue} (${adventurerRoll} + Damage (${adventurerDamage})).`;
 
-        if (wounds != null) {
+        if (wounds != null && wounds > 0) {
             message += `The ${enemyType} takes ${wounds} damage leaving them`;
 
             if (enemyHealth > 0) {
@@ -199,7 +199,7 @@
     generateEnemyAttackText(enemyType, enemyRoll, enemyDamage, enemyAttackValue, adventurerRoll, adventurerProtection, adventurerAvoidValue, wounds, adventurerHealth) {
         let message = `The ${enemyType} attacks with a ${enemyAttackValue} (${enemyRoll} + Damage (${enemyDamage})).`;
 
-        if (wounds != null) {
+        if (wounds != null && wounds > 0) {
             if (adventurerHealth > 0) {
                 message += `You takes ${wounds} damage leaving you with ${adventurerHealth} health`;
             } else {
