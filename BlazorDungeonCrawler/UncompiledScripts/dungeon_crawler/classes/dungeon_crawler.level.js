@@ -21,22 +21,19 @@
                 rows = 7;
                 cols = 7;
                 break;
+            case 6:
             case 7:
             case 8:
-                rows = 9;
-                cols = 7;
             case 9:
             case 10:
-                rows = 11;
-                cols = 7;
+                rows = 7;
+                cols = 9;
                 break;
             default:
         }
 
         this._stageRows = rows;
         this._stageCols = cols;
-
-
 
         this._spawnLocationRow;
         this._spawnLocationColumn;
@@ -150,19 +147,19 @@
 
         //set stage dimentions
         //  height
-        let stageHeight = this.getStageCols() * hexagonHeight;
+        let stageHeight = this.getStageRows() * hexagonHeight;
         dungeon_crawler.core.globals.stageHeight = stageHeight;
 
         //  width
         let hexWidthQuaters = hexagonWidth / 4;
-        let stageWidth = this.getStageRows() * (hexWidthQuaters * 3) + hexWidthQuaters;
+        let stageWidth = this.getStageCols() * (hexWidthQuaters * 3) + hexWidthQuaters;
         dungeon_crawler.core.globals.stageWidth = stageWidth;
 
         //set board
         let hexagonLeft = 0, hexagonTop = 0, hexRow = -1, hexColumn = 0;
 
         //  due to the orientation of our board we miss one hex for every other grid row
-        let tileCount = (this.getStageCols() * this.getStageRows()) - Math.ceil((this.getStageRows() + 1) / 2);
+        let tileCount = (this.getStageRows() * this.getStageCols()) - Math.ceil((this.getStageCols() + 1) / 2);
 
         hexagonTop -= hexagonHeight / 2;
 
