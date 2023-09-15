@@ -1,5 +1,7 @@
 ﻿dungeon_crawler.main = {
     startup() {
+        dungeon_crawler.main.displayVersion();
+
         dungeon_crawler.main.generateAdventurer();
         dungeon_crawler.main.setAdventurerDetails();
 
@@ -11,6 +13,14 @@
         dungeon_crawler.core.globals.levels = [];
         $('#log').html('');
         dungeon_crawler.main.startup();
+    },
+
+    getVersion() {
+        return `${dungeon_crawler.core.globals.versionMajor}.${dungeon_crawler.core.globals.versionMinor}.${dungeon_crawler.core.globals.versionPatch}`
+    },
+
+    displayVersion() {
+        $('#version').html(dungeon_crawler.main.getVersion());
     },
 
     generateLevel(value) {

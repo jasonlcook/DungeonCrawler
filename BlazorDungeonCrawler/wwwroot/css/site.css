@@ -28,6 +28,15 @@
         content: "An error has occurred.";
     }
 
+/* Version */
+#version {
+    width: 845px;
+    margin: 10px auto 0 auto;
+    font-size: 13px;
+    font-family: monospace;
+    text-align: right;
+}
+
 /* Play area */
 #play-area {
     border: 1px solid rgb(0, 0, 0);

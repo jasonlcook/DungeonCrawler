@@ -1,4 +1,8 @@
 ﻿dungeon_crawler.core.globals = {
+    versionMajor: 0,
+    versionMinor: 1,
+    versionPatch: 3,
+
     //Consts
     hexHeight: 90,
     hexWidth: 100,
