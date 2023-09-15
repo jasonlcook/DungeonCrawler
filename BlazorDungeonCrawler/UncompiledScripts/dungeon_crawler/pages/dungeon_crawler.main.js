@@ -29,7 +29,8 @@
         for (var i = 0; i < visitedLevels.length; i++) {
             visitedLevel = visitedLevels[i];
             if (visitedLevel.getLevel() == value) {
-                dungeon_crawler.core.globals.currentLevel = currentVisitedLevel;
+                currentVisitedLevel = visitedLevel;
+                dungeon_crawler.core.globals.currentLevel = visitedLevel;
                 break;
             }
         }
@@ -37,6 +38,8 @@
         if (currentVisitedLevel == null) {
             dungeon_crawler.core.globals.currentLevel = new Level(value);
         }
+
+        dungeon_crawler.core.globals.levels.push(dungeon_crawler.core.globals.currentLevel);
 
         dungeon_crawler.main.setLevelDetails();
 
