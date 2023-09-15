@@ -588,27 +588,27 @@
 
         let tile, tileTypeClass, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
 
-        let baseTileClass;
+        let colourClass;
         switch (dungeon_crawler.core.globals.currentLevel.getLevel()) {
             case 1:
             case 2:
             case 3:
-                baseTileClass = 'hexagon-tile-red';
+                colourClass = 'hexagon-colour-red';
                 break;
             case 4:
             case 5:
             case 6:
             case 7:
-                baseTileClass = 'hexagon-tile-blue';
+                colourClass = 'hexagon-colour-blue';
                 break;
             case 8:
-                baseTileClass = 'hexagon-tile-purple';
+                colourClass = 'hexagon-colour-purple';
                 break;
             case 9:
-                baseTileClass = 'hexagon-tile-green';
+                colourClass = 'hexagon-colour-green';
                 break;
             case 10:
-                baseTileClass = 'hexagon-tile-pink';
+                colourClass = 'hexagon-colour-pink';
                 break;
         }
 
@@ -675,11 +675,20 @@
                 }
             }
 
-            $('#stage').append(`<div class="hexagon-tile ${baseTileClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
-            $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+            $('#stage').append(`<div class="hexagon-tile ${colourClass} hexagon-tile-base" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+
+            if (tile.isHidden()) {
+                $('#stage').append(`<div class="hexagon-tile hexagon-tile-hidden" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+            } else {
+                $('#stage').append(`<div class="hexagon-tile ${colourClass} ${tileTypeClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+
+                if (!tile.getCurrent()) {
+                    $('#stage').append(`<div class="hexagon-tile hexagon-for-of-war" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+                }
+            }    
 
             if (tile.isSelectable()) {
-                $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
+                $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${colourClass} hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
             }
         }
     },
