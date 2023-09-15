@@ -586,10 +586,35 @@
     setStage() {
         $('#stage').html('').css({ 'height': `${dungeon_crawler.core.globals.stageHeight}px`, 'width': `${dungeon_crawler.core.globals.stageWidth}px` });
 
-        let tile, tileTypeClass, tileSelectableClass, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
+        let tile, tileTypeClass, tiles = dungeon_crawler.core.globals.currentLevel.getTiles();
+
+        let baseTileClass;
+        switch (dungeon_crawler.core.globals.currentLevel.getLevel()) {
+            case 1:
+            case 2:
+            case 3:
+                baseTileClass = 'hexagon-tile-red';
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                baseTileClass = 'hexagon-tile-blue';
+                break;
+            case 8:
+                baseTileClass = 'hexagon-tile-purple';
+                break;
+            case 9:
+                baseTileClass = 'hexagon-tile-green';
+                break;
+            case 10:
+                baseTileClass = 'hexagon-tile-pink';
+                break;
+        }
 
         for (var i = 0; i < tiles.length; i++) {
             tileTypeClass = 'hexagon-tile-hidden';
+
             tileSelectableClass = '';
 
             tile = tiles.get(i);
@@ -650,8 +675,8 @@
                 }
             }
 
+            $('#stage').append(`<div class="hexagon-tile ${baseTileClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
             $('#stage').append(`<div class="hexagon-tile ${tileTypeClass}" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
-
 
             if (tile.isSelectable()) {
                 $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);

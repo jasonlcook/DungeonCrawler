@@ -238,10 +238,6 @@
                 background-position: center center;
             }
 
-                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden {
-                    background-image: url("../images/tiles/hidden.png");
-                }
-
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-entrance {
                     background-image: url("../images/tiles/entrance.png");
                 }
@@ -300,6 +296,46 @@
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-adventurer-death {
                     background-image: url("../images/tiles/death.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-red {
+                    background-image: url('../images/tiles/tile_red.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-blue {
+                    background-image: url('../images/tiles/tile_blue.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-purple {
+                    background-image: url('../images/tiles/tile_purple.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-green {
+                    background-image: url('../images/tiles/tile_green.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-pink {
+                    background-image: url('../images/tiles/tile_pink.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden-red {
+                    background-image: url('../images/tiles/hidden_red.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden-blue {
+                    background-image: url('../images/tiles/hidden_blue.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden-purple {
+                    background-image: url('../images/tiles/hidden_purple.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden-green {
+                    background-image: url('../images/tiles/hidden_green.png');
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden-pink {
+                    background-image: url('../images/tiles/hidden_pink.png');
                 }
 
                 #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable {
