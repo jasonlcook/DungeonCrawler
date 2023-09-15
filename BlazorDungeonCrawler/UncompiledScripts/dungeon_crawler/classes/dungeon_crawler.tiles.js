@@ -127,6 +127,7 @@
                     dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateExitWithoutMacGuffinText()));
                 } else {
                     dungeon_crawler.core.globals.logs.addEntry(new LogEntry(dungeon_crawler.log_text.generateExitWithMacGuffinText()));
+                    dungeon_crawler.main.endGamge();
                     return;
                 }
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['stairs_ascending']) {

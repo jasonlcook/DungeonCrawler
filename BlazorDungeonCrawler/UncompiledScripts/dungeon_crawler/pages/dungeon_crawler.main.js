@@ -414,7 +414,7 @@
     moveToTile(tileId) {
         let selectedTile = dungeon_crawler.core.globals.currentLevel.getTileById(tileId);
 
-        if (selectedTile.isSelectable()) {
+        if (typeof selectedTile !== 'undefined' && selectedTile !== null && selectedTile.isSelectable()) {
             dungeon_crawler.core.globals.currentLevel.tilesMovement(selectedTile);
         }
     },
@@ -559,6 +559,8 @@
             deathText = dungeon_crawler.log_text.generateAdventurerDeathText(enemyType);
             logEntry.setTitle(deathText + ` Damage received ${adventurerWoundsReceived}.  Damage inflicted ${adventurerWoundsInflicted}`);
 
+            dungeon_crawler.main.endGamge();
+
             battleTileResult = dungeon_crawler.core.globals.tileTypes['adventurer_death'];
         }
 
@@ -698,7 +700,7 @@
                 if (!tile.getCurrent()) {
                     $('#stage').append(`<div class="hexagon-tile hexagon-for-of-war" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
                 }
-            }    
+            }
 
             if (tile.isSelectable()) {
                 $('#stage').append(`<div data-identity="${tile.getId()}" class="hexagon-tile ${colourClass} hexagon-tile-selectable" style="left: ${tile.getX()}px; top: ${tile.getY()}px"><span></span></div>`);
@@ -838,6 +840,14 @@
 
 
         return `<div class="die ${diceClass} ${type}" style="rotate: ${Math.floor(Math.random() * (180))}deg"></div>`;
+    },
+
+    endGamge() {
+        dungeon_crawler.core.globals.currentLevel.unsetSelectables();
+        dungeon_crawler.main.setStage();
+
+        dungeon_crawler.core.globals.eventBindings.unbindEvents();
+        dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
     }
 };
 

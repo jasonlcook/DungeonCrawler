@@ -68,6 +68,11 @@
         this._tiles.setSelectables()
     }
 
+    //  Set selectable
+    unsetSelectables() {
+        this._tiles.unsetSelectables()
+    }    
+
     //  Set movement
     tilesMovement(selectedTile) {
         this._tiles.movement(selectedTile);
