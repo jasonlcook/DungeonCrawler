@@ -73,7 +73,7 @@
 
     //              Use
     generateUsePotionText(potionType, potionSize, potionDuration) {
-        return `You drink a ${potionSize} ${potionDuration} duration ${potionType} potion.`;
+        return `You drink a ${potionDuration} duration ${potionSize} of ${potionType} potion.`;
     },
 
     //              Heal
