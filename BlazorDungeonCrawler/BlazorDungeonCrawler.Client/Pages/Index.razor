@@ -1,3 +1,35 @@
 ﻿@page "/"
 
-<h1>Hello from the client</h1>
+@inject IMonsterDataManager MonsterManager
+@inject HttpClient Http
+
+<HeadContent>
+    <link href="css/cssreset-min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.7.1.min.js"></script>
+    <script src="scripts/dungeon_crawler.min.js"></script>
+</HeadContent>
+
+@if (Monsters == null) {
+    <p>Loading...</p>
+} else {
+    <h1>Monsters:</h1>
+    <ul>
+        @foreach (var monster in Monsters) {
+            <li>@monster.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    List<Monster> Monsters;
+    protected override async Task OnParametersSetAsync() {
+        await LoadEpisodes();
+    }
+
+    async Task LoadEpisodes() {
+        Monsters = await MonsterManager.GetAllMonsters();
+        await InvokeAsync(StateHasChanged);
+    }
+}

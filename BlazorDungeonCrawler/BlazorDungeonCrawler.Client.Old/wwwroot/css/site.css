@@ -1,0 +1,647 @@
+/* Blazor */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px -1px 2px;
+    display: none;
+    left: 0px;
+    padding: 0.6rem 1.25rem 0.7rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 3.5rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=") 1rem center / 1.8rem no-repeat, rgb(179, 33, 33);
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred.";
+    }
+
+/* Version */
+#version {
+    width: 845px;
+    margin: 10px auto 0 auto;
+    font-size: 13px;
+    font-family: monospace;
+    text-align: right;
+}
+
+/* Play area */
+#play-area {
+    border: 1px solid rgb(0, 0, 0);
+    width: min-content;
+    margin: 0px auto;
+    font-size: 13px;
+    font-family: monospace;
+}
+
+    /* Buttons */
+    #play-area .button {
+        border-color: rgb(0, 0, 0);
+        border-width: 1px;
+        border-style: solid;
+        padding: 10px;
+        margin: 10px 10px 0 10px;
+    }
+
+        #play-area .button #advance {
+            background: none;
+            border: 1px solid #000;
+            padding: 5px 8px;
+            display: block;
+            margin: 0 auto;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+            #play-area .button #advance:hover,
+            #play-area .button #advance:focus {
+                background-color: aliceblue;
+            }
+
+    /* Details */
+    #play-area .details {
+        display: flex;
+    }
+
+        #play-area .details .adventurer {
+            text-align: center;
+            border-color: rgb(0, 0, 0);
+            border-width: 1px;
+            border-style: solid;
+            margin: 10px;
+            width: 250px;
+        }
+
+            #play-area .details .adventurer .level {
+                border-color: rgb(0, 0, 0);
+                border-width: 0px 0px 1px;
+                border-style: solid;
+                padding: 10px 0px;
+            }
+
+            #play-area .details .adventurer .stats {
+                border-color: rgb(0, 0, 0);
+                border-width: 0px 0px 1px;
+                border-style: solid;
+                padding: 10px 0px;
+            }
+
+            #play-area .details .adventurer .dice {
+                padding: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-content: space-around;
+                align-items: center;
+            }
+
+                #play-area .details .adventurer .dice .die {
+                    width: 20px;
+                    height: 20px;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: contain;
+                    margin: 5px;
+                }
+
+                    /* Dice */
+                    /*  Safe */
+                    #play-area .details .adventurer .dice .die.safe {
+                        background-image: url("../images/dice/safe/empty.png");
+                    }
+
+                        #play-area .details .adventurer .dice .die.safe.one {
+                            background-image: url("../images/dice/safe/one.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.safe.two {
+                            background-image: url("../images/dice/safe/two.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.safe.three {
+                            background-image: url("../images/dice/safe/three.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.safe.four {
+                            background-image: url("../images/dice/safe/four.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.safe.five {
+                            background-image: url("../images/dice/safe/five.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.safe.six {
+                            background-image: url("../images/dice/safe/six.png");
+                        }
+
+                    /*  Danger */
+                    #play-area .details .adventurer .dice .die.danger {
+                        background-image: url("../images/dice/danger/empty.png");
+                    }
+
+                        #play-area .details .adventurer .dice .die.danger.one {
+                            background-image: url("../images/dice/danger/one.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.danger.two {
+                            background-image: url("../images/dice/danger/two.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.danger.three {
+                            background-image: url("../images/dice/danger/three.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.danger.four {
+                            background-image: url("../images/dice/danger/four.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.danger.five {
+                            background-image: url("../images/dice/danger/five.png");
+                        }
+
+                        #play-area .details .adventurer .dice .die.danger.six {
+                            background-image: url("../images/dice/danger/six.png");
+                        }
+
+        /* Log */
+        #play-area .details #log {
+            border-color: rgb(0, 0, 0);
+            border-width: 1px;
+            border-style: solid;
+            padding: 10px 0;
+            margin: 10px 10px 10px 0;
+            height: 140px;
+            overflow: hidden scroll;
+            width: 558px;
+        }
+
+            #play-area .details #log .log-entry {
+                padding: 0 0 5px 0px;
+                border: none;
+                border-color: rgb(0, 0, 0);
+                border-width: 0 0 1px 0;
+                border-style: solid;
+                margin: 0 10px;
+            }
+
+                #play-area .details #log .log-entry:active,
+                #play-area .details #log .log-entry:hover,
+                #play-area .details #log .log-entry:focus {
+                    background-color: aliceblue;
+                }
+
+
+                #play-area .details #log .log-entry .log-entry-message {
+                    padding: 5px 10px;
+                    display: block;
+                }
+
+                #play-area .details #log .log-entry:last-child {
+                    border: none;
+                }
+
+                #play-area .details #log .log-entry .log-actions {
+                    margin: 5px 0px;
+                    border-color: rgb(0, 0, 0);
+                    border-style: solid;
+                    border-width: 1px 0px 0 0px;
+                    background-color: #fff;
+                }
+
+                    #play-area .details #log .log-entry .log-actions .log-action-message {
+                        margin: 5px;
+                        padding: 2px 5px;
+                        display: block;
+                    }
+
+                        #play-area .details #log .log-entry .log-actions .log-action-message:active,
+                        #play-area .details #log .log-entry .log-actions .log-action-message:hover,
+                        #play-area .details #log .log-entry .log-actions .log-action-message:focus {
+                            background-color: antiquewhite;
+                        }
+
+    /* Dungon */
+    #play-area .dungon {
+        border-color: rgb(0, 0, 0);
+        border-width: 1px;
+        border-style: solid;
+        padding: 10px;
+        margin: 10px 10px 0px;
+        width: 800px;
+        height: 640px;
+    }
+
+        #play-area .dungon #stage {
+            position: relative;
+            margin: 0px auto;
+        }
+
+            #play-area .dungon #stage .hexagon-tile {
+                position: absolute;
+                height: 90px;
+                width: 100px;
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+
+                #play-area .dungon #stage .hexagon-tile span {
+                    position: absolute;
+                    top: 15px;
+                    left: 20px;
+                    font-size: 10px;
+                    font-family: monospace;
+                    color: rgb(255, 255, 255);
+                    display: block;
+                    width: 60px;
+                    height: 60px;
+                    margin: 0px auto;
+                    text-align: center;
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:active,
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:hover,
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-selectable span:focus {
+                    color: black;
+                    cursor: grab;
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-tile-hidden {
+                    background-image: url("../images/tiles/effects/hidden_overlay.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-for-of-war {
+                    background-image: url("../images/tiles/effects/fog_of_war_overlay.png");
+                }
+
+                /* Tiles */
+                /*      Red */
+                /*          Base */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-base {
+                    background-image: url("../images/tiles/red/base_tile.png");
+                }
+
+                /*          Selectable */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-selectable {
+                    background-image: url("../images/tiles/red/base_tile_selectable.png");
+                }
+
+                /*          Element */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance {
+                    background-image: url("../images/tiles/red/entrance.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-exit {
+                    background-image: url("../images/tiles/red/exit.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending {
+                    background-image: url("../images/tiles/red/stairs_ascending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending-active {
+                    background-image: url("../images/tiles/red/stairs_ascending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending {
+                    background-image: url("../images/tiles/red/stairs_descending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending-active {
+                    background-image: url("../images/tiles/red/stairs_descending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-fight {
+                    background-image: url("../images/tiles/red/fight.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-fight-won {
+                    background-image: url("../images/tiles/red/fight_won.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-chest {
+                    background-image: url("../images/tiles/red/chest.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-protection {
+                    background-image: url("../images/tiles/red/protection.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-weapon {
+                    background-image: url("../images/tiles/red/weapons.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-empty {
+                    background-image: url("../images/tiles/red/empty.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-potion {
+                    background-image: url("../images/tiles/red/potion.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-macguffin {
+                    background-image: url("../images/tiles/red/maguffin.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-red.hexagon-tile-adventurer-death {
+                    background-image: url("../images/tiles/red/death.png");
+                }
+
+                /*  Blue */
+                /*          Base */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-base {
+                    background-image: url("../images/tiles/blue/base_tile.png");
+                }
+
+                /*  Selectable */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-selectable {
+                    background-image: url("../images/tiles/blue/base_tile_selectable.png");
+                }
+
+                /*          Element */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance {
+                    background-image: url("../images/tiles/blue/entrance.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-exit {
+                    background-image: url("../images/tiles/blue/exit.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending {
+                    background-image: url("../images/tiles/blue/stairs_ascending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending-active {
+                    background-image: url("../images/tiles/blue/stairs_ascending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending {
+                    background-image: url("../images/tiles/blue/stairs_descending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending-active {
+                    background-image: url("../images/tiles/blue/stairs_descending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight {
+                    background-image: url("../images/tiles/blue/fight.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight-won {
+                    background-image: url("../images/tiles/blue/fight_won.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-chest {
+                    background-image: url("../images/tiles/blue/chest.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-protection {
+                    background-image: url("../images/tiles/blue/protection.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-weapon {
+                    background-image: url("../images/tiles/blue/weapons.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-empty {
+                    background-image: url("../images/tiles/blue/empty.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-potion {
+                    background-image: url("../images/tiles/blue/potion.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-macguffin {
+                    background-image: url("../images/tiles/blue/maguffin.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-blue.hexagon-tile-adventurer-death {
+                    background-image: url("../images/tiles/blue/death.png");
+                }
+
+                /*  Purple */
+                /*          Base */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-base {
+                    background-image: url("../images/tiles/purple/base_tile.png");
+                }
+
+                /*          Selectable */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-selectable {
+                    background-image: url("../images/tiles/purple/base_tile_selectable.png");
+                }
+
+                /*          Element */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance {
+                    background-image: url("../images/tiles/purple/entrance.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-exit {
+                    background-image: url("../images/tiles/purple/exit.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending {
+                    background-image: url("../images/tiles/purple/stairs_ascending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending-active {
+                    background-image: url("../images/tiles/purple/stairs_ascending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending {
+                    background-image: url("../images/tiles/purple/stairs_descending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending-active {
+                    background-image: url("../images/tiles/purple/stairs_descending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight {
+                    background-image: url("../images/tiles/purple/fight.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight-won {
+                    background-image: url("../images/tiles/purple/fight_won.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-chest {
+                    background-image: url("../images/tiles/purple/chest.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-protection {
+                    background-image: url("../images/tiles/purple/protection.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-weapon {
+                    background-image: url("../images/tiles/purple/weapons.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-empty {
+                    background-image: url("../images/tiles/purple/empty.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-potion {
+                    background-image: url("../images/tiles/purple/potion.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-macguffin {
+                    background-image: url("../images/tiles/purple/maguffin.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-purple.hexagon-tile-adventurer-death {
+                    background-image: url("../images/tiles/purple/death.png");
+                }
+
+                /*  Green */
+                /*          Base */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-base {
+                    background-image: url("../images/tiles/green/base_tile.png");
+                }
+
+                /*          Selectable */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-selectable {
+                    background-image: url("../images/tiles/green/base_tile_selectable.png");
+                }
+
+                /*          Element */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance {
+                    background-image: url("../images/tiles/green/entrance.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-exit {
+                    background-image: url("../images/tiles/green/exit.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending {
+                    background-image: url("../images/tiles/green/stairs_ascending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending-active {
+                    background-image: url("../images/tiles/green/stairs_ascending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending {
+                    background-image: url("../images/tiles/green/stairs_descending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending-active {
+                    background-image: url("../images/tiles/green/stairs_descending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-fight {
+                    background-image: url("../images/tiles/green/fight.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-fight-won {
+                    background-image: url("../images/tiles/green/fight_won.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-chest {
+                    background-image: url("../images/tiles/green/chest.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-protection {
+                    background-image: url("../images/tiles/green/protection.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-weapon {
+                    background-image: url("../images/tiles/green/weapons.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-empty {
+                    background-image: url("../images/tiles/green/empty.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-potion {
+                    background-image: url("../images/tiles/green/potion.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-macguffin {
+                    background-image: url("../images/tiles/green/maguffin.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-green.hexagon-tile-adventurer-death {
+                    background-image: url("../images/tiles/green/death.png");
+                }
+
+                /*  Pink */
+                /*          Base */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-base {
+                    background-image: url("../images/tiles/pink/base_tile.png");
+                }
+
+                /*          Selectable */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-selectable {
+                    background-image: url("../images/tiles/pink/base_tile_selectable.png");
+                }
+
+                /*          Element */
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance {
+                    background-image: url("../images/tiles/pink/entrance.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-exit {
+                    background-image: url("../images/tiles/pink/exit.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending {
+                    background-image: url("../images/tiles/pink/stairs_ascending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending-active {
+                    background-image: url("../images/tiles/pink/stairs_ascending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending {
+                    background-image: url("../images/tiles/pink/stairs_descending.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending-active {
+                    background-image: url("../images/tiles/pink/stairs_descending_active.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight {
+                    background-image: url("../images/tiles/pink/fight.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight-won {
+                    background-image: url("../images/tiles/pink/fight_won.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-chest {
+                    background-image: url("../images/tiles/pink/chest.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-protection {
+                    background-image: url("../images/tiles/pink/protection.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-weapon {
+                    background-image: url("../images/tiles/pink/weapons.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-empty {
+                    background-image: url("../images/tiles/pink/empty.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-potion {
+                    background-image: url("../images/tiles/pink/potion.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-macguffin {
+                    background-image: url("../images/tiles/pink/maguffin.png");
+                }
+
+                #play-area .dungon #stage .hexagon-tile.hexagon-colour-pink.hexagon-tile-adventurer-death {
+                    background-image: url("../images/tiles/pink/death.png");
+                }
