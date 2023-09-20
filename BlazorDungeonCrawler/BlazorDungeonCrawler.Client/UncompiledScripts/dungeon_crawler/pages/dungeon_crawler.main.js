@@ -851,4 +851,4 @@
     }
 };
 
-window['dungeon_crawler_main_startup'] = dungeon_crawler.main.startup;
+dungeon_crawler.main.startup();

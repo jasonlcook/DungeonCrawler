@@ -1,0 +1,44 @@
+﻿@page "/dungeoncrawlerjavascript"
+@inject IJSRuntime JS
+
+<HeadContent>
+    <link href="css/cssreset-min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.7.1.min.js"></script>
+    <script src="scripts/dungeon_crawler.min.js"></script>
+</HeadContent>
+
+<div id="play-area">
+    <div class="dungon">
+        <div id="stage"></div>
+    </div>
+    <div class="button">
+        <button id="advance">Advance</button>
+    </div>
+    <div class="details">
+        <div class="adventurer">
+            <div class="level">
+                <span class="label">Level</span>
+                <span class="value" id="current-level">0</span>
+            </div>
+            <div class="stats">
+                <div class="health">
+                    <span class="label">Health</span>
+                    <span class="value" id="current-health">0</span>
+                </div>
+                <div class="damage">
+                    <span class="label">Damage</span>
+                    <span class="value" id="current-damage">0</span>
+                </div>
+                <div class="protection">
+                    <span class="label">Protection</span>
+                    <span class="value" id="current-protection">0</span>
+                </div>
+            </div>
+            <div class="dice"></div>
+        </div>
+        <div id="log"></div>
+    </div>
+</div>
+<div id="version"></div>
