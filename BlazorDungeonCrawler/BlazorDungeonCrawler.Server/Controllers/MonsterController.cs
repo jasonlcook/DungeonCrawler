@@ -2,6 +2,7 @@
 
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Server.Data;
+using Microsoft.AspNetCore.Cors;
 
 namespace BlazorDungeonCrawler.Server.Controllers {
 
@@ -15,6 +16,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         }
 
         [HttpGet]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
         public async Task<ActionResult<MonstersResponse>> Get() {
             try {
                 var Monsters = await monsterManager.GetAllMonsters();
@@ -28,6 +30,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         }
 
         [HttpGet("{Id:int}")]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
         public async Task<ActionResult<MonsterResponse>> Get(int Id) {
             try {
                 Monster returnedMonster = await monsterManager.GetMonster(Id);
@@ -42,6 +45,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         }
 
         [HttpGet("{Name}/search")]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
         public async Task<ActionResult<MonstersResponse>> Search(string Name) {
             try {
                 List<Monster> returnedMonsters = await monsterManager.SearchMonsters(Name);

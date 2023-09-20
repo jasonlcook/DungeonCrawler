@@ -1,0 +1,26 @@
+﻿@page "/dungeoncrawler"
+@inject IMonsterDataManager MonsterManager
+@inject HttpClient Http
+
+@if (Monsters == null) {
+    <p>Loading...</p>
+} else {
+    <h1>Monsters:</h1>
+    <ul>
+        @foreach (var monster in Monsters) {
+            <li>@monster.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    List<Monster> Monsters;
+    protected override async Task OnParametersSetAsync() {
+        await LoadEpisodes();
+    }
+
+    async Task LoadEpisodes() {
+        Monsters = await MonsterManager.GetAllMonsters();
+        await InvokeAsync(StateHasChanged);
+    }
+}

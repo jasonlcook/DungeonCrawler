@@ -8,6 +8,12 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<LocalMonsterManager>();
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: "MyAllowAnyOriginMethodHeader", builder =>
+    builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -23,6 +29,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseCors("MyAllowAnyOriginMethodHeader");
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
