@@ -1,18 +1,27 @@
 using BlazorDungeonCrawler.Server.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
 builder.Services.AddSingleton<LocalMonsterManager>();
+
+
 builder.Services.AddCors(options => {
     options.AddPolicy(name: "MyAllowAnyOriginMethodHeader", builder =>
     builder.AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
+});
+
+builder.Services.AddResponseCompression(options => {
+    options.EnableForHttps = true;
+    options.Providers.Add<GzipCompressionProvider>();
 });
 
 var app = builder.Build();
@@ -30,6 +39,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseCors("MyAllowAnyOriginMethodHeader");
+app.UseResponseCompression();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
