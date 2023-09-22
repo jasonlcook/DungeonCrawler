@@ -850,7 +850,3 @@
         dungeon_crawler.core.globals.eventBindings.clearBoundEvents();
     }
 };
-
-$(function () {
-    dungeon_crawler.main.startup();
-});
