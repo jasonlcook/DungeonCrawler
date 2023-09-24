@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj" />
     <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,11 @@
-﻿namespace BlazorDungeonCrawler.Shared.Models {
-    public  class Adventurer {        
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlazorDungeonCrawler.Shared.Models {
+    public  class Adventurer {
+
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         public int HealthBase { get; set; } = 0;
         public int HealthInitial { get; set; } = 0;
         public int AuraPotion { get; set; } = 0;

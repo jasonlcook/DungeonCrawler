@@ -1,4 +1,5 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
+using BlazorDungeonCrawler.Database;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
@@ -6,10 +7,16 @@ namespace BlazorDungeonCrawler.Server.Data {
         public async Task<Dungeon> Generate() {
             await Task.Delay(1);
 
-            return new Dungeon() {
+            Dungeon dungeon = new Dungeon() {
                 Adventurer = GenerateAdventurer(),
                 Level = GenerateLevel()
             };
+
+            DungeonCrawlerContext dungeonCrawlerContext = new DungeonCrawlerContext();
+            dungeonCrawlerContext.Dungeons.Add(dungeon);
+            dungeonCrawlerContext.SaveChanges();
+
+            return dungeon;
         }
 
         public Adventurer GenerateAdventurer() {
