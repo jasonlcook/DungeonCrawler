@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using BlazorDungeonCrawler.Shared.Models;
-using BlazorDungeonCrawler.Server.Data;
 using Microsoft.AspNetCore.Cors;
+
+using BlazorDungeonCrawler.Server.Data;
+using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Controllers {
 
@@ -19,10 +19,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("MyAllowAnyOriginMethodHeader")]
         public async Task<ActionResult<MonstersResponse>> Get() {
             try {
-                var Monsters = await monsterManager.GetAllMonsters();
+                List<Monster> monsters = await monsterManager.GetAllMonsters();
+
                 return Ok(new MonstersResponse() {
                     Success = true,
-                    Monsters = Monsters
+                    Monsters = monsters
                 });
             } catch (Exception ex) {
                 return StatusCode(500);
