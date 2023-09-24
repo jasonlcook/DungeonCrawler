@@ -1,0 +1,35 @@
+
+main {
+    display: block;
+    margin: 0 auto;
+    width: 800px;
+    font-family: monospace;
+}
+
+article {
+    margin: 0 0 20px 0;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0 0 10px 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0 0 5px 0;
+}
+
+.table-endpoint {
+    width: 100%;
+}
+    .table-endpoint th {
+        font-weight: bold;
+    }
+
+    .table-endpoint .table-functions {
+        width: 35%;
+    }
+
+    .table-endpoint .table-description {
+    }
