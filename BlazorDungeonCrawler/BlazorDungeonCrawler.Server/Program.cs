@@ -8,7 +8,6 @@ builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<LocalMonsterManager>();
 builder.Services.AddSingleton<DungeonManager>();
 
 builder.Services.AddCors(options => {

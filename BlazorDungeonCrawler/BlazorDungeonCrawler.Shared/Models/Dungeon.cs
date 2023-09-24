@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Dungeon {
-        //Id for the Dungeon session 
+        //If Id is an empty guid, then class has not been set
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = new Guid();
 
         public Adventurer Adventurer { get; set; } = new Adventurer();
 

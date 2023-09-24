@@ -8,6 +8,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             await Task.Delay(1);
 
             Dungeon dungeon = new Dungeon() {
+                Id = Guid.NewGuid(),
                 Adventurer = GenerateAdventurer(),
                 Level = GenerateLevel()
             };
@@ -39,27 +40,27 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             switch (depth) {
                 case 1:
-                    level.Rows = 3;
-                    level.Columns = 3;
-                    break;
+                level.Rows = 3;
+                level.Columns = 3;
+                break;
                 case 2:
                 case 3:
-                    level.Rows = 5;
-                    level.Columns = 5;
-                    break;
+                level.Rows = 5;
+                level.Columns = 5;
+                break;
                 case 4:
                 case 5:
-                    level.Rows = 7;
-                    level.Columns = 7;
-                    break;
+                level.Rows = 7;
+                level.Columns = 7;
+                break;
                 case 6:
                 case 7:
                 case 8:
                 case 9:
                 case 10:
-                    level.Rows = 7;
-                    level.Columns = 9;
-                    break;
+                level.Rows = 7;
+                level.Columns = 9;
+                break;
             }
 
             return level;
