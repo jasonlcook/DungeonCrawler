@@ -1,5 +1,8 @@
 ﻿@page "/"
 
+@inject IDungeonDataManager DungeonManager
+@inject HttpClient Http
+
 <HeadContent>
     <link href="css/cssreset-min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
@@ -11,9 +14,13 @@
 <div id="play-area">
     <div class="dungon">
         <div id="stage">
-            <div class="loading">
-                <img src="/images/tiles/blue/base_tile.png" />
-            </div>
+            @if (dungeon == null) {
+                <div class="loading">
+                    <img src="/images/tiles/blue/base_tile.png" />
+                </div>
+            } else {
+                <h1>DUNGEON @dungeon.Id</h1>
+            }
         </div>
     </div>
     <div class="button">
@@ -44,4 +51,21 @@
         <div id="log"></div>
     </div>
 </div>
-<div id="version"></div>
+
+<div id="version">
+    <span class="api-version"></span>
+    <span class="client-version"></span>
+</div>
+
+@code {
+    Dungeon dungeon;
+
+    protected override async Task OnParametersSetAsync() {
+        await SetupDungeon();
+    }
+
+    async Task SetupDungeon() {
+        dungeon = await DungeonManager.GenerateNewDungeon();
+        await InvokeAsync(StateHasChanged);
+    }
+}

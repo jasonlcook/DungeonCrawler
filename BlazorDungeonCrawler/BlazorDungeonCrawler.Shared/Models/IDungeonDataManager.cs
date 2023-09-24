@@ -1,5 +1,5 @@
 ﻿namespace BlazorDungeonCrawler.Shared.Models {
-    public interface IDungeonManager {
-        Task<Dungeon> NewGame();
+    public interface IDungeonDataManager {
+        Task<Dungeon> GenerateNewDungeon();
     }
 }
