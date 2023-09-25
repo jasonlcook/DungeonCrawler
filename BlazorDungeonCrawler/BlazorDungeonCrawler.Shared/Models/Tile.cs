@@ -9,6 +9,8 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int Row { get; set; } = 0;
         public int Column { get; set; } = 0;
 
-        public List<Monster> Monsters { get; set; } = new List<Monster>();
+        public DungeonEvemts Type { get; set; } = DungeonEvemts.Unknown;
+
+        public List<Monster>? Monsters { get; set; } = null;
     }
 }
