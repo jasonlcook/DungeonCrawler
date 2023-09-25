@@ -1,11 +1,15 @@
 /* Version */
 #version {
-    border: 1px solid #000;
-    width: min-content;
-    margin: 10px auto 0px auto;
-    font-size: 13px;
+    margin: 10px auto 0 auto;
+    font-size: 10px;
     font-family: monospace;
+    width: 844px;
+    text-align: right;
 }
+
+    #version span {
+        display: block;
+    }
 
 /* Loeading */
 #play-area .dungeon #stage .loading {
@@ -13,7 +17,6 @@
     position: absolute;
     left: 355px;
     top: 270px;
-
     animation: loading 4s ease-in-out infinite;
 }
 

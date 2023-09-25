@@ -10,7 +10,8 @@ namespace BlazorDungeonCrawler.Server.Data {
             Dungeon dungeon = new Dungeon() {
                 Id = Guid.NewGuid(),
                 Adventurer = GenerateAdventurer(),
-                Level = GenerateLevel()
+                Level = GenerateLevel(),
+                ApiVersion = new Version(0, 2, 0)
             };
 
             DungeonCrawlerContext dungeonCrawlerContext = new DungeonCrawlerContext();
@@ -22,6 +23,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
         public Adventurer GenerateAdventurer() {
             return new Adventurer() {
+                Id = Guid.NewGuid(),
                 HealthBase = 6,
                 DamageBase = 6,
                 ProtectionBase = 6,
@@ -35,6 +37,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
         public Level GenerateLevel(int depth) {
             Level level = new Level() {
+                Id = Guid.NewGuid(),
                 Depth = depth
             };
 

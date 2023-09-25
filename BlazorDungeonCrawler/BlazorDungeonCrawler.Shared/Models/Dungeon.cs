@@ -12,6 +12,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Level Level { get; set; } = new Level();
 
         public bool MacGuffinFound { get; set; } = false;
+        
+        [NotMapped]
+        public Version ApiVersion { get; set; } = new Version(0, 0, 0);
 
         [ForeignKey("Adventurer")]
         public Guid AdventurerId { get; set; }

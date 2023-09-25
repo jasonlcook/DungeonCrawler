@@ -19,7 +19,7 @@
                     <img src="/images/tiles/blue/base_tile.png" />
                 </div>
             } else {
-                <h1>DUNGEON @dungeon.Id</h1>
+                <h1>DUNGEON @dungeon.Id.ToString()</h1>
             }
         </div>
     </div>
@@ -30,20 +30,36 @@
         <div class="adventurer">
             <div class="level">
                 <span class="label">Level</span>
-                <span class="value" id="current-level">0</span>
+                <span class="value" id="current-level">
+                    @if (dungeon != null) {
+                        @dungeon.Level.Depth.ToString()
+                    }
+                </span>
             </div>
             <div class="stats">
                 <div class="health">
                     <span class="label">Health</span>
-                    <span class="value" id="current-health">0</span>
+                    <span class="value" id="current-health">
+                        @if (dungeon != null) {
+                            @dungeon.Adventurer.HealthBase.ToString()
+                        }
+                    </span>
                 </div>
                 <div class="damage">
                     <span class="label">Damage</span>
-                    <span class="value" id="current-damage">0</span>
+                    <span class="value" id="current-damage">
+                        @if (dungeon != null) {
+                            @dungeon.Adventurer.DamageBase.ToString()
+                        }
+                    </span>
                 </div>
                 <div class="protection">
                     <span class="label">Protection</span>
-                    <span class="value" id="current-protection">0</span>
+                    <span class="value" id="current-protection">
+                        @if (dungeon != null) {
+                            @dungeon.Adventurer.ProtectionBase.ToString()
+                        }
+                    </span>
                 </div>
             </div>
             <div class="dice"></div>
@@ -53,12 +69,15 @@
 </div>
 
 <div id="version">
-    <span class="api-version"></span>
-    <span class="client-version"></span>
+    <span class="api-version">
+        @((MarkupString)apiVersion)
+    </span>
+    <span class="client-version">Client V0.2.1</span>
 </div>
 
 @code {
-    Dungeon dungeon;
+    Dungeon? dungeon = null;
+    string apiVersion = "API V0.0.0";
 
     protected override async Task OnParametersSetAsync() {
         await SetupDungeon();
@@ -66,6 +85,8 @@
 
     async Task SetupDungeon() {
         dungeon = await DungeonManager.GenerateNewDungeon();
+        apiVersion = $"API V{dungeon.ApiVersion}";
+
         await InvokeAsync(StateHasChanged);
     }
 }
