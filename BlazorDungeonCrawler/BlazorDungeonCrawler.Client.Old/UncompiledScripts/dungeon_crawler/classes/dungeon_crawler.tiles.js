@@ -77,7 +77,7 @@
 
             let nextTileType = this.checkEndLevelTileDeployed();
             if (nextTileType == null) {
-                let tileTypeValue = dungeon_crawler.main.roleDSix();
+                let tileTypeValue = dungeon_crawler.main.rollDSix();
                 nextTileType = this.selectTileType(tileTypeValue);
 
                 //let logEntry = new LogEntry(dungeon_crawler.log_text.generateTileText(nextTileType));
@@ -93,7 +93,7 @@
                     break;
                 case dungeon_crawler.core.globals.tileTypes['chest']:
 
-                    let lootValue = dungeon_crawler.main.roleDSix();
+                    let lootValue = dungeon_crawler.main.rollDSix();
                     nextTileType = dungeon_crawler.main.selectLoot(lootValue);
                     //let logEntry;
                     switch (nextTileType) {
@@ -138,7 +138,7 @@
 
             } else if (selectedTileType == dungeon_crawler.core.globals.tileTypes['empty'] || selectedTileType == dungeon_crawler.core.globals.tileTypes['fight']) {
                 //if tile has already been placed roll for monster encounter
-                let repeatTileTypeValue = dungeon_crawler.main.roleDSix();
+                let repeatTileTypeValue = dungeon_crawler.main.rollDSix();
                 let repeatTile = this.getRepeatTileType(repeatTileTypeValue);
 
                 if (repeatTile != null) {

@@ -3,13 +3,13 @@
     weaponCondition: dungeon_crawler.core.createEnum(['unknown', 'broken', 'rusty', 'chipped', 'sharp', 'flaming']),
 
     getWeapon() {
-        let weponTypeValue = dungeon_crawler.main.roleDSix();
+        let weponTypeValue = dungeon_crawler.main.rollDSix();
         let weponType = dungeon_crawler.weapon.selectWeaponType(weponTypeValue);
         let weponCondition = null;
         let weponConditionValue = 0;
 
         if (weponType !== dungeon_crawler.weapon.weaponType['rock'] && weponType !== dungeon_crawler.weapon.weaponType['club']) {
-            weponConditionValue = dungeon_crawler.main.roleDSix();
+            weponConditionValue = dungeon_crawler.main.rollDSix();
             weponCondition = dungeon_crawler.weapon.selectWeaponCondition(weponConditionValue);
         }
 

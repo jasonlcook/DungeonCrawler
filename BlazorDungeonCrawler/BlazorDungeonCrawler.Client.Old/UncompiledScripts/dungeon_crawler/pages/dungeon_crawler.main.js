@@ -427,8 +427,8 @@
         currentEnemy.generateEnemy(enemy.type, enemy.healthDice, enemy.damageDice, enemy.protectionDice);
 
         dungeon_crawler.main.resetDiceValues();
-        let adventurerScore = dungeon_crawler.main.roleDSix();
-        let monsterScore = dungeon_crawler.main.roleDSix();
+        let adventurerScore = dungeon_crawler.main.rollDSix();
+        let monsterScore = dungeon_crawler.main.rollDSix();
 
         //If Adventurer wins the roll they starts combat
         let adventurerInitiatesCombat = false;
@@ -467,12 +467,12 @@
             enemyRolls = [];
 
             if (adventurerInitiatesCombat) {
-                adventurerRolls.push(dungeon_crawler.main.roleDSix());
+                adventurerRolls.push(dungeon_crawler.main.rollDSix());
                 for (var i = 0; i < adventurerRolls.length; i++) {
                     adventurerRollValue += adventurerRolls[i]
                 }
 
-                enemyRolls.push(dungeon_crawler.main.roleDSix());
+                enemyRolls.push(dungeon_crawler.main.rollDSix());
                 for (var i = 0; i < enemyRolls.length; i++) {
                     enemyRollValue += enemyRolls[i]
                 }
@@ -505,13 +505,13 @@
             enemyRolls = [];
 
             if (currentEnemy.isAlive()) {
-                enemyRolls.push(dungeon_crawler.main.roleDSix());
+                enemyRolls.push(dungeon_crawler.main.rollDSix());
                 for (var i = 0; i < enemyRolls.length; i++) {
                     enemyRollValue += enemyRolls[i]
                 }
                 attackValue = enemyRollValue + enemyDamage;
 
-                adventurerRolls.push(dungeon_crawler.main.roleDSix());
+                adventurerRolls.push(dungeon_crawler.main.rollDSix());
                 for (var i = 0; i < adventurerRolls.length; i++) {
                     adventurerRollValue += adventurerRolls[i]
                 }
@@ -594,7 +594,7 @@
     },
 
     //Dice
-    roleDSix() {
+    rollDSix() {
         return Math.floor(Math.random() * (6)) + 1;
     },
 
@@ -715,8 +715,8 @@
         //Health
         let healthValue = 0, healthRolls = [];
 
-        healthRolls.push(dungeon_crawler.main.roleDSix());
-        healthRolls.push(dungeon_crawler.main.roleDSix());
+        healthRolls.push(dungeon_crawler.main.rollDSix());
+        healthRolls.push(dungeon_crawler.main.rollDSix());
 
         for (var i = 0; i < healthRolls.length; i++) {
             healthValue += healthRolls[i]
@@ -727,7 +727,7 @@
         //Damage
         let damageValue = 0, damageRolls = [];
 
-        damageRolls.push(dungeon_crawler.main.roleDSix());
+        damageRolls.push(dungeon_crawler.main.rollDSix());
 
         for (var i = 0; i < damageRolls.length; i++) {
             damageValue += damageRolls[i]
@@ -738,7 +738,7 @@
         //Protection
         let protectionValue = 0, protectionRolls = [];
 
-        protectionRolls.push(dungeon_crawler.main.roleDSix());
+        protectionRolls.push(dungeon_crawler.main.rollDSix());
 
         for (var i = 0; i < protectionRolls.length; i++) {
             protectionValue += protectionRolls[i]

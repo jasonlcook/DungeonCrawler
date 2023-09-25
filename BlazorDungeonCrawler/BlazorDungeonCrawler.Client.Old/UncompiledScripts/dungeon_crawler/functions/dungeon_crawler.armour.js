@@ -3,10 +3,10 @@
     armourCondition: dungeon_crawler.core.createEnum(['unknown', 'rusty', 'tarnished', 'shiny']),
 
     getArmour() {
-        let armourTypeValue = dungeon_crawler.main.roleDSix();
+        let armourTypeValue = dungeon_crawler.main.rollDSix();
         let armourType = dungeon_crawler.armour.selectArmourType(armourTypeValue);
 
-        let armourConditionValue = dungeon_crawler.main.roleDSix();
+        let armourConditionValue = dungeon_crawler.main.rollDSix();
         let armourCondition = dungeon_crawler.armour.selectArmourCondition(armourConditionValue);
 
         let armourValue = dungeon_crawler.armour.getArmourValue(armourType, armourCondition);

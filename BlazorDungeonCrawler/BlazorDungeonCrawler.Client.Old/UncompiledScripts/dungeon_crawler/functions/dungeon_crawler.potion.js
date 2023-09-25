@@ -4,13 +4,13 @@
     potionDuration: dungeon_crawler.core.createEnum(['unknown', 'short', 'medium', 'long']),
 
     getPotion() {
-        let potionTypeValue = dungeon_crawler.main.roleDSix();
+        let potionTypeValue = dungeon_crawler.main.rollDSix();
         let potionType = dungeon_crawler.potion.selectPotionType(potionTypeValue);
 
-        let potionSizeValue = dungeon_crawler.main.roleDSix();
+        let potionSizeValue = dungeon_crawler.main.rollDSix();
         let potionSize = dungeon_crawler.potion.selectPotionSize(potionSizeValue);
 
-        let potionDurationValue = dungeon_crawler.main.roleDSix();
+        let potionDurationValue = dungeon_crawler.main.rollDSix();
         let potionDuration = dungeon_crawler.potion.selectPotionDuration(potionDurationValue);
 
         dungeon_crawler.potion.usePotion(potionType, potionSize, potionDuration);
