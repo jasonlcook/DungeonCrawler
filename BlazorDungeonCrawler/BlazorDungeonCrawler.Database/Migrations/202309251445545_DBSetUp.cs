@@ -38,14 +38,14 @@
                     {
                         Id = c.Guid(nullable: false),
                         MacGuffinFound = c.Boolean(nullable: false),
-                        AdventurerId = c.Guid(nullable: false),
-                        LevelId = c.Guid(nullable: false),
+                        Adventurer_Id = c.Guid(),
+                        Level_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Adventurers", t => t.AdventurerId, cascadeDelete: true)
-                .ForeignKey("dbo.Levels", t => t.LevelId, cascadeDelete: true)
-                .Index(t => t.AdventurerId)
-                .Index(t => t.LevelId);
+                .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
+                .ForeignKey("dbo.Levels", t => t.Level_Id)
+                .Index(t => t.Adventurer_Id)
+                .Index(t => t.Level_Id);
             
             CreateTable(
                 "dbo.Levels",
@@ -65,6 +65,7 @@
                         Id = c.Guid(nullable: false),
                         Row = c.Int(nullable: false),
                         Column = c.Int(nullable: false),
+                        Type = c.Int(nullable: false),
                         Level_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
@@ -75,32 +76,45 @@
                 "dbo.Monsters",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
-                        LevelStart = c.Int(nullable: false),
-                        LevelEnd = c.Int(nullable: false),
-                        DiceHealth = c.Int(nullable: false),
-                        DiceDamage = c.Int(nullable: false),
-                        DiceProtection = c.Int(nullable: false),
-                        Documentation = c.String(),
+                        Id = c.Guid(nullable: false),
+                        TypeName = c.String(),
+                        Health = c.Int(nullable: false),
+                        Damage = c.Int(nullable: false),
+                        Protection = c.Int(nullable: false),
                         Tile_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Tiles", t => t.Tile_Id)
                 .Index(t => t.Tile_Id);
             
+            CreateTable(
+                "dbo.Messages",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        Index = c.Int(nullable: false),
+                        Text = c.String(),
+                        Dungeon_Id = c.Guid(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Dungeons", t => t.Dungeon_Id)
+                .Index(t => t.Dungeon_Id);
+            
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.Dungeons", "LevelId", "dbo.Levels");
+            DropForeignKey("dbo.Messages", "Dungeon_Id", "dbo.Dungeons");
+            DropForeignKey("dbo.Dungeons", "Level_Id", "dbo.Levels");
             DropForeignKey("dbo.Tiles", "Level_Id", "dbo.Levels");
             DropForeignKey("dbo.Monsters", "Tile_Id", "dbo.Tiles");
-            DropForeignKey("dbo.Dungeons", "AdventurerId", "dbo.Adventurers");
+            DropForeignKey("dbo.Dungeons", "Adventurer_Id", "dbo.Adventurers");
+            DropIndex("dbo.Messages", new[] { "Dungeon_Id" });
             DropIndex("dbo.Monsters", new[] { "Tile_Id" });
             DropIndex("dbo.Tiles", new[] { "Level_Id" });
-            DropIndex("dbo.Dungeons", new[] { "LevelId" });
-            DropIndex("dbo.Dungeons", new[] { "AdventurerId" });
+            DropIndex("dbo.Dungeons", new[] { "Level_Id" });
+            DropIndex("dbo.Dungeons", new[] { "Adventurer_Id" });
+            DropTable("dbo.Messages");
             DropTable("dbo.Monsters");
             DropTable("dbo.Tiles");
             DropTable("dbo.Levels");
