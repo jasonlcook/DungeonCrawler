@@ -24,41 +24,33 @@
         </div>
     </div>
     <div class="button">
-        <button id="advance" disabled>Advance</button>
+        <button id="advance" @((MarkupString)(advanceButtonDisabled?"disabled" : null))>Advance</button>
     </div>
     <div class="details">
         <div class="adventurer">
             <div class="level">
                 <span class="label">Level</span>
                 <span class="value" id="current-level">
-                    @if (dungeon != null) {
-                        @dungeon.Level.Depth.ToString()
-                    }
+                    @((MarkupString)dungeonDepth)
                 </span>
             </div>
             <div class="stats">
                 <div class="health">
                     <span class="label">Health</span>
                     <span class="value" id="current-health">
-                        @if (dungeon != null) {
-                            @dungeon.Adventurer.HealthBase.ToString()
-                        }
+                        @((MarkupString)health)
                     </span>
                 </div>
                 <div class="damage">
                     <span class="label">Damage</span>
                     <span class="value" id="current-damage">
-                        @if (dungeon != null) {
-                            @dungeon.Adventurer.DamageBase.ToString()
-                        }
+                        @((MarkupString)damage)
                     </span>
                 </div>
                 <div class="protection">
                     <span class="label">Protection</span>
                     <span class="value" id="current-protection">
-                        @if (dungeon != null) {
-                            @dungeon.Adventurer.ProtectionBase.ToString()
-                        }
+                        @((MarkupString)protection)
                     </span>
                 </div>
             </div>
@@ -79,6 +71,14 @@
     Dungeon? dungeon = null;
     string apiVersion = "API V0.0.0";
 
+    string dungeonDepth = "0";
+
+    string health = "0";
+    string damage = "0";
+    string protection = "0";
+
+    bool advanceButtonDisabled = true;
+
     protected override async Task OnParametersSetAsync() {
         await SetupDungeon();
     }
@@ -86,6 +86,12 @@
     async Task SetupDungeon() {
         dungeon = await DungeonManager.GenerateNewDungeon();
         apiVersion = $"API V{dungeon.ApiVersion}";
+
+        dungeonDepth = dungeon.Level.Depth.ToString();
+
+        health = dungeon.Adventurer.HealthBase.ToString();
+        damage = dungeon.Adventurer.DamageBase.ToString();
+        protection = dungeon.Adventurer.ProtectionBase.ToString();
 
         await InvokeAsync(StateHasChanged);
     }
