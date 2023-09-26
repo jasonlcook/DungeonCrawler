@@ -2,12 +2,16 @@
 
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Database;
+using System.Data.Entity;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
+        DungeonCrawlerContext dungeonCrawlerContext = new DungeonCrawlerContext();
 
         private List<Message> messages = new List<Message>();
 
+        //Dungon
+        //  Set
         public async Task<Dungeon> Generate() {
             await Task.Delay(1);
 
@@ -20,7 +24,6 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             dungeon.Messages.AddRange(messages);
 
-            DungeonCrawlerContext dungeonCrawlerContext = new DungeonCrawlerContext();
             dungeonCrawlerContext.Dungeons.Add(dungeon);
             dungeonCrawlerContext.SaveChanges();
 
@@ -115,10 +118,12 @@ namespace BlazorDungeonCrawler.Server.Data {
         public List<Tile> GenerateTiles(int depth, int rows, int cols) {
             List<Tile> tiles = new List<Tile>();
 
+            //Generate 
             float overflow = (cols + 1) / 2;
             int tileCount = (rows * cols) - (int)Math.Ceiling(overflow);
 
-            Tile tile;
+            List<int> avalibleTileIndexes = new List<int>();
+
             int row = -1, column = 0;
             for (int i = 0; i < tileCount; i++) {
                 row += 1;
@@ -136,20 +141,96 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
 
-                tile = new Tile() {
+                tiles.Add(new Tile() {
                     Id = Guid.NewGuid(),
                     Row = row,
-                    Column = column
-                };
+                    Column = column,
+                    Type = GetTileType()
+                });
 
-                DungeonEvemts tileType = GetTileType();
-                tile.Type = tileType;
+                avalibleTileIndexes.Add(i);
+            }
 
-                if (tileType == DungeonEvemts.Fight) {
-                    tile.Monsters = GetTileMonsters(depth);
+            //Insert level elements
+            List<DungeonEvemts> additionalEvents = new List<DungeonEvemts>();
+            switch (depth) {
+                case 1:
+                additionalEvents.Add(DungeonEvemts.DungeonEntrance);
+                additionalEvents.Add(DungeonEvemts.StairsDescending);
+                break;
+            }
+
+            Tile randomSelectedTile;
+            int avalibleTileIndex;
+            int currentRow = int.MinValue, currentColumn = int.MinValue;
+            for (int i = 0; i < additionalEvents.Count; i++) {
+                //get random tile 
+                avalibleTileIndex = randomNumber(0, avalibleTileIndexes.Count);
+                randomSelectedTile = tiles.ElementAt(avalibleTileIndexes.ElementAt(avalibleTileIndex));
+
+                //once selected remove from the avalible list
+                avalibleTileIndexes.RemoveAt(avalibleTileIndex);
+
+                //retrive first event
+                randomSelectedTile.Type = additionalEvents.ElementAt(i);
+
+                //if it is a starting tile set it as current un visible
+                if (randomSelectedTile.Type == DungeonEvemts.DungeonEntrance || randomSelectedTile.Type == DungeonEvemts.StairsAscending) {
+                    randomSelectedTile.Hidden = false;
+                    randomSelectedTile.Current = true;
+
+                    currentRow = randomSelectedTile.Row;
+                    currentColumn = randomSelectedTile.Column;
                 }
+            }
 
-                tiles.Add(tile);
+            //Check for current
+            if (currentRow == int.MinValue || currentColumn == int.MinValue ) { 
+            //todo return error
+            };
+
+            //Get Selected
+            int previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
+            foreach (Tile tile in tiles) {
+                tile.Selectable = false;
+
+                currentTileRow = tile.Row;
+                previousTileRow = currentTileRow - 1;
+                nextTileRow = currentTileRow + 1;
+
+                currentTileColumn = tile.Column;
+                previousTileColumn = currentTileColumn - 1;
+                nextTileColumn = currentTileColumn + 1;
+
+                if ((currentTileColumn % 2) == 1) {
+                    //previous and next column
+                    if (previousTileColumn == currentColumn || nextTileColumn == currentColumn) {
+                        if (previousTileRow == currentRow || currentTileRow == currentRow) {
+                            tile.Selectable = true;
+                        }
+                    }
+
+                    //curent column
+                    if (currentTileColumn == currentColumn) {
+                        if (previousTileRow == currentRow || nextTileRow == currentRow) {
+                            tile.Selectable = true;
+                        }
+                    }
+                } else {
+                    //previous and next column
+                    if (previousTileColumn == currentColumn || nextTileColumn == currentColumn) {
+                        if (currentTileRow == currentRow || nextTileRow == currentRow) {
+                            tile.Selectable = true;
+                        }
+                    }
+
+                    //curent column
+                    if (currentTileColumn == currentColumn) {
+                        if (previousTileRow == currentRow || nextTileRow == currentRow) {
+                            tile.Selectable = true;
+                        }
+                    }
+                }
             }
 
             return tiles;
