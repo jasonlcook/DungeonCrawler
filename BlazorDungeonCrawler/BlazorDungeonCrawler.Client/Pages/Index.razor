@@ -71,13 +71,13 @@
 
 <script>
     //wait for startup to become avalible.
-    function getStartup() {
+    function getStartup(args) {
         if (
             window.dungeon_crawler != 'undefined' && window.dungeon_crawler != null &&
             window.dungeon_crawler.main != 'undefined' && window.dungeon_crawler.main != null &&
             window.dungeon_crawler.main.startup != 'undefined' && window.dungeon_crawler.main.startup != null && typeof (window.dungeon_crawler.main.startup) == 'function'
         ) {
-            window.dungeon_crawler.main.startup();
+            window.dungeon_crawler.main.startup(args);
         } else {
             setTimeout(getStartup, 100);
         }
@@ -98,9 +98,10 @@
 
     string tilesHtml = "";
 
-    protected override async Task OnParametersSetAsync() {
-        await SetupDungeon();
-        await JS.InvokeVoidAsync("getStartup");
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await SetupDungeon();
+        }
     }
 
     async Task SetupDungeon() {
@@ -147,6 +148,7 @@
         }
 
         await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("getStartup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
     }
 
     string getColourClass(int dungeonDepth) {
