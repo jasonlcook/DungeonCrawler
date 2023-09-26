@@ -9,6 +9,12 @@
         FightWon,
         FightLost,
         Chest,
+        FoundWeapon,
+        FoundProtection,
+        FoundPotion,
+        TakenWeapon,
+        TakenProtection,
+        TakenPotion,
         Macguffin
     }
 }
