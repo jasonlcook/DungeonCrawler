@@ -66,6 +66,9 @@
                         Row = c.Int(nullable: false),
                         Column = c.Int(nullable: false),
                         Type = c.Int(nullable: false),
+                        Current = c.Boolean(nullable: false),
+                        Hidden = c.Boolean(nullable: false),
+                        Selectable = c.Boolean(nullable: false),
                         Level_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
