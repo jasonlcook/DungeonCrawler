@@ -67,7 +67,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
         //Level
         public Level GenerateLevel() {
-            return GenerateLevel(1);
+            Level level = GenerateLevel(1);
+            return level;
         }
 
         public Level GenerateLevel(int depth) {
@@ -165,7 +166,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             int currentRow = int.MinValue, currentColumn = int.MinValue;
             for (int i = 0; i < additionalEvents.Count; i++) {
                 //get random tile 
-                avalibleTileIndex = randomNumber(0, avalibleTileIndexes.Count);
+                avalibleTileIndex = randomNumber(0, avalibleTileIndexes.Count -1);
                 randomSelectedTile = tiles.ElementAt(avalibleTileIndexes.ElementAt(avalibleTileIndex));
 
                 //once selected remove from the avalible list
