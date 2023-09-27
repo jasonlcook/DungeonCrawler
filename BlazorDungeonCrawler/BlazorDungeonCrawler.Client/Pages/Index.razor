@@ -20,7 +20,28 @@
                     <img src="/images/tiles/blue/base_tile.png" />
                 </div>
             } else {
-                @((MarkupString)tilesHtml)
+                string colourClass = getColourClass(dungeon.Level.Depth);
+                foreach (Tile tile in dungeon.Level.Tiles) {
+                    <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
+                        <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
+
+                        @if (tile.Hidden) {
+                            <div class="hexagon-tile hexagon-tile-hidden"></div>
+                        } else {
+                            <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
+
+                            @if (!tile.Current) {
+                                <div class="hexagon-tile hexagon-for-of-war"></div>
+                            }
+                        }
+
+                        @if (tile.Selectable) {
+                            <div class="hexagon-tile @colourClass hexagon-tile-selectable">
+                                <span @onclick="@(() => SelectTile(tile.Id))"></span>
+                            </div>
+                        }
+                    </div>
+                }
             }
 
         </div>
@@ -114,39 +135,6 @@
         damage = dungeon.Adventurer.DamageBase.ToString();
         protection = dungeon.Adventurer.ProtectionBase.ToString();
 
-        string colourClass = getColourClass(dungeon.Level.Depth);
-        string tileTypeClass;
-        foreach (Tile tile in dungeon.Level.Tiles) {
-            tileTypeClass = "hexagon-tile-hidden";
-
-            if (!tile.Hidden) {
-                tileTypeClass = GetTypeClass(tile.Type);
-            }
-
-            //base tiles
-            tilesHtml += $"<div class='hexagon-tile-group' data-row='{tile.Row}' data-column='{tile.Column}'>";
-            tilesHtml += $"<div class='hexagon-tile {colourClass} hexagon-tile-base'><span></span></div>";
-
-            if (tile.Hidden) {
-                //hidden tiles
-                tilesHtml += $"<div class='hexagon-tile hexagon-tile-hidden'><span></span></div>";
-            } else {
-                //tile images
-                tilesHtml += $"<div class='hexagon-tile {colourClass} {tileTypeClass}'><span></span></div>";
-
-                if (!tile.Current) {
-                    //tile overlays
-                    tilesHtml += $"<div class='hexagon-tile hexagon-for-of-war'><span></span></div>";
-                }
-            }
-
-            if (tile.Selectable) {
-                //selectable tile
-                tilesHtml += $"<div data-identity='{tile.Id}' class='hexagon-tile {colourClass} hexagon-tile-selectable'><span></span></div>";
-            }
-            tilesHtml += "</div>";
-        }
-
         await InvokeAsync(StateHasChanged);
         await JS.InvokeVoidAsync("getStartup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
     }
@@ -208,5 +196,13 @@
         }
 
         return "hexagon-tile-unknown";
+    }
+
+    async Task SelectTile(Guid tileId) {
+        if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
+            dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+        } else {
+            //todo: trap error
+        }
     }
 }
