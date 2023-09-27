@@ -2,11 +2,10 @@
 
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Database;
-using System.Data.Entity;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
-        DungeonCrawlerContext dungeonCrawlerContext = new DungeonCrawlerContext();
+        DungeonCrawlerContext context = new DungeonCrawlerContext();
 
         private List<Message> messages = new List<Message>();
 
@@ -24,14 +23,41 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             dungeon.Messages.AddRange(messages);
 
-            dungeonCrawlerContext.Dungeons.Add(dungeon);
-            dungeonCrawlerContext.SaveChanges();
+            context.Dungeons.Add(dungeon);
+            context.SaveChanges();
 
             return dungeon;
         }
 
+        //  Set
+        public async Task<Dungeon> GetSelectedDungeonTile(Guid dungeonId, Guid tileId) {
+            await Task.Delay(1);
+
+            if (context != null) {
+                Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+                if (selectedTile != null && selectedTile.Selectable) {
+                    List<Tile> tiles = context.Dungeons.Where(d => d.Id == dungeonId).Select(d => d.Level.Tiles).FirstOrDefault();
+
+                    foreach (Tile tile in tiles) {
+                        tile.Current = false;
+                        tile.Selectable = false;
+                    }
+
+                    selectedTile.Hidden = false;
+                    selectedTile.Current = true;
+                    GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+
+                    context.SaveChanges();
+
+                    return context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
+                }
+            }
+
+            return new Dungeon();
+        }
+
         //Random numbers
-        public int randomNumber(int min, int max) {
+        public int RandomNumber(int min, int max) {
             Guid guid = Guid.NewGuid();
             string guidDigits = Regex.Replace(guid.ToString(), @"\D0*", "");
             int number = int.Parse(guidDigits.Substring(0, 8));
@@ -42,7 +68,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
         //Dice
         public int rollDSix() {
-            return randomNumber(1, 6);
+            return RandomNumber(1, 6);
         }
 
         //Adventurer
@@ -166,7 +192,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             int currentRow = int.MinValue, currentColumn = int.MinValue;
             for (int i = 0; i < additionalEvents.Count; i++) {
                 //get random tile 
-                avalibleTileIndex = randomNumber(0, avalibleTileIndexes.Count -1);
+                avalibleTileIndex = RandomNumber(0, avalibleTileIndexes.Count - 1);
                 randomSelectedTile = tiles.ElementAt(avalibleTileIndexes.ElementAt(avalibleTileIndex));
 
                 //once selected remove from the avalible list
@@ -186,11 +212,17 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
 
             //Check for current
-            if (currentRow == int.MinValue || currentColumn == int.MinValue ) { 
-            //todo return error
+            if (currentRow == int.MinValue || currentColumn == int.MinValue) {
+                //todo return error
             };
 
             //Get Selected
+            GetSelected(ref tiles, currentRow, currentColumn);
+
+            return tiles;
+        }
+
+        public void GetSelected(ref List<Tile> tiles, int currentRow, int currentColumn) {
             int previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
             foreach (Tile tile in tiles) {
                 tile.Selectable = false;
@@ -233,8 +265,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
             }
-
-            return tiles;
         }
 
         public DungeonEvemts GetTileType() {
@@ -265,7 +295,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             MonsterManager monsterManager = new MonsterManager();
             List<MonsterType> availableMonsters = monsterManager.GetMonsters(depth);
 
-            int currentMonsterTypeIndex = randomNumber(0, availableMonsters.Count - 1);
+            int currentMonsterTypeIndex = RandomNumber(0, availableMonsters.Count - 1);
             MonsterType currentMonsterType = availableMonsters[currentMonsterTypeIndex];
 
             int monsterGroup = 1, rollValue = 0, health = 0, damage = 0, protection = 0;

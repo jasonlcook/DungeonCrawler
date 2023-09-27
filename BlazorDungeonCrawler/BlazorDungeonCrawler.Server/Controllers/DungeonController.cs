@@ -26,6 +26,23 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{dungeonId}/tile/{tileId}")]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> Get(Guid dungeonId, Guid tileId) {
+            try {
+                Dungeon dungeon = await dungeonManager.GetSelectedDungeonTile(dungeonId, tileId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
                 return StatusCode(500);
             }
         }
