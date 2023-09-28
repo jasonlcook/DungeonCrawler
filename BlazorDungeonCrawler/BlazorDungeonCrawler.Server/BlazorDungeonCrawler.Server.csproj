@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <ProjectReference Include="..\BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj" />
+    <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj" />
-    <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
+    <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
   </ItemGroup>
 
 </Project>

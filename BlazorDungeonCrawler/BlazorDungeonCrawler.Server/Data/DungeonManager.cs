@@ -2,11 +2,11 @@
 
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Database;
+using System.Data.Entity;
+using System.Diagnostics;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
-        DungeonCrawlerContext context = new DungeonCrawlerContext();
-
         private List<Message> messages = new List<Message>();
 
         //Dungon
@@ -14,17 +14,32 @@ namespace BlazorDungeonCrawler.Server.Data {
         public async Task<Dungeon> Generate() {
             await Task.Delay(1);
 
-            Dungeon dungeon = new Dungeon() {
-                Id = Guid.NewGuid(),
-                Adventurer = GenerateAdventurer(),
-                Level = GenerateLevel(),
-                ApiVersion = new Version(0, 2, 0)
+
+            Dungeon dungeon = new Dungeon();
+
+            try {
+                 dungeon = new Dungeon() {
+                    Id = Guid.NewGuid(),
+                    Adventurer = GenerateAdventurer(),
+                    Level = GenerateLevel(),
+                    ApiVersion = new Version(0, 2, 0)
+                };
+
+                dungeon.Messages.AddRange(messages);
+            } catch (Exception ex) { 
+                //todo add error handeing for error on model generation
+            }
+
+            try {
+                if (dungeon.Id != Guid.Empty) {
+                    using (var context = new DungeonCrawlerContext()) {
+                        context.Dungeons.Add(dungeon);
+                        context.SaveChanges();
+                    }
+                }                
+            } catch (Exception ex) {
+                //todo add error handeing for error on model creation                
             };
-
-            dungeon.Messages.AddRange(messages);
-
-            context.Dungeons.Add(dungeon);
-            context.SaveChanges();
 
             return dungeon;
         }
@@ -33,27 +48,59 @@ namespace BlazorDungeonCrawler.Server.Data {
         public async Task<Dungeon> GetSelectedDungeonTile(Guid dungeonId, Guid tileId) {
             await Task.Delay(1);
 
-            if (context != null) {
+            using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
                 Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
                 if (selectedTile != null && selectedTile.Selectable) {
-                    List<Tile> tiles = context.Dungeons.Where(d => d.Id == dungeonId).Select(d => d.Level.Tiles).FirstOrDefault();
+                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    List<Tile> tiles = dungeon.Level.Tiles;
 
-                    foreach (Tile tile in tiles) {
-                        tile.Current = false;
-                        tile.Selectable = false;
+                    if (tiles.Count > 0) {
+                        foreach (Tile tile in tiles) {
+                            tile.Current = false;
+                            tile.Selectable = false;
+                        }
+
+                        selectedTile.Hidden = false;
+                        selectedTile.Current = true;
+                        GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+
+                        switch (selectedTile.Type) {
+                            case DungeonEvemts.Fight:
+                            //List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
+                            //selectedTile.Monsters = monsters;
+
+                            //dungeon.Messages.AddRange(messages);
+
+                            break;
+                            case DungeonEvemts.Unknown:
+                            case DungeonEvemts.Empty:
+                            case DungeonEvemts.DungeonEntrance:
+                            case DungeonEvemts.StairsAscending:
+                            case DungeonEvemts.StairsDescending:
+                            case DungeonEvemts.FightWon:
+                            case DungeonEvemts.FightLost:
+                            case DungeonEvemts.Chest:
+                            case DungeonEvemts.FoundWeapon:
+                            case DungeonEvemts.FoundProtection:
+                            case DungeonEvemts.FoundPotion:
+                            case DungeonEvemts.TakenWeapon:
+                            case DungeonEvemts.TakenProtection:
+                            case DungeonEvemts.TakenPotion:
+                            case DungeonEvemts.Macguffin:
+                            default:
+                            break;
+                        }
+
+                        context.SaveChanges();
+                    } else { 
+                        //todo: log database error
                     }
 
-                    selectedTile.Hidden = false;
-                    selectedTile.Current = true;
-                    GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
-
-                    context.SaveChanges();
-
-                    return context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
+                    return dungeon;
                 }
             }
 
-            return new Dungeon();
+            return  new Dungeon();
         }
 
         //Random numbers
@@ -292,46 +339,55 @@ namespace BlazorDungeonCrawler.Server.Data {
         public List<Monster> GetTileMonsters(int depth) {
             List<Monster> monsters = new List<Monster>();
 
-            MonsterManager monsterManager = new MonsterManager();
-            List<MonsterType> availableMonsters = monsterManager.GetMonsters(depth);
+            List<MonsterType> availableMonsters;
+            using (var context = new DungeonCrawlerContext()) {
+                availableMonsters = context.MonsterType.Where(mt => mt.LevelStart <= depth).Where(mt => mt.LevelEnd >= depth).ToList();
+            }
 
-            int currentMonsterTypeIndex = RandomNumber(0, availableMonsters.Count - 1);
-            MonsterType currentMonsterType = availableMonsters[currentMonsterTypeIndex];
+            if (availableMonsters.Count > 0) {
+                int currentMonsterTypeIndex = RandomNumber(0, availableMonsters.Count - 1);
+                MonsterType currentMonsterType = availableMonsters[currentMonsterTypeIndex];
 
-            int monsterGroup = 1, rollValue = 0, health = 0, damage = 0, protection = 0;
-            List<int> healthDice = new(), damageDice = new(), protectionDice = new();
+                if (currentMonsterType.Id != Guid.Empty) {
+                    int monsterGroup = 1, rollValue = 0, health = 0, damage = 0, protection = 0;
+                    List<int> healthDice = new(), damageDice = new(), protectionDice = new();
 
-            for (int i = 0; i < monsterGroup; i++) {
-                Monster monster = new Monster() {
-                    Id = Guid.NewGuid(),
-                    TypeName = currentMonsterType.Name
-                };
+                    for (int i = 0; i < monsterGroup; i++) {
+                        Monster monster = new Monster() {
+                            Id = Guid.NewGuid(),
+                            TypeName = currentMonsterType.Name
+                        };
 
-                for (int h = 0; h < currentMonsterType.HealthDiceCount; h++) {
-                    rollValue = rollDSix();
-                    healthDice.Add(rollValue);
-                    health += rollValue;
+                        for (int h = 0; h < currentMonsterType.HealthDiceCount; h++) {
+                            rollValue = rollDSix();
+                            healthDice.Add(rollValue);
+                            health += rollValue;
+                        }
+                        monster.Health = health;
+                        AddMessage($"MONSTER HEALTH {health}", healthDice);
+
+                        for (int d = 0; d < currentMonsterType.DamageDiceCount; d++) {
+                            rollValue = rollDSix();
+                            damageDice.Add(rollValue);
+                            damage += rollValue;
+                        }
+                        monster.Damage = 0;
+                        AddMessage($"MONSTER DAMAGE {damage}", damageDice);
+
+                        for (int p = 0; p < currentMonsterType.DamageDiceCount; p++) {
+                            rollValue = rollDSix();
+                            protectionDice.Add(rollValue);
+                            protection += rollValue;
+                        }
+                        monster.Protection = 0;
+                        AddMessage($"MONSTER PROTECTION {protection}", protectionDice);
+
+                        monsters.Add(monster);
+                    }
                 }
-                monster.Health = health;
-                AddMessage($"MONSTER HEALTH {health}", healthDice);
 
-                for (int d = 0; d < currentMonsterType.DamageDiceCount; d++) {
-                    rollValue = rollDSix();
-                    damageDice.Add(rollValue);
-                    damage += rollValue;
-                }
-                monster.Damage = 0;
-                AddMessage($"MONSTER DAMAGE {damage}", damageDice);
-
-                for (int p = 0; p < currentMonsterType.DamageDiceCount; p++) {
-                    rollValue = rollDSix();
-                    protectionDice.Add(rollValue);
-                    protection += rollValue;
-                }
-                monster.Protection = 0;
-                AddMessage($"MONSTER PROTECTION {protection}", protectionDice);
-
-                monsters.Add(monster);
+            } else {
+                //todo log error
             }
 
             return monsters;
