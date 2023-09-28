@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DBSetUp : DbMigration
+    public partial class DBSetup : DbMigration
     {
         public override void Up()
         {
@@ -38,6 +38,7 @@
                     {
                         Id = c.Guid(nullable: false),
                         MacGuffinFound = c.Boolean(nullable: false),
+                        ApiVersion = c.String(),
                         Adventurer_Id = c.Guid(),
                         Level_Id = c.Guid(),
                     })
@@ -96,6 +97,7 @@
                     {
                         Id = c.Guid(nullable: false),
                         Index = c.Int(nullable: false),
+                        Datestamp = c.Long(nullable: false),
                         Text = c.String(),
                         Dungeon_Id = c.Guid(),
                     })
@@ -119,7 +121,7 @@
                 .PrimaryKey(t => t.Id);
             
         }
-
+        
         public override void Down()
         {
             DropForeignKey("dbo.Messages", "Dungeon_Id", "dbo.Dungeons");
