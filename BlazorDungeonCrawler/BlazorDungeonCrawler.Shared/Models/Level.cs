@@ -4,7 +4,8 @@ namespace BlazorDungeonCrawler.Shared.Models {
     public class Level {
 
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.Empty;
+
         public int Depth { get; set; } = 0;
 
         public int Rows { get; set; } = 0;

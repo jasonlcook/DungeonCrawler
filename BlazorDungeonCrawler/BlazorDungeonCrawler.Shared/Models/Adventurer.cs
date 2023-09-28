@@ -4,7 +4,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
     public  class Adventurer {
 
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.Empty;
 
         public int HealthBase { get; set; } = 0;
         public int HealthInitial { get; set; } = 0;

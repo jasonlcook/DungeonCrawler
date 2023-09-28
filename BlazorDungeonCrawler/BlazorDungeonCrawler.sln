@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.Client.Old", "BlazorDungeonCrawler.Client.Old\BlazorDungeonCrawler.Client.Old.csproj", "{40FA257F-56E1-4191-8239-D6D3521128D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDungeonCrawler.Database", "BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj", "{F8FA8AF1-4BF3-4E63-901E-33AE4462B948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.Database", "BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj", "{066B6557-09DF-438B-90DF-DC9C49690915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{40FA257F-56E1-4191-8239-D6D3521128D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40FA257F-56E1-4191-8239-D6D3521128D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40FA257F-56E1-4191-8239-D6D3521128D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8FA8AF1-4BF3-4E63-901E-33AE4462B948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8FA8AF1-4BF3-4E63-901E-33AE4462B948}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8FA8AF1-4BF3-4E63-901E-33AE4462B948}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8FA8AF1-4BF3-4E63-901E-33AE4462B948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066B6557-09DF-438B-90DF-DC9C49690915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066B6557-09DF-438B-90DF-DC9C49690915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066B6557-09DF-438B-90DF-DC9C49690915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066B6557-09DF-438B-90DF-DC9C49690915}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
     public class Dungeon {
         //If Id is an empty guid, then class has not been set
         [Key]
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.Empty;
 
         public Adventurer Adventurer { get; set; } = new Adventurer();
 
