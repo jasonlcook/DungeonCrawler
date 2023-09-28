@@ -103,8 +103,23 @@
                 .ForeignKey("dbo.Dungeons", t => t.Dungeon_Id)
                 .Index(t => t.Dungeon_Id);
             
+            CreateTable(
+                "dbo.MonsterTypes",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        Name = c.String(),
+                        LevelStart = c.Int(nullable: false),
+                        LevelEnd = c.Int(nullable: false),
+                        HealthDiceCount = c.Int(nullable: false),
+                        DamageDiceCount = c.Int(nullable: false),
+                        ProtectionDiceCount = c.Int(nullable: false),
+                        Documentation = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
+            
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.Messages", "Dungeon_Id", "dbo.Dungeons");
@@ -117,6 +132,7 @@
             DropIndex("dbo.Tiles", new[] { "Level_Id" });
             DropIndex("dbo.Dungeons", new[] { "Level_Id" });
             DropIndex("dbo.Dungeons", new[] { "Adventurer_Id" });
+            DropTable("dbo.MonsterTypes");
             DropTable("dbo.Messages");
             DropTable("dbo.Monsters");
             DropTable("dbo.Tiles");
