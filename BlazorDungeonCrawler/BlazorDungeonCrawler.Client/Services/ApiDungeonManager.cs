@@ -11,7 +11,7 @@ namespace BlazorDungeonCrawler.Client.Services {
         }
 
         public async Task<Dungeon> GenerateNewDungeon() {
-            var result = await httpClient.GetAsync("https://localhost:7224/api/dungeon");
+            HttpResponseMessage result = await httpClient.GetAsync("https://localhost:7224/api/dungeon");
 
             result.EnsureSuccessStatusCode();
 

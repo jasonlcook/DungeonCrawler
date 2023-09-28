@@ -1,13 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Data.Entity;
+using System.Text.RegularExpressions;
 
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Database;
-using System.Data.Entity;
-using System.Diagnostics;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
-        private List<Message> messages = new List<Message>();
+        private List<Message> newMessages = new List<Message>();
 
         //Dungon
         //  Set
@@ -22,10 +21,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                     Id = Guid.NewGuid(),
                     Adventurer = GenerateAdventurer(),
                     Level = GenerateLevel(),
-                    ApiVersion = new Version(0, 2, 0)
-                };
+                    ApiVersion = new Version(0, 2, 0).ToString()
+            };
 
-                dungeon.Messages.AddRange(messages);
+                foreach (Message message in newMessages) {
+                    dungeon.Messages.Add(message);
+                }                
             } catch (Exception ex) { 
                 //todo add error handeing for error on model generation
             }
@@ -66,10 +67,14 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         switch (selectedTile.Type) {
                             case DungeonEvemts.Fight:
-                            //List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
-                            //selectedTile.Monsters = monsters;
+                            newMessages = new List<Message>();
 
-                            //dungeon.Messages.AddRange(messages);
+                            List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
+                            selectedTile.Monsters = monsters;
+
+                            foreach (Message message in newMessages) {
+                                dungeon.Messages.Add(message);
+                            }
 
                             break;
                             case DungeonEvemts.Unknown:
@@ -371,7 +376,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             damageDice.Add(rollValue);
                             damage += rollValue;
                         }
-                        monster.Damage = 0;
+                        monster.Damage = damage;
                         AddMessage($"MONSTER DAMAGE {damage}", damageDice);
 
                         for (int p = 0; p < currentMonsterType.DamageDiceCount; p++) {
@@ -379,7 +384,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             protectionDice.Add(rollValue);
                             protection += rollValue;
                         }
-                        monster.Protection = 0;
+                        monster.Protection = protection;
                         AddMessage($"MONSTER PROTECTION {protection}", protectionDice);
 
                         monsters.Add(monster);
@@ -402,9 +407,9 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public void AddMessage(string message, List<int> dice) {
-            messages.Add(new Message() {
+            newMessages.Add(new Message() {
                 Id = Guid.NewGuid(),
-                Index = messages.Count + 1,
+                Index = newMessages.Count + 1,
                 Text = message,
                 Dice = dice
             });
