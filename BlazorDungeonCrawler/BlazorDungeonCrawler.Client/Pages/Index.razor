@@ -21,7 +21,10 @@
                 </div>
             } else {
                 string colourClass = getColourClass(dungeon.Level.Depth);
-                foreach (Tile tile in dungeon.Level.Tiles) {
+
+                var orderedTiles = dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
+
+                foreach (Tile tile in orderedTiles) {
                     <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
                         <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
@@ -43,7 +46,6 @@
                     </div>
                 }
             }
-
         </div>
     </div>
     <div class="button">
@@ -79,7 +81,29 @@
             </div>
             <div class="dice"></div>
         </div>
-        <div id="log"></div>
+        <div id="log">
+            @if (dungeon == null) {
+                <div class="log-entry">
+                    <span class="log-entry-message">loading.</span>
+                </div>
+            } else {
+                List<Message> messaged = dungeon.Messages.OrderBy(m => m.Index).ToList();            
+
+                foreach (Message message in ) {
+                    <div data-identity="@message.Id" class="log-entry">
+                        <span class="log-entry-message">@message.Text</span>
+@*                         
+    //todo add log action
+    <ol class="log-actions" hidden="hidden" style="display: none;">
+                            <li data-identity="8ad049f1-279c-4e8e-a616-f433ce005468"><span class="log-action-message">Health roll 9</span></li>
+                            <li data-identity="8b4b8c0d-6e86-42a2-a534-e8ae7af0b80a"><span class="log-action-message">Protection roll 3</span></li>
+                            <li data-identity="6692b01e-ac55-4441-86f8-02031116a569"><span class="log-action-message">Damage roll 6</span></li>
+                        </ol>
+ *@
+                    </div>
+                }
+            }       
+        </div>
     </div>
 </div>
 
