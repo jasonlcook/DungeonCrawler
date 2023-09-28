@@ -15,7 +15,6 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public bool MacGuffinFound { get; set; } = false;
         
-        [NotMapped]
-        public Version ApiVersion { get; set; } = new Version(0, 0, 0);
+        public string ApiVersion { get; set; } = new Version(0, 0, 0).ToString();
     }
 }
