@@ -13,7 +13,7 @@ namespace BlazorDungeonCrawler.Database.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202309282037000_DBSetup"; }
+            get { return "202309291107087_DBSetup"; }
         }
         
         string IMigrationMetadata.Source

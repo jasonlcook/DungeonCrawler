@@ -38,6 +38,8 @@
                     {
                         Id = c.Guid(nullable: false),
                         MacGuffinFound = c.Boolean(nullable: false),
+                        InCombat = c.Boolean(nullable: false),
+                        CombatTile = c.Guid(nullable: false),
                         ApiVersion = c.String(),
                         Adventurer_Id = c.Guid(),
                         Level_Id = c.Guid(),
@@ -85,6 +87,8 @@
                         Health = c.Int(nullable: false),
                         Damage = c.Int(nullable: false),
                         Protection = c.Int(nullable: false),
+                        ClientX = c.Int(nullable: false),
+                        ClientY = c.Int(nullable: false),
                         Tile_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
