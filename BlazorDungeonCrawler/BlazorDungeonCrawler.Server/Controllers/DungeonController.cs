@@ -17,7 +17,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
 
         [HttpGet]
         [EnableCors("MyAllowAnyOriginMethodHeader")]
-        public async Task<ActionResult<DungeonResponse>> Get() {
+        public async Task<ActionResult<DungeonResponse>> Generate() {
             try {
                 Dungeon dungeon = await dungeonManager.Generate();
 
@@ -33,9 +33,41 @@ namespace BlazorDungeonCrawler.Server.Controllers {
 
         [HttpGet("{dungeonId}/tile/{tileId}")]
         [EnableCors("MyAllowAnyOriginMethodHeader")]
-        public async Task<ActionResult<DungeonResponse>> Get(Guid dungeonId, Guid tileId) {
+        public async Task<ActionResult<DungeonResponse>> SelectedDungeonTile(Guid dungeonId, Guid tileId) {
             try {
                 Dungeon dungeon = await dungeonManager.GetSelectedDungeonTile(dungeonId, tileId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{dungeonId}/tile/{tileId}/flee")]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> MonsterFlee(Guid dungeonId, Guid tileId) {
+            try {
+                Dungeon dungeon = await dungeonManager.MonsterFlee(dungeonId, tileId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{dungeonId}/tile/{tileId}/fight")]
+        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> MonsterFight(Guid dungeonId, Guid tileId) {
+            try {
+                Dungeon dungeon = await dungeonManager.MonsterFight(dungeonId, tileId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,

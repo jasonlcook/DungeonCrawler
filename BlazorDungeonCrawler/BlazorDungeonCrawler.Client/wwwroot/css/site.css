@@ -11,6 +11,42 @@
         display: block;
     }
 
+
+.modal-dialog-container {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+
+    .modal-dialog-container .modal-dialog {
+        position: absolute;
+        border: 1px solid #000;
+        width: 400px;
+        height: 200px;
+        background-color: #fff;
+        top: 100px;
+        z-index: 1;
+    }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-title {
+            padding: 7px 10px;
+            border-style: solid;
+            border-width: 0 0 1px 0;
+            border-color: #000;
+        }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-body {
+            padding: 10px;
+        }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-buttons {
+            position: absolute;
+            bottom: 10px;
+            width: 400px;
+            display: flex;
+            justify-content: space-around;
+        }
+
 /* Loading */
 #play-area #dungeon #stage .loading {
     margin: 0 auto;
@@ -19,6 +55,22 @@
     top: 270px;
     animation: loading 4s ease-in-out infinite;
 }
+
+/* Buttons */
+.dungeon-button {
+    background: none;
+    border: 1px solid #000;
+    padding: 5px 8px;
+    display: block;
+    margin: 0 auto;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+    .dungeon-button:hover,
+    .dungeon-button:focus {
+        background-color: aliceblue;
+    }
 
 @keyframes loading {
     0% {
@@ -51,21 +103,6 @@
         padding: 10px;
         margin: 10px 10px 0 10px;
     }
-
-        #play-area .button #advance {
-            background: none;
-            border: 1px solid #000;
-            padding: 5px 8px;
-            display: block;
-            margin: 0 auto;
-            font-family: inherit;
-            font-size: inherit;
-        }
-
-            #play-area .button #advance:hover,
-            #play-area .button #advance:focus {
-                background-color: aliceblue;
-            }
 
     /* Details */
     #play-area .details {
@@ -251,13 +288,23 @@
                 top: 270px;
             }
 
-            #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile {
-                position: absolute;
-                height: 90px;
-                width: 100px;
-                background-repeat: no-repeat;
-                background-position: center center;
-            }
+                #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile {
+                    position: absolute;
+                    height: 90px;
+                    width: 100px;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                }
+
+                #play-area #dungeon #stage .hexagon-tile-group .monster-counter {
+                    background-image: url(../images/tiles/monster_counter.png);
+                    width: 26px;
+                    display: block;
+                    height: 26px;
+                    position: absolute;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                }
 
                 #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile span {
                     position: absolute;

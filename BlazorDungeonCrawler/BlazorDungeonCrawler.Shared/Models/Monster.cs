@@ -12,5 +12,8 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int Health { get; set; } = 0;
         public int Damage { get; set; } = 0;
         public int Protection { get; set; } = 0;
+
+        public int ClientX { get; set; } = 0;
+        public int ClientY { get; set; } = 0;
     }
 }

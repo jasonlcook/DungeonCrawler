@@ -17,17 +17,17 @@ namespace BlazorDungeonCrawler.Server.Data {
             Dungeon dungeon = new Dungeon();
 
             try {
-                 dungeon = new Dungeon() {
+                dungeon = new Dungeon() {
                     Id = Guid.NewGuid(),
                     Adventurer = GenerateAdventurer(),
                     Level = GenerateLevel(),
                     ApiVersion = new Version(0, 2, 0).ToString()
-            };
+                };
 
                 foreach (Message message in newMessages) {
                     dungeon.Messages.Add(message);
-                }                
-            } catch (Exception ex) { 
+                }
+            } catch (Exception ex) {
                 //todo add error handeing for error on model generation
             }
 
@@ -37,7 +37,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         context.Dungeons.Add(dungeon);
                         context.SaveChanges();
                     }
-                }                
+                }
             } catch (Exception ex) {
                 //todo add error handeing for error on model creation                
             };
@@ -63,14 +63,16 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         selectedTile.Hidden = false;
                         selectedTile.Current = true;
-                        GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
 
                         switch (selectedTile.Type) {
                             case DungeonEvemts.Fight:
-                            newMessages = new List<Message>();
+                            ClearMessageQueue();
 
                             List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
                             selectedTile.Monsters = monsters;
+
+                            dungeon.InCombat = true;
+                            dungeon.CombatTile = selectedTile.Id;
 
                             foreach (Message message in newMessages) {
                                 dungeon.Messages.Add(message);
@@ -96,8 +98,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                             break;
                         }
 
+                        if (!dungeon.InCombat) {
+                            GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+                        }
+
                         context.SaveChanges();
-                    } else { 
+                    } else {
                         //todo: log database error
                     }
 
@@ -105,7 +111,56 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
-            return  new Dungeon();
+            return new Dungeon();
+        }
+
+        //Fight
+        //  Flee
+        public async Task<Dungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
+            await Task.Delay(1);
+
+            try {
+                using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
+                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+
+                    ClearMessageQueue();
+                    AddMessage("FLEE");
+
+                    foreach (Message message in newMessages) {
+                        dungeon.Messages.Add(message);
+                    }
+
+                    context.SaveChanges();
+
+                    return dungeon;
+                }
+            } catch (Exception) {
+                return new Dungeon();
+            }
+        }
+
+        //  Fight
+        public async Task<Dungeon> MonsterFight(Guid dungeonId, Guid tileId) {
+            await Task.Delay(1);
+
+            try {
+                using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
+                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+
+                    ClearMessageQueue();
+                    AddMessage("FIGHT");
+
+                    foreach (Message message in newMessages) {
+                        dungeon.Messages.Add(message);
+                    }
+
+                    context.SaveChanges();
+
+                    return dungeon;
+                }
+            } catch (Exception) {
+                return new Dungeon();
+            }
         }
 
         //Random numbers
@@ -387,6 +442,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                         monster.Protection = protection;
                         AddMessage($"MONSTER PROTECTION {protection}", protectionDice);
 
+                        monster.ClientX = RandomNumber(20, 50);
+                        monster.ClientY = RandomNumber(20, 50);
+
                         monsters.Add(monster);
                     }
                 }
@@ -399,6 +457,10 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         //Message
+        public void ClearMessageQueue() {
+            newMessages.Clear();
+        }
+
         public void AddMessage(string message) {
             AddMessage(message, new List<int>());
         }

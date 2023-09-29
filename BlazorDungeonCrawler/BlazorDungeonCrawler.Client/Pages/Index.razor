@@ -12,6 +12,19 @@
     <script src="scripts/dungeon_crawler.min.js"></script>
 </HeadContent>
 
+@if (dungeon != null && dungeon.InCombat) {
+    <div class="modal-dialog-container">
+        <div class="modal-dialog">
+            <div class="modal-dialog-title">TITLE</div>
+            <div class="modal-dialog-body">BODY</div>
+            <div class="modal-dialog-buttons">
+                <button @onclick="MonsterFight" class="dungeon-button">Fight</button>
+                <button @onclick="MonsterFlee" class="dungeon-button">Flee</button>
+            </div>
+        </div>
+    </div>
+}
+
 <div id="play-area">
     <div id="dungeon">
         <div id="stage">
@@ -45,9 +58,12 @@
                         }
 
                         @if (tile.Monsters.Count > 0) {
-                            <span style="color: #fff; position: absolute; top: 15px; left: 46px;">
-                                @tile.Monsters.Count
-                            </span>
+                            foreach (Monster monster in tile.Monsters) {
+                                string monsterTop = $"{monster.ClientY}px";
+                                string monsterLeft = $"{monster.ClientX}px";
+
+                                <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;"></span>
+                            }
                         }
                     </div>
                 }
@@ -55,7 +71,7 @@
         </div>
     </div>
     <div class="button">
-        <button id="advance" disabled>Advance</button>
+        <button id="advance" class="dungeon-button" disabled>Advance</button>
     </div>
     <div class="details">
         <div class="adventurer">
@@ -98,17 +114,17 @@
                 foreach (Message message in messages) {
                     <div data-identity="@message.Id" class="log-entry">
                         <span class="log-entry-message">@message.Text</span>
-@*                         
-    //todo add log action
-    <ol class="log-actions" hidden="hidden" style="display: none;">
-    <li data-identity="8ad049f1-279c-4e8e-a616-f433ce005468"><span class="log-action-message">Health roll 9</span></li>
-    <li data-identity="8b4b8c0d-6e86-42a2-a534-e8ae7af0b80a"><span class="log-action-message">Protection roll 3</span></li>
-    <li data-identity="6692b01e-ac55-4441-86f8-02031116a569"><span class="log-action-message">Damage roll 6</span></li>
-    </ol>
- *@
+                        @*
+                //todo add log action
+                <ol class="log-actions" hidden="hidden" style="display: none;">
+                <li data-identity="8ad049f1-279c-4e8e-a616-f433ce005468"><span class="log-action-message">Health roll 9</span></li>
+                <li data-identity="8b4b8c0d-6e86-42a2-a534-e8ae7af0b80a"><span class="log-action-message">Protection roll 3</span></li>
+                <li data-identity="6692b01e-ac55-4441-86f8-02031116a569"><span class="log-action-message">Damage roll 6</span></li>
+                </ol>
+                *@
                     </div>
                 }
-            }       
+            }
         </div>
     </div>
 </div>
@@ -231,6 +247,22 @@
     async Task SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
             dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+        } else {
+            //todo: trap error
+        }
+    }
+
+    async Task MonsterFlee() {
+        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
+            dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
+        } else {
+            //todo: trap error
+        }
+    }
+
+    async Task MonsterFight() {
+        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
+            dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
         } else {
             //todo: trap error
         }

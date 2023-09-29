@@ -14,7 +14,10 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public List<Message> Messages { get; set; } = new List<Message>();
 
         public bool MacGuffinFound { get; set; } = false;
-        
+
+        public bool InCombat { get; set; } = false;
+        public Guid CombatTile { get; set; } = Guid.Empty;
+
         public string ApiVersion { get; set; } = new Version(0, 0, 0).ToString();
     }
 }
