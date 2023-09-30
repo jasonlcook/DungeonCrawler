@@ -18,7 +18,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public bool Hidden { get; set; } = true;
         public bool Selectable { get; set; } = false;
 
-
+        public bool FightWon { get; set; } = false;
         public List<Monster> Monsters { get; set; } = new List<Monster>();
     }
 }

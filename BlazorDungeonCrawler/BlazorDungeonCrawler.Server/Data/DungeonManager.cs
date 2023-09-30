@@ -13,7 +13,6 @@ namespace BlazorDungeonCrawler.Server.Data {
         public async Task<Dungeon> Generate() {
             await Task.Delay(1);
 
-
             Dungeon dungeon = new Dungeon();
 
             try {
@@ -50,9 +49,21 @@ namespace BlazorDungeonCrawler.Server.Data {
             await Task.Delay(1);
 
             using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
-                Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+                Dungeon? dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                if (dungeon == null) {
+                    //todo handel error for null dungeon
+                    return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING DUNGON" } } };
+                }
+
+                Tile? selectedTile = context.Tiles.Where(t => t.Id == tileId).Include(t => t.Monsters).FirstOrDefault();
+                if (selectedTile == null) {
+                    //todo handel error for null tile
+                    return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING TILES" } } };
+                }
+
                 if (selectedTile != null && selectedTile.Selectable) {
-                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    ClearMessageQueue();
+
                     List<Tile> tiles = dungeon.Level.Tiles;
 
                     if (tiles.Count > 0) {
@@ -66,10 +77,12 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         switch (selectedTile.Type) {
                             case DungeonEvemts.Fight:
-                            ClearMessageQueue();
-
-                            List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
-                            selectedTile.Monsters = monsters;
+                            //check if we are reentering a fight
+                            if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
+                                //generate new monsters
+                                List<Monster> monsters = GetTileMonsters(dungeon.Level.Depth);
+                                selectedTile.Monsters = monsters;
+                            }
 
                             dungeon.InCombat = true;
                             dungeon.CombatTile = selectedTile.Id;
@@ -123,15 +136,61 @@ namespace BlazorDungeonCrawler.Server.Data {
                 using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
                     ClearMessageQueue();
 
-                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
-                    Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
-                    List<Monster> monsters = selectedTile.Monsters;
+                    Dungeon? dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    if (dungeon == null) {
+                        //todo handel error for null dungeon
+                        return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING DUNGON" } } };
+                    }
 
+                    Tile? selectedTile = context.Tiles.Where(t => t.Id == tileId).Include(t => t.Monsters).FirstOrDefault();
+                    if (selectedTile == null) {
+                        //todo handel error for null tile
+                        return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING TILES" } } };
+                    }
 
+                    if (AdventurerFleesCombat()) {
+                        dungeon.InCombat = false;
+                        dungeon.CombatTile = Guid.Empty;
+                        dungeon.CombatInitiated = false;
 
+                        List<Tile> tiles = dungeon.Level.Tiles;
 
+                        GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+                    } else {
+                        //Adventurer details
+                        Adventurer adventurer = dungeon.Adventurer;
+                        int adventurerProtection = adventurer.ProtectionBase + adventurer.ShieldPotion + adventurer.ArmourHelmet + adventurer.ArmourBreastplate + adventurer.ArmourGauntlet + adventurer.ArmourGreave + adventurer.ArmourBoots;
 
-                    AddMessage("FLEE");
+                        //Monster
+                        Monster currentMonster = selectedTile.Monsters.First();
+                        int monsterDamage = currentMonster.Damage;
+
+                        //Free hit
+                        int woundsReceived = monsterDamage - adventurerProtection;
+                        if (woundsReceived > 0) {
+                            int currentHealth = adventurer.HealthBase - woundsReceived;
+                            if (currentHealth > 0) {
+                                adventurer.HealthBase = currentHealth;
+
+                                AddMessage($"ADVENTURER HIT FOR {woundsReceived} WITH {currentMonster.Health} REMAINING");
+                            } else {
+                                adventurer.HealthBase = 0;
+                                adventurer.IsAlive = false;
+
+                                selectedTile.Type = DungeonEvemts.FightLost;
+
+                                AddMessage($"ADVENTURER KILLED WITH {woundsReceived}");
+
+                                dungeon.InCombat = false;
+
+                                foreach (Tile tile in dungeon.Level.Tiles) {
+                                    tile.Hidden = false;
+                                }
+                            }
+                        } else {
+                            AddMessage($"MONSTER WAS UNABLE TO CAUSE HARM");
+                        }
+                    }
 
                     foreach (Message message in newMessages) {
                         dungeon.Messages.Add(message);
@@ -151,12 +210,11 @@ namespace BlazorDungeonCrawler.Server.Data {
             int monsterRoll = RollDSix();
 
             if (adventurerRoll > monsterRoll) {
-                AddMessage("ADVENTURER INITIATES COMBAT");
+                AddMessage("ADVENTURER FLEES COMBAT");
                 return true;
             }
 
-            AddMessage("MONSTER INITIATES COMBAT");
-
+            AddMessage("ADVENTURER FAILED TO FLEE");
             return false;
         }
 
@@ -168,9 +226,19 @@ namespace BlazorDungeonCrawler.Server.Data {
                 using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
                     ClearMessageQueue();
 
-                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    Dungeon? dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    if (dungeon == null) {
+                        //todo handel error for null dungeon
+                        return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING DUNGON" } } };
+                    }
 
-                    Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).Include(t => t.Monsters).FirstOrDefault();
+                    Tile? selectedTile = context.Tiles.Where(t => t.Id == tileId).Include(t => t.Monsters).FirstOrDefault();
+                    if (selectedTile == null) {
+                        //todo handel error for null tile
+                        return new Dungeon() { Messages = new List<Message> { new Message() { Text = "ERROR RETRIEVING TILES" } } };
+                    }
+
+                    selectedTile.FightWon = false;
 
                     //Adventurer details
                     Adventurer adventurer = dungeon.Adventurer;
@@ -215,11 +283,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     dungeon.CombatTile = Guid.Empty;
                                     dungeon.CombatInitiated = false;
 
+                                    selectedTile.FightWon = true;
                                     selectedTile.Type = DungeonEvemts.FightWon;
 
                                     List<Tile> tiles = dungeon.Level.Tiles;
 
                                     GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+
                                 };
                             }
                         } else {
