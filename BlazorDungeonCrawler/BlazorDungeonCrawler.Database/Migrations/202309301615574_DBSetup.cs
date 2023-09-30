@@ -73,6 +73,7 @@
                         Current = c.Boolean(nullable: false),
                         Hidden = c.Boolean(nullable: false),
                         Selectable = c.Boolean(nullable: false),
+                        FightWon = c.Boolean(nullable: false),
                         Level_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
