@@ -121,9 +121,16 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             try {
                 using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
-                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
-
                     ClearMessageQueue();
+
+                    Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
+                    Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+                    List<Monster> monsters = selectedTile.Monsters;
+
+
+
+
+
                     AddMessage("FLEE");
 
                     foreach (Message message in newMessages) {
@@ -139,17 +146,113 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
         }
 
+        public bool AdventurerFleesCombat() {
+            int adventurerRoll = RollDSix();
+            int monsterRoll = RollDSix();
+
+            if (adventurerRoll > monsterRoll) {
+                AddMessage("ADVENTURER INITIATES COMBAT");
+                return true;
+            }
+
+            AddMessage("MONSTER INITIATES COMBAT");
+
+            return false;
+        }
+
         //  Fight
         public async Task<Dungeon> MonsterFight(Guid dungeonId, Guid tileId) {
             await Task.Delay(1);
 
             try {
                 using (DungeonCrawlerContext context = new DungeonCrawlerContext()) {
+                    ClearMessageQueue();
+
                     Dungeon dungeon = context.Dungeons.Where(d => d.Id == dungeonId).Include(d => d.Adventurer).Include(d => d.Level).Include(d => d.Level.Tiles).Include(d => d.Messages).FirstOrDefault();
 
-                    ClearMessageQueue();
-                    AddMessage("FIGHT");
+                    Tile selectedTile = context.Tiles.Where(t => t.Id == tileId).Include(t => t.Monsters).FirstOrDefault();
 
+                    //Adventurer details
+                    Adventurer adventurer = dungeon.Adventurer;
+                    int adventurerDamage = adventurer.DamageBase + adventurer.Weapon + adventurer.DamagePotion;
+                    int adventurerProtection = adventurer.ProtectionBase + adventurer.ShieldPotion + adventurer.ArmourHelmet + adventurer.ArmourBreastplate + adventurer.ArmourGauntlet + adventurer.ArmourGreave + adventurer.ArmourBoots;
+
+                    //Monster details
+                    Monster currentMonster = selectedTile.Monsters.First();
+                    int monsterDamage = currentMonster.Damage;
+                    int monsterProtection = currentMonster.Protection;
+
+                    bool adventurerInitiatesCombat = true;
+
+                    //if firsst round check if Adventurer initiates combat
+                    if (!dungeon.CombatInitiated) {
+                        adventurerInitiatesCombat = AdventurerInitiatesCombat();
+                        dungeon.CombatInitiated = true;
+                    }
+
+                    //Adventurer round
+                    if (adventurerInitiatesCombat) {
+                        int woundsInflicted = AttackRound(1, adventurerDamage, 1, monsterProtection);
+
+                        if (woundsInflicted > 0) {
+                            int currentHealth = currentMonster.Health - woundsInflicted;
+                            if (currentHealth > 0) {
+                                currentMonster.Health = currentHealth;
+
+                                AddMessage($"MONSTER HIT FOR {woundsInflicted} WITH {currentMonster.Health} REMAINING");
+                            } else {
+                                currentMonster.Health = 0;
+                                currentMonster = null;
+
+                                AddMessage($"MONSTER KILLED WITH {woundsInflicted}");
+
+                                //remove monster at stack
+                                selectedTile.Monsters.RemoveAt(0);
+
+                                //checked for remaining monsters
+                                if (selectedTile.Monsters.Count == 0) {
+                                    dungeon.InCombat = false;
+                                    dungeon.CombatTile = Guid.Empty;
+                                    dungeon.CombatInitiated = false;
+
+                                    List<Tile> tiles = dungeon.Level.Tiles;
+
+                                    GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
+                                };
+                            }
+                        } else {
+                            AddMessage($"MONSTER AVOIDED DAMAGE");
+                        }
+                    }
+
+                    //Monster round
+                    if (currentMonster != null) {
+                        int woundsReceived = AttackRound(1, monsterDamage, 1, adventurerProtection);
+
+                        if (woundsReceived > 0) {
+                            int currentHealth = adventurer.HealthBase - woundsReceived;
+                            if (currentHealth > 0) {
+                                adventurer.HealthBase = currentHealth;
+
+                                AddMessage($"ADVENTURER HIT FOR {woundsReceived} WITH {currentMonster.Health} REMAINING");
+                            } else {
+                                adventurer.HealthBase = 0;
+                                adventurer.IsAlive = false;
+
+                                AddMessage($"ADVENTURER KILLED WITH {woundsReceived}");
+
+                                dungeon.InCombat = false;
+
+                                foreach (Tile tile in dungeon.Level.Tiles) {
+                                    tile.Hidden = false;
+                                }
+                            }
+                        } else {
+                            AddMessage($"ADVENTURER AVOIDED DAMAGE");
+                        }
+                    }
+
+                    //Update messages
                     foreach (Message message in newMessages) {
                         dungeon.Messages.Add(message);
                     }
@@ -158,9 +261,62 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     return dungeon;
                 }
-            } catch (Exception) {
+            } catch (Exception ex) {
                 return new Dungeon();
             }
+        }
+
+        public bool AdventurerInitiatesCombat() {
+            int adventurerRoll = RollDSix();
+            int monsterRoll = RollDSix();
+
+            if (adventurerRoll > monsterRoll) {
+                AddMessage("ADVENTURER INITIATES COMBAT");
+                return true;
+            }
+
+            AddMessage("MONSTER INITIATES COMBAT");
+            return false;
+        }
+
+        public int AttackRound(int attackDiceAmount, int damage, int dodgeDiceAmount, int protection) {
+            int roll;
+
+            int attack = 0;
+            List<int> attackRolls = new List<int>();
+            for (int i = 0; i < attackDiceAmount; i++) {
+                roll = RollDSix();
+
+                attackRolls.Add(roll);
+                attack += roll;
+            }
+
+            AddMessage($"ATTACK ROLL {attack}", attackRolls);
+
+            int dodge = 0;
+            List<int> dodgeRolls = new List<int>();
+            for (int i = 0; i < dodgeDiceAmount; i++) {
+                roll = RollDSix();
+
+                dodgeRolls.Add(roll);
+                dodge += roll;
+            }
+
+            AddMessage($"DODGE ROLL {dodge}", dodgeRolls);
+
+            if (attack > dodge) {
+                int wounds = damage - protection;
+
+                AddMessage($"WOUNDS {wounds} (DAMAGE: {damage} - PROTECTION: {protection})");
+
+                if (wounds < 0) {
+                    wounds = 0;
+                }
+
+                return wounds;
+            }
+
+            return 0;
         }
 
         //Random numbers
@@ -174,23 +330,24 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         //Dice
-        public int rollDSix() {
+        public int RollDSix() {
             return RandomNumber(1, 6);
         }
 
         //Adventurer
         public Adventurer GenerateAdventurer() {
-            int health = rollDSix();
+            int health = RollDSix();
             AddMessage($"ADVENTURER HEALTH {health}", health);
 
-            int damage = rollDSix();
+            int damage = RollDSix();
             AddMessage($"ADVENTURER DAMAGE {damage}", damage);
 
-            int protection = rollDSix();
+            int protection = RollDSix();
             AddMessage($"ADVENTURER PROTECTION {protection}", protection);
 
             return new Adventurer() {
                 Id = Guid.NewGuid(),
+                HealthInitial = health,
                 HealthBase = health,
                 DamageBase = damage,
                 ProtectionBase = protection,
@@ -377,7 +534,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         public DungeonEvemts GetTileType() {
             DungeonEvemts dungeonEvemts = DungeonEvemts.Unknown;
 
-            int value = rollDSix();
+            int value = RollDSix();
             switch (value) {
                 case 1:
                 case 2:
@@ -419,7 +576,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         };
 
                         for (int h = 0; h < currentMonsterType.HealthDiceCount; h++) {
-                            rollValue = rollDSix();
+                            rollValue = RollDSix();
                             healthDice.Add(rollValue);
                             health += rollValue;
                         }
@@ -427,7 +584,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         AddMessage($"MONSTER HEALTH {health}", healthDice);
 
                         for (int d = 0; d < currentMonsterType.DamageDiceCount; d++) {
-                            rollValue = rollDSix();
+                            rollValue = RollDSix();
                             damageDice.Add(rollValue);
                             damage += rollValue;
                         }
@@ -435,7 +592,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         AddMessage($"MONSTER DAMAGE {damage}", damageDice);
 
                         for (int p = 0; p < currentMonsterType.DamageDiceCount; p++) {
-                            rollValue = rollDSix();
+                            rollValue = RollDSix();
                             protectionDice.Add(rollValue);
                             protection += rollValue;
                         }

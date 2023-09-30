@@ -18,6 +18,11 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public bool InCombat { get; set; } = false;
         public Guid CombatTile { get; set; } = Guid.Empty;
 
+        public bool CombatInitiated { get; set; } = false;
+
+
         public string ApiVersion { get; set; } = new Version(0, 0, 0).ToString();
+
+
     }
 }
