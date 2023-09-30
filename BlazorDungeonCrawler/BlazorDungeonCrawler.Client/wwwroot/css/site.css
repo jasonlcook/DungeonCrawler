@@ -306,6 +306,15 @@
                     background-position: center center;
                 }
 
+                    #play-area #dungeon #stage .hexagon-tile-group .monster-counter .monster-counter-health {
+                        color: #bbb;
+                        position: absolute;
+                        top: 5px;
+                        width: 24px;
+                        text-align: center;
+                        overflow: hidden;
+                    }
+
                 #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile span {
                     position: absolute;
                     top: 15px;

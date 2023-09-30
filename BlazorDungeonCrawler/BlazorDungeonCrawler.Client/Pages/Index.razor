@@ -62,7 +62,11 @@
                                 string monsterTop = $"{monster.ClientY}px";
                                 string monsterLeft = $"{monster.ClientX}px";
 
-                                <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;"></span>
+                                <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
+                                    <span class="monster-counter-health">
+                                        @monster.Health
+                                    </span>
+                                </span>
                             }
                         }
                     </div>
@@ -85,7 +89,7 @@
                 <div class="health">
                     <span class="label">Health</span>
                     <span class="value" id="current-health">
-                        @((MarkupString)health)
+                        @((MarkupString)health) 
                     </span>
                 </div>
                 <div class="damage">
@@ -109,11 +113,13 @@
                     <span class="log-entry-message">loading.</span>
                 </div>
             } else {
-                List<Message> messages = dungeon.Messages.OrderBy(m => m.Datestamp).OrderBy(m => m.Index).ToList();
+                List<Message> messages = dungeon.Messages.OrderBy(m => m.Index).OrderBy(m => m.Datestamp).ToList();
 
                 foreach (Message message in messages) {
                     <div data-identity="@message.Id" class="log-entry">
-                        <span class="log-entry-message">@message.Text</span>
+                        <span class="log-entry-message">
+                            @message.Text
+                        </span>
                         @*
                 //todo add log action
                 <ol class="log-actions" hidden="hidden" style="display: none;">
@@ -175,11 +181,7 @@
         dungeon = await DungeonManager.GenerateNewDungeon();
         apiVersion = $"API V{dungeon.ApiVersion}";
 
-        dungeonDepth = dungeon.Level.Depth.ToString();
-
-        health = dungeon.Adventurer.HealthBase.ToString();
-        damage = dungeon.Adventurer.DamageBase.ToString();
-        protection = dungeon.Adventurer.ProtectionBase.ToString();
+        updateValues();
 
         await InvokeAsync(StateHasChanged);
         await JS.InvokeVoidAsync("getStartup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
@@ -247,6 +249,7 @@
     async Task SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
             dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+            updateValues();
         } else {
             //todo: trap error
         }
@@ -255,6 +258,7 @@
     async Task MonsterFlee() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
             dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
+            updateValues();
         } else {
             //todo: trap error
         }
@@ -263,8 +267,20 @@
     async Task MonsterFight() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
             dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
+            updateValues();
         } else {
             //todo: trap error
+        }
+    }
+
+    void updateValues() {
+        if (dungeon != null && dungeon.Id != Guid.Empty)
+        {
+            dungeonDepth = dungeon.Level.Depth.ToString();
+
+            health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
+            damage = dungeon.Adventurer.DamageBase.ToString();
+            protection = dungeon.Adventurer.ProtectionBase.ToString();
         }
     }
 }
