@@ -215,6 +215,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     dungeon.CombatTile = Guid.Empty;
                                     dungeon.CombatInitiated = false;
 
+                                    selectedTile.Type = DungeonEvemts.FightWon;
+
                                     List<Tile> tiles = dungeon.Level.Tiles;
 
                                     GetSelected(ref tiles, selectedTile.Row, selectedTile.Column);
@@ -238,6 +240,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                             } else {
                                 adventurer.HealthBase = 0;
                                 adventurer.IsAlive = false;
+
+                                selectedTile.Type = DungeonEvemts.FightLost;
 
                                 AddMessage($"ADVENTURER KILLED WITH {woundsReceived}");
 
