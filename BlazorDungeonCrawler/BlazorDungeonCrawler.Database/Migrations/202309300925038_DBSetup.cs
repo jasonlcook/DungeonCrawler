@@ -40,6 +40,7 @@
                         MacGuffinFound = c.Boolean(nullable: false),
                         InCombat = c.Boolean(nullable: false),
                         CombatTile = c.Guid(nullable: false),
+                        CombatInitiated = c.Boolean(nullable: false),
                         ApiVersion = c.String(),
                         Adventurer_Id = c.Guid(),
                         Level_Id = c.Guid(),
