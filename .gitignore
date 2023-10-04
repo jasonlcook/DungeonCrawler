@@ -1,6 +1,9 @@
 ## Publish profile
 /Properties/ServiceDependencies/BlazorDungeonCrawler20230913182726 - Web Deploy/profile.arm.json
 
+## configs
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Database/App.config
+
 ## Minimised js
 /wwwroot/scripts/dungeon_crawler.min.js
 
@@ -402,3 +405,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Server/appsettings.json
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Database/App.config
