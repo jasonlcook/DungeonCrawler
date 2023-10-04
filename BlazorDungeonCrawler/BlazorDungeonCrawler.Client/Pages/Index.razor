@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using BlazorDungeonCrawler.Shared.Enumerators;
 @using BlazorDungeonCrawler.Shared.Responses;
+@using BlazorDungeonCrawler.Shared.Interfaces;
 
 @inject IJSRuntime JS
 @inject IDungeonDataManager DungeonManager
@@ -29,6 +30,7 @@
 
 <div id="play-area">
     <div id="dungeon">
+        <div id="messages"></div>
         <div id="stage">
             @if (dungeon == null) {
                 <div class="loading">
@@ -91,7 +93,7 @@
                 <div class="health">
                     <span class="label">Health</span>
                     <span class="value" id="current-health">
-                        @((MarkupString)health) 
+                        @((MarkupString)health)
                     </span>
                 </div>
                 <div class="damage">
@@ -161,6 +163,8 @@
 
 @code {
     Dungeon? dungeon = null;
+    Tile? tile = null;
+
     string apiVersion = "API V0.0.0";
 
     string dungeonDepth = "0";
@@ -194,18 +198,18 @@
             case 1:
             case 2:
             case 3:
-            return "hexagon-colour-red";
+                return "hexagon-colour-red";
             case 4:
             case 5:
             case 6:
             case 7:
-            return "hexagon-colour-blue";
+                return "hexagon-colour-blue";
             case 8:
-            return "hexagon-colour-purple";
+                return "hexagon-colour-purple";
             case 9:
-            return "hexagon-colour-green";
+                return "hexagon-colour-green";
             case 10:
-            return "hexagon-colour-pink";
+                return "hexagon-colour-pink";
         }
 
         return "hexagon-colour-unknown";
@@ -214,35 +218,35 @@
     string GetTypeClass(DungeonEvemts type) {
         switch (type) {
             case DungeonEvemts.Empty:
-            return "hexagon-tile-empty";
+                return "hexagon-tile-empty";
             case DungeonEvemts.DungeonEntrance:
-            return "hexagon-tile-entrance";
+                return "hexagon-tile-entrance";
             case DungeonEvemts.StairsAscending:
-            return "hexagon-tile-stairs-ascending";
+                return "hexagon-tile-stairs-ascending";
             case DungeonEvemts.StairsDescending:
-            return "hexagon-tile-stairs-descending";
+                return "hexagon-tile-stairs-descending";
             case DungeonEvemts.Fight:
-            return "hexagon-tile-fight";
+                return "hexagon-tile-fight";
             case DungeonEvemts.FightWon:
-            return "hexagon-tile-fight-won";
+                return "hexagon-tile-fight-won";
             case DungeonEvemts.FightLost:
-            return "hexagon-tile-adventurer-death";
+                return "hexagon-tile-adventurer-death";
             case DungeonEvemts.Chest:
-            return "hexagon-tile-chest";
+                return "hexagon-tile-chest";
             case DungeonEvemts.FoundWeapon:
-            return "hexagon-tile-weapon";
+                return "hexagon-tile-weapon";
             case DungeonEvemts.FoundProtection:
-            return "hexagon-tile-protection";
+                return "hexagon-tile-protection";
             case DungeonEvemts.FoundPotion:
-            return "hexagon-tile-potion";
+                return "hexagon-tile-potion";
             case DungeonEvemts.TakenWeapon:
-            return "hexagon-tile-weapon";
+                return "hexagon-tile-weapon";
             case DungeonEvemts.TakenProtection:
-            return "hexagon-tile-protection";
+                return "hexagon-tile-protection";
             case DungeonEvemts.TakenPotion:
-            return "hexagon-tile-potion";
+                return "hexagon-tile-potion";
             case DungeonEvemts.Macguffin:
-            return "hexagon-tile-macguffin";
+                return "hexagon-tile-macguffin";
         }
 
         return "hexagon-tile-unknown";
@@ -250,8 +254,8 @@
 
     async Task SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-            dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
-            updateValues();
+            tile = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+            //update single tile
         } else {
             //todo: trap error
         }
@@ -276,8 +280,7 @@
     }
 
     void updateValues() {
-        if (dungeon != null && dungeon.Id != Guid.Empty)
-        {
+        if (dungeon != null && dungeon.Id != Guid.Empty) {
             dungeonDepth = dungeon.Level.Depth.ToString();
 
             health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";

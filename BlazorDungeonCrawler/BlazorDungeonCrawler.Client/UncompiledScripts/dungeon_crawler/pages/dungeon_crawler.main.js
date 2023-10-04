@@ -1,7 +1,20 @@
 ﻿dungeon_crawler.main = {
     startup(args) {
+        if (typeof args == 'undefined' || args == null) {
+            dungeon_crawler.main.addErrorMessage("No args were passed to startup.");
+            return false;
+        }
+
         let properties = JSON.parse(args);
         dungeon_crawler.main.repositionHexGroups(properties['rows'], properties['columns']);
+    },
+
+    addErrorMessage(message) {
+        $('#messages').append(`<div class="message message-error">${message}</div>`);
+    },
+
+    addInformationMessage() {
+        $('#messages').append(`<div class="message message-info">${message}</div>`);
     },
 
     repositionHexGroups(rows, columns) {
