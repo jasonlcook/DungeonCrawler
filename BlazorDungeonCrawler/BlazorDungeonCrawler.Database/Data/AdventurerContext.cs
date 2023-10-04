@@ -5,6 +5,8 @@ using BlazorDungeonCrawler.Shared.Models;
 namespace BlazorDungeonCrawler.Database.Data {
     public class AdventurerContext : DbContext {
         public DbSet<Adventurer> Adventurers { get; set; }
+
+        public AdventurerContext() : base("DungeonContext") { }
     }
 }
 
