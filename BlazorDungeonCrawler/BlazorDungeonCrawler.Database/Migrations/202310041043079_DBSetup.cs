@@ -8,6 +8,25 @@
         public override void Up()
         {
             CreateTable(
+                "dbo.Dungeons",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        ApiVersion = c.String(),
+                        MacGuffinFound = c.Boolean(nullable: false),
+                        InCombat = c.Boolean(nullable: false),
+                        CombatTile = c.Guid(nullable: false),
+                        CombatInitiated = c.Boolean(nullable: false),
+                        Adventurer_Id = c.Guid(),
+                        Level_Id = c.Guid(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
+                .ForeignKey("dbo.Levels", t => t.Level_Id)
+                .Index(t => t.Adventurer_Id)
+                .Index(t => t.Level_Id);
+            
+            CreateTable(
                 "dbo.Adventurers",
                 c => new
                     {
@@ -31,25 +50,6 @@
                         IsAlive = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Dungeons",
-                c => new
-                    {
-                        Id = c.Guid(nullable: false),
-                        MacGuffinFound = c.Boolean(nullable: false),
-                        InCombat = c.Boolean(nullable: false),
-                        CombatTile = c.Guid(nullable: false),
-                        CombatInitiated = c.Boolean(nullable: false),
-                        ApiVersion = c.String(),
-                        Adventurer_Id = c.Guid(),
-                        Level_Id = c.Guid(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
-                .ForeignKey("dbo.Levels", t => t.Level_Id)
-                .Index(t => t.Adventurer_Id)
-                .Index(t => t.Level_Id);
             
             CreateTable(
                 "dbo.Levels",
@@ -111,21 +111,6 @@
                 .ForeignKey("dbo.Dungeons", t => t.Dungeon_Id)
                 .Index(t => t.Dungeon_Id);
             
-            CreateTable(
-                "dbo.MonsterTypes",
-                c => new
-                    {
-                        Id = c.Guid(nullable: false),
-                        Name = c.String(),
-                        LevelStart = c.Int(nullable: false),
-                        LevelEnd = c.Int(nullable: false),
-                        HealthDiceCount = c.Int(nullable: false),
-                        DamageDiceCount = c.Int(nullable: false),
-                        ProtectionDiceCount = c.Int(nullable: false),
-                        Documentation = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
-            
         }
         
         public override void Down()
@@ -140,13 +125,12 @@
             DropIndex("dbo.Tiles", new[] { "Level_Id" });
             DropIndex("dbo.Dungeons", new[] { "Level_Id" });
             DropIndex("dbo.Dungeons", new[] { "Adventurer_Id" });
-            DropTable("dbo.MonsterTypes");
             DropTable("dbo.Messages");
             DropTable("dbo.Monsters");
             DropTable("dbo.Tiles");
             DropTable("dbo.Levels");
-            DropTable("dbo.Dungeons");
             DropTable("dbo.Adventurers");
+            DropTable("dbo.Dungeons");
         }
     }
 }
