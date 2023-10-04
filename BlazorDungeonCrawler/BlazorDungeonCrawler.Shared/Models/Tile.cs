@@ -26,7 +26,6 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Tile() {
             Id = Guid.Empty;
             Monsters = new();
-
         }
     }
 }
