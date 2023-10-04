@@ -7,11 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Commands\Create\" />
+    <Folder Include="Resources\Commands\Delete\" />
+    <Folder Include="Resources\Commands\Update\" />
+    <Folder Include="Resources\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Cors;
 
 using BlazorDungeonCrawler.Server.Data;
 using BlazorDungeonCrawler.Shared.Models;
+using BlazorDungeonCrawler.Shared.Responses;
 
-namespace BlazorDungeonCrawler.Server.Controllers {
+namespace BlazorDungeonCrawler.Server.Controllers
+{
 
     [ApiController]
     [Route("api/[controller]")]

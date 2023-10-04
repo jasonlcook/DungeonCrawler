@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BlazorDungeonCrawler.Shared.Enumerators;
 
-namespace BlazorDungeonCrawler.Shared.Models {
+namespace BlazorDungeonCrawler.Shared.Models
+{
     public class Tile {
 
         [Key]

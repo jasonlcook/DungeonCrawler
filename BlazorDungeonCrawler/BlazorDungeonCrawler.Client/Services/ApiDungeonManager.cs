@@ -1,8 +1,9 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
-
+using BlazorDungeonCrawler.Shared.Responses;
 using Newtonsoft.Json;
 
-namespace BlazorDungeonCrawler.Client.Services {
+namespace BlazorDungeonCrawler.Client.Services
+{
     public class ApiDungeonManager : IDungeonDataManager {
         private readonly HttpClient httpClient;
 

@@ -1,6 +1,6 @@
 using BlazorDungeonCrawler.Client;
 using BlazorDungeonCrawler.Client.Services;
-using BlazorDungeonCrawler.Shared.Models;
+using BlazorDungeonCrawler.Shared.Responses;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
