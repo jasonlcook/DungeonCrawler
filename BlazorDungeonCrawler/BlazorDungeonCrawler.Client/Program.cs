@@ -1,8 +1,9 @@
-using BlazorDungeonCrawler.Client;
-using BlazorDungeonCrawler.Client.Services;
-using BlazorDungeonCrawler.Shared.Responses;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
+using BlazorDungeonCrawler.Client;
+using BlazorDungeonCrawler.Client.Services;
+using BlazorDungeonCrawler.Shared.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
