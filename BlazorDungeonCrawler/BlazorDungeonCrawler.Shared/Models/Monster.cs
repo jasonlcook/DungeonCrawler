@@ -3,17 +3,23 @@
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Monster {
         [Key]
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
 
 
-        public string TypeName { get; set; } = "";
+        public string TypeName { get; set; }
 
 
-        public int Health { get; set; } = 0;
-        public int Damage { get; set; } = 0;
-        public int Protection { get; set; } = 0;
+        public int Health { get; set; }
+        public int Damage { get; set; }
+        public int Protection { get; set; }
 
-        public int ClientX { get; set; } = 0;
-        public int ClientY { get; set; } = 0;
+
+        public int ClientX { get; set; }
+        public int ClientY { get; set; }
+
+        public Monster() {
+            Id = Guid.Empty;
+            TypeName = string.Empty;
+        }
     }
 }

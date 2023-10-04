@@ -1,32 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlazorDungeonCrawler.Shared.Models {
-    public  class Adventurer {
+    public class Adventurer {
 
         [Key]
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
 
-        public int HealthBase { get; set; } = 0;
-        public int HealthInitial { get; set; } = 0;
-        public int AuraPotion { get; set; } = 0;
-        public int AuraPotionDuration { get; set; } = 0;
+        public int HealthBase { get; set; }
+        public int HealthInitial { get; set; }
+        public int AuraPotion { get; set; }
+        public int AuraPotionDuration { get; set; }
 
-        public int DamageBase { get; set; } = 0;
-        public int DamagePotion { get; set; } = 0;
-        public int DamagePotionDuration { get; set; } = 0;
-        
-        public int ProtectionBase { get; set; } = 0;
-        public int ShieldPotion { get; set; } = 0;
-        public int ShieldPotionDuration { get; set; } = 0;
-        
-        public int Weapon { get; set; } = 0;
-        
-        public int ArmourHelmet { get; set; } = 0;
-        public int ArmourBreastplate { get; set; } = 0;
-        public int ArmourGauntlet { get; set; } = 0;
-        public int ArmourGreave { get; set; } = 0;
-        public int ArmourBoots { get; set; } = 0;
-        
-        public bool IsAlive { get; set; } = true;
+
+        public int DamageBase { get; set; }
+        public int DamagePotion { get; set; }
+        public int DamagePotionDuration { get; set; }
+
+
+        public int ProtectionBase { get; set; }
+        public int ShieldPotion { get; set; }
+        public int ShieldPotionDuration { get; set; }
+
+
+        public int Weapon { get; set; }
+
+
+        public int ArmourHelmet { get; set; }
+        public int ArmourBreastplate { get; set; }
+        public int ArmourGauntlet { get; set; }
+        public int ArmourGreave { get; set; }
+        public int ArmourBoots { get; set; }
+
+
+        public bool IsAlive { get; set; }
+
+
+        public Adventurer() {
+            Id = Guid.Empty;
+        }
     }
 }

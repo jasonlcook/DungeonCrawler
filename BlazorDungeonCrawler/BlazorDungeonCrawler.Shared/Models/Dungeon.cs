@@ -1,28 +1,35 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Dungeon {
-        //If Id is an empty guid, then class has not been set
         [Key]
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
 
-        public Adventurer Adventurer { get; set; } = new Adventurer();
+        public Adventurer Adventurer { get; set; }
 
-        public Level Level { get; set; } = new Level();
+        public Level Level { get; set; }
 
-        public List<Message> Messages { get; set; } = new List<Message>();
-
-        public bool MacGuffinFound { get; set; } = false;
-
-        public bool InCombat { get; set; } = false;
-        public Guid CombatTile { get; set; } = Guid.Empty;
-
-        public bool CombatInitiated { get; set; } = false;
+        public List<Message> Messages { get; set; }
 
 
-        public string ApiVersion { get; set; } = new Version(0, 0, 0).ToString();
+        public string ApiVersion { get; set; }
 
 
+        public bool MacGuffinFound { get; set; }
+
+
+        public bool InCombat { get; set; }
+        public Guid CombatTile { get; set; }
+
+        public bool CombatInitiated { get; set; }
+
+        public Dungeon() {
+            Id = Guid.Empty;
+            Adventurer = new();
+            Level = new();
+            Messages = new();
+            CombatTile = Guid.Empty;
+            ApiVersion = string.Empty;
+        }
     }
 }

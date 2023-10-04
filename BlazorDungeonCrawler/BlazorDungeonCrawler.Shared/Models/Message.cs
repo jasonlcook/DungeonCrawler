@@ -4,15 +4,22 @@ using System.ComponentModel.DataAnnotations;
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Message {
         [Key]
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
 
 
-        public int Index { get; set; } = 0;
-        public long Datestamp { get; set; } = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+        public int Index { get; set; }
+        public long Datestamp { get; set; }
 
 
-        public string Text { get; set; } = "";
-                
-        public List<int> Dice { get; set; } = new List<int>();     
+        public string Text { get; set; }
+
+
+        public List<int> Dice { get; set; }
+
+        public Message() {
+            Id = Guid.Empty;
+            Text = string.Empty;
+            Dice = new List<int>();
+        }
     }
 }

@@ -3,20 +3,31 @@
 namespace BlazorDungeonCrawler.Shared.Models {
 
     //todo: add how many monsters in a group
-    public class MonsterType {        
+    public class MonsterType {
         [Key]
-        //As this class not generated in code it is given a new Id on construction
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
-        public string Name { get; set; } = "";
 
-        public int LevelStart { get; set; } = 0;
-        public int LevelEnd { get; set; } = 0;
+        public string Name { get; set; } 
 
-        public int HealthDiceCount { get; set; } = 0;
-        public int DamageDiceCount { get; set; } = 0;
-        public int ProtectionDiceCount { get; set; } = 0;
 
-        public string Documentation { get; set; } = "";
+        public int LevelStart { get; set; }
+        public int LevelEnd { get; set; }
+
+
+        public int HealthDiceCount { get; set; }
+        public int DamageDiceCount { get; set; }
+        public int ProtectionDiceCount { get; set; } 
+
+
+        public string Documentation { get; set; }
+
+
+        public MonsterType() {
+            Id = Guid.Empty;
+            Name = string.Empty;
+            Documentation = string.Empty;
+
+        }
     }
 }

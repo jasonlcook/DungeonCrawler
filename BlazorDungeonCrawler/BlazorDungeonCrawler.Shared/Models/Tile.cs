@@ -1,26 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BlazorDungeonCrawler.Shared.Enumerators;
 
-namespace BlazorDungeonCrawler.Shared.Models
-{
+namespace BlazorDungeonCrawler.Shared.Models {
     public class Tile {
 
         [Key]
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
 
 
-        public int Row { get; set; } = 0;
-        public int Column { get; set; } = 0;
+        public int Row { get; set; }
+        public int Column { get; set; }
 
-        
-        public DungeonEvemts Type { get; set; } = DungeonEvemts.Unknown;
 
-        
-        public bool Current { get; set; } = true;
-        public bool Hidden { get; set; } = true;
-        public bool Selectable { get; set; } = false;
+        public DungeonEvemts Type { get; set; }
 
-        public bool FightWon { get; set; } = false;
-        public List<Monster> Monsters { get; set; } = new List<Monster>();
+
+        public bool Current { get; set; }
+        public bool Hidden { get; set; }
+        public bool Selectable { get; set; }
+
+
+        public bool FightWon { get; set; }
+        public List<Monster> Monsters { get; set; }
+
+        public Tile() {
+            Id = Guid.Empty;
+            Monsters = new();
+
+        }
     }
 }
