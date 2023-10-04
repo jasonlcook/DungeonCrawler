@@ -1,9 +1,11 @@
-﻿using BlazorDungeonCrawler.Shared.Models;
+﻿using BlazorDungeonCrawler.Shared.Interfaces;
+using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Shared.Responses;
 using Newtonsoft.Json;
+using System.Net;
+using System.Text.Encodings.Web;
 
-namespace BlazorDungeonCrawler.Client.Services
-{
+namespace BlazorDungeonCrawler.Client.Services {
     public class ApiDungeonManager : IDungeonDataManager {
         private readonly HttpClient httpClient;
 
@@ -12,56 +14,98 @@ namespace BlazorDungeonCrawler.Client.Services
         }
 
         public async Task<Dungeon> GenerateNewDungeon() {
-            HttpResponseMessage result = await httpClient.GetAsync("https://localhost:7224/api/dungeon");
+            HttpResponseMessage? response = await httpClient.GetAsync("https://localhost:7224/api/dungeon");
 
-            result.EnsureSuccessStatusCode();
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
 
-            var response = await result.Content.ReadAsStringAsync();
-            var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(response);
-            if (dungeonResponse != null && dungeonResponse.Success) {
-                return dungeonResponse.Dungeon;
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (apiResponse != null) {
+                    DungeonResponse? dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+                    if (dungeonResponse != null && dungeonResponse.Success) {
+                        return dungeonResponse.Dungeon;
+                    }
+                }
             }
 
             return new Dungeon();
         }
 
-        public async Task<Dungeon> SelectDungeonTile(Guid dungeonId, Guid tileId) {
-            var result = await httpClient.GetAsync($"https://localhost:7224/api/dungeon/{dungeonId}/tile/{tileId}");
-            result.EnsureSuccessStatusCode();
+        public async Task<Tile> SelectDungeonTile(Guid dungeonId, Guid tileId) {
+            //escape inputs 
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+            string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
-            var response = await result.Content.ReadAsStringAsync();
-            var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(response);
-            if (dungeonResponse != null && dungeonResponse.Success) {
-                return dungeonResponse.Dungeon;
+            //parse url
+            string url = $"https://localhost:7224/api/dungeon/{safeDungeonId}/tile/{safeTileId}";
+
+            //get HTTP response
+            HttpResponseMessage? response = await httpClient.GetAsync(url);
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                //read response results
+                string? apiResponse = await response.Content.ReadAsStringAsync();
+
+                if (apiResponse != null) {
+                    //deserialize JSON string
+                    TileResponse? tileResponse = JsonConvert.DeserializeObject<TileResponse>(apiResponse);
+
+                    //check result
+                    if (tileResponse != null && tileResponse.Success) {
+
+                        //return safe result
+                        return tileResponse.Tile;
+                    }
+                }
             }
 
-            return new Dungeon();
+            //if any of the HTTP elements are null return empty object
+            return new Tile();
         }
 
         public async Task<Dungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
-            var result = await httpClient.GetAsync($"https://localhost:7224/api/dungeon/{dungeonId}/tile/{tileId}/flee");
-            result.EnsureSuccessStatusCode();
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+            string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
-            var response = await result.Content.ReadAsStringAsync();
-            var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(response);
-            if (dungeonResponse != null && dungeonResponse.Success) {
-                return dungeonResponse.Dungeon;
-            }
+            string url = $"https://localhost:7224/api/dungeon/{safeDungeonId}/tile/{safeTileId}/flee";
 
+            HttpResponseMessage? response = await httpClient.GetAsync(url);
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (apiResponse != null) {
+                    var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+                    if (dungeonResponse != null && dungeonResponse.Success) {
+                        return dungeonResponse.Dungeon;
+                    }
+                }
+            } 
+        
             return new Dungeon();
         }
 
         public async Task<Dungeon> MonsterFight(Guid dungeonId, Guid tileId) {
-            var result = await httpClient.GetAsync($"https://localhost:7224/api/dungeon/{dungeonId}/tile/{tileId}/fight");
-            result.EnsureSuccessStatusCode();
+            //escape inputs
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+            string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
-            var response = await result.Content.ReadAsStringAsync();
-            var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(response);
-            if (dungeonResponse != null && dungeonResponse.Success) {
-                return dungeonResponse.Dungeon;
-            }
+            HttpResponseMessage? response = await httpClient.GetAsync($"https://localhost:7224/api/dungeon/{safeDungeonId}/tile/{safeTileId}/fight");
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+                if (dungeonResponse != null && dungeonResponse.Success) {
+                    return dungeonResponse.Dungeon;
+                }
+            }            
 
             return new Dungeon();
-        }   
+        }
     }
 }
