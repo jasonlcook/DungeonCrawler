@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Resources\Commands\Delete\" />
+    <Folder Include="Resources\Commands\Update\" />
     <Folder Include="Resources\Queries\" />
   </ItemGroup>
 

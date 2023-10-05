@@ -1,7 +1,6 @@
 ﻿using BlazorDungeonCrawler.Server.Models;
 
 using BlazorDungeonCrawler.Database.Resources.Commands.Create;
-using BlazorDungeonCrawler.Database.Resources.Commands.Update;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
