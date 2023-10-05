@@ -1,9 +1,10 @@
-﻿using BlazorDungeonCrawler.Shared.Interfaces;
+﻿using System.Net;
+
+using Newtonsoft.Json;
+
+using BlazorDungeonCrawler.Shared.Interfaces;
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Shared.Responses;
-using Newtonsoft.Json;
-using System.Net;
-using System.Text.Encodings.Web;
 
 namespace BlazorDungeonCrawler.Client.Services {
     public class ApiDungeonManager : IDungeonDataManager {
