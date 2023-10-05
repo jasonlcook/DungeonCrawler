@@ -30,38 +30,36 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             Adventurer adventurer = new(health, damage, protection);
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
-            AdventurerCreate.Create(sharedAdventurer);
-
+            
             //  Level
             int depth = 1;
             Level level = new(depth);
             SharedLevel sharedLevel = level.SharedModelMapper();
-            LevelCreate.Create(sharedLevel);
 
             messages.Add(new Message(3, $"DUNGEON DEPTH {depth}"));
 
             //  Tiles
             Tiles tiles = new(level.Depth, level.Rows, level.Columns);
             List<SharedTile> sharedTiles = tiles.SharedModelMapper();
-            TilesCreate.Create(sharedTiles);
 
             sharedLevel.Tiles = sharedTiles;
 
             //  Messages
             List<SharedMessage> sharedMessages = messages.SharedModelMapper();
-            MessagesCreate.Create(sharedMessages);
 
             //  Dungon
+            string apiVersion = new Version(0, 2, 0).ToString();
             SharedDungeon sharedDungeon = new() {
-                ApiVersion = new Version(0, 2, 0).ToString()
-            };
-            //DungeonCreate.Create(sharedDungeon);
+                Id = Guid.NewGuid(),
 
-            //Update
-            sharedDungeon.Adventurer = sharedAdventurer;
-            sharedDungeon.Level = sharedLevel;
-            sharedDungeon.Messages = sharedMessages;
-            //DungeonUpdate.Update(sharedDungeon);
+                Adventurer = sharedAdventurer,
+                Level = sharedLevel,
+                Messages = sharedMessages,
+
+                ApiVersion = apiVersion
+            };
+
+            DungeonCreate.Create(sharedDungeon);
 
             return sharedDungeon;
         }

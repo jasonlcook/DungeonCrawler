@@ -5,11 +5,11 @@ namespace BlazorDungeonCrawler.Shared.Models {
         [Key]
         public Guid Id { get; set; }
 
-        public Adventurer Adventurer { get; set; }
+        public Adventurer? Adventurer { get; set; }
 
-        public Level Level { get; set; }
+        public Level? Level { get; set; }
 
-        public List<Message> Messages { get; set; }
+        public List<Message>? Messages { get; set; }
 
 
         public string ApiVersion { get; set; }
@@ -25,10 +25,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public Dungeon() {
             Id = Guid.Empty;
-            Adventurer = new();
-            Level = new();
-            Messages = new();
+
             CombatTile = Guid.Empty;
+
             ApiVersion = string.Empty;
         }
     }

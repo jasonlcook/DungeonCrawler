@@ -8,25 +8,6 @@
         public override void Up()
         {
             CreateTable(
-                "dbo.Dungeons",
-                c => new
-                    {
-                        Id = c.Guid(nullable: false),
-                        ApiVersion = c.String(),
-                        MacGuffinFound = c.Boolean(nullable: false),
-                        InCombat = c.Boolean(nullable: false),
-                        CombatTile = c.Guid(nullable: false),
-                        CombatInitiated = c.Boolean(nullable: false),
-                        Adventurer_Id = c.Guid(),
-                        Level_Id = c.Guid(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
-                .ForeignKey("dbo.Levels", t => t.Level_Id)
-                .Index(t => t.Adventurer_Id)
-                .Index(t => t.Level_Id);
-            
-            CreateTable(
                 "dbo.Adventurers",
                 c => new
                     {
@@ -50,6 +31,25 @@
                         IsAlive = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.Dungeons",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        ApiVersion = c.String(),
+                        MacGuffinFound = c.Boolean(nullable: false),
+                        InCombat = c.Boolean(nullable: false),
+                        CombatTile = c.Guid(nullable: false),
+                        CombatInitiated = c.Boolean(nullable: false),
+                        Adventurer_Id = c.Guid(),
+                        Level_Id = c.Guid(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
+                .ForeignKey("dbo.Levels", t => t.Level_Id)
+                .Index(t => t.Adventurer_Id)
+                .Index(t => t.Level_Id);
             
             CreateTable(
                 "dbo.Levels",
@@ -129,8 +129,8 @@
             DropTable("dbo.Monsters");
             DropTable("dbo.Tiles");
             DropTable("dbo.Levels");
-            DropTable("dbo.Adventurers");
             DropTable("dbo.Dungeons");
+            DropTable("dbo.Adventurers");
         }
     }
 }
