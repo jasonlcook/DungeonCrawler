@@ -7,6 +7,8 @@
 
         let properties = JSON.parse(args);
         dungeon_crawler.main.repositionHexGroups(properties['rows'], properties['columns']);
+
+        return true;
     },
 
     addErrorMessage(message) {

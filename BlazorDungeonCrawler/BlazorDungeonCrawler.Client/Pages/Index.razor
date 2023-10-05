@@ -7,14 +7,6 @@
 @inject IDungeonDataManager DungeonManager
 @inject HttpClient Http
 
-<HeadContent>
-    <link href="css/cssreset-min.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
-
-    <script src="scripts/jquery-3.7.1.min.js"></script>
-    <script src="scripts/dungeon_crawler.min.js"></script>
-</HeadContent>
-
 @if (dungeon != null && dungeon.InCombat) {
     <div class="modal-dialog-container">
         <div class="modal-dialog">
@@ -146,22 +138,9 @@
     <span class="client-version">Client V0.2.1</span>
 </div>
 
-<script>
-    //wait for startup to become avalible.
-    function getStartup(args) {
-        if (
-            window.dungeon_crawler != 'undefined' && window.dungeon_crawler != null &&
-            window.dungeon_crawler.main != 'undefined' && window.dungeon_crawler.main != null &&
-            window.dungeon_crawler.main.startup != 'undefined' && window.dungeon_crawler.main.startup != null && typeof (window.dungeon_crawler.main.startup) == 'function'
-        ) {
-            window.dungeon_crawler.main.startup(args);
-        } else {
-            setTimeout(getStartup, 100);
-        }
-    };
-</script>
-
 @code {
+    bool successfulLoad = false;
+
     Dungeon? dungeon = null;
     Tile? tile = null;
 
@@ -177,23 +156,23 @@
 
     string tilesHtml = "";
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            await SetupDungeon();
+    protected override async void OnAfterRender(bool firstRender) {
+        if (dungeon == null) {
+            dungeon = await DungeonManager.GenerateNewDungeon();
+            apiVersion = $"API V{dungeon.ApiVersion}";
+            await updateValues();
+        }
+
+        if (successfulLoad != true) {
+            try {
+                successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
+            } catch (Exception ex) {
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 
-    async Task SetupDungeon() {
-        dungeon = await DungeonManager.GenerateNewDungeon();
-        apiVersion = $"API V{dungeon.ApiVersion}";
-
-        updateValues();
-
-        await InvokeAsync(StateHasChanged);
-        await JS.InvokeVoidAsync("getStartup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
-    }
-
-    string getColourClass(int dungeonDepth) {
+    private string getColourClass(int dungeonDepth) {
         switch (dungeonDepth) {
             case 1:
             case 2:
@@ -215,7 +194,7 @@
         return "hexagon-colour-unknown";
     }
 
-    string GetTypeClass(DungeonEvemts type) {
+    private string GetTypeClass(DungeonEvemts type) {
         switch (type) {
             case DungeonEvemts.Empty:
                 return "hexagon-tile-empty";
@@ -252,7 +231,7 @@
         return "hexagon-tile-unknown";
     }
 
-    async Task SelectTile(Guid tileId) {
+    private async Task SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
             tile = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
             //update single tile
@@ -261,7 +240,7 @@
         }
     }
 
-    async Task MonsterFlee() {
+    private async Task MonsterFlee() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
             dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
             updateValues();
@@ -270,7 +249,7 @@
         }
     }
 
-    async Task MonsterFight() {
+    private async Task MonsterFight() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
             dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
             updateValues();
@@ -279,13 +258,15 @@
         }
     }
 
-    void updateValues() {
+    private async Task updateValues() {
         if (dungeon != null && dungeon.Id != Guid.Empty) {
             dungeonDepth = dungeon.Level.Depth.ToString();
 
             health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
             damage = dungeon.Adventurer.DamageBase.ToString();
             protection = dungeon.Adventurer.ProtectionBase.ToString();
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
