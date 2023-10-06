@@ -58,7 +58,7 @@ namespace BlazorDungeonCrawler.Client.Services {
             return new Dungeon();
         }
 
-        public async Task<Tile> SelectDungeonTile(Guid dungeonId, Guid tileId) {
+        public async Task<List<Tile>> SelectDungeonTile(Guid dungeonId, Guid tileId) {
             //escape inputs 
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
             string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
@@ -77,19 +77,19 @@ namespace BlazorDungeonCrawler.Client.Services {
 
                 if (apiResponse != null) {
                     //deserialize JSON string
-                    TileResponse? tileResponse = JsonConvert.DeserializeObject<TileResponse>(apiResponse);
+                    TilesResponse? tileResponse = JsonConvert.DeserializeObject<TilesResponse>(apiResponse);
 
                     //check result
                     if (tileResponse != null && tileResponse.Success) {
 
                         //return safe result
-                        return tileResponse.Tile;
+                        return tileResponse.Tiles;
                     }
                 }
             }
 
             //if any of the HTTP elements are null return empty object
-            return new Tile();
+            return new List<Tile>();
         }
 
         public async Task<Dungeon> MonsterFlee(Guid dungeonId, Guid tileId) {

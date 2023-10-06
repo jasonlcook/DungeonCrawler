@@ -1,6 +1,9 @@
 ﻿using BlazorDungeonCrawler.Server.Models;
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using BlazorDungeonCrawler.Database.Resources.Commands.Create;
+using BlazorDungeonCrawler.Database.Resources.Commands.Update;
+
 using BlazorDungeonCrawler.Database.Resources.Queries.Get;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
@@ -30,7 +33,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             Adventurer adventurer = new(health, damage, protection);
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
-            
+
             //  Level
             int depth = 1;
             Level level = new(depth);
@@ -73,10 +76,54 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
 
             return sharedDungeon;
-        }        
-        public async Task<SharedTile> GetSelectedDungeonTile(Guid dungeonId, Guid tileId) {
+        }
+
+        public async Task<List<SharedTile>> GetSelectedDungeonTiles(Guid dungeonId, Guid tileId) {
             await Task.Delay(1);
-            return new SharedTile();
+
+            List<SharedTile> sharedTiles = Tiles.GetSharedDungeonTiles(dungeonId);
+            Tiles tiles = new Tiles(sharedTiles);
+
+            Tile selectedTile = new();
+            foreach (Tile tile in tiles.GetTiles()) { 
+                tile.Current = false;
+
+                if (tile.Id == tileId) {
+                    selectedTile = tile;
+
+                    selectedTile.Hidden = false;
+                    selectedTile.Current = true;
+                }
+            }
+
+            tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+
+            switch (selectedTile.Type) {
+                case DungeonEvemts.Fight:
+                case DungeonEvemts.Unknown:
+                case DungeonEvemts.Empty:
+                case DungeonEvemts.DungeonEntrance:
+                case DungeonEvemts.StairsAscending:
+                case DungeonEvemts.StairsDescending:
+                case DungeonEvemts.FightWon:
+                case DungeonEvemts.FightLost:
+                case DungeonEvemts.Chest:
+                case DungeonEvemts.FoundWeapon:
+                case DungeonEvemts.FoundProtection:
+                case DungeonEvemts.FoundPotion:
+                case DungeonEvemts.TakenWeapon:
+                case DungeonEvemts.TakenProtection:
+                case DungeonEvemts.TakenPotion:
+                case DungeonEvemts.Macguffin:
+                default:
+                    break;
+            }
+
+            sharedTiles = tiles.SharedModelMapper();
+
+            TilesUpdate.Update(sharedTiles);
+
+            return sharedTiles;
         }
 
         public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {

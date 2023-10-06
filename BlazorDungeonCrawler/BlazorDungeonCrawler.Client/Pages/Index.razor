@@ -362,13 +362,18 @@
         return "hexagon-tile-unknown";
     }
 
-    private async Task SelectTile(Guid tileId) {
+    private async Task<bool> SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-            tile = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
-            //update single tile
+            dungeon.Level.Tiles = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+
+            await InvokeAsync(StateHasChanged);
+
+            return true;
         } else {
             //todo: trap error
         }
+
+        return false;
     }
 
     private async Task<bool> MonsterFlee() {

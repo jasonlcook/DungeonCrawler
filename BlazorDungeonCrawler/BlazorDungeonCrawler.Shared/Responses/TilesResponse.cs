@@ -2,14 +2,14 @@
 
 namespace BlazorDungeonCrawler.Shared.Responses
 {
-    public class TileResponse {
+    public class TilesResponse {
         public bool Success { get; set; }
         public List<string> ErrorMessages { get; set; }
-        public Tile Tile { get; set; }
+        public List<Tile> Tiles { get; set; }
 
-        public TileResponse() {
+        public TilesResponse() {
             ErrorMessages = new();
-            Tile = new();
+            Tiles = new();
         }
     }
 

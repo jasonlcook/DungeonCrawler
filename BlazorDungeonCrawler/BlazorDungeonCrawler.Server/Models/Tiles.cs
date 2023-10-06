@@ -1,10 +1,40 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿using BlazorDungeonCrawler.Database.Resources.Queries.Get;
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
+using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Tiles {
-        private readonly List<Tile> _tiles;
+        private List<Tile> _tiles;
+
+        public List<Tile> GetTiles() {
+            return _tiles;
+        }
+
+        public Tiles(List<SharedTile> tiles) {
+            _tiles = new();
+
+            Monster monster = new Monster();
+            foreach (SharedTile tile in tiles) {
+                List<Monster> monsters = new();
+                foreach (SharedMonster sharedMonster in tile.Monsters) {
+                    monsters.Add(monster.ServerModelMapper(sharedMonster));
+                }
+
+                _tiles.Add(new Tile() {
+                    Id = tile.Id,
+                    Row = tile.Row,
+                    Column = tile.Column,
+                    Type = tile.Type,
+                    Current = tile.Current,
+                    Hidden = tile.Hidden,
+                    Selectable = tile.Selectable,
+                    FightWon = tile.FightWon,
+                    Monsters = monsters
+                });
+            }
+        }
 
         public Tiles(int depth, int levelRows, int levelColumns) {
             _tiles = new();
@@ -71,11 +101,12 @@ namespace BlazorDungeonCrawler.Server.Models {
                     randomSelectedTile.Hidden = false;
                     randomSelectedTile.Current = true;
 
-                    currentRow = randomSelectedTile.Row;
-                    currentColumn = randomSelectedTile.Column;
+                    SetSelectableTiles(randomSelectedTile.Row, randomSelectedTile.Column);
                 }
             }
+        }
 
+        public void SetSelectableTiles(int currentRow, int currentColumn) {
             int previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
             foreach (Tile tile in _tiles) {
                 tile.Selectable = false;
@@ -120,10 +151,6 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        public List<Tile> GetTiles() {
-            return _tiles;
-        }
-
         public List<SharedTile> SharedModelMapper() {
             List<SharedTile> sharedTiles = new();
 
@@ -137,10 +164,19 @@ namespace BlazorDungeonCrawler.Server.Models {
                     Hidden = tile.Hidden,
                     Selectable = tile.Selectable,
                     FightWon = tile.FightWon
-                }) ;
+                });
             }
 
             return sharedTiles;
+        }
+
+        public static List<SharedTile> GetSharedDungeonTiles(Guid dungeonId) {
+            var sharedDungeon = DungeonQueries.Get(dungeonId);
+            if (sharedDungeon == null || sharedDungeon.Level == null || sharedDungeon.Level.Tiles == null) {
+                throw new NullReferenceException("Dungeon Tiles");
+            }
+
+            return sharedDungeon.Level.Tiles;
         }
     }
 }

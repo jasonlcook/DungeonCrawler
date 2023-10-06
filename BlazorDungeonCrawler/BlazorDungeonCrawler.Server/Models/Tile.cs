@@ -2,7 +2,7 @@
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Tile {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
         public DungeonEvemts Type { get; set; }
@@ -10,7 +10,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public bool Hidden { get; set; }
         public bool Selectable { get; set; }
         public bool FightWon { get; set; }
-        public List<Monster> Monsters { get; private set; }
+        public List<Monster> Monsters { get; set; }
 
         public Tile() {
             Id = Guid.NewGuid();
