@@ -3,55 +3,6 @@ body {
     font-family: monospace;
 }
 
-/* Version */
-#version {
-    margin: 10px auto 0 auto;
-    font-size: 10px;
-    width: 844px;
-    text-align: right;
-}
-
-    #version span {
-        display: block;
-    }
-
-
-.modal-dialog-container {
-    position: relative;
-    width: 400px;
-    margin: 0 auto;
-}
-
-    .modal-dialog-container .modal-dialog {
-        position: absolute;
-        border: 1px solid #000;
-        width: 400px;
-        height: 200px;
-        background-color: #fff;
-        top: 100px;
-        z-index: 1;
-    }
-
-        .modal-dialog-container .modal-dialog .modal-dialog-title {
-            padding: 7px 10px;
-            border-style: solid;
-            border-width: 0 0 1px 0;
-            border-color: #000;
-        }
-
-        .modal-dialog-container .modal-dialog .modal-dialog-body {
-            padding: 10px;
-        }
-
-        .modal-dialog-container .modal-dialog .modal-dialog-buttons {
-            position: absolute;
-            bottom: 10px;
-            width: 400px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-
 /* Cookie banner */
 #cookie-consent {
     width: 100%;
@@ -109,6 +60,54 @@ body {
         transform: rotate(0deg);
     }
 }
+
+/* modal dialog */
+.modal-dialog-container {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+
+    .modal-dialog-container .modal-dialog {
+        position: absolute;
+        border: 1px solid #000;
+        width: 400px;
+        height: 200px;
+        background-color: #fff;
+        top: 100px;
+        z-index: 1;
+    }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-title {
+            padding: 7px 10px;
+            border-style: solid;
+            border-width: 0 0 1px 0;
+            border-color: #000;
+        }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-body {
+            padding: 10px;
+        }
+
+        .modal-dialog-container .modal-dialog .modal-dialog-buttons {
+            position: absolute;
+            bottom: 10px;
+            width: 400px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+/* Footer */
+#dungeon-footer {
+    margin: 10px auto 0 auto;
+    font-size: 10px;
+    width: 844px;
+    text-align: right;
+}
+
+    #dungeon-footer #version span {
+        display: block;
+    }
 
 /* Play area */
 #play-area {
