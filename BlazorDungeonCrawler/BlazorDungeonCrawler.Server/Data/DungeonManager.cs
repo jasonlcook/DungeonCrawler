@@ -1,6 +1,7 @@
 ﻿using BlazorDungeonCrawler.Server.Models;
 
 using BlazorDungeonCrawler.Database.Resources.Commands.Create;
+using BlazorDungeonCrawler.Database.Resources.Queries.Get;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
@@ -63,6 +64,16 @@ namespace BlazorDungeonCrawler.Server.Data {
             return sharedDungeon;
         }
 
+        public async Task<SharedDungeon> RetrieveDungeon(Guid dungeonId) {
+            await Task.Delay(1);
+
+            SharedDungeon? sharedDungeon = DungeonQueries.Get(dungeonId);
+            if (sharedDungeon == null || sharedDungeon.Id == Guid.Empty) {
+                sharedDungeon = await Generate();
+            }
+
+            return sharedDungeon;
+        }        
         public async Task<SharedTile> GetSelectedDungeonTile(Guid dungeonId, Guid tileId) {
             await Task.Delay(1);
             return new SharedTile();

@@ -1,8 +1,12 @@
+body {
+    font-size: 13px;
+    font-family: monospace;
+}
+
 /* Version */
 #version {
     margin: 10px auto 0 auto;
     font-size: 10px;
-    font-family: monospace;
     width: 844px;
     text-align: right;
 }
@@ -46,6 +50,26 @@
             display: flex;
             justify-content: space-around;
         }
+
+
+/* Cookie banner */
+#cookie-consent {
+    width: 100%;
+    border-style: solid;
+    border-color: #000;
+    border-width: 1px 0 0 0;
+    background: #fff;
+    padding: 10px 0;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+}
+
+    #cookie-consent button {
+        display: inline;
+        margin: 0 0 0 10px;
+    }
 
 /* Loading */
 #play-area #dungeon #stage .loading {
@@ -91,15 +115,10 @@
     border: 1px solid #000;
     width: min-content;
     margin: 0px auto;
-    font-size: 13px;
-    font-family: monospace;
 }
 
     /* Buttons */
     #play-area .button {
-        border-color: #000;
-        border-width: 1px;
-        border-style: solid;
         padding: 10px;
         margin: 10px 10px 0 10px;
     }
@@ -344,8 +363,6 @@
                     position: absolute;
                     top: 15px;
                     left: 20px;
-                    font-size: 10px;
-                    font-family: monospace;
                     color: #FFF;
                     display: block;
                     width: 60px;

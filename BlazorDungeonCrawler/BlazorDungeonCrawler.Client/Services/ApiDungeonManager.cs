@@ -27,6 +27,32 @@ namespace BlazorDungeonCrawler.Client.Services {
                         return dungeonResponse.Dungeon;
                     }
                 }
+            } else { 
+                //todo: trap error
+            }
+
+            return new Dungeon();
+        }
+
+        public async Task<Dungeon> GetDungeon(Guid dungeonId) {
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+
+            string url = $"https://localhost:7224/api/dungeon/{safeDungeonId}";
+
+            HttpResponseMessage? response = await httpClient.GetAsync(url);
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (apiResponse != null) {
+                    DungeonResponse? dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+                    if (dungeonResponse != null && dungeonResponse.Success) {
+                        return dungeonResponse.Dungeon;
+                    }
+                }
+            } else {
+                //todo: trap error
             }
 
             return new Dungeon();

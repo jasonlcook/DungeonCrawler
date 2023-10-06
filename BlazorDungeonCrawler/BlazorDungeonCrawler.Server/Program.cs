@@ -11,7 +11,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<DungeonManager>();
 
 builder.Services.AddCors(options => {
-    options.AddPolicy(name: "MyAllowAnyOriginMethodHeader", builder =>
+    options.AddPolicy(name: "AllowAnyOriginMethodHeader", builder =>
     builder.AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());
@@ -36,7 +36,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseCors("MyAllowAnyOriginMethodHeader");
+app.UseCors("AllowAnyOriginMethodHeader");
 app.UseResponseCompression();
 
 app.MapBlazorHub();

@@ -8,8 +8,7 @@ using BlazorDungeonCrawler.Server.Data;
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
-namespace BlazorDungeonCrawler.Server.Controllers
-{
+namespace BlazorDungeonCrawler.Server.Controllers {
 
     [ApiController]
     [Route("api/[controller]")]
@@ -21,7 +20,7 @@ namespace BlazorDungeonCrawler.Server.Controllers
         }
 
         [HttpGet]
-        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> Generate() {
             try {
                 SharedDungeon dungeon = await dungeonManager.Generate();
@@ -36,8 +35,24 @@ namespace BlazorDungeonCrawler.Server.Controllers
             }
         }
 
+        [HttpGet("{dungeonId}")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> RetrieveDungeon(Guid dungeonId) {
+            try {
+                SharedDungeon dungeon = await dungeonManager.RetrieveDungeon(dungeonId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("{dungeonId}/tile/{tileId}")]
-        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<TileResponse>> SelectedDungeonTile(Guid dungeonId, Guid tileId) {
             try {
                 SharedTile tile = await dungeonManager.GetSelectedDungeonTile(dungeonId, tileId);
@@ -53,7 +68,7 @@ namespace BlazorDungeonCrawler.Server.Controllers
         }
 
         [HttpGet("{dungeonId}/tile/{tileId}/flee")]
-        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> MonsterFlee(Guid dungeonId, Guid tileId) {
             try {
                 SharedDungeon dungeon = await dungeonManager.MonsterFlee(dungeonId, tileId);
@@ -69,7 +84,7 @@ namespace BlazorDungeonCrawler.Server.Controllers
         }
 
         [HttpGet("{dungeonId}/tile/{tileId}/fight")]
-        [EnableCors("MyAllowAnyOriginMethodHeader")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> MonsterFight(Guid dungeonId, Guid tileId) {
             try {
                 SharedDungeon dungeon = await dungeonManager.MonsterFight(dungeonId, tileId);

@@ -7,6 +7,18 @@
 @inject IDungeonDataManager DungeonManager
 @inject HttpClient Http
 
+@if (rejectedCookie == false && foundCookie != null && foundCookie == false) {
+    <div id="cookie-consent" class="alert alert-info alert-dismissible fade show" role="alert">
+        Would you like a cookie?
+        <button type="button" class="accept-policy close dungeon-button" @onclick="RejectCookies">
+            Reject Cookie
+        </button>
+        <button type="button" class="accept-policy close dungeon-button" @onclick="AcceptCookies">
+            Accept Cookie
+        </button>
+    </div>
+}
+
 @if (dungeon != null && dungeon.InCombat) {
     <div class="modal-dialog-container">
         <div class="modal-dialog">
@@ -29,43 +41,45 @@
                     <img src="/images/tiles/blue/base_tile.png" />
                 </div>
             } else {
-                string colourClass = getColourClass(dungeon.Level.Depth);
+                string colourClass = getColourClass(GetLevelDepth());
 
-                var orderedTiles = dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
+                var orderedTiles = GetTiles();
 
-                foreach (Tile tile in orderedTiles) {
-                    <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
-                        <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
+                if (orderedTiles != null) {
+                    foreach (Tile tile in orderedTiles) {
+                        <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
+                            <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
-                        @if (tile.Hidden) {
-                            <div class="hexagon-tile hexagon-tile-hidden"></div>
-                        } else {
-                            <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
+                            @if (tile.Hidden) {
+                                <div class="hexagon-tile hexagon-tile-hidden"></div>
+                            } else {
+                                <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
 
-                            @if (!tile.Current) {
-                                <div class="hexagon-tile hexagon-for-of-war"></div>
+                                @if (!tile.Current) {
+                                    <div class="hexagon-tile hexagon-for-of-war"></div>
+                                }
                             }
-                        }
 
-                        @if (tile.Selectable) {
-                            <div class="hexagon-tile @colourClass hexagon-tile-selectable">
-                                <span @onclick="@(() => SelectTile(tile.Id))"></span>
-                            </div>
-                        }
+                            @if (tile.Selectable) {
+                                <div class="hexagon-tile @colourClass hexagon-tile-selectable">
+                                    <span @onclick="@(() => SelectTile(tile.Id))"></span>
+                                </div>
+                            }
 
-                        @if (tile.Monsters.Count > 0) {
-                            foreach (Monster monster in tile.Monsters) {
-                                string monsterTop = $"{monster.ClientY}px";
-                                string monsterLeft = $"{monster.ClientX}px";
+                            @if (tile.Monsters.Count > 0) {
+                                foreach (Monster monster in tile.Monsters) {
+                                    string monsterTop = $"{monster.ClientY}px";
+                                    string monsterLeft = $"{monster.ClientX}px";
 
-                                <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
-                                    <span class="monster-counter-health">
-                                        @monster.Health
+                                    <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
+                                        <span class="monster-counter-health">
+                                            @monster.Health
+                                        </span>
                                     </span>
-                                </span>
+                                }
                             }
-                        }
-                    </div>
+                        </div>
+                    }
                 }
             }
         </div>
@@ -139,6 +153,98 @@
 </div>
 
 @code {
+    //Cookies
+    bool? foundCookie = null;
+    bool rejectedCookie = false;
+    string cookieKeyId = "BlazorWebAppCookies-Id";
+
+    Guid cookiePlaceholder = Guid.Empty;
+    Guid cookieId = Guid.Empty;
+
+    protected override void OnInitialized() {
+        if (foundCookie == null) {
+            CheckCookies();
+        }
+    }
+
+    private async void AcceptCookies() {
+        Guid dungeonId = cookiePlaceholder;
+
+        if (dungeon != null && dungeon.Id != Guid.Empty) {
+            dungeonId = dungeon.Id;
+        }
+
+        StoreCookie(dungeonId);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void RejectCookies() {
+        rejectedCookie = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string BakeCookie(string key, string value, double days) {
+        string dateStamp = "";
+        if (days > 0) {
+            dateStamp = DateTime.Now.AddDays(days).ToUniversalTime().ToString("R");
+        }
+
+        return $"{key}={value}; expires={dateStamp}; path=/";
+    }
+
+    private async void CheckCookies() {
+        string response = GetCookie();
+        Dictionary<string, string> cookies = ParseCookieResponse(response);
+
+        if (cookies.ContainsKey(cookieKeyId)) {
+            foundCookie = true;
+
+            if (Guid.TryParse(cookies[cookieKeyId], out cookieId)) {
+                await WriteLog($"COOKIEID: {cookieId}");
+            }
+        } else {
+            foundCookie = false;
+        }
+    }
+
+    private Dictionary<string, string> ParseCookieResponse(string value) {
+        Dictionary<string, string> cookies = new();
+
+        if (!string.IsNullOrEmpty(value)) {
+            string[] values = value.Split(';');
+
+            string cookieKey, cookieValue;
+            foreach (string val in values) {
+                cookieKey = val.Substring(0, val.IndexOf('=')).Trim();
+                cookieValue = val.Substring(val.IndexOf('=') + 1);
+                cookies.Add(cookieKey, cookieValue);
+            }
+        }
+
+        return cookies;
+    }
+
+    private async void StoreCookie(Guid dungeonId) {
+        string safeDungeonId = dungeonId.ToString();
+        string cookie = BakeCookie(cookieKeyId, safeDungeonId, 7);
+        await SetCookie(cookie);
+    }
+
+    private async Task SetCookie(string cookie) {
+        await JS.InvokeVoidAsync("eval", $"document.cookie = \"{cookie}\"");
+    }
+
+    private string GetCookie() {
+        return ((IJSInProcessRuntime)JS).Invoke<string>("eval", $"document.cookie");
+    }
+
+    public async Task WriteLog(string message) {
+        await this.JS.InvokeVoidAsync("console.log", message);
+    }
+
+    //Dungeon
     bool successfulLoad = false;
 
     Dungeon? dungeon = null;
@@ -158,15 +264,39 @@
 
     protected override async void OnAfterRender(bool firstRender) {
         if (dungeon == null) {
-            dungeon = await DungeonManager.GenerateNewDungeon();
-            apiVersion = $"API V{dungeon.ApiVersion}";
-            await updateValues();
+            if (cookieId != Guid.Empty) {
+                dungeon = await DungeonManager.GetDungeon(cookieId);
+            }
+
+            if (dungeon == null || dungeon.Id == Guid.Empty) {
+                dungeon = await DungeonManager.GenerateNewDungeon();
+            }
+
+            if (dungeon != null && dungeon.Id != Guid.Empty) {
+                if (foundCookie == true && cookieId != dungeon.Id) {
+                    StoreCookie(dungeon.Id);
+                }
+
+                apiVersion = $"API V{dungeon.ApiVersion}";
+
+                bool updateSuccess = await updateValues();
+
+                if (!updateSuccess) {
+                    //todo report error on loading
+                }
+            } else {
+                //todo report error on loading
+            }
         }
 
-        if (successfulLoad != true) {
+        if (dungeon != null && successfulLoad != true) {
             try {
                 successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
+                if (successfulLoad != true) {
+                    await InvokeAsync(StateHasChanged);
+                }
             } catch (Exception ex) {
+                //todo: add way of stopping too may requestes
                 await InvokeAsync(StateHasChanged);
             }
         }
@@ -240,33 +370,111 @@
         }
     }
 
-    private async Task MonsterFlee() {
-        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
-            dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
-            updateValues();
-        } else {
-            //todo: trap error
+    private async Task<bool> MonsterFlee() {
+        if (dungeon == null || dungeon.Id == Guid.Empty || dungeon.CombatTile == Guid.Empty) {
+            //todo: report error
+            return false;
         }
+
+        dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
+        bool updateSuccess = await updateValues();
+
+        return true;
     }
 
-    private async Task MonsterFight() {
-        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.CombatTile != Guid.Empty) {
-            dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
-            updateValues();
-        } else {
-            //todo: trap error
+    private async Task<bool> MonsterFight() {
+        if (dungeon == null || dungeon.Id == Guid.Empty || dungeon.CombatTile == Guid.Empty) {
+            //todo: report error
+            return false;
         }
+
+        dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
+        bool updateSuccess = await updateValues();
+
+        return true;
     }
 
-    private async Task updateValues() {
-        if (dungeon != null && dungeon.Id != Guid.Empty) {
-            dungeonDepth = dungeon.Level.Depth.ToString();
-
-            health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
-            damage = dungeon.Adventurer.DamageBase.ToString();
-            protection = dungeon.Adventurer.ProtectionBase.ToString();
-
-            await InvokeAsync(StateHasChanged);
+    private async Task<bool> updateValues() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
         }
+
+        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
+            throw new Exception("Dungeon Level response was badly formed.");
+        }
+
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.DamageBase == 0 || dungeon.Adventurer.ProtectionBase == 0) {
+            throw new Exception("Dungeon Adventurer response was badly formed.");
+        }
+
+        dungeonDepth = GetLevelDepth().ToString();
+
+        health = GetAdventurerHealth();
+        damage = GetAdventurerDamage();
+        protection = GetAdventurerProtection();
+
+        await InvokeAsync(StateHasChanged);
+
+        return true;
+    }
+
+    private int GetLevelDepth() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
+            throw new Exception("Dungeon Level response was badly formed.");
+        }
+
+        return dungeon.Level.Depth;
+    }
+
+    private string GetAdventurerHealth() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.HealthInitial == 0) {
+            throw new Exception("Dungeon Adventurer response was badly formed.");
+        }
+
+        return $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
+    }
+
+    private string GetAdventurerDamage() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.DamageBase == 0) {
+            throw new Exception("Dungeon Adventurer response was badly formed.");
+        }
+
+        return dungeon.Adventurer.DamageBase.ToString();
+    }
+
+    private string GetAdventurerProtection() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.ProtectionBase == 0) {
+            throw new Exception("Dungeon Adventurer response was badly formed.");
+        }
+
+        return dungeon.Adventurer.ProtectionBase.ToString();
+    }
+
+    private List<Tile> GetTiles() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
+            throw new Exception("Dungeon Level response was badly formed.");
+        }
+
+        return dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
     }
 }
