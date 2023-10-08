@@ -318,31 +318,31 @@
 
                 apiVersion = $"API V{dungeon.ApiVersion}";
 
-                bool updateSuccess = await updateValues();
+                bool updateSuccess = await UpdateValues();
                 if (!updateSuccess) {
-                    //todo report error on loading
+                    infoMessages.Add("Dungeon values could not be set.");
                 }
             } else {
-                //todo report error on loading
-            }
-        }
-
-        if (dungeon != null && successfulLoad != true) {
-            if (dungeon.Level != null && dungeon.Level.Id != Guid.Empty) {
-                try {
-                    successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
-                    if (successfulLoad != true) {
-                        await InvokeAsync(StateHasChanged);
-                    }
-                } catch (Exception ex) {
-                    //todo: add way of stopping too may requestes
-                    await InvokeAsync(StateHasChanged);
-                }
-            } else {
-                //todo report error on loading
+                throw new Exception("Dungeon response was badly formed.");
             }
         } else {
-            //todo report error on loading
+            infoMessages.Add("Dungeon response not ready.");
+        }
+
+        if (dungeon != null && successfulLoad != true && dungeon.Level != null && dungeon.Level.Id != Guid.Empty) {
+            try {
+                successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
+
+                if (successfulLoad != true) {
+                    infoMessages.Add("Main startup not ready.");
+
+                    await InvokeAsync(StateHasChanged);
+                }
+            } catch (Exception ex) {
+                throw new Exception("Dungeon response was badly formed.");
+            }
+        } else {
+            infoMessages.Add("Dungeon response not ready.");
         }
     }
 
@@ -423,6 +423,42 @@
         return false;
     }
 
+    private async Task<bool> UpdateValues() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
+            throw new Exception("Dungeon Level response was badly formed.");
+        }
+
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.HealthInitial == 0 || dungeon.Adventurer.DamageBase == 0 || dungeon.Adventurer.ProtectionBase == 0) {
+            throw new Exception("Dungeon Adventurer response was badly formed.");
+        }
+
+        dungeonDepth = dungeon.Level.Depth;
+
+        health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
+        damage = dungeon.Adventurer.DamageBase.ToString();
+        protection = dungeon.Adventurer.ProtectionBase.ToString();
+
+        await InvokeAsync(StateHasChanged);
+
+        return true;
+    }
+
+    private List<Tile> GetTiles() {
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            throw new Exception("Could not place tiles as Dungeon response was badly formed.");
+        }
+
+        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
+            throw new Exception("Dungeon Level response was badly formed.");
+        }
+
+        return dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
+    }
+
     private async Task<bool> MonsterFlee() {
         if (dungeon == null || dungeon.Id == Guid.Empty || dungeon.CombatTile == Guid.Empty) {
             //todo: report error
@@ -431,7 +467,7 @@
 
         try {
             dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
-            bool updateSuccess = await updateValues();
+            bool updateSuccess = await UpdateValues();
 
             return true;
         } catch (Exception ex) {
@@ -451,7 +487,7 @@
 
         try {
             dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
-            bool updateSuccess = await updateValues();
+            bool updateSuccess = await UpdateValues();
 
             return true;
 
@@ -462,89 +498,5 @@
         }
 
         return false;
-    }
-
-    private async Task<bool> updateValues() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
-            throw new Exception("Dungeon Level response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.DamageBase == 0 || dungeon.Adventurer.ProtectionBase == 0) {
-            throw new Exception("Dungeon Adventurer response was badly formed.");
-        }
-
-        dungeonDepth = GetLevelDepth();
-
-        health = GetAdventurerHealth();
-        damage = GetAdventurerDamage();
-        protection = GetAdventurerProtection();
-
-        await InvokeAsync(StateHasChanged);
-
-        return true;
-    }
-
-    private int GetLevelDepth() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Could not get Dungeon depth as Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
-            throw new Exception("Dungeon Level response was badly formed.");
-        }
-
-        return dungeon.Level.Depth;
-    }
-
-    private string GetAdventurerHealth() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Could not get Adventurer Health value as Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.HealthInitial == 0) {
-            throw new Exception("Dungeon Adventurer response was badly formed.");
-        }
-
-        return $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
-    }
-
-    private string GetAdventurerDamage() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Could not get Adventurer Damage value as Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.DamageBase == 0) {
-            throw new Exception("Dungeon Adventurer response was badly formed.");
-        }
-
-        return dungeon.Adventurer.DamageBase.ToString();
-    }
-
-    private string GetAdventurerProtection() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Could not get Adventurer Protection value as Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.ProtectionBase == 0) {
-            throw new Exception("Dungeon Adventurer response was badly formed.");
-        }
-
-        return dungeon.Adventurer.ProtectionBase.ToString();
-    }
-
-    private List<Tile> GetTiles() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Could not place tiles as Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
-            throw new Exception("Dungeon Level response was badly formed.");
-        }
-
-        return dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
     }
 }
