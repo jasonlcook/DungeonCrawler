@@ -11,6 +11,7 @@ using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 using SharedLevel = BlazorDungeonCrawler.Shared.Models.Level;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
+using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
@@ -18,7 +19,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         public async Task<SharedDungeon> Generate() {
             await Task.Delay(1);
 
-            Messages messages = new Messages();
+            Messages messages = new();
 
             //Create
             //  Adventurer
@@ -78,15 +79,28 @@ namespace BlazorDungeonCrawler.Server.Data {
             return sharedDungeon;
         }
 
-        public async Task<List<SharedTile>> GetSelectedDungeonTiles(Guid dungeonId, Guid tileId) {
+        public async Task<SharedDungeon> GetSelectedDungeonTiles(Guid dungeonId, Guid tileId) {
             await Task.Delay(1);
 
-            List<SharedTile> sharedTiles = Tiles.GetSharedDungeonTiles(dungeonId);
+            SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
+            if (dungeon == null || dungeon.Id != dungeonId) {
+                throw new ArgumentNullException("Dungeon");
+            }
+
+            if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty) {
+                throw new ArgumentNullException("Dungeon Level");
+            }
+
+            Messages messages = new();
+            Monsters monsters = new();
+
+            List<SharedTile> sharedTiles = dungeon.Level.Tiles;
             Tiles tiles = new Tiles(sharedTiles);
 
             Tile selectedTile = new();
-            foreach (Tile tile in tiles.GetTiles()) { 
+            foreach (Tile tile in tiles.GetTiles()) {
                 tile.Current = false;
+                tile.Selectable = false;
 
                 if (tile.Id == tileId) {
                     selectedTile = tile;
@@ -96,10 +110,20 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
-            tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-
             switch (selectedTile.Type) {
                 case DungeonEvemts.Fight:
+                    if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
+                        //generate new monsters
+                        monsters.Generate(dungeon.Level.Depth);
+                        selectedTile.Monsters = monsters.Get();
+
+                        messages.Add(new Message(0, $"{selectedTile.Monsters.Count} MONSTERS"));
+                    }
+
+                    dungeon.InCombat = true;
+                    dungeon.CombatTile = selectedTile.Id;
+
+                    break;
                 case DungeonEvemts.Unknown:
                 case DungeonEvemts.Empty:
                 case DungeonEvemts.DungeonEntrance:
@@ -119,11 +143,26 @@ namespace BlazorDungeonCrawler.Server.Data {
                     break;
             }
 
+            if (!dungeon.InCombat) {
+                tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+            }
+
+            if (dungeon.Messages != null && messages.Count() > 0) {
+                List<SharedMessage> sharedMessages = messages.SharedModelMapper();
+                dungeon.Messages.AddRange(sharedMessages);
+
+                MessageCreate.Create(dungeon, sharedMessages);
+            }
+
+
             sharedTiles = tiles.SharedModelMapper();
+            dungeon.Level.Tiles = sharedTiles;
 
             TilesUpdate.Update(sharedTiles);
 
-            return sharedTiles;
+            DungeonUpdate.Update(dungeon);
+
+            return dungeon;
         }
 
         public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {

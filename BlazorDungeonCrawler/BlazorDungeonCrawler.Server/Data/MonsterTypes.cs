@@ -1,6 +1,4 @@
-﻿using BlazorDungeonCrawler.Shared.Models;
-
-namespace BlazorDungeonCrawler.Server.Data {
+﻿namespace BlazorDungeonCrawler.Server.Data {
     public class MonsterTypes {
         private readonly List<MonsterType> _monsterTypes;
 
@@ -187,6 +185,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                         Documentation = "https://www.aidedd.org/dnd/monstres.php?vo=Beholder"
                     }
                 };
+        }
+
+        public List<MonsterType> GetMonstersAtDepth(int depth) {
+            return _monsterTypes.Where(mt => mt.LevelStart <= depth).Where(mt => mt.LevelEnd >= depth).ToList();
         }
     }
 }

@@ -53,13 +53,13 @@ namespace BlazorDungeonCrawler.Server.Controllers {
 
         [HttpGet("{dungeonId}/tile/{tileId}")]
         [EnableCors("AllowAnyOriginMethodHeader")]
-        public async Task<ActionResult<TilesResponse>> SelectedDungeonTile(Guid dungeonId, Guid tileId) {
+        public async Task<ActionResult<DungeonResponse>> SelectedDungeonTile(Guid dungeonId, Guid tileId) {
             try {
-                List<SharedTile> tiles = await dungeonManager.GetSelectedDungeonTiles(dungeonId, tileId);
+                SharedDungeon dungeon = await dungeonManager.GetSelectedDungeonTiles(dungeonId, tileId);
 
-                return Ok(new TilesResponse() {
+                return Ok(new DungeonResponse() {
                     Success = true,
-                    Tiles = tiles
+                    Dungeon = dungeon
                 });
             } catch (Exception ex) {
                 //todo log errors

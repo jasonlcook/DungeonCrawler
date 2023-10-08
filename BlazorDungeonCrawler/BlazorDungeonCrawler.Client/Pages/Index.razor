@@ -364,7 +364,7 @@
 
     private async Task<bool> SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-            dungeon.Level.Tiles = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+            dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
 
             await InvokeAsync(StateHasChanged);
 

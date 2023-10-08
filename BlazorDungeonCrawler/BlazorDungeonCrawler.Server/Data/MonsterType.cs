@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorDungeonCrawler.Shared.Models {
+namespace BlazorDungeonCrawler.Server.Data {
 
     //todo: add how many monsters in a group
     public class MonsterType {
-        [Key]
-        public Guid Id { get; set; }
-
 
         public string Name { get; set; } 
 
@@ -24,10 +21,8 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
 
         public MonsterType() {
-            Id = Guid.Empty;
             Name = string.Empty;
             Documentation = string.Empty;
-
         }
     }
 }
