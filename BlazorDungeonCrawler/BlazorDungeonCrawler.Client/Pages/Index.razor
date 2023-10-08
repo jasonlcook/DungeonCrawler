@@ -19,19 +19,6 @@
     </div>
 }
 
-@if (dungeon != null && dungeon.InCombat) {
-    <div class="modal-dialog-container">
-        <div class="modal-dialog">
-            <div class="modal-dialog-title">TITLE</div>
-            <div class="modal-dialog-body">BODY</div>
-            <div class="modal-dialog-buttons">
-                <button @onclick="MonsterFight" class="dungeon-button">Fight</button>
-                <button @onclick="MonsterFlee" class="dungeon-button">Flee</button>
-            </div>
-        </div>
-    </div>
-}
-
 <div id="play-area">
     <div id="dungeon">
         <div id="messages"></div>
@@ -83,6 +70,16 @@
                 }
             }
         </div>
+
+        @if (dungeon != null && dungeon.InCombat) {
+            <div id="action-dialog">
+                <div class="action-dialog-body">BODY</div>
+                <div class="action-dialog-buttons">
+                    <button @onclick="MonsterFight" class="dungeon-button">Fight</button>
+                    <button @onclick="MonsterFlee" class="dungeon-button">Flee</button>
+                </div>
+            </div>
+        }
     </div>
     <div class="button">
         <button id="advance" class="dungeon-button" disabled>Advance</button>
