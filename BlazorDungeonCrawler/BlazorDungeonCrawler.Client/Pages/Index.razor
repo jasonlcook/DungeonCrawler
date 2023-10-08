@@ -21,52 +21,72 @@
 
 <div id="play-area">
     <div id="dungeon">
-        <div id="messages"></div>
+        <div id="messages">
+            @if (errorMessages.Count > 0) {
+                foreach (string message in errorMessages) {
+                    <div class="message message-error">
+                        @message
+                    </div>
+                }
+            }
+
+            @if (infoMessages.Count > 0) {
+                foreach (string message in infoMessages) {
+                    <div class="message message-info">
+                        @message
+                    </div>
+                }
+            }
+        </div>
         <div id="stage">
             @if (dungeon == null) {
                 <div class="loading">
                     <img src="/images/tiles/blue/base_tile.png" />
                 </div>
             } else {
-                string colourClass = getColourClass(GetLevelDepth());
+                try {
+                    string colourClass = getColourClass(dungeonDepth);
 
-                var orderedTiles = GetTiles();
+                    var orderedTiles = GetTiles();
 
-                if (orderedTiles != null) {
-                    foreach (Tile tile in orderedTiles) {
-                        <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
-                            <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
+                    if (orderedTiles != null) {
+                        foreach (Tile tile in orderedTiles) {
+                            <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
+                                <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
-                            @if (tile.Hidden) {
-                                <div class="hexagon-tile hexagon-tile-hidden"></div>
-                            } else {
-                                <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
+                                @if (tile.Hidden) {
+                                    <div class="hexagon-tile hexagon-tile-hidden"></div>
+                                } else {
+                                    <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
 
-                                @if (!tile.Current) {
-                                    <div class="hexagon-tile hexagon-for-of-war"></div>
+                                    @if (!tile.Current) {
+                                        <div class="hexagon-tile hexagon-for-of-war"></div>
+                                    }
                                 }
-                            }
 
-                            @if (tile.Selectable) {
-                                <div class="hexagon-tile @colourClass hexagon-tile-selectable">
-                                    <span @onclick="@(() => SelectTile(tile.Id))"></span>
-                                </div>
-                            }
+                                @if (tile.Selectable) {
+                                    <div class="hexagon-tile @colourClass hexagon-tile-selectable">
+                                        <span @onclick="@(() => SelectTile(tile.Id))"></span>
+                                    </div>
+                                }
 
-                            @if (tile.Monsters.Count > 0) {
-                                foreach (Monster monster in tile.Monsters) {
-                                    string monsterTop = $"{monster.ClientY}px";
-                                    string monsterLeft = $"{monster.ClientX}px";
+                                @if (tile.Monsters.Count > 0) {
+                                    foreach (Monster monster in tile.Monsters) {
+                                        string monsterTop = $"{monster.ClientY}px";
+                                        string monsterLeft = $"{monster.ClientX}px";
 
-                                    <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
-                                        <span class="monster-counter-health">
-                                            @monster.Health
+                                        <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
+                                            <span class="monster-counter-health">
+                                                @monster.Health
+                                            </span>
                                         </span>
-                                    </span>
+                                    }
                                 }
-                            }
-                        </div>
+                            </div>
+                        }
                     }
+                } catch (Exception ex) {
+                    errorMessages.Add(ex.Message);
                 }
             }
         </div>
@@ -89,7 +109,7 @@
             <div class="level">
                 <span class="label">Level</span>
                 <span class="value" id="current-level">
-                    @((MarkupString)dungeonDepth)
+                    @((MarkupString)dungeonDepth.ToString())
                 </span>
             </div>
             <div class="stats">
@@ -120,14 +140,17 @@
                     <span class="log-entry-message">loading.</span>
                 </div>
             } else {
-                List<Message> messages = dungeon.Messages.OrderBy(m => m.Index).OrderBy(m => m.Datestamp).ToList();
+                try {
+                    if (dungeon.Messages != null) {
+                        List<Message> messages = dungeon.Messages.OrderBy(m => m.Index).OrderBy(m => m.Datestamp).ToList();
 
-                foreach (Message message in messages) {
-                    <div data-identity="@message.Id" class="log-entry">
-                        <span class="log-entry-message">
-                            @message.Text
-                        </span>
-                        @*
+                        if (messages != null && messages.Count > 0) {
+                            foreach (Message message in messages) {
+                                <div data-identity="@message.Id" class="log-entry">
+                                    <span class="log-entry-message">
+                                        @message.Text
+                                    </span>
+                                    @*
                 //todo add log action
                 <ol class="log-actions" hidden="hidden" style="display: none;">
                 <li data-identity="8ad049f1-279c-4e8e-a616-f433ce005468"><span class="log-action-message">Health roll 9</span></li>
@@ -135,7 +158,14 @@
                 <li data-identity="6692b01e-ac55-4441-86f8-02031116a569"><span class="log-action-message">Damage roll 6</span></li>
                 </ol>
                 *@
-                    </div>
+                                </div>
+                            }
+                        }
+                    } else {
+                        throw new Exception("Dungeon Messages response was badly formed.");
+                    }
+                } catch (Exception ex) {
+                    errorMessages.Add(ex.Message);
                 }
             }
         </div>
@@ -243,6 +273,9 @@
     }
 
     //Dungeon
+    List<string> errorMessages = new();
+    List<string> infoMessages = new();
+
     bool successfulLoad = false;
 
     Dungeon? dungeon = null;
@@ -250,7 +283,7 @@
 
     string apiVersion = "API V0.0.0";
 
-    string dungeonDepth = "0";
+    int dungeonDepth = 0;
 
     string health = "0";
     string damage = "0";
@@ -263,11 +296,19 @@
     protected override async void OnAfterRender(bool firstRender) {
         if (dungeon == null) {
             if (cookieId != Guid.Empty) {
-                dungeon = await DungeonManager.GetDungeon(cookieId);
+                try {
+                    dungeon = await DungeonManager.GetDungeon(cookieId);
+                } catch (Exception ex) {
+                    errorMessages.Add(ex.Message);
+                }
             }
 
             if (dungeon == null || dungeon.Id == Guid.Empty) {
-                dungeon = await DungeonManager.GenerateNewDungeon();
+                try {
+                    dungeon = await DungeonManager.GenerateNewDungeon();
+                } catch (Exception ex) {
+                    errorMessages.Add(ex.Message);
+                }
             }
 
             if (dungeon != null && dungeon.Id != Guid.Empty) {
@@ -278,7 +319,6 @@
                 apiVersion = $"API V{dungeon.ApiVersion}";
 
                 bool updateSuccess = await updateValues();
-
                 if (!updateSuccess) {
                     //todo report error on loading
                 }
@@ -288,15 +328,21 @@
         }
 
         if (dungeon != null && successfulLoad != true) {
-            try {
-                successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
-                if (successfulLoad != true) {
+            if (dungeon.Level != null && dungeon.Level.Id != Guid.Empty) {
+                try {
+                    successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
+                    if (successfulLoad != true) {
+                        await InvokeAsync(StateHasChanged);
+                    }
+                } catch (Exception ex) {
+                    //todo: add way of stopping too may requestes
                     await InvokeAsync(StateHasChanged);
                 }
-            } catch (Exception ex) {
-                //todo: add way of stopping too may requestes
-                await InvokeAsync(StateHasChanged);
+            } else {
+                //todo report error on loading
             }
+        } else {
+            //todo report error on loading
         }
     }
 
@@ -361,7 +407,11 @@
 
     private async Task<bool> SelectTile(Guid tileId) {
         if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-            dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+            try {
+                dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+            } catch (Exception ex) {
+                errorMessages.Add(ex.Message);
+            }
 
             await InvokeAsync(StateHasChanged);
 
@@ -379,10 +429,18 @@
             return false;
         }
 
-        dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
-        bool updateSuccess = await updateValues();
+        try {
+            dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
+            bool updateSuccess = await updateValues();
 
-        return true;
+            return true;
+        } catch (Exception ex) {
+            errorMessages.Add(ex.Message);
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        return false;
     }
 
     private async Task<bool> MonsterFight() {
@@ -391,10 +449,19 @@
             return false;
         }
 
-        dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
-        bool updateSuccess = await updateValues();
+        try {
+            dungeon = await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile);
+            bool updateSuccess = await updateValues();
 
-        return true;
+            return true;
+
+        } catch (Exception ex) {
+            errorMessages.Add(ex.Message);
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        return false;
     }
 
     private async Task<bool> updateValues() {
@@ -410,7 +477,7 @@
             throw new Exception("Dungeon Adventurer response was badly formed.");
         }
 
-        dungeonDepth = GetLevelDepth().ToString();
+        dungeonDepth = GetLevelDepth();
 
         health = GetAdventurerHealth();
         damage = GetAdventurerDamage();
@@ -423,7 +490,7 @@
 
     private int GetLevelDepth() {
         if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
+            throw new Exception("Could not get Dungeon depth as Dungeon response was badly formed.");
         }
 
         if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
@@ -435,7 +502,7 @@
 
     private string GetAdventurerHealth() {
         if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
+            throw new Exception("Could not get Adventurer Health value as Dungeon response was badly formed.");
         }
 
         if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.HealthInitial == 0) {
@@ -447,7 +514,7 @@
 
     private string GetAdventurerDamage() {
         if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
+            throw new Exception("Could not get Adventurer Damage value as Dungeon response was badly formed.");
         }
 
         if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.DamageBase == 0) {
@@ -459,7 +526,7 @@
 
     private string GetAdventurerProtection() {
         if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
+            throw new Exception("Could not get Adventurer Protection value as Dungeon response was badly formed.");
         }
 
         if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.ProtectionBase == 0) {
@@ -471,7 +538,7 @@
 
     private List<Tile> GetTiles() {
         if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
+            throw new Exception("Could not place tiles as Dungeon response was badly formed.");
         }
 
         if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
