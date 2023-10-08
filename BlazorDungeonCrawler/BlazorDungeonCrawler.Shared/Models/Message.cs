@@ -8,7 +8,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
 
         public int Index { get; set; }
-        public long Datestamp { get; set; }
+        public double Datestamp { get; set; }
 
 
         public string Text { get; set; }

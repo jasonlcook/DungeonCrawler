@@ -103,7 +103,7 @@
                     {
                         Id = c.Guid(nullable: false),
                         Index = c.Int(nullable: false),
-                        Datestamp = c.Long(nullable: false),
+                        Datestamp = c.Double(nullable: false),
                         Text = c.String(),
                         Dungeon_Id = c.Guid(),
                     })
