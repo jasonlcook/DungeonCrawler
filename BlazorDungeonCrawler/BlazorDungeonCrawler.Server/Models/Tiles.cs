@@ -155,16 +155,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             List<SharedTile> sharedTiles = new();
 
             foreach (var tile in _tiles) {
-                sharedTiles.Add(new SharedTile() {
-                    Id = tile.Id,
-                    Row = tile.Row,
-                    Column = tile.Column,
-                    Type = tile.Type,
-                    Current = tile.Current,
-                    Hidden = tile.Hidden,
-                    Selectable = tile.Selectable,
-                    FightWon = tile.FightWon
-                });
+                sharedTiles.Add(tile.SharedModelMapper());
             }
 
             return sharedTiles;
