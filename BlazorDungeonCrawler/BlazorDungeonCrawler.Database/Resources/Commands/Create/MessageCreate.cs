@@ -14,8 +14,8 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
                     context.SaveChanges();
                 }
             } catch (Exception ex) {
+                throw new Exception("Message create failed.");
 
-                throw;
             }
         }
     }

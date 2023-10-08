@@ -23,8 +23,8 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Update {
                     context.SaveChanges();
                 }
             } catch (Exception ex) {
+                throw new Exception("Tile update failed.");
 
-                throw;
             }
         }
     }

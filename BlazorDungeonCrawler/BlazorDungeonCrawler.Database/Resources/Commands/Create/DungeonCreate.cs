@@ -10,8 +10,7 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
                     context.SaveChanges();
                 }
             } catch (Exception ex) {
-
-                throw;
+                throw new Exception("Dungeon create failed.");
             }
 
         }

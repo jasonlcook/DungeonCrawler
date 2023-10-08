@@ -9,8 +9,7 @@ namespace BlazorDungeonCrawler.Database.Resources.Queries.Get {
                     return context.Dungeons.Include("Adventurer").Include("Level").Include("Level.Tiles").Include("Level.Tiles.Monsters").Include("Messages").Where(d => d.Id == dungeonId).FirstOrDefault();                    
                 }
             } catch (Exception ex) {
-
-                throw;
+                throw new Exception("Dungeon retrieval failed.");
             }
         }
     }

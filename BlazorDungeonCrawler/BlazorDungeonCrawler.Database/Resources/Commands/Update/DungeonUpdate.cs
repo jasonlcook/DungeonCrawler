@@ -12,8 +12,8 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Update {
                     context.SaveChanges();
                 }
             } catch (Exception ex) {
+                throw new Exception("Dungeon update failed.");
 
-                throw;
             }
         }
     }
