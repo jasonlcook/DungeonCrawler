@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Cors;
 
 using BlazorDungeonCrawler.Shared.Responses;
-
 using BlazorDungeonCrawler.Server.Data;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
-using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
 namespace BlazorDungeonCrawler.Server.Controllers {
 
