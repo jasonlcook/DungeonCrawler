@@ -18,8 +18,11 @@ namespace BlazorDungeonCrawler.Server.Models {
             Monster monster = new Monster();
             foreach (SharedTile tile in tiles) {
                 List<Monster> monsters = new();
-                foreach (SharedMonster sharedMonster in tile.Monsters) {
-                    monsters.Add(monster.ServerModelMapper(sharedMonster));
+
+                if (tile.Monsters != null && tile.Monsters.Count > 0) {
+                    foreach (SharedMonster sharedMonster in tile.Monsters) {
+                        monsters.Add(monster.ServerModelMapper(sharedMonster));
+                    }
                 }
 
                 _tiles.Add(new Tile() {
@@ -84,7 +87,6 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             Tile randomSelectedTile;
             int avalibleTileIndex;
-            int currentRow = 0, currentColumn = 0;
             for (int i = 0; i < additionalEvents.Count; i++) {
                 //get random tile 
                 avalibleTileIndex = Dice.RandomNumber(0, _tileIndexes.Count - 1);
@@ -168,6 +170,12 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
 
             return sharedDungeon.Level.Tiles;
+        }
+
+        public void Unhide() {
+            foreach (Tile tile in _tiles) {
+                tile.Hidden = false;
+            }
         }
     }
 }
