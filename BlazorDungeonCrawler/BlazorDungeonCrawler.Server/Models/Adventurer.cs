@@ -1,4 +1,5 @@
-﻿using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
+﻿using BlazorDungeonCrawler.Shared.Models;
+using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Adventurer {
@@ -22,15 +23,40 @@ namespace BlazorDungeonCrawler.Server.Models {
         public bool IsAlive { get; set; }
 
         public Adventurer(int health, int damage, int protection) {
-            Id = Guid.NewGuid();
+            this.Id = Guid.NewGuid();
 
-            HealthInitial = health;
-            HealthBase = health;
-            DamageBase = damage;
-            ProtectionBase = protection;
-            IsAlive = true;
+            this.HealthInitial = health;
+            this.HealthBase = health;
+            this.DamageBase = damage;
+            this.ProtectionBase = protection;
+
+            this.IsAlive = true;
         }
 
+        public Adventurer(SharedAdventurer adventurer) {
+            this.Id = adventurer.Id;
+            this.HealthBase = adventurer.HealthBase;
+            this.HealthInitial = adventurer.HealthInitial;
+            this.AuraPotion = adventurer.AuraPotion;
+            this.AuraPotionDuration = adventurer.AuraPotionDuration;
+            this.DamageBase = adventurer.DamageBase;
+            this.DamagePotion = adventurer.DamagePotion;
+            this.DamagePotionDuration = adventurer.DamagePotionDuration;
+            this.ProtectionBase = adventurer.ProtectionBase;
+            this.ShieldPotion = adventurer.ShieldPotion;
+            this.ShieldPotionDuration = adventurer.ShieldPotionDuration;
+            this.Weapon = adventurer.Weapon;
+            this.ArmourHelmet = adventurer.ArmourHelmet;
+            this.ArmourBreastplate = adventurer.ArmourBreastplate;
+            this.ArmourGauntlet = adventurer.ArmourGauntlet;
+            this.ArmourGreave = adventurer.ArmourGreave;
+            this.ArmourBoots = adventurer.ArmourBoots;
+            this.IsAlive = adventurer.IsAlive;
+        }
+
+        public int GetProtection() {
+            return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
+        }
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,

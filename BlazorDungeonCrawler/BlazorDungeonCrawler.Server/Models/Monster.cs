@@ -15,6 +15,16 @@ namespace BlazorDungeonCrawler.Server.Models {
             TypeName = string.Empty;
         }
 
+        public Monster(SharedMonster monster) {
+            Id = monster.Id;
+            TypeName = monster.TypeName;
+            Health = monster.Health;
+            Damage = monster.Damage;
+            Protection = monster.Protection;
+            ClientX = monster.ClientX;
+            ClientY = monster.ClientY;
+        }
+
         public SharedMonster SharedModelMapper() {
             return new SharedMonster() {
                 Id = this.Id,
@@ -28,15 +38,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         public Monster ServerModelMapper(SharedMonster monster) {
-            return new Monster() {
-                Id = monster.Id,
-                TypeName = monster.TypeName,
-                Health = monster.Health,
-                Damage = monster.Damage,
-                Protection = monster.Protection,
-                ClientX = monster.ClientX,
-                ClientY = monster.ClientY
-            };
+            return new Monster(monster);
         }
     }
 }
