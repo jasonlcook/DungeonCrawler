@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Linq;
-using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
+﻿using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Messages {
@@ -18,18 +16,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             List<SharedMessage> sharedMessages = new();
 
             foreach (var message in _messages) {
-                SharedMessage sharedMessage = new() {
-                    Id = message.Id,
-                    Index = message.Index,
-                    Datestamp = message.Datestamp,
-                    Text = message.Text,
-                };
-
-                if (message.Dice != null) {
-                    sharedMessage.Dice = message.Dice;
-                }
-
-                sharedMessages.Add(sharedMessage);
+                sharedMessages.Add(message.SharedModelMapper());
             }
 
             return sharedMessages;
