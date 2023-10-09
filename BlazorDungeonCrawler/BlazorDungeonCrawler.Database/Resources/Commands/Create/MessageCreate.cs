@@ -9,7 +9,9 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
             try {
                 using (var context = new DungeonContext()) {
                     Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeon.Id).FirstOrDefault();
-                    if (attachedDungeon != null && attachedDungeon.Messages != null) {
+                    if (attachedDungeon != null ) {
+                        attachedDungeon.Messages = new();
+
                         foreach (Message message in messages) {
                             attachedDungeon.Messages.Add(message);
                         }
