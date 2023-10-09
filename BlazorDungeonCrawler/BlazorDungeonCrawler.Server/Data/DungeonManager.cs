@@ -83,13 +83,8 @@ namespace BlazorDungeonCrawler.Server.Data {
             await Task.Delay(1);
 
             SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
-            if (dungeon == null || dungeon.Id != dungeonId) {
-                throw new ArgumentNullException("Dungeon");
-            }
-
-            if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty) {
-                throw new ArgumentNullException("Dungeon Level");
-            }
+            if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
+            if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level"); }
 
             Messages messages = new();
             Monsters monsters = new();
@@ -116,7 +111,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //generate new monsters
                         monsters.Generate(dungeon.Level.Depth);
                         selectedTile.Monsters = monsters.Get();
-
                         messages.Add(new Message(0, $"{selectedTile.Monsters.Count} MONSTERS"));
                     }
 
@@ -154,8 +148,88 @@ namespace BlazorDungeonCrawler.Server.Data {
                 MessageCreate.Create(dungeon, sharedMessages);
             }
 
-
             sharedTiles = tiles.SharedModelMapper();
+            dungeon.Level.Tiles = sharedTiles;
+
+            TilesUpdate.Update(sharedTiles);
+
+            if (monsters.Count() > 0) {
+                MonsterCreate.Create(selectedTile.SharedModelMapper(), monsters.SharedModelMapper());
+            }            
+
+            DungeonUpdate.Update(dungeon);
+
+            return dungeon;
+        }
+
+        public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
+            await Task.Delay(1);
+
+            SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
+            if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
+            if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level"); }
+            if (dungeon.Level.Tiles == null || dungeon.Level.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
+
+            SharedTile? selectedTile = dungeon.Level.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+            if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level selected Tile"); }
+
+            Tiles tiles = new(dungeon.Level.Tiles);
+
+            Messages messages = new();
+
+            if (AdventurerFleesCombat()) {
+                dungeon.InCombat = false;
+                dungeon.CombatTile = Guid.Empty;
+                dungeon.CombatInitiated = false;
+
+                messages.Add(new Message(1, "ADVENTURER FLEES COMBAT"));
+
+                tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+            } else {
+                messages.Add(new Message(1, "ADVENTURER FAILED TO FLEE"));
+
+                if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
+                Adventurer adventurer = new(dungeon.Adventurer);
+
+
+                if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
+                Monster monster = new(selectedTile.Monsters.First());
+
+                int adventurerProtection = adventurer.GetProtection();
+                int monsterDamage = monster.Damage;
+
+                int woundsReceived = monsterDamage - adventurerProtection;
+                if (woundsReceived > 0) {
+                    int currentHealth = adventurer.HealthBase - woundsReceived;
+                    if (currentHealth > 0) {
+                        adventurer.HealthBase = currentHealth;
+
+                        messages.Add(new Message(2, $"ADVENTURER HIT FOR {woundsReceived} WITH {monster.Health} REMAINING"));
+                    } else {
+                        adventurer.HealthBase = 0;
+                        adventurer.IsAlive = false;
+
+                        selectedTile.Type = DungeonEvemts.FightLost;
+
+                        dungeon.InCombat = false;
+
+                        tiles.Unhide();
+
+                        messages.Add(new Message(2, $"ADVENTURER KILLED WITH {woundsReceived}"));
+                    }
+                } else {
+                    messages.Add(new Message(2, "MONSTER WAS UNABLE TO CAUSE HARM"));
+                }
+            }
+
+            if (dungeon.Messages != null && messages.Count() > 0) {
+                List<SharedMessage> sharedMessages = messages.SharedModelMapper();
+                dungeon.Messages.AddRange(sharedMessages);
+
+                MessageCreate.Create(dungeon, sharedMessages);
+            }
+
+            List<SharedTile> sharedTiles = tiles.SharedModelMapper();
             dungeon.Level.Tiles = sharedTiles;
 
             TilesUpdate.Update(sharedTiles);
@@ -165,9 +239,15 @@ namespace BlazorDungeonCrawler.Server.Data {
             return dungeon;
         }
 
-        public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
-            await Task.Delay(1);
-            return new SharedDungeon();
+        public bool AdventurerFleesCombat() {
+            int adventurerRoll = Dice.RollDSix();
+            int monsterRoll = Dice.RollDSix();
+
+            if (adventurerRoll > monsterRoll) {
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<SharedDungeon> MonsterFight(Guid dungeonId, Guid tileId) {
