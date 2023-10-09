@@ -14,8 +14,4 @@
     <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\Commands\Delete\" />
-  </ItemGroup>
-
 </Project>

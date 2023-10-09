@@ -54,9 +54,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.IsAlive = adventurer.IsAlive;
         }
 
+        public int GetDamage() {
+            return DamageBase + Weapon + DamagePotion;
+        }
+
         public int GetProtection() {
             return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
         }
+
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,

@@ -15,5 +15,25 @@ namespace BlazorDungeonCrawler.Server.Models {
             return RandomNumber(1, 6);
         }
 
+        public static List<int> RollMiltipleDSixs(int diceCount) {
+            List<int> rollValues = new List<int>();
+
+            for (int i = 0; i < diceCount; i++) {
+                rollValues.Add(RollDSix());
+            }
+
+            return rollValues;
+        }
+
+        public static int AddRollValues(List<int> values) {
+            int result = 0;
+
+            foreach (int value in values) {
+                result += value;
+            }
+
+            return result;
+        }
+
     }
 }
