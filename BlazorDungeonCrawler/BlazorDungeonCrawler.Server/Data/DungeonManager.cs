@@ -24,13 +24,13 @@ namespace BlazorDungeonCrawler.Server.Data {
             //Create
             //  Adventurer
             int health = Dice.RollDSix();
-            messages.Add(new Message(0, $"ADVENTURER HEALTH {health}", health));
+            messages.Add(new Message($"ADVENTURER HEALTH {health}", health));
 
             int damage = Dice.RollDSix();
-            messages.Add(new Message(1, $"ADVENTURER DAMAGE {damage}", damage));
+            messages.Add(new Message($"ADVENTURER DAMAGE {damage}", damage));
 
             int protection = Dice.RollDSix();
-            messages.Add(new Message(2, $"ADVENTURER PROTECTION {protection}", protection));
+            messages.Add(new Message($"ADVENTURER PROTECTION {protection}", protection));
 
             Adventurer adventurer = new(health, damage, protection);
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
@@ -40,7 +40,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             Level level = new(depth);
             SharedLevel sharedLevel = level.SharedModelMapper();
 
-            messages.Add(new Message(3, $"DUNGEON DEPTH {depth}"));
+            messages.Add(new Message($"DUNGEON DEPTH {depth}"));
 
             //  Tiles
             Tiles tiles = new(level.Depth, level.Rows, level.Columns);
@@ -111,7 +111,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //generate new monsters
                         monsters.Generate(dungeon.Level.Depth);
                         selectedTile.Monsters = monsters.Get();
-                        messages.Add(new Message(0, $"{selectedTile.Monsters.Count} MONSTERS"));
+                        messages.Add(new Message($"{selectedTile.Monsters.Count} MONSTERS"));
                     }
 
                     dungeon.InCombat = true;
@@ -182,11 +182,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                 dungeon.CombatTile = Guid.Empty;
                 dungeon.CombatInitiated = false;
 
-                messages.Add(new Message(1, "ADVENTURER FLEES COMBAT"));
+                messages.Add(new Message("ADVENTURER FLEES COMBAT"));
 
                 tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
             } else {
-                messages.Add(new Message(1, "ADVENTURER FAILED TO FLEE"));
+                messages.Add(new Message("ADVENTURER FAILED TO FLEE"));
 
                 if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 Adventurer adventurer = new(dungeon.Adventurer);
@@ -204,7 +204,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (currentHealth > 0) {
                         adventurer.HealthBase = currentHealth;
 
-                        messages.Add(new Message(2, $"ADVENTURER HIT FOR {woundsReceived} WITH {monster.Health} REMAINING"));
+                        messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {monster.Health} REMAINING"));
                     } else {
                         adventurer.HealthBase = 0;
                         adventurer.IsAlive = false;
@@ -215,10 +215,10 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         tiles.Unhide();
 
-                        messages.Add(new Message(2, $"ADVENTURER KILLED WITH {woundsReceived}"));
+                        messages.Add(new Message($"ADVENTURER KILLED WITH {woundsReceived}"));
                     }
                 } else {
-                    messages.Add(new Message(2, "MONSTER WAS UNABLE TO CAUSE HARM"));
+                    messages.Add(new Message("MONSTER WAS UNABLE TO CAUSE HARM"));
                 }
             }
 
@@ -256,7 +256,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
-            if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }            
+            if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
             if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level"); }
             if (dungeon.Level.Tiles == null || dungeon.Level.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
 
@@ -284,36 +284,36 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             if (!dungeon.CombatInitiated) {
                 if (AdventurerInitiatesCombat()) {
-                    messages.Add(new Message(1, "ADVENTURER INITIATES COMBAT"));
+                    messages.Add(new Message("ADVENTURER INITIATES COMBAT"));
 
                     //Adventurer attack
                     List<int> adventurerAttackDice = Dice.RollMiltipleDSixs(1);
                     int adventurerAttackValue = Dice.AddRollValues(adventurerAttackDice);
-                    messages.Add(new Message(2, $"ADVENTURER ATTACK ROLL {adventurerAttackValue}", adventurerAttackDice));
+                    messages.Add(new Message($"ADVENTURER ATTACK ROLL {adventurerAttackValue}", adventurerAttackDice));
 
                     //Monster dodge
                     List<int> monsterDodgeRolls = Dice.RollMiltipleDSixs(1);
                     int monsterDodgeValue = Dice.AddRollValues(monsterDodgeRolls);
-                    messages.Add(new Message(3, $"MOSNTER DODGE ROLL {monsterDodgeValue}", monsterDodgeRolls));
+                    messages.Add(new Message($"MOSNTER DODGE ROLL {monsterDodgeValue}", monsterDodgeRolls));
 
                     //Monster wounds
                     int monsterWounds = GetWounds(adventurerAttackValue, monsterDodgeValue, adventurerDamage, monsterProtection);
-                    messages.Add(new Message(4, $"WOUNDS {monsterWounds} (DAMAGE: {adventurerDamage} - PROTECTION: {monsterProtection})"));
+                    messages.Add(new Message($"WOUNDS {monsterWounds} (DAMAGE: {adventurerDamage} - PROTECTION: {monsterProtection})"));
 
                     if (monsterWounds > 0) {
                         int currentHealth = monsterHealth - monsterWounds;
                         if (currentHealth > 0) {
                             monsterHealth = currentHealth;
-                            messages.Add(new Message(5, $"MONSTER HIT FOR {monsterWounds} WITH {monsterHealth} REMAINING"));
+                            messages.Add(new Message($"MONSTER HIT FOR {monsterWounds} WITH {monsterHealth} REMAINING"));
                         } else {
                             monsterHealth = 0;
 
-                            messages.Add(new Message(5, $"MONSTER KILLED WITH {monsterWounds}"));
+                            messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
 
                             //remove monster at stack
                             MonsterDelete.Delete(monster.Id);
                             selectedTile.Monsters.RemoveAt(0);
-                            
+
                             //checked for remaining monsters
                             if (selectedTile.Monsters.Count == 0) {
                                 dungeon.InCombat = false;
@@ -327,49 +327,49 @@ namespace BlazorDungeonCrawler.Server.Data {
                             };
                         }
                     } else {
-                        messages.Add(new Message(5, "MONSTER AVOIDED DAMAGE"));
+                        messages.Add(new Message("MONSTER AVOIDED DAMAGE"));
                     }
                 } else {
-                    messages.Add(new Message(1, "MONSTER INITIATES COMBAT"));
+                    messages.Add(new Message("MONSTER INITIATES COMBAT"));
                 }
 
                 //Monster attack
                 if (dungeon.InCombat) {
                     List<int> monsterAttackDice = Dice.RollMiltipleDSixs(1);
                     int monsterAttackValue = Dice.AddRollValues(monsterAttackDice);
-                    messages.Add(new Message(6, $"MONSTER ATTACK ROLL {monsterAttackValue}", monsterAttackDice));
+                    messages.Add(new Message($"MONSTER ATTACK ROLL {monsterAttackValue}", monsterAttackDice));
 
                     //Adventurer dodge
                     List<int> adventurerDodgeRolls = Dice.RollMiltipleDSixs(1);
                     int adventurerDodgeValue = Dice.AddRollValues(adventurerDodgeRolls);
-                    messages.Add(new Message(7, $"ADVENTURER DODGE ROLL {adventurerDodgeValue}", adventurerDodgeRolls));
+                    messages.Add(new Message($"ADVENTURER DODGE ROLL {adventurerDodgeValue}", adventurerDodgeRolls));
 
                     //Adventurer wounds
                     int woundsReceived = GetWounds(monsterAttackValue, adventurerDodgeValue, monsterDamage, adventurerProtection);
-                    messages.Add(new Message(8, $"WOUNDS {woundsReceived} (DAMAGE: {monsterDamage} - PROTECTION: {adventurerProtection})"));
+                    messages.Add(new Message($"WOUNDS {woundsReceived} (DAMAGE: {monsterDamage} - PROTECTION: {adventurerProtection})"));
 
                     if (woundsReceived > 0) {
                         int currentHealth = adventurer.HealthBase - woundsReceived;
                         if (currentHealth > 0) {
                             adventurer.HealthBase = currentHealth;
 
-                            messages.Add(new Message(9, $"ADVENTURER HIT FOR {woundsReceived} WITH {adventurer.HealthBase} REMAINING"));
+                            messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {adventurer.HealthBase} REMAINING"));
                         } else {
                             adventurer.HealthBase = 0;
                             adventurer.IsAlive = false;
 
                             selectedTile.Type = DungeonEvemts.FightLost;
 
-                            messages.Add(new Message(9, $"ADVENTURER DIED WITH {woundsReceived}"));
+                            messages.Add(new Message($"ADVENTURER DIED WITH {woundsReceived}"));
 
                             dungeon.InCombat = false;
 
                             tiles.Unhide();
                         }
                     } else {
-                        messages.Add(new Message(9, "ADVENTURER AVOIDED DAMAGE"));
+                        messages.Add(new Message("ADVENTURER AVOIDED DAMAGE"));
                     }
-                }                
+                }
             }
 
             //Update Messages
@@ -382,8 +382,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             //  Current Tile
             SharedTile currentSharedTiles;
-            for (int i = 0; i < sharedTiles.Count; i++)
-            {
+            for (int i = 0; i < sharedTiles.Count; i++) {
                 currentSharedTiles = sharedTiles[i];
                 if (currentSharedTiles.Id == selectedTile.Id) {
                     sharedTiles[i] = selectedTile;
