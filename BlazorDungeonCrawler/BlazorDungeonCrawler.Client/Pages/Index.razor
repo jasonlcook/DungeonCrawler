@@ -432,7 +432,7 @@
             throw new Exception("Dungeon Level response was badly formed.");
         }
 
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty || dungeon.Adventurer.HealthBase == 0 || dungeon.Adventurer.HealthInitial == 0 || dungeon.Adventurer.DamageBase == 0 || dungeon.Adventurer.ProtectionBase == 0) {
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty ) {
             throw new Exception("Dungeon Adventurer response was badly formed.");
         }
 
