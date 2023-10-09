@@ -8,9 +8,17 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
         public static void Create(Dungeon dungeon, List<Message> messages) {
             try {
                 using (var context = new DungeonContext()) {
-                    context.Entry(dungeon).State = EntityState.Modified;
+                    Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeon.Id).FirstOrDefault();
+                    if (attachedDungeon != null && attachedDungeon.Messages != null) {
+                        foreach (Message message in messages) {
+                            attachedDungeon.Messages.Add(message);
+                        }
 
-                    context.Messages.AddRange(messages);
+                        foreach (Message message in attachedDungeon.Messages) {
+                            context.Messages.Add(message);
+                        }
+                    }
+
                     context.SaveChanges();
                 }
             } catch (Exception ex) {
