@@ -12,6 +12,7 @@ using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 using SharedLevel = BlazorDungeonCrawler.Shared.Models.Level;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
+using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
@@ -111,7 +112,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //generate new monsters
                         monsters.Generate(dungeon.Level.Depth);
                         selectedTile.Monsters = monsters.Get();
-                        messages.Add(new Message($"{selectedTile.Monsters.Count} MONSTERS"));
+                        messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}"));
                     }
 
                     dungeon.InCombat = true;
@@ -275,99 +276,131 @@ namespace BlazorDungeonCrawler.Server.Data {
             int adventurerDamage = adventurer.GetDamage();
             int adventurerProtection = adventurer.GetProtection();
 
-            //Monster details
-            //todo: get this from dungeon 
-            Monster monster = new(selectedTile.Monsters.First());
-            int monsterDamage = monster.Damage;
-            int monsterProtection = monster.Protection;
-            int monsterHealth = monster.Health;
-
+            bool adventurerInitiatesCombat = true;
             if (!dungeon.CombatInitiated) {
-                if (AdventurerInitiatesCombat()) {
+                adventurerInitiatesCombat = AdventurerInitiatesCombat();
+
+                if (adventurerInitiatesCombat) {
                     messages.Add(new Message("ADVENTURER INITIATES COMBAT"));
-
-                    //Adventurer attack
-                    List<int> adventurerAttackDice = Dice.RollMiltipleDSixs(1);
-                    int adventurerAttackValue = Dice.AddRollValues(adventurerAttackDice);
-                    messages.Add(new Message($"ADVENTURER ATTACK ROLL {adventurerAttackValue}", adventurerAttackDice));
-
-                    //Monster dodge
-                    List<int> monsterDodgeRolls = Dice.RollMiltipleDSixs(1);
-                    int monsterDodgeValue = Dice.AddRollValues(monsterDodgeRolls);
-                    messages.Add(new Message($"MOSNTER DODGE ROLL {monsterDodgeValue}", monsterDodgeRolls));
-
-                    //Monster wounds
-                    int monsterWounds = GetWounds(adventurerAttackValue, monsterDodgeValue, adventurerDamage, monsterProtection);
-                    messages.Add(new Message($"WOUNDS {monsterWounds} (DAMAGE: {adventurerDamage} - PROTECTION: {monsterProtection})"));
-
-                    if (monsterWounds > 0) {
-                        int currentHealth = monsterHealth - monsterWounds;
-                        if (currentHealth > 0) {
-                            monsterHealth = currentHealth;
-                            messages.Add(new Message($"MONSTER HIT FOR {monsterWounds} WITH {monsterHealth} REMAINING"));
-                        } else {
-                            monsterHealth = 0;
-
-                            messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
-
-                            //remove monster at stack
-                            MonsterDelete.Delete(monster.Id);
-                            selectedTile.Monsters.RemoveAt(0);
-
-                            //checked for remaining monsters
-                            if (selectedTile.Monsters.Count == 0) {
-                                dungeon.InCombat = false;
-                                dungeon.CombatTile = Guid.Empty;
-                                dungeon.CombatInitiated = false;
-
-                                selectedTile.FightWon = true;
-                                selectedTile.Type = DungeonEvemts.FightWon;
-
-                                tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                            };
-                        }
-                    } else {
-                        messages.Add(new Message("MONSTER AVOIDED DAMAGE"));
-                    }
                 } else {
                     messages.Add(new Message("MONSTER INITIATES COMBAT"));
                 }
 
-                //Monster attack
-                if (dungeon.InCombat) {
+                dungeon.CombatInitiated = true;
+            }
+
+            if (adventurerInitiatesCombat) {
+                //Monster defend
+                int monsterindex = Dice.RandomNumber(0, (selectedTile.Monsters.Count() - 1));
+                Monster currentMonster = new(selectedTile.Monsters[0]);
+
+                int monsterProtection = currentMonster.Protection;
+                int monsterHealth = currentMonster.Health;
+
+                //Adventurer attack
+                List<int> adventurerAttackDice = Dice.RollMiltipleDSixs(1);
+                int adventurerAttackValue = Dice.AddRollValues(adventurerAttackDice);
+
+                //Monster dodge
+                List<int> monsterDodgeRolls = Dice.RollMiltipleDSixs(1);
+                int monsterDodgeValue = Dice.AddRollValues(monsterDodgeRolls);
+
+                //Monster wounds
+                int monsterWounds = 0;
+                if (adventurerAttackValue > monsterDodgeValue) {
+                    messages.Add(new Message($"ADVENTURER ATTACK ({adventurerAttackValue}) WINS OVER MONSTER DODGE ({monsterDodgeValue})"));
+
+                    monsterWounds = adventurerDamage - monsterProtection;
+
+                    if (monsterWounds < 1) {
+                        monsterWounds = 1;
+                    }
+
+                    int currentHealth = monsterHealth - monsterWounds;
+                    if (currentHealth > 0) {
+                        currentMonster.Health = currentHealth;
+                        SharedMonster sharedMonster = currentMonster.SharedModelMapper();
+
+                        MonsterUpdate.Update(sharedMonster);
+
+                        selectedTile.Monsters[monsterindex] = sharedMonster;
+
+                        messages.Add(new Message($"MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING"));
+                    } else {
+                        monsterHealth = 0;
+
+                        messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
+
+                        //remove monster at stack
+                        MonsterDelete.Delete(currentMonster.Id);
+                        selectedTile.Monsters.RemoveAt(monsterindex);
+
+                        //checked for remaining monsters
+                        if (selectedTile.Monsters.Count == 0) {
+                            dungeon.InCombat = false;
+                            dungeon.CombatTile = Guid.Empty;
+                            dungeon.CombatInitiated = false;
+
+                            selectedTile.FightWon = true;
+                            selectedTile.Type = DungeonEvemts.FightWon;
+
+                            tiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        };
+                    }
+                } else {
+                    messages.Add(new Message($"MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})"));
+                }
+            }
+
+            //Monster attack
+            if (dungeon.InCombat) {
+                int monsterDamage, monsterProtection, monsterHealth;
+                foreach (SharedMonster monster in selectedTile.Monsters) {
+                    //Monster details
+                    //todo: get this from dungeon 
+                    monsterDamage = monster.Damage;
+                    monsterProtection = monster.Protection;
+                    monsterHealth = monster.Health;
+
                     List<int> monsterAttackDice = Dice.RollMiltipleDSixs(1);
                     int monsterAttackValue = Dice.AddRollValues(monsterAttackDice);
-                    messages.Add(new Message($"MONSTER ATTACK ROLL {monsterAttackValue}", monsterAttackDice));
 
                     //Adventurer dodge
                     List<int> adventurerDodgeRolls = Dice.RollMiltipleDSixs(1);
                     int adventurerDodgeValue = Dice.AddRollValues(adventurerDodgeRolls);
-                    messages.Add(new Message($"ADVENTURER DODGE ROLL {adventurerDodgeValue}", adventurerDodgeRolls));
 
                     //Adventurer wounds
-                    int woundsReceived = GetWounds(monsterAttackValue, adventurerDodgeValue, monsterDamage, adventurerProtection);
-                    messages.Add(new Message($"WOUNDS {woundsReceived} (DAMAGE: {monsterDamage} - PROTECTION: {adventurerProtection})"));
+                    int adventurerWounds = 0;
+                    if (monsterAttackValue > adventurerDodgeValue) {
+                        messages.Add(new Message($"MONSTER ATTACK ({monsterAttackValue}) WINS OVER ADVENTURER DODGE ({adventurerDodgeValue})"));
 
-                    if (woundsReceived > 0) {
-                        int currentHealth = adventurer.HealthBase - woundsReceived;
+                        adventurerWounds = monsterDamage - adventurerProtection;
+
+                        if (adventurerWounds < 1) {
+                            adventurerWounds = 1;
+                        }
+
+                        int currentHealth = adventurer.HealthBase - adventurerWounds;
                         if (currentHealth > 0) {
                             adventurer.HealthBase = currentHealth;
 
-                            messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {adventurer.HealthBase} REMAINING"));
+                            messages.Add(new Message($"ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING"));
                         } else {
                             adventurer.HealthBase = 0;
                             adventurer.IsAlive = false;
 
                             selectedTile.Type = DungeonEvemts.FightLost;
 
-                            messages.Add(new Message($"ADVENTURER DIED WITH {woundsReceived}"));
+                            messages.Add(new Message($"ADVENTURER DIED WITH {adventurerWounds} WOUNDS"));
 
                             dungeon.InCombat = false;
 
                             tiles.Unhide();
+
+                            break;
                         }
                     } else {
-                        messages.Add(new Message("ADVENTURER AVOIDED DAMAGE"));
+                        messages.Add(new Message($"ADVENTURER DODGE ({monsterAttackValue}) WINS OVER MONSTER ATTACK ({adventurerDodgeValue})"));
                     }
                 }
             }
@@ -393,7 +426,10 @@ namespace BlazorDungeonCrawler.Server.Data {
             TilesUpdate.Update(sharedTiles);
 
             //Update Adventurer
-            AdventurerUpdate.Update(adventurer.SharedModelMapper());
+            SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
+            dungeon.Adventurer = sharedAdventurer;
+
+            AdventurerUpdate.Update(sharedAdventurer);
 
             //Update Dungon
             DungeonUpdate.Update(dungeon);
@@ -413,15 +449,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public int GetWounds(int attack, int dodge, int damage, int protection) {
-            if (attack > dodge) {
-                int wounds = damage - protection;
 
-                if (wounds < 0) {
-                    wounds = 0;
-                }
-
-                return wounds;
-            }
 
             return 0;
         }
