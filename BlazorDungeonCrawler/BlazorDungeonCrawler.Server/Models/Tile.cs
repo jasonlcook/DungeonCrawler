@@ -1,6 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Enumerators;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
+using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Tile {
@@ -24,6 +25,22 @@ namespace BlazorDungeonCrawler.Server.Models {
             FightWon = false;
 
             Monsters = new();
+        }
+
+        public Tile(SharedTile tile) {
+            Id = tile.Id;
+            Row = tile.Row;
+            Column = tile.Column;
+            Type = tile.Type;
+            Current = tile.Current;
+            Hidden = tile.Hidden;
+            Selectable = tile.Selectable;
+            FightWon = tile.FightWon;
+
+            Monsters = new();
+            foreach (SharedMonster monster in tile.Monsters) {
+                Monsters.Add(new Monster(monster));
+            }
         }
 
         public SharedTile SharedModelMapper() {

@@ -163,15 +163,6 @@ namespace BlazorDungeonCrawler.Server.Models {
             return sharedTiles;
         }
 
-        public static List<SharedTile> GetSharedDungeonTiles(Guid dungeonId) {
-            var sharedDungeon = DungeonQueries.Get(dungeonId);
-            if (sharedDungeon == null || sharedDungeon.Level == null || sharedDungeon.Level.Tiles == null) {
-                throw new NullReferenceException("Dungeon Tiles");
-            }
-
-            return sharedDungeon.Level.Tiles;
-        }
-
         public void Unhide() {
             foreach (Tile tile in _tiles) {
                 tile.Hidden = false;

@@ -28,7 +28,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
+                //todo log errors                
                 return StatusCode(500);
             }
         }

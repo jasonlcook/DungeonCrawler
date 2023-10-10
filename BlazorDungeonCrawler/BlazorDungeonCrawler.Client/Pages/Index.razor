@@ -47,7 +47,7 @@
                 try {
                     string colourClass = getColourClass(dungeonDepth);
 
-                    var orderedTiles = GetTiles();
+                    var orderedTiles = GetOrderTiles();
 
                     if (orderedTiles != null) {
                         foreach (Tile tile in orderedTiles) {
@@ -329,17 +329,20 @@
             //infoMessages.Add("Dungeon response not ready.");
         }
 
-        if (dungeon != null && successfulLoad != true && dungeon.Level != null && dungeon.Level.Id != Guid.Empty) {
-            try {
-                successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {dungeon.Level.Rows}, \"columns\": {dungeon.Level.Columns} }}");
+        if (dungeon != null && dungeon.Id != Guid.Empty && successfulLoad != true && dungeon.Levels != null) {
+            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
+            if (level != null && level.Id != Guid.Empty) {
+                try {
+                    successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {level.Rows}, \"columns\": {level.Columns} }}");
 
-                if (successfulLoad != true) {
-                    infoMessages.Add("Main startup not ready.");
+                    if (successfulLoad != true) {
+                        infoMessages.Add("Main startup not ready.");
 
-                    await InvokeAsync(StateHasChanged);
+                        await InvokeAsync(StateHasChanged);
+                    }
+                } catch (Exception ex) {
+                    throw new Exception("Dungeon response was badly formed.");
                 }
-            } catch (Exception ex) {
-                throw new Exception("Dungeon response was badly formed.");
             }
         } else {
             //infoMessages.Add("Dungeon response not ready.");
@@ -428,15 +431,11 @@
             throw new Exception("Dungeon response was badly formed.");
         }
 
-        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
-            throw new Exception("Dungeon Level response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty ) {
+        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) {
             throw new Exception("Dungeon Adventurer response was badly formed.");
         }
 
-        dungeonDepth = dungeon.Level.Depth;
+        dungeonDepth = dungeon.CurrentLevel;
 
         health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
         damage = dungeon.Adventurer.DamageBase.ToString();
@@ -447,16 +446,17 @@
         return true;
     }
 
-    private List<Tile> GetTiles() {
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
+    private List<Tile> GetOrderTiles() {
+        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
+            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
+            if (level != null && level.Id != Guid.Empty) {
+                return level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
+            } else {
+                throw new Exception("Dungeon Level response was badly formed.");
+            }
+        } else {
             throw new Exception("Could not place tiles as Dungeon response was badly formed.");
         }
-
-        if (dungeon.Level == null || dungeon.Level.Id == Guid.Empty || dungeon.Level.Depth == 0) {
-            throw new Exception("Dungeon Level response was badly formed.");
-        }
-
-        return dungeon.Level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
     }
 
     private async Task<bool> MonsterFlee() {

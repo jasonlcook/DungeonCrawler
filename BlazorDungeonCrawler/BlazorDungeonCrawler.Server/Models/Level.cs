@@ -1,13 +1,15 @@
 ﻿using SharedLevel = BlazorDungeonCrawler.Shared.Models.Level;
-
+using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Level {
-        public  Guid Id { get; private set; }
+        public Guid Id { get; private set; }
         public int Depth { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
-        public List<Tile> Tiles { get; private set; }
+        public List<Tile> Tiles { get; set; }
+
+        public Level() { }
 
         public Level(int depth) {
             Id = Guid.NewGuid();
@@ -17,6 +19,18 @@ namespace BlazorDungeonCrawler.Server.Models {
             Tiles = new();
 
             GetRowsAndColumnsForCurrentDepth();
+        }
+
+        public Level(SharedLevel level) {
+            Id = level.Id;
+            Depth = level.Depth;
+            Rows = level.Rows;
+            Columns = level.Columns;
+
+            Tiles = new();
+            foreach (SharedTile tile in level.Tiles) {
+                Tiles.Add(new Tile(tile));
+            }
         }
 
         public void GetRowsAndColumnsForCurrentDepth() {
@@ -49,12 +63,20 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         public SharedLevel SharedModelMapper() {
-            return new SharedLevel() {
+            SharedLevel level = new() {
                 Id = this.Id,
                 Depth = this.Depth,
-                Rows = this.Rows, 
+                Rows = this.Rows,
                 Columns = this.Columns
             };
+
+            level.Tiles = new();
+
+            foreach (Tile tile in this.Tiles) {
+                level.Tiles.Add(tile.SharedModelMapper());
+            }
+
+            return level;
         }
     }
 }

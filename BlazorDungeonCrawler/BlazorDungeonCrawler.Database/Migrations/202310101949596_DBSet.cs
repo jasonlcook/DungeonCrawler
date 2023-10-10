@@ -37,19 +37,17 @@
                 c => new
                     {
                         Id = c.Guid(nullable: false),
+                        CurrentLevel = c.Int(nullable: false),
                         ApiVersion = c.String(),
                         MacGuffinFound = c.Boolean(nullable: false),
                         InCombat = c.Boolean(nullable: false),
                         CombatTile = c.Guid(nullable: false),
                         CombatInitiated = c.Boolean(nullable: false),
                         Adventurer_Id = c.Guid(),
-                        Level_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Adventurers", t => t.Adventurer_Id)
-                .ForeignKey("dbo.Levels", t => t.Level_Id)
-                .Index(t => t.Adventurer_Id)
-                .Index(t => t.Level_Id);
+                .Index(t => t.Adventurer_Id);
             
             CreateTable(
                 "dbo.Levels",
@@ -59,8 +57,11 @@
                         Depth = c.Int(nullable: false),
                         Rows = c.Int(nullable: false),
                         Columns = c.Int(nullable: false),
+                        Dungeon_Id = c.Guid(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Dungeons", t => t.Dungeon_Id)
+                .Index(t => t.Dungeon_Id);
             
             CreateTable(
                 "dbo.Tiles",
@@ -116,14 +117,14 @@
         public override void Down()
         {
             DropForeignKey("dbo.Messages", "Dungeon_Id", "dbo.Dungeons");
-            DropForeignKey("dbo.Dungeons", "Level_Id", "dbo.Levels");
+            DropForeignKey("dbo.Levels", "Dungeon_Id", "dbo.Dungeons");
             DropForeignKey("dbo.Tiles", "Level_Id", "dbo.Levels");
             DropForeignKey("dbo.Monsters", "Tile_Id", "dbo.Tiles");
             DropForeignKey("dbo.Dungeons", "Adventurer_Id", "dbo.Adventurers");
             DropIndex("dbo.Messages", new[] { "Dungeon_Id" });
             DropIndex("dbo.Monsters", new[] { "Tile_Id" });
             DropIndex("dbo.Tiles", new[] { "Level_Id" });
-            DropIndex("dbo.Dungeons", new[] { "Level_Id" });
+            DropIndex("dbo.Levels", new[] { "Dungeon_Id" });
             DropIndex("dbo.Dungeons", new[] { "Adventurer_Id" });
             DropTable("dbo.Messages");
             DropTable("dbo.Monsters");
