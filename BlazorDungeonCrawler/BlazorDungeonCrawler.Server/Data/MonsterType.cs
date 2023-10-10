@@ -11,6 +11,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         public int LevelStart { get; set; }
         public int LevelEnd { get; set; }
 
+        public int MaxPackNumber { get; set; }
+
 
         public int HealthDiceCount { get; set; }
         public int DamageDiceCount { get; set; }
