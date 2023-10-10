@@ -83,6 +83,14 @@ namespace BlazorDungeonCrawler.Server.Models {
                     additionalEvents.Add(DungeonEvemts.DungeonEntrance);
                     additionalEvents.Add(DungeonEvemts.StairsDescending);
                     break;
+                case 10:
+                    additionalEvents.Add(DungeonEvemts.StairsAscending);
+                    additionalEvents.Add(DungeonEvemts.Macguffin);
+                    break;
+                default:
+                    additionalEvents.Add(DungeonEvemts.StairsAscending);
+                    additionalEvents.Add(DungeonEvemts.StairsDescending);
+                    break;
             }
 
             Tile randomSelectedTile;
