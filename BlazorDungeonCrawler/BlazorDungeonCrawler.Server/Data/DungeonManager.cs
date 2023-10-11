@@ -127,7 +127,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                             //generate new monsters
                             monsters.Generate(dungeon.CurrentLevel);
                             selectedTile.Monsters = monsters.Get();
-                            messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}"));
+
+                            if (selectedTile.Monsters.Count == 1) {
+                                messages.Add(new Message($"A {monsters.GetName()}"));
+                            } else {
+                                messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
+                            }
                         }
 
                         dungeon.InCombat = true;
@@ -421,6 +426,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                             };
                         }
+
+                        selectedTile.Monsters = monsters;
                     } else {
                         messages.Add(new Message($"MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})"));
                     }
