@@ -2,11 +2,11 @@
 using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
-    public static class MonsterCreate {
-        public static void Create(Tile tile, List<Monster> monsters) {
+    public static class MonstersCreate {
+        public static void Create(Guid tileId, List<Monster> monsters) {
             try {
                 using (var context = new DungeonContext()) {
-                    Tile? attachedTile = context.Tiles.Where(t => t.Id == tile.Id).FirstOrDefault();
+                    Tile? attachedTile = context.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
                     if (attachedTile != null && attachedTile.Monsters != null)
                     {
                         foreach (Monster monster in monsters) {

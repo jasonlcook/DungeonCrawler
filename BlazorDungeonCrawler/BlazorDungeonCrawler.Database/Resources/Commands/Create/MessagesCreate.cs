@@ -1,14 +1,12 @@
-﻿using System.Data.Entity;
-
-using BlazorDungeonCrawler.Database.Data;
+﻿using BlazorDungeonCrawler.Database.Data;
 using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
-    public static class MessageCreate {
-        public static void Create(Dungeon dungeon, List<Message> messages) {
+    public static class MessagesCreate {
+        public static void Create(Guid dungeonId, List<Message> messages) {
             try {
                 using (var context = new DungeonContext()) {
-                    Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeon.Id).FirstOrDefault();
+                    Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
                     if (attachedDungeon != null ) {
                         attachedDungeon.Messages = new();
 
