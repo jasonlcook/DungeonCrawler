@@ -241,12 +241,14 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                     Adventurer adventurer = new(dungeon.Adventurer);
 
-
                     if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
-                    Monster monster = new(selectedTile.Monsters.First());
+
+                    List<SharedMonster> monsters = selectedTile.Monsters;
+                    int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
+                    Monster currentMonster = new(monsters[monsterindex]);
 
                     int adventurerProtection = adventurer.GetProtection();
-                    int monsterDamage = monster.Damage;
+                    int monsterDamage = currentMonster.Damage;
 
                     int woundsReceived = monsterDamage - adventurerProtection;
                     if (woundsReceived > 0) {
@@ -254,7 +256,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         if (currentHealth > 0) {
                             adventurer.HealthBase = currentHealth;
 
-                            messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {monster.Health} REMAINING"));
+                            messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {currentMonster.Health} REMAINING"));
                         } else {
                             adventurer.HealthBase = 0;
                             adventurer.IsAlive = false;
@@ -340,6 +342,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
 
                 Messages messages = new();
+                List<SharedMonster> monsters = selectedTile.Monsters.OrderBy(m => m.Index).ToList();
 
                 //Adventurer details
                 //todo: get this from dungeon 
@@ -362,8 +365,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 if (adventurerInitiatesCombat) {
                     //Monster defend
-                    int monsterindex = Dice.RandomNumber(0, (selectedTile.Monsters.Count() - 1));
-                    Monster currentMonster = new(selectedTile.Monsters[0]);
+                    int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
+                    Monster currentMonster = new(monsters[monsterindex]);
 
                     int monsterProtection = currentMonster.Protection;
                     int monsterHealth = currentMonster.Health;
@@ -394,7 +397,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             MonsterUpdate.Update(sharedMonster);
 
-                            selectedTile.Monsters[monsterindex] = sharedMonster;
+                            monsters[monsterindex] = sharedMonster;
 
                             messages.Add(new Message($"MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING"));
                         } else {
@@ -404,10 +407,10 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             //remove monster at stack
                             MonsterDelete.Delete(currentMonster.Id);
-                            selectedTile.Monsters.RemoveAt(monsterindex);
+                            monsters.RemoveAt(monsterindex);
 
                             //checked for remaining monsters
-                            if (selectedTile.Monsters.Count == 0) {
+                            if (monsters.Count == 0) {
                                 dungeon.InCombat = false;
                                 dungeon.CombatTile = Guid.Empty;
                                 dungeon.CombatInitiated = false;
