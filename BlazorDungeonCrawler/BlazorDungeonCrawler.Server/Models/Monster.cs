@@ -3,6 +3,7 @@
 namespace BlazorDungeonCrawler.Server.Models {
     public class Monster {
         public Guid Id { get; set; }
+        public int Index { get; set; }
         public string TypeName { get; set; }
         public int Health { get; set; }
         public int Damage { get; set; }
@@ -17,6 +18,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         public Monster(SharedMonster monster) {
             Id = monster.Id;
+            Index = monster.Index;
             TypeName = monster.TypeName;
             Health = monster.Health;
             Damage = monster.Damage;
@@ -28,6 +30,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public SharedMonster SharedModelMapper() {
             return new SharedMonster() {
                 Id = this.Id,
+                Index = this.Index,
                 TypeName = this.TypeName,
                 Health = this.Health,
                 Damage = this.Damage,

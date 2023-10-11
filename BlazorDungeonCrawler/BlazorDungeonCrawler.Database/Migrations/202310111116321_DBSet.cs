@@ -86,6 +86,7 @@
                 c => new
                     {
                         Id = c.Guid(nullable: false),
+                        Index = c.Int(nullable: false),
                         TypeName = c.String(),
                         Health = c.Int(nullable: false),
                         Damage = c.Int(nullable: false),

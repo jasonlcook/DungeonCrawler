@@ -34,6 +34,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         protection = 0;
                         Monster monster = new Monster() {
                             Id = Guid.NewGuid(),
+                            Index = i,
                             TypeName = currentMonsterType.Name
                         };
 
@@ -141,17 +142,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             List<SharedMonster> sharedMonsters = new();
 
             foreach (var monster in _monsters) {
-                SharedMonster sharedMonster = new() {
-                    Id = monster.Id,
-                    TypeName = monster.TypeName,
-                    Health = monster.Health,
-                    Damage = monster.Damage,
-                    Protection = monster.Protection,
-                    ClientX = monster.ClientX,
-                    ClientY = monster.ClientY
-                };
-
-                sharedMonsters.Add(sharedMonster);
+                sharedMonsters.Add(monster.SharedModelMapper());
             }
 
             return sharedMonsters;

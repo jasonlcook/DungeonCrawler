@@ -5,6 +5,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         [Key]
         public Guid Id { get; set; }
 
+        public int Index { get; set; }
 
         public string TypeName { get; set; }
 
