@@ -68,11 +68,11 @@ namespace BlazorDungeonCrawler.Server.Models {
                             _monsters[0].ClientY = randomisePlacement(34);
                             break;
                         case 2:
-                            _monsters[1].ClientX = randomisePlacement(20);
-                            _monsters[1].ClientY = randomisePlacement(32);
+                            _monsters[0].ClientX = randomisePlacement(20);
+                            _monsters[0].ClientY = randomisePlacement(32);
 
-                            _monsters[2].ClientX = randomisePlacement(56);
-                            _monsters[2].ClientY = randomisePlacement(32);
+                            _monsters[1].ClientX = randomisePlacement(56);
+                            _monsters[1].ClientY = randomisePlacement(32);
                             break;
                         case 3:
                             _monsters[0].ClientX = randomisePlacement(38);
