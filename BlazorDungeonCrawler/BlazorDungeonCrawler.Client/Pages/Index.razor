@@ -330,6 +330,15 @@
         }
 
         if (dungeon != null && dungeon.Id != Guid.Empty && successfulLoad != true && dungeon.Levels != null) {
+            DungeonRefresh();
+        } else {
+            //infoMessages.Add("Dungeon response not ready.");
+        }
+    }
+
+    private async void DungeonRefresh() {
+        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
+            tile = new();
             Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
             if (level != null && level.Id != Guid.Empty) {
                 try {
@@ -344,8 +353,6 @@
                     throw new Exception("Dungeon response was badly formed.");
                 }
             }
-        } else {
-            //infoMessages.Add("Dungeon response not ready.");
         }
     }
 
@@ -414,6 +421,12 @@
                 dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
             } catch (Exception ex) {
                 errorMessages.Add(ex.Message);
+            }
+
+            bool updateSuccess = await UpdateValues();
+
+            if (dungeon.RefreshRequired == true) {
+                DungeonRefresh();
             }
 
             await InvokeAsync(StateHasChanged);
