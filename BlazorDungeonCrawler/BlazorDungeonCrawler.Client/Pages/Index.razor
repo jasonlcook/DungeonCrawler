@@ -125,6 +125,17 @@
                             </span>
                         </div>
                     }
+
+                    @if (auraPotionDuration != string.Empty) {
+                        <div class="row">
+                            <span class="label">Base</span>
+                            <span class="value">
+                                @((MarkupString)dungeon.Adventurer.HealthBase.ToString())
+                            </span>
+                            <span class="duration">&nbsp;</span>
+                        </div>
+                    }
+
                     <div class="row">
                         <span class="label">Health</span>
                         <span class="value">
@@ -132,6 +143,7 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="damage section">
                     @if (damagePotionDuration != string.Empty) {
                         <div class="row">
@@ -144,6 +156,27 @@
                             </span>
                         </div>
                     }
+
+                    @if (weapon != string.Empty) {
+                        <div class="row">
+                            <span class="label">Weapon</span>
+                            <span class="value">
+                                @((MarkupString)weapon)
+                            </span>
+                            <span class="duration">&nbsp;</span>
+                        </div>
+                    }
+
+                    @if(damagePotionDuration != string.Empty || weapon != string.Empty ){
+                        <div class="row">
+                            <span class="label">Base</span>
+                            <span class="value">
+                                @((MarkupString)dungeon.Adventurer.DamageBase.ToString())
+                            </span>
+                            <span class="duration">&nbsp;</span>
+                        </div>
+                    }
+
                     <div class="row">
                         <span class="label">Damage</span>
                         <span class="value">
@@ -163,6 +196,17 @@
                             </span>
                         </div>
                     }
+
+                    @if (shieldPotionDuration != string.Empty) {
+                        <div class="row">
+                            <span class="label">Base</span>
+                            <span class="value">
+                                @((MarkupString)dungeon.Adventurer.ProtectionBase.ToString())
+                            </span>
+                            <span class="duration">&nbsp;</span>
+                        </div>
+                    }
+
                     <div class="row">
                         <span class="label">Protection</span>
                         <span class="value">
@@ -331,6 +375,7 @@
     string damage = "0";
     string damagePotion = string.Empty;
     string damagePotionDuration = string.Empty;
+    string weapon = string.Empty;
 
     string protection = "0";
     string shieldPotion = string.Empty;
@@ -493,6 +538,8 @@
         int adventurerDamagePotion = 0;
         int adventurerShieldPotion = 0;
 
+        int adventurerWeapon = 0;
+
         if (dungeon == null || dungeon.Id == Guid.Empty) {
             throw new Exception("Dungeon response was badly formed.");
         }
@@ -511,13 +558,22 @@
         }
         health = $"{dungeon.Adventurer.HealthBase + adventurerAuraPotion} / {dungeon.Adventurer.HealthInitial}";
 
+
+        //Potion
         damagePotionDuration = string.Empty;
         if (dungeon.Adventurer.DamagePotionDuration > 0) {
             adventurerDamagePotion = dungeon.Adventurer.DamagePotion;
             damagePotion = adventurerDamagePotion.ToString();
             damagePotionDuration = dungeon.Adventurer.DamagePotionDuration.ToString();
         }
-        damage = (dungeon.Adventurer.DamageBase + adventurerDamagePotion).ToString();
+
+        //Weapon
+        if (dungeon.Adventurer.Weapon > 0) {
+            adventurerWeapon = dungeon.Adventurer.Weapon;
+            weapon = adventurerWeapon.ToString();
+        }
+
+        damage = (dungeon.Adventurer.DamageBase + adventurerDamagePotion + adventurerWeapon).ToString();
 
         shieldPotionDuration = string.Empty;
         if (dungeon.Adventurer.ShieldPotionDuration > 0) {
