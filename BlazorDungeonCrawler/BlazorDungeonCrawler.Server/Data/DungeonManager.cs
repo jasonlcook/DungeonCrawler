@@ -109,6 +109,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 Tile selectedTile = new();
 
+                bool setSelectable = true;
+
                 foreach (Tile tile in currentLevelTiles.GetTiles()) {
                     tile.Current = false;
                     tile.Selectable = false;
@@ -122,6 +124,19 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
 
                 switch (selectedTile.Type) {
+                    case DungeonEvemts.DungeonEntrance:
+                        if (!dungeon.MacGuffinFound) {
+                            messages.Add(new Message("NO MACGUFFIN. GO FIND IT!"));
+                        } else {
+                            messages.Add(new Message("WELL DONE."));
+
+                            currentLevelTiles.Unhide();
+                            TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+
+                            setSelectable = false;
+                            //todo: show summary 
+                        }
+                        break;
                     case DungeonEvemts.Fight:
                         if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
                             //generate new monsters
@@ -137,20 +152,21 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         dungeon.InCombat = true;
                         dungeon.CombatTile = selectedTile.Id;
+
+                        setSelectable = false;
                         break;
                     case DungeonEvemts.StairsDescending:
+                        //  Set surrounding selecteable tiles for when the user returns to this level
+                        currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+
                         int increasedDepth = dungeon.CurrentLevel += 1;
                         dungeon.CurrentLevel = increasedDepth;
 
                         currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
                         if (currentLevel == null || currentLevel.Id == Guid.Empty) {
-                            //Save current
-                            currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                            TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
-
                             //Next level
                             Level newLevel = new(increasedDepth);
-
                             messages.Add(new Message($"DUNGEON DEPTH {increasedDepth}"));
 
                             //  Tiles
@@ -168,9 +184,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
 
                         dungeon.RefreshRequired = true;
-
+                        setSelectable = false;
                         break;
                     case DungeonEvemts.StairsAscending:
+                        //  Set surrounding selecteable tiles for when the user returns to this level
+                        currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+
                         int decreaseDepth = dungeon.CurrentLevel -= 1;
                         dungeon.CurrentLevel = decreaseDepth;
 
@@ -182,11 +202,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                         currentLevelTiles = new Tiles(currentLevel.Tiles);
 
                         dungeon.RefreshRequired = true;
+                        setSelectable = false;
                         break;
                     case DungeonEvemts.Empty:
-                    case DungeonEvemts.DungeonEntrance:
-                    case DungeonEvemts.FightWon:
-                    case DungeonEvemts.FightLost:
                     case DungeonEvemts.Chest:
                     case DungeonEvemts.FoundWeapon:
                     case DungeonEvemts.FoundProtection:
@@ -195,6 +213,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     case DungeonEvemts.TakenProtection:
                     case DungeonEvemts.TakenPotion:
                     case DungeonEvemts.Macguffin:
+                    case DungeonEvemts.FightWon:
 
                         break;
                     case DungeonEvemts.Unknown:
@@ -202,7 +221,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         throw new ArgumentOutOfRangeException("Tile Type");
                 }
 
-                if (!dungeon.InCombat && !dungeon.RefreshRequired) {
+                if (setSelectable) {
                     currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                 }
 
