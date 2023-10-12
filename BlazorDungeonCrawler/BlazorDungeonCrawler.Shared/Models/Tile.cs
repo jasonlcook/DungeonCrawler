@@ -12,7 +12,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int Column { get; set; }
 
 
-        public DungeonEvemts Type { get; set; }
+        public DungeonEvents Type { get; set; }
 
 
         public bool Current { get; set; }

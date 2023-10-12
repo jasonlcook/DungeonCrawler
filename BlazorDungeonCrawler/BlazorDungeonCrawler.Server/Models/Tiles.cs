@@ -77,19 +77,19 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             //      Overwrite
             //          Get level events for depth
-            List<DungeonEvemts> additionalEvents = new List<DungeonEvemts>();
+            List<DungeonEvents> additionalEvents = new List<DungeonEvents>();
             switch (depth) {
                 case 1:
-                    additionalEvents.Add(DungeonEvemts.DungeonEntrance);
-                    additionalEvents.Add(DungeonEvemts.StairsDescending);
+                    additionalEvents.Add(DungeonEvents.DungeonEntrance);
+                    additionalEvents.Add(DungeonEvents.StairsDescending);
                     break;
                 case 10:
-                    additionalEvents.Add(DungeonEvemts.StairsAscending);
-                    additionalEvents.Add(DungeonEvemts.Macguffin);
+                    additionalEvents.Add(DungeonEvents.StairsAscending);
+                    additionalEvents.Add(DungeonEvents.Macguffin);
                     break;
                 default:
-                    additionalEvents.Add(DungeonEvemts.StairsAscending);
-                    additionalEvents.Add(DungeonEvemts.StairsDescending);
+                    additionalEvents.Add(DungeonEvents.StairsAscending);
+                    additionalEvents.Add(DungeonEvents.StairsDescending);
                     break;
             }
 
@@ -107,7 +107,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 randomSelectedTile.Type = additionalEvents.ElementAt(i);
 
                 //if it is a starting tile set it as current un visible
-                if (randomSelectedTile.Type == DungeonEvemts.DungeonEntrance || randomSelectedTile.Type == DungeonEvemts.StairsAscending) {
+                if (randomSelectedTile.Type == DungeonEvents.DungeonEntrance || randomSelectedTile.Type == DungeonEvents.StairsAscending) {
                     randomSelectedTile.Hidden = false;
                     randomSelectedTile.Current = true;
 

@@ -1,7 +1,5 @@
-﻿namespace BlazorDungeonCrawler.Shared.Enumerators
-{
-    public enum DungeonEvemts
-    {
+﻿namespace BlazorDungeonCrawler.Shared.Enumerators {
+    public enum DungeonEvents {
         Unknown,
         Empty,
         DungeonEntrance,

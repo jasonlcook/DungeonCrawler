@@ -128,7 +128,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
 
                 switch (selectedTile.Type) {
-                    case DungeonEvemts.DungeonEntrance:
+                    case DungeonEvents.DungeonEntrance:
                         if (!dungeon.MacGuffinFound) {
                             messages.Add(new Message("NO MACGUFFIN. GO FIND IT!"));
                         } else {
@@ -141,7 +141,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             //todo: show summary 
                         }
                         break;
-                    case DungeonEvemts.Fight:
+                    case DungeonEvents.Fight:
                         if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
                             //generate new monsters
                             monsters.Generate(dungeon.CurrentLevel);
@@ -159,7 +159,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         setSelectable = false;
                         break;
-                    case DungeonEvemts.StairsDescending:
+                    case DungeonEvents.StairsDescending:
                         //  Set surrounding selecteable tiles for when the user returns to this level
                         currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                         TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
@@ -190,7 +190,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         dungeon.RefreshRequired = true;
                         setSelectable = false;
                         break;
-                    case DungeonEvemts.StairsAscending:
+                    case DungeonEvents.StairsAscending:
                         //  Set surrounding selecteable tiles for when the user returns to this level
                         currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                         TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
@@ -208,13 +208,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                         dungeon.RefreshRequired = true;
                         setSelectable = false;
                         break;
-                    case DungeonEvemts.Chest:
+                    case DungeonEvents.Chest:
                         int lootValue = Dice.RollDSix();
-                        DungeonEvemts lootTile = GetLootType(lootValue);
+                        DungeonEvents lootTile = GetLootType(lootValue);
                         selectedTile.Type = lootTile;
 
                         switch (lootTile) {
-                            case DungeonEvemts.TakenWeapon:
+                            case DungeonEvents.TakenWeapon:
                                 int weaponsTypeValue = Dice.RollDSix();
                                 int weaponsConditionValue = Dice.RollDSix();
 
@@ -235,10 +235,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 }
 
                                 break;
-                            case DungeonEvemts.TakenProtection:
+                            case DungeonEvents.TakenProtection:
                                 messages.Add(new Message("Taken protection"));
                                 break;
-                            case DungeonEvemts.TakenPotion:
+                            case DungeonEvents.TakenPotion:
                                 int potionTypeValue = Dice.RollDSix();
                                 int potionSizeValue = Dice.RollDSix();
                                 int potionDurationValue = Dice.RollDSix();
@@ -277,20 +277,20 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 throw new ArgumentOutOfRangeException("Loot tile type.");
                         }
                         break;
-                    case DungeonEvemts.Macguffin:
+                    case DungeonEvents.Macguffin:
 
                         break;
-                    case DungeonEvemts.FoundWeapon:
-                    case DungeonEvemts.FoundProtection:
-                    case DungeonEvemts.FoundPotion:
-                    case DungeonEvemts.TakenWeapon:
-                    case DungeonEvemts.TakenProtection:
-                    case DungeonEvemts.TakenPotion:
-                    case DungeonEvemts.Empty:
-                    case DungeonEvemts.FightWon:
+                    case DungeonEvents.FoundWeapon:
+                    case DungeonEvents.FoundProtection:
+                    case DungeonEvents.FoundPotion:
+                    case DungeonEvents.TakenWeapon:
+                    case DungeonEvents.TakenProtection:
+                    case DungeonEvents.TakenPotion:
+                    case DungeonEvents.Empty:
+                    case DungeonEvents.FightWon:
 
                         break;
-                    case DungeonEvemts.Unknown:
+                    case DungeonEvents.Unknown:
                     default:
                         throw new ArgumentOutOfRangeException("Selected Dungeon Tiles Tile Type");
                 }
@@ -338,17 +338,17 @@ namespace BlazorDungeonCrawler.Server.Data {
         //  1 - 2:  Potion
         //  3 - 4:  Weapon
         //  5 - 6:  Protection
-        private DungeonEvemts GetLootType(int value) {
+        private DungeonEvents GetLootType(int value) {
             switch (value) {
                 case 1:
                 case 2:
-                    return DungeonEvemts.TakenPotion;
+                    return DungeonEvents.TakenPotion;
                 case 3:
                 case 4:
-                    return DungeonEvemts.TakenWeapon;
+                    return DungeonEvents.TakenWeapon;
                 case 5:
                 case 6:
-                    return DungeonEvemts.TakenProtection;
+                    return DungeonEvents.TakenProtection;
                 default:
                     throw new ArgumentOutOfRangeException("Loot type roll value");
             }
@@ -402,7 +402,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         int adventurerDammage = adventurer.reciveWounds(woundsReceived);
 
                         if (!adventurer.IsAlive) {
-                            selectedTile.Type = DungeonEvemts.FightLost;
+                            selectedTile.Type = DungeonEvents.FightLost;
 
                             dungeon.InCombat = false;
 
@@ -567,7 +567,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 dungeon.CombatInitiated = false;
 
                                 selectedTile.FightWon = true;
-                                selectedTile.Type = DungeonEvemts.FightWon;
+                                selectedTile.Type = DungeonEvents.FightWon;
 
                                 currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                             };
@@ -617,7 +617,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 adventurer.HealthBase = 0;
                                 adventurer.IsAlive = false;
 
-                                selectedTile.Type = DungeonEvemts.FightLost;
+                                selectedTile.Type = DungeonEvents.FightLost;
 
                                 messages.Add(new Message($"ADVENTURER DIED WITH {adventurerWounds} WOUNDS"));
 

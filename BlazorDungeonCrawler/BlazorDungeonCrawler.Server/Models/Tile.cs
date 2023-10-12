@@ -8,7 +8,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Guid Id { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
-        public DungeonEvemts Type { get; set; }
+        public DungeonEvents Type { get; set; }
         public bool Current { get; set; }
         public bool Hidden { get; set; }
         public bool Selectable { get; set; }
@@ -18,7 +18,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Tile() {
             Id = Guid.NewGuid();
 
-            Type = DungeonEvemts.Unknown;
+            Type = DungeonEvents.Unknown;
 
             Current = false;
             Hidden = true;

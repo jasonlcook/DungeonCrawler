@@ -471,37 +471,37 @@
         }
     }
 
-    private string GetTypeClass(DungeonEvemts type) {
+    private string GetTypeClass(DungeonEvents type) {
         switch (type) {
-            case DungeonEvemts.Empty:
+            case DungeonEvents.Empty:
                 return "hexagon-tile-empty";
-            case DungeonEvemts.DungeonEntrance:
+            case DungeonEvents.DungeonEntrance:
                 return "hexagon-tile-entrance";
-            case DungeonEvemts.StairsAscending:
+            case DungeonEvents.StairsAscending:
                 return "hexagon-tile-stairs-ascending";
-            case DungeonEvemts.StairsDescending:
+            case DungeonEvents.StairsDescending:
                 return "hexagon-tile-stairs-descending";
-            case DungeonEvemts.Fight:
+            case DungeonEvents.Fight:
                 return "hexagon-tile-fight";
-            case DungeonEvemts.FightWon:
+            case DungeonEvents.FightWon:
                 return "hexagon-tile-fight-won";
-            case DungeonEvemts.FightLost:
+            case DungeonEvents.FightLost:
                 return "hexagon-tile-adventurer-death";
-            case DungeonEvemts.Chest:
+            case DungeonEvents.Chest:
                 return "hexagon-tile-chest";
-            case DungeonEvemts.FoundWeapon:
+            case DungeonEvents.FoundWeapon:
                 return "hexagon-tile-weapon";
-            case DungeonEvemts.FoundProtection:
+            case DungeonEvents.FoundProtection:
                 return "hexagon-tile-protection";
-            case DungeonEvemts.FoundPotion:
+            case DungeonEvents.FoundPotion:
                 return "hexagon-tile-potion";
-            case DungeonEvemts.TakenWeapon:
+            case DungeonEvents.TakenWeapon:
                 return "hexagon-tile-weapon";
-            case DungeonEvemts.TakenProtection:
+            case DungeonEvents.TakenProtection:
                 return "hexagon-tile-protection";
-            case DungeonEvemts.TakenPotion:
+            case DungeonEvents.TakenPotion:
                 return "hexagon-tile-potion";
-            case DungeonEvemts.Macguffin:
+            case DungeonEvents.Macguffin:
                 return "hexagon-tile-macguffin";
             default:
                 infoMessages.Add("Type class dungeon event");
