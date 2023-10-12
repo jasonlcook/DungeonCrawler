@@ -102,7 +102,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 Messages messages = new();
                 Monsters monsters = new();
-                
+
                 Adventurer adventurer = new(dungeon.Adventurer);
                 adventurer.DurationDecrement();
 
@@ -215,40 +215,60 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         switch (lootTile) {
                             case DungeonEvemts.TakenWeapon:
-                                messages.Add(new Message("Taken weapon"));
+                                int weaponsTypeValue = Dice.RollDSix();
+                                int weaponsConditionValue = Dice.RollDSix();
+
+                                Weapons weapons = new(dungeon.CurrentLevel, weaponsTypeValue, weaponsConditionValue);
+
+                                messages.Add(new Message($"Weapons condition: {weapons.Condition} ({weaponsConditionValue})", weaponsConditionValue));
+                                messages.Add(new Message($"Weapons type: {weapons.Type} ({weaponsTypeValue})", weaponsTypeValue));
+
+                                messages.Add(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
+
+                                int currentWeaponValue = adventurer.Weapon;
+
+                                if (weapons.WeaponValue > currentWeaponValue) {
+                                    adventurer.Weapon = weapons.WeaponValue;
+                                    messages.Add(new Message($"PICKUP A {weapons.Description()}"));
+                                } else {
+                                    messages.Add(new Message($"REJECT A {weapons.Description()}"));
+                                }
+
                                 break;
                             case DungeonEvemts.TakenProtection:
                                 messages.Add(new Message("Taken protection"));
                                 break;
                             case DungeonEvemts.TakenPotion:
-                                int typeValue = Dice.RollDSix();
-                                int sizeValue = Dice.RollDSix();
-                                int durationValue = Dice.RollDSix();
+                                int potionTypeValue = Dice.RollDSix();
+                                int potionSizeValue = Dice.RollDSix();
+                                int potionDurationValue = Dice.RollDSix();
 
-                                Potion potion = new(dungeon.CurrentLevel, typeValue, sizeValue, durationValue);
+                                Potions potion = new(dungeon.CurrentLevel, potionTypeValue, potionSizeValue, potionDurationValue);
 
-                                messages.Add(new Message($"Potion type: {potion.Type} ({typeValue})", typeValue));
-                                messages.Add(new Message($"Potion size: {potion.Size} ({sizeValue})", sizeValue));
-                                messages.Add(new Message($"Potion duration: {potion.Duration} ({durationValue})", durationValue));
+                                messages.Add(new Message($"Potion type: {potion.Type} ({potionTypeValue})", potionTypeValue));
+                                messages.Add(new Message($"Potion size: {potion.Size} ({potionSizeValue})", potionSizeValue));
+                                messages.Add(new Message($"Potion duration: {potion.Duration} ({potionDurationValue})", potionDurationValue));
 
                                 switch (potion.Type) {
-                                    case PotionType.Aura:
+                                    case PotionTypes.Aura:
                                         int regainedHealth = adventurer.SetAuraPotion(potion.SizeValue);
-                                        adventurer.AuraPotionDuration = potion.DurationValue;
+                                        if (adventurer.AuraPotion > 0) {
+                                            adventurer.AuraPotionDuration += potion.DurationValue;
+                                        }                                        
 
                                         if (regainedHealth > 0) {
                                             messages.Add(new Message($"Regained {regainedHealth} health"));
                                         }
                                         break;
-                                    case PotionType.Damage:
-                                        adventurer.DamagePotion = potion.SizeValue;
-                                        adventurer.DamagePotionDuration = potion.DurationValue;
+                                    case PotionTypes.Damage:
+                                        adventurer.DamagePotion += potion.SizeValue;
+                                        adventurer.DamagePotionDuration =+ potion.DurationValue;
                                         break;
-                                    case PotionType.Sheild:
-                                        adventurer.ShieldPotion = potion.SizeValue;
-                                        adventurer.ShieldPotionDuration = potion.DurationValue;
+                                    case PotionTypes.Sheild:
+                                        adventurer.ShieldPotion += potion.SizeValue;
+                                        adventurer.ShieldPotionDuration += potion.DurationValue;
                                         break;
-                                    case PotionType.Unknown:
+                                    case PotionTypes.Unknown:
                                         break;
                                 }
 
@@ -618,7 +638,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 dungeon.Adventurer = sharedAdventurer;
 
                 AdventurerUpdate.Update(sharedAdventurer);
-                                
+
                 //Update Messages
                 List<SharedMessage> sharedMessages = messages.SharedModelMapper();
                 dungeon.Messages.AddRange(sharedMessages);
