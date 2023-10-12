@@ -98,9 +98,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
                 if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
 
                 Messages messages = new();
                 Monsters monsters = new();
+                
+                Adventurer adventurer = new(dungeon.Adventurer);
+                adventurer.DurationDecrement();
 
                 SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
                 if (currentLevel == null) { throw new ArgumentNullException("Dungeon current Level"); }
@@ -207,6 +211,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     case DungeonEvemts.Chest:
                         int lootValue = Dice.RollDSix();
                         DungeonEvemts lootTile = GetLootType(lootValue);
+                        selectedTile.Type = lootTile;
 
                         switch (lootTile) {
                             case DungeonEvemts.TakenWeapon:
@@ -226,8 +231,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 messages.Add(new Message($"Potion size: {potion.Size} ({sizeValue})", sizeValue));
                                 messages.Add(new Message($"Potion duration: {potion.Duration} ({durationValue})", durationValue));
 
-                                Adventurer adventurer = new(dungeon.Adventurer);
-
                                 switch (potion.Type) {
                                     case PotionType.Aura:
                                         int regainedHealth = adventurer.SetAuraPotion(potion.SizeValue);
@@ -235,7 +238,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                         if (regainedHealth > 0) {
                                             messages.Add(new Message($"Regained {regainedHealth} health"));
-                                        }                                        
+                                        }
                                         break;
                                     case PotionType.Damage:
                                         adventurer.DamagePotion = potion.SizeValue;
@@ -275,6 +278,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (setSelectable) {
                     currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                 }
+
+                //Update Adventurer
+                SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
+                dungeon.Adventurer = sharedAdventurer;
+
+                AdventurerUpdate.Update(sharedAdventurer);
 
                 //Update Messages
                 List<SharedMessage> sharedMessages = messages.SharedModelMapper();
@@ -333,6 +342,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
                 if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
 
                 SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
                 if (currentLevel == null || currentLevel.Tiles == null || currentLevel.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
@@ -343,6 +353,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                 Tiles currentLevelTiles = new(currentLevel.Tiles);
 
                 Messages messages = new();
+
+                Adventurer adventurer = new(dungeon.Adventurer);
+                adventurer.DurationDecrement();
 
                 if (AdventurerFleesCombat()) {
                     dungeon.InCombat = false;
@@ -355,9 +368,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 } else {
                     messages.Add(new Message("ADVENTURER FAILED TO FLEE"));
 
-                    if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
-                    Adventurer adventurer = new(dungeon.Adventurer);
-
                     if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
 
                     List<SharedMonster> monsters = selectedTile.Monsters;
@@ -369,27 +379,29 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     int woundsReceived = monsterDamage - adventurerProtection;
                     if (woundsReceived > 0) {
-                        int currentHealth = adventurer.HealthBase - woundsReceived;
-                        if (currentHealth > 0) {
-                            adventurer.HealthBase = currentHealth;
+                        int adventurerDammage = adventurer.reciveWounds(woundsReceived);
 
-                            messages.Add(new Message($"ADVENTURER HIT FOR {woundsReceived} WITH {currentMonster.Health} REMAINING"));
-                        } else {
-                            adventurer.HealthBase = 0;
-                            adventurer.IsAlive = false;
-
+                        if (!adventurer.IsAlive) {
                             selectedTile.Type = DungeonEvemts.FightLost;
 
                             dungeon.InCombat = false;
 
                             currentLevelTiles.Unhide();
 
-                            messages.Add(new Message($"ADVENTURER KILLED WITH {woundsReceived}"));
+                            messages.Add(new Message($"ADVENTURER KILLED WITH {adventurerDammage}"));
+                        } else {
+                            messages.Add(new Message($"ADVENTURER HIT FOR {adventurerDammage} WITH {adventurer.HealthBase} REMAINING"));
                         }
                     } else {
                         messages.Add(new Message("MONSTER WAS UNABLE TO CAUSE HARM"));
                     }
                 }
+
+                //Update Adventurer
+                SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
+                dungeon.Adventurer = sharedAdventurer;
+
+                AdventurerUpdate.Update(sharedAdventurer);
 
                 //Update Messages
                 List<SharedMessage> sharedMessages = messages.SharedModelMapper();
@@ -464,6 +476,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                 //Adventurer details
                 //todo: get this from dungeon 
                 Adventurer adventurer = new(dungeon.Adventurer);
+                adventurer.DurationDecrement();
+
                 int adventurerDamage = adventurer.GetDamage();
                 int adventurerProtection = adventurer.GetProtection();
 
@@ -574,6 +588,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             }
 
                             int currentHealth = adventurer.HealthBase - adventurerWounds;
+
                             if (currentHealth > 0) {
                                 adventurer.HealthBase = currentHealth;
 
@@ -598,6 +613,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
 
+                //Update Adventurer
+                SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
+                dungeon.Adventurer = sharedAdventurer;
+
+                AdventurerUpdate.Update(sharedAdventurer);
+                                
                 //Update Messages
                 List<SharedMessage> sharedMessages = messages.SharedModelMapper();
                 dungeon.Messages.AddRange(sharedMessages);
@@ -624,12 +645,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
 
                 TilesUpdate.Update(sharedTiles);
-
-                //Update Adventurer
-                SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
-                dungeon.Adventurer = sharedAdventurer;
-
-                AdventurerUpdate.Update(sharedAdventurer);
 
                 //Update Dungon
                 DungeonUpdate.Update(dungeon);
