@@ -1,38 +1,38 @@
 ﻿using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Server.Models {
-    public class Potion {
-        public PotionType Type { get; set; }
-        public PotionSize Size { get; set; }
+    public class Potions {
+        public PotionTypes Type { get; set; }
+        public PotionSizes Size { get; set; }
         public int SizeValue { get; set; }
-        public PotionDuration Duration { get; set; }
+        public PotionDurations Duration { get; set; }
         public int DurationValue { get; set; }
 
-        public Potion(int depth, int typeValue, int sizeValue, int durationValue) {
+        public Potions(int depth, int typeValue, int sizeValue, int durationValue) {
             Type = GetType(typeValue);
 
             Size = GetSize(depth, sizeValue);
-            sizeValue = GetSizeValue();
+            SizeValue = GetSizeValue();
 
             Duration = GetDuration(durationValue);
-            durationValue = GetDurationValue();
+            DurationValue = GetDurationValue();
         }
 
         //  Type
         //      1 - 2:  Sheild (Protection)
         //      3 - 4:  Damage
         //      5 - 6:  Aura (Health)
-        private PotionType GetType(int value) {
+        private PotionTypes GetType(int value) {
             switch (value) {
                 case 1:
                 case 2:
-                    return PotionType.Sheild;
+                    return PotionTypes.Sheild;
                 case 3:
                 case 4:
-                    return PotionType.Damage;
+                    return PotionTypes.Damage;
                 case 5:
                 case 6:
-                    return PotionType.Aura;
+                    return PotionTypes.Aura;
                 default:
                     throw new ArgumentOutOfRangeException("Potion type selection");
             }
@@ -47,7 +47,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         //          1:      Vial
         //          2 - 5:  Flask
         //          6:      Bottle
-        private PotionSize GetSize(int depth, int value) {
+        private PotionSizes GetSize(int depth, int value) {
             if (depth > 4) {
                 switch (value) {
                     case 1:
@@ -55,23 +55,23 @@ namespace BlazorDungeonCrawler.Server.Models {
                     case 3:
                     case 4:
                     case 5:
-                        return PotionSize.Vial;
+                        return PotionSizes.Vial;
                     case 6:
-                        return PotionSize.Flask;
+                        return PotionSizes.Flask;
                     default:
                         throw new ArgumentOutOfRangeException("Potion size selection");
                 }
             } else {
                 switch (value) {
                     case 1:
-                        return PotionSize.Vial;
+                        return PotionSizes.Vial;
                     case 2:
                     case 3:
                     case 4:
                     case 5:
-                        return PotionSize.Flask;
+                        return PotionSizes.Flask;
                     case 6:
-                        return PotionSize.Bottle;
+                        return PotionSizes.Bottle;
                     default:
                         throw new ArgumentOutOfRangeException("Potion size selection");
                 }
@@ -80,13 +80,13 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         private int GetSizeValue() {
             switch (Size) {
-                case PotionSize.Vial:
+                case PotionSizes.Vial:
                     return 6;
-                case PotionSize.Flask:
+                case PotionSizes.Flask:
                     return 12;
-                case PotionSize.Bottle:
+                case PotionSizes.Bottle:
                     return 18;
-                case PotionSize.Unknown:
+                case PotionSizes.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException("Potion size value selection");
             }
@@ -96,17 +96,17 @@ namespace BlazorDungeonCrawler.Server.Models {
         //      1 - 2:  Short
         //      3 - 4:  Medium
         //      5 - 6:  Long
-        private PotionDuration GetDuration(int value) {
+        private PotionDurations GetDuration(int value) {
             switch (value) {
                 case 1:
                 case 2:
-                    return PotionDuration.Short;
+                    return PotionDurations.Short;
                 case 3:
                 case 4:
-                    return PotionDuration.Medium;
+                    return PotionDurations.Medium;
                 case 5:
                 case 6:
-                    return PotionDuration.Long;
+                    return PotionDurations.Long;
                 default:
                     throw new ArgumentOutOfRangeException("Potion duration selection");
             }
@@ -114,13 +114,13 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         private int GetDurationValue() {
             switch (Duration) {
-                case PotionDuration.Short:
+                case PotionDurations.Short:
                     return 10;
-                case PotionDuration.Medium:
+                case PotionDurations.Medium:
                     return 20;
-                case PotionDuration.Long:
+                case PotionDurations.Long:
                     return 30;
-                case PotionDuration.Unknown:
+                case PotionDurations.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException("Potion duration value selection");
             }
