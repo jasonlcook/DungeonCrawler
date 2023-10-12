@@ -69,7 +69,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 _tiles.Add(new Tile() {
                     Row = row,
                     Column = column,
-                    Type = DungeonEvemt.GetType(tileType)
+                    Type = DungeonEvent.GetType(tileType)
                 });
 
                 _tileIndexes.Add(i);

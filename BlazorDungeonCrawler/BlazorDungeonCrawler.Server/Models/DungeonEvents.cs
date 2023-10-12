@@ -1,28 +1,21 @@
 ﻿using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Server.Models {
-    public static class DungeonEvemt {
+    public static class DungeonEvent {
         public static DungeonEvemts GetType(int value) {
-            DungeonEvemts dungeonEvemts = DungeonEvemts.Unknown;
-
             switch (value) {
                 case 1:
                 case 2:
-                    dungeonEvemts = DungeonEvemts.Fight;
-                    break;
+                    return DungeonEvemts.Fight;
                 case 3:
                 case 4:
                 case 5:
-                    dungeonEvemts = DungeonEvemts.Empty;
-                    break;
+                    return DungeonEvemts.Empty;
                 case 6:
-                    dungeonEvemts = DungeonEvemts.Chest;
-                    break;
+                    return DungeonEvemts.Chest;
                 default:
                     throw new ArgumentOutOfRangeException("DungeonEvemts");
             }
-
-            return dungeonEvemts;
         }
     }
 }
