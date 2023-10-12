@@ -96,11 +96,34 @@ body {
             }
 
             #play-area .details .adventurer .stats {
-                border-color: #000;
-                border-width: 0px 0px 1px;
-                border-style: solid;
-                padding: 10px 0px;
+                padding: 10px;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
             }
+
+                #play-area .details .adventurer .stats .section {
+                margin: 0 0 10px 0;
+                }
+
+                    #play-area .details .adventurer .stats .section .row {
+                        display: flex;
+                        flex-direction: row;
+                    }
+
+                        #play-area .details .adventurer .stats .section .row .label {
+                            width: 110px;
+                            display: block;
+                        }
+
+                        #play-area .details .adventurer .stats .section .row .value {
+                            width: 70px;
+                            display: block;
+                        }
+
+                        #play-area .details .adventurer .stats .section .row .duration {
+                            display: block;
+                        }
 
             #play-area .details .adventurer .dice {
                 padding: 10px;
@@ -109,6 +132,9 @@ body {
                 justify-content: space-around;
                 align-content: space-around;
                 align-items: center;
+                border-color: #000;
+                border-width: 1px 0 0 0;
+                border-style: solid;
             }
 
                 #play-area .details .adventurer .dice .die {

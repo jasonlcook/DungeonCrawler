@@ -113,23 +113,62 @@
                 </span>
             </div>
             <div class="stats">
-                <div class="health">
-                    <span class="label">Health</span>
-                    <span class="value" id="current-health">
-                        @((MarkupString)health)
-                    </span>
+                <div class="health section">
+                    @if (auraPotionDuration != string.Empty) {
+                        <div class="row">
+                            <span class="label">Aura potion</span>
+                            <span class="value">
+                                @((MarkupString)auraPotion)
+                            </span>
+                            <span class="duration">
+                                @((MarkupString)auraPotionDuration)
+                            </span>
+                        </div>
+                    }
+                    <div class="row">
+                        <span class="label">Health</span>
+                        <span class="value">
+                            @((MarkupString)health)
+                        </span>
+                    </div>
                 </div>
-                <div class="damage">
-                    <span class="label">Damage</span>
-                    <span class="value" id="current-damage">
-                        @((MarkupString)damage)
-                    </span>
+                <div class="damage section">
+                    @if (damagePotionDuration != string.Empty) {
+                        <div class="row">
+                            <span class="label">Damage potion</span>
+                            <span class="value">
+                                @((MarkupString)damagePotion)
+                            </span>
+                            <span class="duration">
+                                @((MarkupString)damagePotionDuration)
+                            </span>
+                        </div>
+                    }
+                    <div class="row">
+                        <span class="label">Damage</span>
+                        <span class="value">
+                            @((MarkupString)damage)
+                        </span>
+                    </div>
                 </div>
-                <div class="protection">
-                    <span class="label">Protection</span>
-                    <span class="value" id="current-protection">
-                        @((MarkupString)protection)
-                    </span>
+                <div class="protection section">
+                    @if (shieldPotionDuration != string.Empty) {
+                        <div class="row">
+                            <span class="label">Shield potion</span>
+                            <span class="value">
+                                @((MarkupString)shieldPotion)
+                            </span>
+                            <span class="duration">
+                                @((MarkupString)shieldPotionDuration)
+                            </span>
+                        </div>
+                    }
+                    <div class="row">
+                        <span class="label">Protection</span>
+                        <span class="value">
+                            @((MarkupString)protection)
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="dice"></div>
@@ -286,8 +325,16 @@
     int dungeonDepth = 0;
 
     string health = "0";
+    string auraPotion = string.Empty;
+    string auraPotionDuration = string.Empty;
+
     string damage = "0";
+    string damagePotion = string.Empty;
+    string damagePotionDuration = string.Empty;
+
     string protection = "0";
+    string shieldPotion = string.Empty;
+    string shieldPotionDuration = string.Empty;
 
     bool advanceButtonDisabled = true;
 
@@ -373,9 +420,10 @@
                 return "hexagon-colour-green";
             case 10:
                 return "hexagon-colour-pink";
+            default:
+                infoMessages.Add("Colour class dungeon depth");
+                return "hexagon-colour-unknown";
         }
-
-        return "hexagon-colour-unknown";
     }
 
     private string GetTypeClass(DungeonEvemts type) {
@@ -410,9 +458,10 @@
                 return "hexagon-tile-potion";
             case DungeonEvemts.Macguffin:
                 return "hexagon-tile-macguffin";
+            default:
+                infoMessages.Add("Type class dungeon event");
+                return "hexagon-tile-unknown";
         }
-
-        return "hexagon-tile-unknown";
     }
 
     private async Task<bool> SelectTile(Guid tileId) {
@@ -440,6 +489,10 @@
     }
 
     private async Task<bool> UpdateValues() {
+        int adventurerAuraPotion = 0;
+        int adventurerDamagePotion = 0;
+        int adventurerShieldPotion = 0;
+
         if (dungeon == null || dungeon.Id == Guid.Empty) {
             throw new Exception("Dungeon response was badly formed.");
         }
@@ -450,9 +503,29 @@
 
         dungeonDepth = dungeon.CurrentLevel;
 
-        health = $"{dungeon.Adventurer.HealthBase.ToString()} / {dungeon.Adventurer.HealthInitial.ToString()}";
-        damage = dungeon.Adventurer.DamageBase.ToString();
-        protection = dungeon.Adventurer.ProtectionBase.ToString();
+        auraPotionDuration = string.Empty;
+        if (dungeon.Adventurer.AuraPotionDuration > 0) {
+            adventurerAuraPotion = dungeon.Adventurer.AuraPotion;
+            auraPotion = adventurerAuraPotion.ToString();
+            auraPotionDuration = dungeon.Adventurer.AuraPotionDuration.ToString();
+        }
+        health = $"{dungeon.Adventurer.HealthBase + adventurerAuraPotion} / {dungeon.Adventurer.HealthInitial}";
+
+        damagePotionDuration = string.Empty;
+        if (dungeon.Adventurer.DamagePotionDuration > 0) {
+            adventurerDamagePotion = dungeon.Adventurer.DamagePotion;
+            damagePotion = adventurerDamagePotion.ToString();
+            damagePotionDuration = dungeon.Adventurer.DamagePotionDuration.ToString();
+        }
+        damage = (dungeon.Adventurer.DamageBase + adventurerDamagePotion).ToString();
+
+        shieldPotionDuration = string.Empty;
+        if (dungeon.Adventurer.ShieldPotionDuration > 0) {
+            adventurerShieldPotion = dungeon.Adventurer.ShieldPotion;
+            shieldPotion = adventurerShieldPotion.ToString();
+            shieldPotionDuration = dungeon.Adventurer.ShieldPotionDuration.ToString();
+        }
+        protection = (dungeon.Adventurer.ProtectionBase + adventurerShieldPotion).ToString();
 
         await InvokeAsync(StateHasChanged);
 
