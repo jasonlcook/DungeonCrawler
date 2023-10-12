@@ -204,21 +204,72 @@ namespace BlazorDungeonCrawler.Server.Data {
                         dungeon.RefreshRequired = true;
                         setSelectable = false;
                         break;
-                    case DungeonEvemts.Empty:
                     case DungeonEvemts.Chest:
+                        int lootValue = Dice.RollDSix();
+                        DungeonEvemts lootTile = GetLootType(lootValue);
+
+                        switch (lootTile) {
+                            case DungeonEvemts.TakenWeapon:
+                                messages.Add(new Message("Taken weapon"));
+                                break;
+                            case DungeonEvemts.TakenProtection:
+                                messages.Add(new Message("Taken protection"));
+                                break;
+                            case DungeonEvemts.TakenPotion:
+                                int typeValue = Dice.RollDSix();
+                                int sizeValue = Dice.RollDSix();
+                                int durationValue = Dice.RollDSix();
+
+                                Potion potion = new(dungeon.CurrentLevel, typeValue, sizeValue, durationValue);
+
+                                messages.Add(new Message($"Potion type: {potion.Type} ({typeValue})", typeValue));
+                                messages.Add(new Message($"Potion size: {potion.Size} ({sizeValue})", sizeValue));
+                                messages.Add(new Message($"Potion duration: {potion.Duration} ({durationValue})", durationValue));
+
+                                Adventurer adventurer = new(dungeon.Adventurer);
+
+                                switch (potion.Type) {
+                                    case PotionType.Aura:
+                                        int regainedHealth = adventurer.SetAuraPotion(potion.SizeValue);
+                                        adventurer.AuraPotionDuration = potion.DurationValue;
+
+                                        if (regainedHealth > 0) {
+                                            messages.Add(new Message($"Regained {regainedHealth} health"));
+                                        }                                        
+                                        break;
+                                    case PotionType.Damage:
+                                        adventurer.DamagePotion = potion.SizeValue;
+                                        adventurer.DamagePotionDuration = potion.DurationValue;
+                                        break;
+                                    case PotionType.Sheild:
+                                        adventurer.ShieldPotion = potion.SizeValue;
+                                        adventurer.ShieldPotionDuration = potion.DurationValue;
+                                        break;
+                                    case PotionType.Unknown:
+                                        break;
+                                }
+
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException("Loot tile type.");
+                        }
+                        break;
+                    case DungeonEvemts.Macguffin:
+
+                        break;
                     case DungeonEvemts.FoundWeapon:
                     case DungeonEvemts.FoundProtection:
                     case DungeonEvemts.FoundPotion:
                     case DungeonEvemts.TakenWeapon:
                     case DungeonEvemts.TakenProtection:
                     case DungeonEvemts.TakenPotion:
-                    case DungeonEvemts.Macguffin:
+                    case DungeonEvemts.Empty:
                     case DungeonEvemts.FightWon:
 
                         break;
                     case DungeonEvemts.Unknown:
                     default:
-                        throw new ArgumentOutOfRangeException("Tile Type");
+                        throw new ArgumentOutOfRangeException("Selected Dungeon Tiles Tile Type");
                 }
 
                 if (setSelectable) {
@@ -251,6 +302,26 @@ namespace BlazorDungeonCrawler.Server.Data {
                 return dungeon;
             } catch (Exception ex) {
                 throw;
+            }
+        }
+
+        //Loot
+        //  1 - 2:  Potion
+        //  3 - 4:  Weapon
+        //  5 - 6:  Protection
+        private DungeonEvemts GetLootType(int value) {
+            switch (value) {
+                case 1:
+                case 2:
+                    return DungeonEvemts.TakenPotion;
+                case 3:
+                case 4:
+                    return DungeonEvemts.TakenWeapon;
+                case 5:
+                case 6:
+                    return DungeonEvemts.TakenProtection;
+                default:
+                    throw new ArgumentOutOfRangeException("Loot type roll value");
             }
         }
 

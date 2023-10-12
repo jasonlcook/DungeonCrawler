@@ -62,6 +62,33 @@ namespace BlazorDungeonCrawler.Server.Models {
             return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
         }
 
+        //Potion
+        //  Aura
+        //  if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
+        public int SetAuraPotion(int sizeValue) {
+            int regainedHealth = 0;
+
+            //check if damage has been taken
+            if (HealthBase < HealthInitial) {
+                int damageTaken = HealthInitial - HealthBase;
+
+                if (damageTaken >= sizeValue) {
+                    //if damage taken is more (than the potion value) add potion value to the current health
+                    HealthBase += sizeValue;
+                    regainedHealth = sizeValue;
+                } else {
+                    //if damage taken is less (than the potion value) heal the damage and use the remaining points as Aura
+                    AuraPotion += sizeValue - damageTaken;
+                    HealthBase = HealthInitial;
+                    regainedHealth = damageTaken;
+                }
+            } else {
+                AuraPotion += sizeValue;
+            }
+
+            return regainedHealth;
+        }
+
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,
