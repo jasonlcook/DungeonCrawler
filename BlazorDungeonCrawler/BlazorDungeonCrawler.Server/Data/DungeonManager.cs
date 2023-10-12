@@ -139,30 +139,52 @@ namespace BlazorDungeonCrawler.Server.Data {
                         dungeon.CombatTile = selectedTile.Id;
                         break;
                     case DungeonEvemts.StairsDescending:
-                        int depth = dungeon.CurrentLevel += 1;
-                        dungeon.CurrentLevel = depth;
+                        int increasedDepth = dungeon.CurrentLevel += 1;
+                        dungeon.CurrentLevel = increasedDepth;
 
-                        Level newLevel = new(depth);
+                        currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
+                        if (currentLevel == null || currentLevel.Id == Guid.Empty) {
+                            //Save current
+                            currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                            TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
 
-                        messages.Add(new Message($"DUNGEON DEPTH {depth}"));
+                            //Next level
+                            Level newLevel = new(increasedDepth);
 
-                        //  Tiles
-                        Tiles tiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
-                        newLevel.Tiles = tiles.GetTiles();
+                            messages.Add(new Message($"DUNGEON DEPTH {increasedDepth}"));
 
-                        currentLevelTiles = tiles;
-                        currentLevel = newLevel.SharedModelMapper();
+                            //  Tiles
+                            Tiles tiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
+                            newLevel.Tiles = tiles.GetTiles();
 
-                        dungeon.Levels.Add(currentLevel);
+                            currentLevelTiles = tiles;
+                            currentLevel = newLevel.SharedModelMapper();
 
-                        LevelCreate.Create(dungeon.Id, currentLevel);
+                            dungeon.Levels.Add(currentLevel);
+
+                            LevelCreate.Create(dungeon.Id, currentLevel);
+                        } else {
+                            currentLevelTiles = new Tiles(currentLevel.Tiles);
+                        }
 
                         dungeon.RefreshRequired = true;
 
                         break;
+                    case DungeonEvemts.StairsAscending:
+                        int decreaseDepth = dungeon.CurrentLevel -= 1;
+                        dungeon.CurrentLevel = decreaseDepth;
+
+                        currentLevel = dungeon.Levels.Where(l => l.Depth == decreaseDepth).FirstOrDefault();
+                        if (currentLevel == null || currentLevel.Id == Guid.Empty || currentLevel.Tiles == null) {
+                            throw new Exception("Level not found");
+                        }
+
+                        currentLevelTiles = new Tiles(currentLevel.Tiles);
+
+                        dungeon.RefreshRequired = true;
+                        break;
                     case DungeonEvemts.Empty:
                     case DungeonEvemts.DungeonEntrance:
-                    case DungeonEvemts.StairsAscending:
                     case DungeonEvemts.FightWon:
                     case DungeonEvemts.FightLost:
                     case DungeonEvemts.Chest:
