@@ -60,9 +60,86 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         public int GetProtection() {
             return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
+        }              
+
+        public int reciveWounds(int woundsReceived) {
+            int remainingDammagePoints, adventurerDammage = 0;
+
+            //take dammage to shield potion
+            if (ShieldPotion > 0) {
+                if (woundsReceived < ShieldPotion) {
+                    remainingDammagePoints = 0;
+
+                    //shield potion took all damage points
+                    ShieldPotion -= woundsReceived;
+                } else {
+                    //shield potion took some damage points
+                    remainingDammagePoints = woundsReceived - ShieldPotion;
+                    ShieldPotion = 0;
+                }
+
+                woundsReceived = remainingDammagePoints;
+            }
+
+            //take dammage to aura potion
+            if (woundsReceived > 0 && AuraPotion > 0) {
+                if (woundsReceived < AuraPotion) {
+                    remainingDammagePoints = 0;
+
+                    //aura potion took all damage points
+                    AuraPotion -= woundsReceived;
+                } else {
+
+                    //aura potion took some damage points
+                    remainingDammagePoints = woundsReceived - AuraPotion;
+
+                    AuraPotion = 0;
+                }
+
+                woundsReceived = remainingDammagePoints;
+            }
+
+            //take dammage to Adventurer
+            if (woundsReceived > 0) {
+                adventurerDammage = woundsReceived;
+
+                int updatedHealth = HealthBase - woundsReceived;
+
+                if (updatedHealth > 0) {
+                    HealthBase = updatedHealth;
+                } else {
+                    HealthBase = 0;
+                    IsAlive = false;
+                }
+            }
+
+            return adventurerDammage;
         }
 
         //Potion
+        public void DurationDecrement() {
+            if (AuraPotionDuration > 0) {
+                AuraPotionDuration -= 1;
+                if (AuraPotionDuration == 0) {
+                    AuraPotion = 0;
+                }
+            }
+
+            if (DamagePotionDuration > 0) {
+                DamagePotionDuration -= 1;
+                if (DamagePotionDuration == 0) {
+                    DamagePotion = 0;
+                }
+            }
+
+            if (ShieldPotionDuration > 0) {
+                ShieldPotionDuration -= 1;
+                if (ShieldPotionDuration == 0) {
+                    ShieldPotion = 0;
+                }
+            }
+        }
+
         //  Aura
         //  if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
         public int SetAuraPotion(int sizeValue) {
@@ -92,13 +169,24 @@ namespace BlazorDungeonCrawler.Server.Models {
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,
-                HealthInitial = this.HealthInitial,
                 HealthBase = this.HealthBase,
+                HealthInitial = this.HealthInitial,
+                AuraPotion = this.AuraPotion,
+                AuraPotionDuration = this.AuraPotionDuration,
                 DamageBase = this.DamageBase,
+                DamagePotion = this.DamagePotion,
+                DamagePotionDuration = this.DamagePotionDuration,
                 ProtectionBase = this.ProtectionBase,
+                ShieldPotion = this.ShieldPotion,
+                ShieldPotionDuration = this.ShieldPotionDuration,
+                Weapon = this.Weapon,
+                ArmourHelmet = this.ArmourHelmet,
+                ArmourBreastplate = this.ArmourBreastplate,
+                ArmourGauntlet = this.ArmourGauntlet,
+                ArmourGreave = this.ArmourGreave,
+                ArmourBoots = this.ArmourBoots,
                 IsAlive = this.IsAlive
             };
         }
-
     }
 }
