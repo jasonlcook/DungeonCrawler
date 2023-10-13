@@ -86,56 +86,69 @@ body {
             border-style: solid;
             margin: 10px;
             width: 250px;
+            min-height: 350px;
         }
 
-            #play-area .details .adventurer .level {
+            #play-area .details .adventurer .dungeon-level {
                 border-color: #000;
                 border-width: 0px 0px 1px;
                 border-style: solid;
                 padding: 10px 0px;
             }
 
-            #play-area .details .adventurer .stats {
+            #play-area .details .adventurer .adventurer-stats {
                 padding: 10px;
                 text-align: left;
                 display: flex;
                 flex-direction: column;
             }
 
-                #play-area .details .adventurer .stats .section {
+                #play-area .details .adventurer .adventurer-stats .adventurer-stats-section {
                 margin: 0 0 10px 0;
                 }
 
-                    #play-area .details .adventurer .stats .section .row {
+                    #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row {
                         display: flex;
                         flex-direction: row;
                     }
 
-                        #play-area .details .adventurer .stats .section .row .label {
+                        #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .label {
                             width: 110px;
                             display: block;
                         }
 
-                        #play-area .details .adventurer .stats .section .row .value {
+                        #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .value {
                             width: 70px;
                             display: block;
                         }
 
-                        #play-area .details .adventurer .stats .section .row .duration {
+                        #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .duration {
                             display: block;
                         }
 
-            #play-area .details .adventurer .dice {
-                padding: 10px;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                align-content: space-around;
-                align-items: center;
-                border-color: #000;
-                border-width: 1px 0 0 0;
-                border-style: solid;
-            }
+                        #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-base {
+                            border-color: #000;
+                            border-width: 0 0 1px 0;
+                            border-style: dotted;
+                            padding: 0 0 1px 0;
+                            margin: 0 0 2px 0;
+                        }
+
+                        #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-total {
+                            font-weight: bold;
+                        }
+
+#play-area .details .adventurer .dice {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    align-items: center;
+    border-color: #000;
+    border-width: 1px 0 0 0;
+    border-style: solid;
+}
 
                 #play-area .details .adventurer .dice .die {
                     width: 20px;
@@ -215,6 +228,7 @@ body {
             height: 140px;
             overflow: hidden scroll;
             width: 558px;
+            min-height: 350px;
         }
 
             #play-area .details #log .log-entry {
