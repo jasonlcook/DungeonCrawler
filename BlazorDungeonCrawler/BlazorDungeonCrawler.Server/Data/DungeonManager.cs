@@ -220,8 +220,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Weapons weapons = new(dungeon.CurrentLevel, weaponsTypeValue, weaponsConditionValue);
 
-                                messages.Add(new Message($"Weapons condition: {weapons.Condition} ({weaponsConditionValue})", weaponsConditionValue));
-                                messages.Add(new Message($"Weapons type: {weapons.Type} ({weaponsTypeValue})", weaponsTypeValue));
+                                messages.Add(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue));
+                                messages.Add(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue));
 
                                 messages.Add(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
 
@@ -236,7 +236,59 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 break;
                             case DungeonEvents.TakenProtection:
-                                messages.Add(new Message("Taken protection"));
+                                int armourTypeValue = Dice.RollDSix();
+                                int armourConditionValue = Dice.RollDSix();
+
+                                Armour armour = new(dungeon.CurrentLevel, armourTypeValue, armourConditionValue);
+
+                                messages.Add(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue));
+                                messages.Add(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue));
+
+                                messages.Add(new Message($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
+
+                                bool pickedUp = false;
+                                switch (armour.Type) {
+                                    case ArmourTypes.Helmet: 
+                                        if (armour.ArmourValue > adventurer.ArmourHelmet) {
+                                            adventurer.ArmourHelmet = armour.ArmourValue;
+                                            pickedUp = true;
+                                        }
+                                        break;
+                                    case ArmourTypes.Breastplate:
+                                        if (armour.ArmourValue > adventurer.ArmourBreastplate) {
+                                            adventurer.ArmourBreastplate = armour.ArmourValue;
+                                            pickedUp = true;
+                                        }
+                                        break;
+                                    case ArmourTypes.Gauntlet:
+                                        if (armour.ArmourValue > adventurer.ArmourGauntlet) {
+                                            adventurer.ArmourGauntlet = armour.ArmourValue;
+                                            pickedUp = true;
+                                        }
+                                        break;
+                                    case ArmourTypes.Greave:
+                                        if (armour.ArmourValue > adventurer.ArmourGreave) {
+                                            adventurer.ArmourGreave = armour.ArmourValue;
+                                            pickedUp = true;
+                                        }
+                                        break;
+                                    case ArmourTypes.Boots:
+                                        if (armour.ArmourValue > adventurer.ArmourBoots) {
+                                            adventurer.ArmourBoots = armour.ArmourValue;
+                                            pickedUp = true;
+                                        }
+                                        break;
+                                    case ArmourTypes.Unknown:
+                                    default:
+                                        throw new ArgumentOutOfRangeException("Armour type selection");
+                                }
+
+                                if (pickedUp) {
+                                    messages.Add(new Message($"EQUIPT {armour.Description()}"));
+                                } else {
+                                    messages.Add(new Message($"REJECT {armour.Description()}"));
+                                }
+
                                 break;
                             case DungeonEvents.TakenPotion:
                                 int potionTypeValue = Dice.RollDSix();
@@ -245,9 +297,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Potions potion = new(dungeon.CurrentLevel, potionTypeValue, potionSizeValue, potionDurationValue);
 
-                                messages.Add(new Message($"Potion type: {potion.Type} ({potionTypeValue})", potionTypeValue));
-                                messages.Add(new Message($"Potion size: {potion.Size} ({potionSizeValue})", potionSizeValue));
-                                messages.Add(new Message($"Potion duration: {potion.Duration} ({potionDurationValue})", potionDurationValue));
+                                messages.Add(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue));
+                                messages.Add(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue));
+                                messages.Add(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue));
 
                                 switch (potion.Type) {
                                     case PotionTypes.Aura:
@@ -271,6 +323,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     case PotionTypes.Unknown:
                                         break;
                                 }
+
+                                messages.Add(new Message($"DRINK A {potion.Description()}"));
 
                                 break;
                             default:
