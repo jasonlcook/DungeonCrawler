@@ -1,4 +1,6 @@
 ﻿using BlazorDungeonCrawler.Shared.Enumerators;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.InteropServices;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Potions {
@@ -16,6 +18,10 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             Duration = GetDuration(durationValue);
             DurationValue = GetDurationValue();
+        }
+
+        public string Description() {
+            return $"Drink a {Size} of {Duration} duration {Type} potion.";
         }
 
         //  Type
