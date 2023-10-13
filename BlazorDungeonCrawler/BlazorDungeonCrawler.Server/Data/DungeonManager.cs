@@ -332,7 +332,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                         break;
                     case DungeonEvents.Macguffin:
-
+                        dungeon.MacGuffinFound = true;
+                        selectedTile.Type = DungeonEvents.Empty;
+                        messages.Add(new Message("MACGUFFIN FOUND.  NOW GET OUT."));
                         break;
                     case DungeonEvents.FoundWeapon:
                     case DungeonEvents.FoundProtection:
