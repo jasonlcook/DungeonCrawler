@@ -104,7 +104,7 @@ body {
             }
 
                 #play-area .details .adventurer .adventurer-stats .adventurer-stats-section {
-                margin: 0 0 10px 0;
+                    margin: 0 0 10px 0;
                 }
 
                     #play-area .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row {
@@ -138,17 +138,17 @@ body {
                             font-weight: bold;
                         }
 
-#play-area .details .adventurer .dice {
-    padding: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-content: space-around;
-    align-items: center;
-    border-color: #000;
-    border-width: 1px 0 0 0;
-    border-style: solid;
-}
+            #play-area .details .adventurer .dice {
+                padding: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-content: space-around;
+                align-items: center;
+                border-color: #000;
+                border-width: 1px 0 0 0;
+                border-style: solid;
+            }
 
                 #play-area .details .adventurer .dice .die {
                     width: 20px;
@@ -404,11 +404,18 @@ body {
             z-index: 1;
         }
 
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:active,
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:hover,
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:focus,
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:active,
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:hover,
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:focus {
             color: black;
             cursor: grab;
+        }
+
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-current {
+            background-image: url('../images/tiles/effects/current.png');
         }
 
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden {
@@ -429,6 +436,10 @@ body {
         /*          Selectable */
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-selectable {
             background-image: url("../images/tiles/red/base_tile_selectable.png");
+        }
+
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/red/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
@@ -498,9 +509,13 @@ body {
             background-image: url("../images/tiles/blue/base_tile.png");
         }
 
-        /*  Selectable */
+        /*          Selectable */
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-selectable {
             background-image: url("../images/tiles/blue/base_tile_selectable.png");
+        }
+
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/blue/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
@@ -575,6 +590,10 @@ body {
             background-image: url("../images/tiles/purple/base_tile_selectable.png");
         }
 
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/purple/base_tile_hidden_selectable.png');
+        }
+
         /*          Element */
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance {
             background-image: url("../images/tiles/purple/entrance.png");
@@ -647,6 +666,10 @@ body {
             background-image: url("../images/tiles/green/base_tile_selectable.png");
         }
 
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/green/base_tile_hidden_selectable.png');
+        }
+
         /*          Element */
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance {
             background-image: url("../images/tiles/green/entrance.png");
@@ -717,6 +740,10 @@ body {
         /*          Selectable */
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-selectable {
             background-image: url("../images/tiles/pink/base_tile_selectable.png");
+        }
+
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/pink/base_tile_hidden_selectable.png');
         }
 
         /*          Element */

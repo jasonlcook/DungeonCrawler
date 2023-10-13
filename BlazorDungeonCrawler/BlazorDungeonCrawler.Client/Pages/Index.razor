@@ -50,24 +50,34 @@
                     var orderedTiles = GetOrderTiles();
 
                     if (orderedTiles != null) {
+                        string selectableClass = string.Empty;
                         foreach (Tile tile in orderedTiles) {
                             <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
                                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
+
+                                @if (tile.Current) {
+                                    <div class="hexagon-tile hexagon-tile-current"></div>
+                                }
+
+                                @if (tile.Selectable) {
+                                    selectableClass = "hexagon-tile-selectable";
+                                    @if (tile.Hidden) {
+                                        selectableClass = "hexagon-tile-hidden-selectable";
+                                    }
+
+                                    <div class="hexagon-tile @colourClass @selectableClass ">
+                                        <span @onclick="@(() => SelectTile(tile.Id))"></span>
+                                    </div>
+                                }
 
                                 @if (tile.Hidden) {
                                     <div class="hexagon-tile hexagon-tile-hidden"></div>
                                 } else {
                                     <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
 
-                                    @if (!tile.Current) {
+                                    @if (!tile.Current && !tile.Selectable) {
                                         <div class="hexagon-tile hexagon-for-of-war"></div>
                                     }
-                                }
-
-                                @if (tile.Selectable) {
-                                    <div class="hexagon-tile @colourClass hexagon-tile-selectable">
-                                        <span @onclick="@(() => SelectTile(tile.Id))"></span>
-                                    </div>
                                 }
 
                                 @if (tile.Monsters.Count > 0) {
