@@ -6,6 +6,22 @@ namespace BlazorDungeonCrawler.Shared.Models {
         [Key]
         public Guid Id { get; set; }
 
+
+        public int Level { get; set; }
+        public int Experience { get; set; }
+
+        //Level      XP
+        //1           0
+        //2           1
+        //3           3
+        //4           7
+        //5          15
+        //6          31
+        //7          63
+        //8         127
+        public int NextLevelCost { get; set; }
+
+
         public int HealthBase { get; set; }
         public int HealthInitial { get; set; }
         public int AuraPotion { get; set; }

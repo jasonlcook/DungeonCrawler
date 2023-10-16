@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DBSet : DbMigration
+    public partial class DBSetup : DbMigration
     {
         public override void Up()
         {
@@ -12,6 +12,9 @@
                 c => new
                     {
                         Id = c.Guid(nullable: false),
+                        Level = c.Int(nullable: false),
+                        Experience = c.Int(nullable: false),
+                        NextLevelCost = c.Int(nullable: false),
                         HealthBase = c.Int(nullable: false),
                         HealthInitial = c.Int(nullable: false),
                         AuraPotion = c.Int(nullable: false),
@@ -37,7 +40,7 @@
                 c => new
                     {
                         Id = c.Guid(nullable: false),
-                        CurrentLevel = c.Int(nullable: false),
+                        Depth = c.Int(nullable: false),
                         ApiVersion = c.String(),
                         MacGuffinFound = c.Boolean(nullable: false),
                         InCombat = c.Boolean(nullable: false),
@@ -91,6 +94,7 @@
                         Health = c.Int(nullable: false),
                         Damage = c.Int(nullable: false),
                         Protection = c.Int(nullable: false),
+                        Experience = c.Int(nullable: false),
                         ClientX = c.Int(nullable: false),
                         ClientY = c.Int(nullable: false),
                         Tile_Id = c.Guid(),

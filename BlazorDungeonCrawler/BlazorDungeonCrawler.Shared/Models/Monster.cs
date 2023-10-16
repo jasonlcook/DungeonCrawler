@@ -15,6 +15,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int Protection { get; set; }
 
 
+        public int Experience { get; set; }
+
+
         public int ClientX { get; set; }
         public int ClientY { get; set; }
 

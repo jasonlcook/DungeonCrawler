@@ -8,7 +8,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public Adventurer? Adventurer { get; set; }
 
-        public int CurrentLevel { get; set; }
+        public int Depth { get; set; }
 
         public List<Level>? Levels { get; set; }
 
