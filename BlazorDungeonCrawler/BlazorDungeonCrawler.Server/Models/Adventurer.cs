@@ -3,7 +3,11 @@ using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Adventurer {
+        //attributes
         public Guid Id { get; private set; }
+        public int Level { get; set; }
+        public int Experience { get; set; }
+        public int NextLevelCost { get; set; }
         public int HealthBase { get; set; }
         public int HealthInitial { get; set; }
         public int AuraPotion { get; set; }
@@ -22,8 +26,14 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int ArmourBoots { get; set; }
         public bool IsAlive { get; set; }
 
+        //constructors
+
         public Adventurer(int health, int damage, int protection) {
             this.Id = Guid.NewGuid();
+
+            this.Level = 1;
+            this.Experience = 0;
+            this.NextLevelCost = GetLevelCost(this.Level + 1);
 
             this.HealthInitial = health;
             this.HealthBase = health;
@@ -33,8 +43,12 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.IsAlive = true;
         }
 
+        //mapping
         public Adventurer(SharedAdventurer adventurer) {
             this.Id = adventurer.Id;
+            this.Level = adventurer.Level;
+            this.Experience = adventurer.Experience;
+            this.NextLevelCost = adventurer.NextLevelCost;
             this.HealthBase = adventurer.HealthBase;
             this.HealthInitial = adventurer.HealthInitial;
             this.AuraPotion = adventurer.AuraPotion;
@@ -54,14 +68,87 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.IsAlive = adventurer.IsAlive;
         }
 
+        public SharedAdventurer SharedModelMapper() {
+            return new SharedAdventurer() {
+                Id = this.Id,
+                Level = this.Level,
+                Experience = this.Experience,
+                NextLevelCost = this.NextLevelCost,
+                HealthBase = this.HealthBase,
+                HealthInitial = this.HealthInitial,
+                AuraPotion = this.AuraPotion,
+                AuraPotionDuration = this.AuraPotionDuration,
+                DamageBase = this.DamageBase,
+                DamagePotion = this.DamagePotion,
+                DamagePotionDuration = this.DamagePotionDuration,
+                ProtectionBase = this.ProtectionBase,
+                ShieldPotion = this.ShieldPotion,
+                ShieldPotionDuration = this.ShieldPotionDuration,
+                Weapon = this.Weapon,
+                ArmourHelmet = this.ArmourHelmet,
+                ArmourBreastplate = this.ArmourBreastplate,
+                ArmourGauntlet = this.ArmourGauntlet,
+                ArmourGreave = this.ArmourGreave,
+                ArmourBoots = this.ArmourBoots,
+                IsAlive = this.IsAlive
+            };
+        }
+
+        //operation
+        //  Leveling
+        public int GetLevelCost(int level) {
+            return GeometricSeries(1d, 2d, level);
+        }
+
+        public int GeometricSeries(double a, double r, int n) {
+            double series = a * (1 - Math.Pow(r, n)) / (1 - r);
+            return Convert.ToInt32(series);
+        }
+
+        public void LevelUp() {
+            if (Experience >= NextLevelCost) {
+                this.Level += 1;
+                NextLevelCost = GetLevelCost(Level);
+
+                int healthUpgrade = HealthInitial / 2;
+                if (healthUpgrade < 1) {
+                    healthUpgrade = 1;
+                }
+
+                HealthBase += healthUpgrade;
+                HealthInitial += healthUpgrade;
+
+                int damageUpgrade = DamageBase / 2;
+                if (damageUpgrade < 1) {
+                    damageUpgrade = 1;
+                }
+
+                DamageBase += damageUpgrade;
+
+                int protectionUpgrade = ProtectionBase / 2;
+                if (protectionUpgrade < 1) {
+                    protectionUpgrade = 1;
+                }
+
+                ProtectionBase += protectionUpgrade;
+
+                LevelUp();
+            }
+        }
+
+        //  Damage
         public int GetDamage() {
             return DamageBase + Weapon + DamagePotion;
         }
 
+        //  Protection
         public int GetProtection() {
             return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
-        }              
+        }
 
+        //  Health
+
+        //  Wounds
         public int reciveWounds(int woundsReceived) {
             int remainingDammagePoints, adventurerDammage = 0;
 
@@ -116,7 +203,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             return adventurerDammage;
         }
 
-        //Potion
+        //  Potion
         public void DurationDecrement() {
             if (AuraPotionDuration > 0) {
                 AuraPotionDuration -= 1;
@@ -140,8 +227,8 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        //  Aura
-        //  if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
+        //      Aura
+        //      if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
         public int SetAuraPotion(int sizeValue) {
             int regainedHealth = 0;
 
@@ -164,29 +251,6 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
 
             return regainedHealth;
-        }
-
-        public SharedAdventurer SharedModelMapper() {
-            return new SharedAdventurer() {
-                Id = this.Id,
-                HealthBase = this.HealthBase,
-                HealthInitial = this.HealthInitial,
-                AuraPotion = this.AuraPotion,
-                AuraPotionDuration = this.AuraPotionDuration,
-                DamageBase = this.DamageBase,
-                DamagePotion = this.DamagePotion,
-                DamagePotionDuration = this.DamagePotionDuration,
-                ProtectionBase = this.ProtectionBase,
-                ShieldPotion = this.ShieldPotion,
-                ShieldPotionDuration = this.ShieldPotionDuration,
-                Weapon = this.Weapon,
-                ArmourHelmet = this.ArmourHelmet,
-                ArmourBreastplate = this.ArmourBreastplate,
-                ArmourGauntlet = this.ArmourGauntlet,
-                ArmourGreave = this.ArmourGreave,
-                ArmourBoots = this.ArmourBoots,
-                IsAlive = this.IsAlive
-            };
         }
     }
 }
