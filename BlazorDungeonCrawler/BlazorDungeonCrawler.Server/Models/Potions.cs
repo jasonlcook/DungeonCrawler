@@ -1,6 +1,4 @@
 ﻿using BlazorDungeonCrawler.Shared.Enumerators;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.InteropServices;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Potions {
