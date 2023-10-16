@@ -4,9 +4,11 @@ using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Monsters {
+        //attributes
         private string _name = string.Empty;
         private List<Monster> _monsters = new List<Monster>();
 
+        //constructors
         public Monsters() { }
 
         public void Generate(int depth) {
@@ -27,7 +29,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
                     int health, damage, protection, rollValue;
                     List<int> healthDice = new(), damageDice = new(), protectionDice = new();
-                    
+
                     for (int i = 0; i < packCount; i++) {
                         health = 0;
                         damage = 0;
@@ -58,6 +60,8 @@ namespace BlazorDungeonCrawler.Server.Models {
                             protection += rollValue;
                         }
                         monster.Protection = protection;
+
+                        monster.Experience = (monster.Health + monster.Damage + monster.Protection) / 2;
 
                         _monsters.Add(monster);
                     }
@@ -126,18 +130,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        public int randomisePlacement(int middle) {
-            int randomisationFactor = 5;
-            int min = middle - randomisationFactor;
-            int max = middle + randomisationFactor;
-            
-            return Dice.RandomNumber(min, max);
-        }
-
-        public int Count() {
-            return _monsters.Count();
-        }
-
+        //mapping
         public List<SharedMonster> SharedModelMapper() {
             List<SharedMonster> sharedMonsters = new();
 
@@ -148,12 +141,26 @@ namespace BlazorDungeonCrawler.Server.Models {
             return sharedMonsters;
         }
 
+        //operation
+        //  accessors
         public List<Monster> Get() {
             return _monsters;
         }
 
         public string GetName() {
             return _name;
+        }
+        public int Count() {
+            return _monsters.Count();
+        }
+
+        //  GUI 
+        public int randomisePlacement(int middle) {
+            int randomisationFactor = 5;
+            int min = middle - randomisationFactor;
+            int max = middle + randomisationFactor;
+
+            return Dice.RandomNumber(min, max);
         }
     }
 }
