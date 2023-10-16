@@ -43,6 +43,7 @@
                         Depth = c.Int(nullable: false),
                         ApiVersion = c.String(),
                         MacGuffinFound = c.Boolean(nullable: false),
+                        StairsDiscovered = c.Boolean(nullable: false),
                         InCombat = c.Boolean(nullable: false),
                         CombatTile = c.Guid(nullable: false),
                         CombatInitiated = c.Boolean(nullable: false),

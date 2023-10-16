@@ -21,6 +21,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public bool MacGuffinFound { get; set; }
 
 
+        public bool StairsDiscovered { get; set; }
+
+
         public bool InCombat { get; set; }
         public Guid CombatTile { get; set; }
 
