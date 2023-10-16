@@ -185,8 +185,8 @@
                     },
                     new MonsterType() {
                         Name = "Beholder",
-                        LevelStart = 10,
-                        LevelEnd = 10,
+                        LevelStart = 999,
+                        LevelEnd = 999,
                         MaxPackNumber = 1,
                         HealthDiceCount = 7,
                         DamageDiceCount = 1,

@@ -332,6 +332,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                         break;
                     case DungeonEvents.Macguffin:
+                        //todo: set beholder combat here
                         dungeon.MacGuffinFound = true;
                         selectedTile.Type = DungeonEvents.Empty;
                         messages.Add(new Message("MACGUFFIN FOUND.  NOW GET OUT."));
