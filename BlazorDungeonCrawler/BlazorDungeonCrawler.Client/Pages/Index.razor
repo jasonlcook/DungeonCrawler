@@ -117,12 +117,26 @@
     <div class="details">
         <div class="adventurer">
             <div class="dungeon-level">
-                <span class="label">Level</span>
+                <span class="label">Depth</span>
                 <span class="value" id="current-level">
                     @((MarkupString)dungeonDepth.ToString())
                 </span>
             </div>
             <div class="adventurer-stats">
+                <div class="adventurer-stats-section">
+                    <div class="adventurer-stats-row adventurer-stats-row-total">
+                        <span class="label">Level</span>
+                        <span class="value">
+                            @((MarkupString)level.ToString())
+                        </span>
+                    </div>
+                    <div class="adventurer-stats-row adventurer-stats-row-total">
+                        <span class="label">Experience</span>
+                        <span class="value">
+                            @((MarkupString)experience)
+                        </span>
+                    </div>
+                </div>
                 <div class="adventurer-stats-section">
                     @if (auraPotionDuration != string.Empty) {
                         <div class="adventurer-stats-row">
@@ -429,7 +443,10 @@
 
     int dungeonDepth = 0;
 
-    string health = "0";
+    int level = 0;
+    string experience = "0 / 0";
+
+    string health = "0 / 0";
     string healthBase = string.Empty;
     string auraPotion = string.Empty;
     string auraPotionDuration = string.Empty;
@@ -500,7 +517,7 @@
     private async void DungeonRefresh() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
             tile = new();
-            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
+            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
             if (level != null && level.Id != Guid.Empty) {
                 try {
                     successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {level.Rows}, \"columns\": {level.Columns} }}");
@@ -603,6 +620,10 @@
     }
 
     private async Task<bool> UpdateValues() {
+        int adventurerLevel = 0;
+        int adventurerNextLevelCost = 0;
+        int adventurerExperience = 0;
+
         int adventurerAuraPotion = 0;
         int adventurerDamagePotion = 0;
         int adventurerShieldPotion = 0;
@@ -623,7 +644,15 @@
             throw new Exception("Dungeon Adventurer response was badly formed.");
         }
 
-        dungeonDepth = dungeon.CurrentLevel;
+        dungeonDepth = dungeon.Depth;
+
+        //Level
+        adventurerExperience = dungeon.Adventurer.Experience;
+        adventurerNextLevelCost = dungeon.Adventurer.NextLevelCost;
+        adventurerLevel = dungeon.Adventurer.Level;
+
+        level = adventurerLevel;
+        experience = $"{adventurerExperience} / {adventurerNextLevelCost}";
 
         //Health
         healthBase = dungeon.Adventurer.HealthBase.ToString();
@@ -712,7 +741,7 @@
 
     private List<Tile> GetOrderTiles() {
         if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
-            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.CurrentLevel).FirstOrDefault();
+            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
             if (level != null && level.Id != Guid.Empty) {
                 return level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
             } else {
