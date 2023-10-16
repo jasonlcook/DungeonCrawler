@@ -65,6 +65,23 @@ namespace BlazorDungeonCrawler.Server.Controllers {
             }
         }
 
+        [HttpGet("{dungeonId}/descendstairs")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> DescendStairs(Guid dungeonId) {
+            try {
+                SharedDungeon dungeon = await dungeonManager.DescendStairs(dungeonId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
+        }
+
+
         [HttpGet("{dungeonId}/tile/{tileId}/flee")]
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> MonsterFlee(Guid dungeonId, Guid tileId) {

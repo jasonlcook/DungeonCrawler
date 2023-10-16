@@ -110,6 +110,16 @@
                 </div>
             </div>
         }
+
+        @if (dungeon != null && dungeon.StairsDiscovered) {
+            <div id="action-dialog">
+                <div class="action-dialog-body">BODY</div>
+                <div class="action-dialog-buttons">
+                    <button @onclick="DescendStairs" class="dungeon-button">Descend</button>
+                    <button @onclick="RemainOnLevel" class="dungeon-button">Stay</button>
+                </div>
+            </div>
+        }
     </div>
     <div class="button">
         <button id="advance" class="dungeon-button" disabled>Advance</button>
@@ -750,6 +760,40 @@
         } else {
             throw new Exception("Could not place tiles as Dungeon response was badly formed.");
         }
+    }
+
+    private async Task<bool> DescendStairs() {
+        if (dungeon != null && dungeon.Id != Guid.Empty ) {
+            try {
+                dungeon = await DungeonManager.DescendStairs(dungeon.Id);
+            } catch (Exception ex) {
+                errorMessages.Add(ex.Message);
+            }
+
+            bool updateSuccess = await UpdateValues();
+            DungeonRefresh();
+
+            await InvokeAsync(StateHasChanged);
+
+            return true;
+        } else {
+            //todo: trap error
+        }
+
+        return false;
+    }
+
+    private async Task<bool> RemainOnLevel() {
+        await Task.Delay(1);
+
+        if (dungeon == null || dungeon.Id == Guid.Empty) {
+            //todo: report error
+            return false;
+        }
+
+        dungeon.StairsDiscovered = false;
+
+        return true;
     }
 
     private async Task<bool> MonsterFlee() {

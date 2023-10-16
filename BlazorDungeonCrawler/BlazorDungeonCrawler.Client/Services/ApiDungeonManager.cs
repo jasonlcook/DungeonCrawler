@@ -92,6 +92,28 @@ namespace BlazorDungeonCrawler.Client.Services {
             return new Dungeon();
         }
 
+        public async Task<Dungeon> DescendStairs(Guid dungeonId) {
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+
+            string url = $"https://localhost:7224/api/dungeon/{safeDungeonId}/descendstairs";
+
+            HttpResponseMessage? response = await httpClient.GetAsync(url);
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (apiResponse != null) {
+                    var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+                    if (dungeonResponse != null && dungeonResponse.Success) {
+                        return dungeonResponse.Dungeon;
+                    }
+                }
+            }
+
+            return new Dungeon();
+        }
+
         public async Task<Dungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
             string safeTileId = WebUtility.HtmlEncode(tileId.ToString());

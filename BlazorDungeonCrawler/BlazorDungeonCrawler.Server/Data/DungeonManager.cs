@@ -164,27 +164,29 @@ namespace BlazorDungeonCrawler.Server.Data {
                         currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                         TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
 
-                        int increasedDepth = dungeon.Depth += 1;
-                        dungeon.Depth = increasedDepth;
-
-                        currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
-                        if (currentLevel == null || currentLevel.Id == Guid.Empty) {
+                        int increasedDepth = dungeon.Depth + 1;
+                        SharedLevel deeperLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
+                        //If deeper level does not exist create it
+                        if (deeperLevel == null || deeperLevel.Id == Guid.Empty) {
                             //Next level
                             Level newLevel = new(increasedDepth);
-                            messages.Add(new Message($"DUNGEON DEPTH {increasedDepth}"));
+                            messages.Add(new Message($"DUNGEON DEPTH {increasedDepth} DISCOVERD"));
 
                             //  Tiles
-                            Tiles tiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
-                            newLevel.Tiles = tiles.GetTiles();
+                            Tiles newLevelTiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
+                            newLevel.Tiles = newLevelTiles.GetTiles();
 
-                            currentLevelTiles = tiles;
-                            currentLevel = newLevel.SharedModelMapper();
+                            deeperLevel = newLevel.SharedModelMapper();
 
-                            dungeon.Levels.Add(currentLevel);
+                            dungeon.Levels.Add(deeperLevel);
 
-                            LevelCreate.Create(dungeon.Id, currentLevel);
+                            LevelCreate.Create(dungeon.Id, deeperLevel);
+
+                            dungeon.StairsDiscovered = true;
                         } else {
-                            currentLevelTiles = new Tiles(currentLevel.Tiles);
+                            dungeon.Depth = increasedDepth;
+                            currentLevel = deeperLevel;
+                            currentLevelTiles = new Tiles(deeperLevel.Tiles);
                         }
 
                         dungeon.RefreshRequired = true;
@@ -409,6 +411,25 @@ namespace BlazorDungeonCrawler.Server.Data {
                 default:
                     throw new ArgumentOutOfRangeException("Loot type roll value");
             }
+        }
+
+        public async Task<SharedDungeon> DescendStairs(Guid dungeonId) {
+            await Task.Delay(1);
+
+            SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
+
+            int increasedDepth = dungeon.Depth += 1;
+            SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
+            if (currentLevel == null || currentLevel.Id == Guid.Empty || currentLevel.Tiles == null) {
+                throw new Exception("Level not found");
+            }
+
+            dungeon.StairsDiscovered = false;
+
+            //Update Dungon
+            DungeonUpdate.Update(dungeon);
+
+            return dungeon;
         }
 
         public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
@@ -702,7 +723,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 dungeon.InCombat = false;
 
                                 currentLevelTiles.Unhide();
-                                
+
                                 break;
                             }
                         } else {
