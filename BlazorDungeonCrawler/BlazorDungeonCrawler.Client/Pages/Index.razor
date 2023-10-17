@@ -73,7 +73,7 @@
                                 @if (tile.Hidden) {
                                     <div class="hexagon-tile hexagon-tile-hidden"></div>
                                 } else {
-                                    <div class="hexagon-tile @colourClass @GetTypeClass(tile.Type)"></div>
+                                    <div class="hexagon-tile @colourClass @GetTypeClass(dungeon.MacGuffinFound, tile.Type)"></div>
 
                                     @if (!tile.Current && !tile.Selectable) {
                                         <div class="hexagon-tile hexagon-for-of-war"></div>
@@ -571,14 +571,22 @@
         }
     }
 
-    private string GetTypeClass(DungeonEvents type) {
+    private string GetTypeClass(bool macGuffinFound, DungeonEvents type) {
         switch (type) {
             case DungeonEvents.Empty:
                 return "hexagon-tile-empty";
             case DungeonEvents.DungeonEntrance:
-                return "hexagon-tile-entrance";
+                if (macGuffinFound) {
+                    return "hexagon-tile-entrance-active";
+                } else {
+                    return "hexagon-tile-entrance";
+                }
             case DungeonEvents.StairsAscending:
-                return "hexagon-tile-stairs-ascending";
+                if (macGuffinFound) {
+                    return "hexagon-tile-stairs-ascending-active";
+                } else {
+                    return "hexagon-tile-stairs-ascending";
+                }
             case DungeonEvents.StairsDescending:
                 return "hexagon-tile-stairs-descending";
             case DungeonEvents.Fight:
@@ -811,7 +819,7 @@
         }
 
         return false;
-    }        
+    }
 
     private async Task<bool> RemainOnLevel() {
         await Task.Delay(1);
