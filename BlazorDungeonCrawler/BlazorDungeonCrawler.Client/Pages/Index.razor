@@ -748,6 +748,11 @@
 
         protection = (dungeon.Adventurer.ProtectionBase + adventurerShieldPotion + adventurerArmourHelmet + adventurerArmourBreastplate + adventurerArmourGauntlet + adventurerArmourGreave + adventurerArmourBoots).ToString();
 
+        //Disabled advance button if Adventurer is dead
+        if (!dungeon.Adventurer.IsAlive) {
+            advanceDisabled = true;
+        }
+
         await InvokeAsync(StateHasChanged);
 
         return true;
