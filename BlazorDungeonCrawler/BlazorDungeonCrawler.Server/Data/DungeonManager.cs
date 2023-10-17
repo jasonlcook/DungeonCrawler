@@ -334,10 +334,19 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                         break;
                     case DungeonEvents.Macguffin:
-                        //todo: set beholder combat here
-                        dungeon.MacGuffinFound = true;
-                        selectedTile.Type = DungeonEvents.Empty;
-                        messages.Add(new Message("MACGUFFIN FOUND.  NOW GET OUT."));
+                        monsters.Generate(999);
+                        selectedTile.Monsters = monsters.Get();
+
+                        if (selectedTile.Monsters.Count == 1) {
+                            messages.Add(new Message($"A {monsters.GetName()}"));
+                        } else {
+                            messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
+                        }
+
+                        dungeon.InCombat = true;
+                        dungeon.CombatTile = selectedTile.Id;
+
+                        setSelectable = false;
                         break;
                     case DungeonEvents.FoundWeapon:
                     case DungeonEvents.FoundProtection:
@@ -839,6 +848,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                             adventurer.Experience += currentMonster.Experience;
 
                             messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
+
+                            //if the user kills the Beholder
+                            if (currentMonster.TypeName == "Beholder") { 
+                                dungeon.MacGuffinFound = true;
+                                messages.Add(new Message($"BOSS KILLED FIND YOUR WAY OUT"));
+                            }
 
                             //remove monster at stack
                             MonsterDelete.Delete(currentMonster.Id);
