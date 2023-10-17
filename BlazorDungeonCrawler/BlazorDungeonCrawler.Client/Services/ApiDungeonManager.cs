@@ -92,6 +92,40 @@ namespace BlazorDungeonCrawler.Client.Services {
             return new Dungeon();
         }
 
+        public async Task<Dungeon> AutomaticallyAdvanceDungeon(Guid dungeonId) {
+            //escape inputs 
+            string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
+
+            //parse url
+            string url = $"https://localhost:7224/api/dungeon/{safeDungeonId}/automaticallyadvancedungeon";
+
+            //get HTTP response
+            HttpResponseMessage? response = await httpClient.GetAsync(url);
+
+            if (response != null) {
+                response.EnsureSuccessStatusCode();
+
+                //read response results
+                string? apiResponse = await response.Content.ReadAsStringAsync();
+
+                if (apiResponse != null) {
+                    //deserialize JSON string
+                    var dungeonResponse = JsonConvert.DeserializeObject<DungeonResponse>(apiResponse);
+
+                    //check result
+                    if (dungeonResponse != null && dungeonResponse.Success) {
+
+                        //return safe result
+                        return dungeonResponse.Dungeon;
+                    }
+                }
+            }
+
+            //if any of the HTTP elements are null return empty object
+            return new Dungeon();
+        }
+        
+
         public async Task<Dungeon> DescendStairs(Guid dungeonId) {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
 

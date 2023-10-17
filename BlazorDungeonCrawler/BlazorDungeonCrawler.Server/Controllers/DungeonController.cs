@@ -63,6 +63,22 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                 //todo log errors
                 return StatusCode(500);
             }
+        }        
+
+        [HttpGet("{dungeonId}/automaticallyadvancedungeon")]
+        [EnableCors("AllowAnyOriginMethodHeader")]
+        public async Task<ActionResult<DungeonResponse>> AutomaticallyAdvanceDungeon(Guid dungeonId) {
+            try {
+                SharedDungeon dungeon = await dungeonManager.AutomaticallyAdvanceDungeon(dungeonId);
+
+                return Ok(new DungeonResponse() {
+                    Success = true,
+                    Dungeon = dungeon
+                });
+            } catch (Exception ex) {
+                //todo log errors
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("{dungeonId}/descendstairs")]

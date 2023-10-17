@@ -122,7 +122,7 @@
         }
     </div>
     <div class="button">
-        <button id="advance" class="dungeon-button" disabled>Advance</button>
+        <button @onclick="AutomaticallyAdvanceDungeon" class="dungeon-button" disabled="@advanceDisabled">Advance</button>
     </div>
     <div class="details">
         <div class="adventurer">
@@ -451,6 +451,8 @@
 
     string apiVersion = "API V0.0.0";
 
+    bool advanceDisabled = true;
+
     int dungeonDepth = 0;
 
     int level = 0;
@@ -483,6 +485,8 @@
 
     protected override async void OnAfterRender(bool firstRender) {
         if (dungeon == null) {
+            advanceDisabled = false;
+
             if (cookieId != Guid.Empty) {
                 try {
                     dungeon = await DungeonManager.GetDungeon(cookieId);
@@ -763,7 +767,7 @@
     }
 
     private async Task<bool> DescendStairs() {
-        if (dungeon != null && dungeon.Id != Guid.Empty ) {
+        if (dungeon != null && dungeon.Id != Guid.Empty) {
             try {
                 dungeon = await DungeonManager.DescendStairs(dungeon.Id);
             } catch (Exception ex) {
@@ -782,6 +786,27 @@
 
         return false;
     }
+
+    private async Task<bool> AutomaticallyAdvanceDungeon() {
+        if (dungeon != null && dungeon.Id != Guid.Empty) {
+            try {
+                dungeon = await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id);
+            } catch (Exception ex) {
+                errorMessages.Add(ex.Message);
+            }
+
+            bool updateSuccess = await UpdateValues();
+            DungeonRefresh();
+
+            await InvokeAsync(StateHasChanged);
+
+            return true;
+        } else {
+            //todo: trap error
+        }
+
+        return false;
+    }        
 
     private async Task<bool> RemainOnLevel() {
         await Task.Delay(1);

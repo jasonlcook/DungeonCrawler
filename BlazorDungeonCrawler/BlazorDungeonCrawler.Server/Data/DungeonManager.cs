@@ -413,10 +413,218 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
         }
 
+        public async Task<SharedDungeon> AutomaticallyAdvanceDungeon(Guid dungeonId) {
+            SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
+            if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
+            if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+
+            SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+            if (currentLevel == null || currentLevel.Tiles == null || currentLevel.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
+
+            if (dungeon.StairsDiscovered) {
+                return await DescendStairs(dungeonId);
+            } else if (dungeon.InCombat) {
+                //fight the fight
+                SharedTile? currentTile = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                if (currentTile == null || currentTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level current Tiles"); }
+
+                return await MonsterFight(dungeonId, currentTile.Id);
+            } else {
+
+
+                //Select a tile to move to
+                Guid selectedTileId = Guid.Empty;
+                if (dungeon.MacGuffinFound) {
+                    //plot a course between current position and stairs
+                    SharedTile? current = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                    if (current != null && current.Id != Guid.Empty) {
+                        int currentRow = current.Row;
+                        int currentColumn = current.Column;
+
+                        SharedTile? destination;
+                        if (dungeon.Depth == 1) {
+                            destination = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
+                        } else {
+                            destination = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
+                        }
+
+                        if (destination != null && destination.Id != Guid.Empty) {
+                            int destinationRow = destination.Row;
+                            int destinationColumn = destination.Column;
+
+                            string directionOfTravel = getDirectionOfTravel(destinationRow, destinationColumn, currentRow, currentColumn);
+
+                            List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).ToList();
+                            foreach (SharedTile tile in selectableTile) {
+                                if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
+                                    selectedTileId = tile.Id;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    //randomly selecte and hidden tile from the selectables
+                    List<SharedTile>? hiddenSelectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Hidden == true).ToList();
+                    if (hiddenSelectableTile != null && hiddenSelectableTile.Count > 0) {
+                        int tilesCount = hiddenSelectableTile.Count();
+                        int randomTileIndex = Dice.RandomNumber(0, tilesCount - 1);
+
+                        selectedTileId = hiddenSelectableTile[randomTileIndex].Id;
+                    }
+                }
+
+                //todo: if no tiles were selected score the avalible ones
+
+                //go towards hidden
+                //go towards stairs decending
+                //away from fights
+
+
+                if (selectedTileId == Guid.Empty) {
+                    List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable).ToList();
+                    if (selectableTile != null && selectableTile.Count > 0) {
+                        int tilesCount = selectableTile.Count();
+                        int randomTileIndex = Dice.RandomNumber(0, tilesCount - 1);
+
+                        selectedTileId = selectableTile[randomTileIndex].Id;
+                    }
+                }
+
+                return await GetSelectedDungeonTiles(dungeonId, selectedTileId);
+            }
+
+
+
+        }
+
+        private string getDirectionOfTravel(int destinationRow, int destinationColumn, int currentRow, int currentColumn) {
+            if (currentColumn == destinationColumn) {
+                if (currentRow > destinationRow) {
+                    return "N";
+                } else {
+                    return "S";
+                }
+            } else if (currentColumn < destinationColumn) {
+                if ((currentColumn % 2) == 1) {
+                    //long one
+                    if (currentRow > destinationRow) {
+                        return "NE";
+                    } else {
+                        return "SE";
+                    }
+                } else {
+                    //short one
+                    if (currentRow >= destinationRow) {
+                        return "NE";
+                    } else {
+                        return "SE";
+                    }
+                }
+            } else if (currentColumn > destinationColumn) {
+                if ((currentColumn % 2) == 1) {
+                    //long one
+                    if (currentRow > destinationRow) {
+                        return "NW";
+                    } else {
+                        return "SW";
+                    }
+                } else {
+                    //short one
+                    if (currentRow >= destinationRow) {
+                        return "NW";
+                    } else {
+                        return "SW";
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private bool matchesDirectionOfTravel(string directionOfTravel, int tileRow, int tileColumn, int currentRow, int currentColumn) {
+            switch (directionOfTravel) {
+                case "N":
+                    if (currentColumn == tileColumn && currentRow > tileRow) {
+                        return true;
+                    }
+                    break;
+                case "NE":
+                    if (currentColumn < tileColumn) {
+                        if ((currentColumn % 2) == 1) {
+                            //long one
+                            if (currentRow > tileRow) {
+                                return true;
+                            }
+                        } else {
+                            //short one
+                            if (currentRow == tileRow) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+                case "SE":
+                    if (currentColumn < tileColumn) {
+                        if ((currentColumn % 2) == 1) {
+                            //long one
+                            if (currentRow == tileRow) {
+                                return true;
+                            }
+
+                        } else {
+                            //short one
+                            if (currentRow < tileRow) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+                case "S":
+                    if (currentColumn == tileColumn && currentRow < tileRow) {
+                        return true;
+                    }
+                    break;
+                case "SW":
+                    if (currentColumn > tileColumn) {
+                        if ((currentColumn % 2) == 1) {
+                            //long one
+                            if (currentRow == tileRow) {
+                                return true;
+                            }
+                        } else {
+                            //short one
+                            if (currentRow < tileRow) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+                case "NW":
+                    if (currentColumn > tileColumn) {
+                        if ((currentColumn % 2) == 1) {
+                            //long one
+                            if (currentRow > tileRow) {
+                                return true;
+                            }
+                        } else {
+                            //short one
+                            if (currentRow == tileRow) {
+                                return true;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return false;
+        }
+
         public async Task<SharedDungeon> DescendStairs(Guid dungeonId) {
             await Task.Delay(1);
 
             SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
+            if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
 
             int increasedDepth = dungeon.Depth += 1;
             SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
