@@ -447,6 +447,10 @@ body {
             background-image: url("../images/tiles/red/entrance.png");
         }
 
+        #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/red/entrance.png");
+        }
+
         #play-area #dungeon #stage .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-exit {
             background-image: url("../images/tiles/red/exit.png");
         }
