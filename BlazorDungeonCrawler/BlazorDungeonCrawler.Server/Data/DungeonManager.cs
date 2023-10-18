@@ -462,7 +462,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 string directionOfTravel = getDirectionOfTravel(destinationRow, destinationColumn, currentRow, currentColumn);
 
-                                List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).ToList();
+                                List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
                                 foreach (SharedTile tile in selectableTile) {
                                     if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
                                         selectedTileId = tile.Id;
@@ -475,10 +475,42 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //randomly selecte and hidden tile from the selectables
                         List<SharedTile>? hiddenSelectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Hidden == true).ToList();
                         if (hiddenSelectableTile != null && hiddenSelectableTile.Count > 0) {
+                            //if there are hidden tiles in the current selectable rnage
                             int tilesCount = hiddenSelectableTile.Count();
                             int randomTileIndex = Dice.RandomNumber(0, tilesCount - 1);
 
                             selectedTileId = hiddenSelectableTile[randomTileIndex].Id;
+                        } else {
+                            //if there are no hidden tiles in the selectable range
+                            SharedTile? current = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                            if (current != null && current.Id != Guid.Empty) {
+                                int currentRow = current.Row;
+                                int currentColumn = current.Column;
+
+                                List<SharedTile>? hiddenColumnTiles = currentLevel.Tiles.Where(t => t.Hidden == true).ToList();
+
+                                //create a distance score for each tile
+                                Dictionary<SharedTile, double> hiddenTiles = new();
+                                if (hiddenColumnTiles != null && hiddenColumnTiles.Count > 0) {
+                                    foreach (SharedTile tile in hiddenColumnTiles) {
+                                        double distance = Math.Sqrt(Math.Pow((currentRow - tile.Row), 2) + Math.Pow((currentColumn - tile.Column), 2));
+                                        hiddenTiles.Add(tile, distance);
+                                    }
+
+                                    SharedTile targetTile = hiddenTiles.OrderBy(t => t.Value).First().Key;
+
+                                    if (targetTile != null && targetTile.Id != Guid.Empty) {
+                                        string directionOfTravel = getDirectionOfTravel(targetTile.Row, targetTile.Column, currentRow, currentColumn);
+                                        List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
+                                        foreach (SharedTile tile in selectableTile) {
+                                            if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
+                                                selectedTileId = tile.Id;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -506,6 +538,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
         }
 
+        //todo: replace this with Manhattan distance and let the matchesDirectionOfTravel function chose the best tile for NE and SE conditions
         private string getDirectionOfTravel(int destinationRow, int destinationColumn, int currentRow, int currentColumn) {
             if (currentColumn == destinationColumn) {
                 if (currentRow > destinationRow) {
@@ -855,7 +888,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
 
                             //if the user kills the Beholder
-                            if (currentMonster.TypeName == "Beholder") { 
+                            if (currentMonster.TypeName == "Beholder") {
                                 dungeon.MacGuffinFound = true;
                                 messages.Add(new Message($"BOSS KILLED FIND YOUR WAY OUT"));
                             }
