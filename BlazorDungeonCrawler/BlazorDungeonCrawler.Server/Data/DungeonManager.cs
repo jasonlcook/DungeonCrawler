@@ -488,7 +488,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 string directionOfTravel = getDirectionOfTravel(destinationRow, destinationColumn, currentRow, currentColumn);
 
-                                List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
+                                List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).ToList();
                                 foreach (SharedTile tile in selectableTile) {
                                     if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
                                         selectedTileId = tile.Id;
@@ -515,27 +515,47 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 List<SharedTile>? hiddenColumnTiles = currentLevel.Tiles.Where(t => t.Hidden == true).ToList();
 
-                                //create a distance score for each tile
-                                Dictionary<SharedTile, double> hiddenTiles = new();
+                                string directionOfTravel = string.Empty;
+                                SharedTile? targetTile = null;
+                                List<SharedTile>? selectableTile = new();
                                 if (hiddenColumnTiles != null && hiddenColumnTiles.Count > 0) {
+                                    //create a distance score for each tile
+                                    Dictionary<SharedTile, double> hiddenTiles = new();
                                     foreach (SharedTile tile in hiddenColumnTiles) {
                                         double distance = Math.Sqrt(Math.Pow((currentRow - tile.Row), 2) + Math.Pow((currentColumn - tile.Column), 2));
                                         hiddenTiles.Add(tile, distance);
                                     }
 
-                                    SharedTile targetTile = hiddenTiles.OrderBy(t => t.Value).First().Key;
+                                    targetTile = hiddenTiles.OrderBy(t => t.Value).First().Key;
+                                    selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
+                                } else {
+                                    //if all hidden tiles have been uncoverd then make way to relivnt stairs 
 
+                                    if (dungeon.MacGuffinFound) {
+                                        if (dungeon.Depth == 1) {
+                                            targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
+                                        } else {
+                                            targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
+                                        }                                        
+                                    } else {
+                                        targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsDescending).FirstOrDefault();
+                                    }
+
+                                    selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).ToList();
+                                }
+
+                                if (selectableTile != null && selectableTile.Count > 0) {
                                     if (targetTile != null && targetTile.Id != Guid.Empty) {
-                                        string directionOfTravel = getDirectionOfTravel(targetTile.Row, targetTile.Column, currentRow, currentColumn);
-                                        List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
-                                        foreach (SharedTile tile in selectableTile) {
-                                            if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
-                                                selectedTileId = tile.Id;
-                                                break;
-                                            }
+                                        directionOfTravel = getDirectionOfTravel(targetTile.Row, targetTile.Column, currentRow, currentColumn);
+                                    }
+
+                                    foreach (SharedTile tile in selectableTile) {
+                                        if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
+                                            selectedTileId = tile.Id;
+                                            break;
                                         }
                                     }
-                                } 
+                                }                                
                             }
                         }
                     }
