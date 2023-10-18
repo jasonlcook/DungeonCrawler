@@ -100,6 +100,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
                 if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
 
+                //reset stairs
+                dungeon.StairsDiscovered = false;
+
                 Messages messages = new();
                 Monsters monsters = new();
 
