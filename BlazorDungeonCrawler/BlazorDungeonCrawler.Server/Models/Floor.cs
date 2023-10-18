@@ -1,17 +1,17 @@
-﻿using SharedLevel = BlazorDungeonCrawler.Shared.Models.Level;
+﻿using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
 namespace BlazorDungeonCrawler.Server.Models {
-    public class Level {
+    public class Floor {
         public Guid Id { get; private set; }
         public int Depth { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
         public List<Tile> Tiles { get; set; }
 
-        public Level() { }
+        public Floor() { }
 
-        public Level(int depth) {
+        public Floor(int depth) {
             Id = Guid.NewGuid();
 
             Depth = depth;
@@ -21,14 +21,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             GetRowsAndColumnsForCurrentDepth();
         }
 
-        public Level(SharedLevel level) {
-            Id = level.Id;
-            Depth = level.Depth;
-            Rows = level.Rows;
-            Columns = level.Columns;
+        public Floor(SharedFloor floor) {
+            Id = floor.Id;
+            Depth = floor.Depth;
+            Rows = floor.Rows;
+            Columns = floor.Columns;
 
             Tiles = new();
-            foreach (SharedTile tile in level.Tiles) {
+            foreach (SharedTile tile in floor.Tiles) {
                 Tiles.Add(new Tile(tile));
             }
         }
@@ -62,21 +62,21 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        public SharedLevel SharedModelMapper() {
-            SharedLevel level = new() {
+        public SharedFloor SharedModelMapper() {
+            SharedFloor floor = new() {
                 Id = this.Id,
                 Depth = this.Depth,
                 Rows = this.Rows,
                 Columns = this.Columns
             };
 
-            level.Tiles = new();
+            floor.Tiles = new();
 
             foreach (Tile tile in this.Tiles) {
-                level.Tiles.Add(tile.SharedModelMapper());
+                floor.Tiles.Add(tile.SharedModelMapper());
             }
 
-            return level;
+            return floor;
         }
     }
 }

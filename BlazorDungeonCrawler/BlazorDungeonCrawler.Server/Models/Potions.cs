@@ -43,11 +43,11 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Size
-        //      Level 1 - 4
+        //      Floor 1 - 4
         //          1 - 5:  Vial
         //          6:      Flask
 
-        //      Level 5 +
+        //      Floor 5 +
         //          1:      Vial
         //          2 - 5:  Flask
         //          6:      Bottle

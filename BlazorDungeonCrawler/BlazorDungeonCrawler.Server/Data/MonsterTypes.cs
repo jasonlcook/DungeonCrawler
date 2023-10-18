@@ -6,8 +6,8 @@
             _monsterTypes = new List<MonsterType>() {
                     new MonsterType() {
                         Name = "Giant Leech",
-                        LevelStart = 1,
-                        LevelEnd = 1,
+                        FloorStart = 1,
+                        FloorEnd = 1,
                         MaxPackNumber = 1,
                         HealthDiceCount = 1,
                         DamageDiceCount = 1,
@@ -16,8 +16,8 @@
                     },
                     new MonsterType() {
                         Name = "Kobold",
-                        LevelStart = 1,
-                        LevelEnd = 2,
+                        FloorStart = 1,
+                        FloorEnd = 2,
                         MaxPackNumber = 5,
                         HealthDiceCount = 1,
                         DamageDiceCount = 1,
@@ -26,8 +26,8 @@
                     },
                     new MonsterType() {
                         Name = "Skeleton",
-                        LevelStart = 2,
-                        LevelEnd = 6,
+                        FloorStart = 2,
+                        FloorEnd = 6,
                         MaxPackNumber = 2,
                         HealthDiceCount = 2,
                         DamageDiceCount = 1,
@@ -36,8 +36,8 @@
                     },
                     new MonsterType() {
                         Name = "Zombie",
-                        LevelStart = 2,
-                        LevelEnd = 6,
+                        FloorStart = 2,
+                        FloorEnd = 6,
                         MaxPackNumber = 2,
                         HealthDiceCount = 2,
                         DamageDiceCount = 1,
@@ -46,8 +46,8 @@
                     },
                     new MonsterType() {
                         Name = "Kuo-Toa",
-                        LevelStart = 3,
-                        LevelEnd = 3,
+                        FloorStart = 3,
+                        FloorEnd = 3,
                         MaxPackNumber = 3,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -56,8 +56,8 @@
                     },
                     new MonsterType() {
                         Name = "Flind",
-                        LevelStart = 3,
-                        LevelEnd = 6,
+                        FloorStart = 3,
+                        FloorEnd = 6,
                         MaxPackNumber = 1,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -66,8 +66,8 @@
                     },
                     new MonsterType() {
                         Name = "Giant Spider",
-                        LevelStart = 4,
-                        LevelEnd = 5,
+                        FloorStart = 4,
+                        FloorEnd = 5,
                         MaxPackNumber = 1,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -76,8 +76,8 @@
                     },
                     new MonsterType() {
                         Name = "Kenku",
-                        LevelStart = 6,
-                        LevelEnd = 6,
+                        FloorStart = 6,
+                        FloorEnd = 6,
                         MaxPackNumber = 3,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -86,8 +86,8 @@
                     },
                     new MonsterType() {
                         Name = "Drow Elf",
-                        LevelStart = 7,
-                        LevelEnd = 9,
+                        FloorStart = 7,
+                        FloorEnd = 9,
                         MaxPackNumber = 3,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -96,8 +96,8 @@
                     },
                     new MonsterType() {
                         Name = "Skeletal Lord",
-                        LevelStart = 7,
-                        LevelEnd = 9,
+                        FloorStart = 7,
+                        FloorEnd = 9,
                         MaxPackNumber = 1,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -106,8 +106,8 @@
                     },
                     new MonsterType() {
                         Name = "Drider",
-                        LevelStart = 8,
-                        LevelEnd = 9,
+                        FloorStart = 8,
+                        FloorEnd = 9,
                         MaxPackNumber = 3,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -116,8 +116,8 @@
                     },
                     new MonsterType() {
                         Name = "Hell Hound",
-                        LevelStart = 8,
-                        LevelEnd = 9,
+                        FloorStart = 8,
+                        FloorEnd = 9,
                         MaxPackNumber = 5,
                         HealthDiceCount = 3,
                         DamageDiceCount = 1,
@@ -126,8 +126,8 @@
                     },
                     new MonsterType() {
                         Name = "Displacer Beast",
-                        LevelStart = 9,
-                        LevelEnd = 9,
+                        FloorStart = 9,
+                        FloorEnd = 9,
                         MaxPackNumber = 1,
                         HealthDiceCount = 4,
                         DamageDiceCount = 1,
@@ -136,8 +136,8 @@
                     },
                     new MonsterType() {
                         Name = "Rust Monster",
-                        LevelStart = 9,
-                        LevelEnd = 9,
+                        FloorStart = 9,
+                        FloorEnd = 9,
                         MaxPackNumber = 1,
                         HealthDiceCount = 4,
                         DamageDiceCount = 1,
@@ -146,8 +146,8 @@
                     },
                     new MonsterType() {
                         Name = "Mantis Warrior",
-                        LevelStart = 10,
-                        LevelEnd = 10,
+                        FloorStart = 10,
+                        FloorEnd = 10,
                         MaxPackNumber = 3,
                         HealthDiceCount = 4,
                         DamageDiceCount = 1,
@@ -156,8 +156,8 @@
                     },
                     new MonsterType() {
                         Name = "Mind Flayer",
-                        LevelStart = 10,
-                        LevelEnd = 10,
+                        FloorStart = 10,
+                        FloorEnd = 10,
                         MaxPackNumber = 1,
                         HealthDiceCount = 5,
                         DamageDiceCount = 1,
@@ -166,8 +166,8 @@
                     },
                     new MonsterType() {
                         Name = "Xorn",
-                        LevelStart = 10,
-                        LevelEnd = 10,
+                        FloorStart = 10,
+                        FloorEnd = 10,
                         HealthDiceCount = 5,
                         DamageDiceCount = 1,
                         ProtectionDiceCount = 1,
@@ -175,8 +175,8 @@
                     },
                     new MonsterType() {
                         Name = "Stone Golem",
-                        LevelStart = 10,
-                        LevelEnd = 10,
+                        FloorStart = 10,
+                        FloorEnd = 10,
                         MaxPackNumber = 1,
                         HealthDiceCount = 6,
                         DamageDiceCount = 1,
@@ -185,8 +185,8 @@
                     },
                     new MonsterType() {
                         Name = "Beholder",
-                        LevelStart = 999,
-                        LevelEnd = 999,
+                        FloorStart = 999,
+                        FloorEnd = 999,
                         MaxPackNumber = 1,
                         HealthDiceCount = 7,
                         DamageDiceCount = 1,
@@ -197,7 +197,7 @@
         }
 
         public List<MonsterType> GetMonstersAtDepth(int depth) {
-            return _monsterTypes.Where(mt => mt.LevelStart <= depth).Where(mt => mt.LevelEnd >= depth).ToList();
+            return _monsterTypes.Where(mt => mt.FloorStart <= depth).Where(mt => mt.FloorEnd >= depth).ToList();
         }
     }
 }

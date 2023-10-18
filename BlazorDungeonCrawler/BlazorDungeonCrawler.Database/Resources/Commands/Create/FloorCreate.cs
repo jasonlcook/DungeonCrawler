@@ -2,16 +2,16 @@
 using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
-    public static class LevelCreate {
-        public static void Create(Guid dungeonId, Level level) {
+    public static class FloorCreate {
+        public static void Create(Guid dungeonId, Floor floor) {
             try {
                 using (var context = new DungeonContext()) {
                     Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
                     if (attachedDungeon != null) {
-                        attachedDungeon.Levels = new();
-                        attachedDungeon.Levels.Add(level);
+                        attachedDungeon.Floors = new();
+                        attachedDungeon.Floors.Add(floor);
 
-                        context.Levels.Add(attachedDungeon.Levels.First());
+                        context.Floors.Add(attachedDungeon.Floors.First());
                     }
 
                     context.SaveChanges();

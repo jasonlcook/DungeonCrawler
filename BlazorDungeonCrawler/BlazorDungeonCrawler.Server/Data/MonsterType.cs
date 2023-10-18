@@ -8,8 +8,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         public string Name { get; set; } 
 
 
-        public int LevelStart { get; set; }
-        public int LevelEnd { get; set; }
+        public int FloorStart { get; set; }
+        public int FloorEnd { get; set; }
 
         public int MaxPackNumber { get; set; }
 

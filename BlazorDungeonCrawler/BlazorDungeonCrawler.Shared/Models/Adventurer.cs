@@ -7,7 +7,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Guid Id { get; set; }
 
 
-        public int Level { get; set; }
+        public int ExperienceLevel { get; set; }
         public int Experience { get; set; }
 
         //Level      XP
@@ -19,7 +19,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         //6          31
         //7          63
         //8         127
-        public int NextLevelCost { get; set; }
+        public int NextExperienceLevelCost { get; set; }
 
 
         public int HealthBase { get; set; }

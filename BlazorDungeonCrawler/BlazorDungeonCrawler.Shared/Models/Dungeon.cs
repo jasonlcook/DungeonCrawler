@@ -10,7 +10,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public int Depth { get; set; }
 
-        public List<Level>? Levels { get; set; }
+        public List<Floor>? Floors { get; set; }
 
         public List<Message>? Messages { get; set; }
 
@@ -29,17 +29,12 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public bool CombatInitiated { get; set; }
 
-        [NotMapped]
-        public bool RefreshRequired { get; set; }
-
         public Dungeon() {
             Id = Guid.Empty;
 
             CombatTile = Guid.Empty;
 
             ApiVersion = string.Empty;
-
-            RefreshRequired = false;
         }
     }
 }

@@ -89,7 +89,7 @@ body {
             min-height: 350px;
         }
 
-            #play-area .details .adventurer .dungeon-level {
+            #play-area .details .adventurer .dungeon-floor {
                 border-color: #000;
                 border-width: 0px 0px 1px;
                 border-style: solid;

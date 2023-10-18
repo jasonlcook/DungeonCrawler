@@ -39,27 +39,27 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        public Tiles(int depth, int levelRows, int levelColumns) {
+        public Tiles(int depth, int floorRows, int floorColumns) {
             _tiles = new();
 
             List<int> _tileIndexes = new();
 
             //      Initiate
-            float overflow = (levelColumns + 1) / 2;
-            int tileCount = (levelRows * levelColumns) - (int)Math.Ceiling(overflow);
+            float overflow = (floorColumns + 1) / 2;
+            int tileCount = (floorRows * floorColumns) - (int)Math.Ceiling(overflow);
 
             int row = -1, column = 0, tileType;
             for (int i = 0; i < tileCount; i++) {
                 row += 1;
                 if ((column % 2) == 1) {
                     //long
-                    if (row > levelRows - 1) {
+                    if (row > floorRows - 1) {
                         row = 0;
                         column += 1;
                     }
                 } else {
                     //short
-                    if (row > levelRows - 2) {
+                    if (row > floorRows - 2) {
                         row = 0;
                         column += 1;
                     }
@@ -76,7 +76,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
 
             //      Overwrite
-            //          Get level events for depth
+            //          Get floor events for depth
             List<DungeonEvents> additionalEvents = new List<DungeonEvents>();
             switch (depth) {
                 case 1:

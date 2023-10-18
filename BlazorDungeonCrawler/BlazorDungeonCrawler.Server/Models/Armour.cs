@@ -24,23 +24,23 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Type
-        //      Level 1 - 2
+        //      Floor 1 - 2
         //          1 - 5:  Greave
         //          6:      Boots
 
-        //      Level 3 - 4
+        //      Floor 3 - 4
         //          1:      Greave
         //          2 - 5:  Boots
         //          6:      Gauntlet
 
-        //      Level 5 +
+        //      Floor 5 +
         //          1:      Boots
         //          2 - 3:  Gauntlet
         //          4 - 5:  Helmet
         //          6:      Breastplate
         private ArmourTypes GetType(int depth, int value) {
             if (depth > 4) {
-                //Level 5 +
+                //Floor 5 +
                 switch (value) {
                     case 1:
                         return ArmourTypes.Boots;
@@ -56,7 +56,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Armour type selection");
                 }
             } else if (depth > 2) {
-                //Level 3 - 4
+                //Floor 3 - 4
                 switch (value) {
                     case 1:
                         return ArmourTypes.Greave;
@@ -72,7 +72,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Armour type selection");
                 }
             } else {
-                //      Level 1 - 2
+                //      Floor 1 - 2
                 switch (value) {
                     case 1:
                     case 2:

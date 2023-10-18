@@ -51,8 +51,22 @@
 
                     if (orderedTiles != null) {
                         string selectableClass = string.Empty;
+
+                        string tilePosition;
+                        int dungonWidth = 782;
+                        int dungonHeight = 632;
+
+                        int tileWidth = 100;
+                        int tileHeight = 90;
+
+                        int tileTop, tileLeft;
                         foreach (Tile tile in orderedTiles) {
-                            <div class="hexagon-tile-group" data-row="@tile.Row" data-column="@tile.Column">
+                            tileTop = 0;
+                            tileLeft = 0;
+
+                            tilePosition = $"top: {tileTop}; left: {tileLeft};";
+
+                            <div class="hexagon-tile-group" style="@tilePosition">
                                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
                                 @if (tile.Current) {
@@ -116,7 +130,7 @@
                 <div class="action-dialog-body">BODY</div>
                 <div class="action-dialog-buttons">
                     <button @onclick="DescendStairs" class="dungeon-button">Descend</button>
-                    <button @onclick="RemainOnLevel" class="dungeon-button">Stay</button>
+                    <button @onclick="RemainOnFloor" class="dungeon-button">Stay</button>
                 </div>
             </div>
         }
@@ -126,9 +140,9 @@
     </div>
     <div class="details">
         <div class="adventurer">
-            <div class="dungeon-level">
+            <div class="dungeon-floor">
                 <span class="label">Depth</span>
-                <span class="value" id="current-level">
+                <span class="value" id="current-floor">
                     @((MarkupString)dungeonDepth.ToString())
                 </span>
             </div>
@@ -137,7 +151,7 @@
                     <div class="adventurer-stats-row adventurer-stats-row-total">
                         <span class="label">Level</span>
                         <span class="value">
-                            @((MarkupString)level.ToString())
+                            @((MarkupString)experienceLevel.ToString())
                         </span>
                     </div>
                     <div class="adventurer-stats-row adventurer-stats-row-total">
@@ -447,6 +461,7 @@
     bool successfulLoad = false;
 
     Dungeon? dungeon = null;
+    Floor? floor = null;
     Tile? tile = null;
 
     string apiVersion = "API V0.0.0";
@@ -455,7 +470,7 @@
 
     int dungeonDepth = 0;
 
-    int level = 0;
+    int experienceLevel = 0;
     string experience = "0 / 0";
 
     string health = "0 / 0";
@@ -493,58 +508,35 @@
                 } catch (Exception ex) {
                     errorMessages.Add(ex.Message);
                 }
-            }
-
-            if (dungeon == null || dungeon.Id == Guid.Empty) {
+            } else if (dungeon == null || dungeon.Id == Guid.Empty) {
                 try {
-                    dungeon = await DungeonManager.GenerateNewDungeon();
+                    dungeon = await DungeonManager.GenerateNewDungeon();                    
                 } catch (Exception ex) {
                     errorMessages.Add(ex.Message);
                 }
             }
 
-            if (dungeon != null && dungeon.Id != Guid.Empty) {
+            if (dungeon != null && dungeon.Id != Guid.Empty) {                
+                if (dungeon == null || dungeon.Id == Guid.Empty) { throw new ArgumentNullException("Dungon"); };
+                if (dungeon.Floors == null || dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
+                if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
+
                 if (foundCookie == true && cookieId != dungeon.Id) {
                     StoreCookie(dungeon.Id);
                 }
 
+                floor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+
                 apiVersion = $"API V{dungeon.ApiVersion}";
 
                 bool updateSuccess = await UpdateValues();
+
                 if (!updateSuccess) {
                     infoMessages.Add("Dungeon values could not be set.");
                 }
-            } else {
-                throw new Exception("Dungeon response was badly formed.");
             }
         } else {
             //infoMessages.Add("Dungeon response not ready.");
-        }
-
-        if (dungeon != null && dungeon.Id != Guid.Empty && successfulLoad != true && dungeon.Levels != null) {
-            DungeonRefresh();
-        } else {
-            //infoMessages.Add("Dungeon response not ready.");
-        }
-    }
-
-    private async void DungeonRefresh() {
-        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
-            tile = new();
-            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-            if (level != null && level.Id != Guid.Empty) {
-                try {
-                    successfulLoad = await JS.InvokeAsync<bool>("dungeon_crawler.main.startup", $"{{\"rows\": {level.Rows}, \"columns\": {level.Columns} }}");
-
-                    if (successfulLoad != true) {
-                        infoMessages.Add("Main startup not ready.");
-
-                        await InvokeAsync(StateHasChanged);
-                    }
-                } catch (Exception ex) {
-                    throw new Exception("Dungeon response was badly formed.");
-                }
-            }
         }
     }
 
@@ -627,9 +619,6 @@
 
             bool updateSuccess = await UpdateValues();
 
-            if (dungeon.RefreshRequired == true) {
-                DungeonRefresh();
-            }
 
             await InvokeAsync(StateHasChanged);
 
@@ -658,22 +647,14 @@
         int adventurerArmourGreave = 0;
         int adventurerArmourBoots = 0;
 
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            throw new Exception("Dungeon response was badly formed.");
-        }
-
-        if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) {
-            throw new Exception("Dungeon Adventurer response was badly formed.");
-        }
-
         dungeonDepth = dungeon.Depth;
 
         //Level
         adventurerExperience = dungeon.Adventurer.Experience;
-        adventurerNextLevelCost = dungeon.Adventurer.NextLevelCost;
-        adventurerLevel = dungeon.Adventurer.Level;
+        adventurerNextLevelCost = dungeon.Adventurer.NextExperienceLevelCost;
+        adventurerLevel = dungeon.Adventurer.ExperienceLevel;
 
-        level = adventurerLevel;
+        experienceLevel = adventurerLevel;
         experience = $"{adventurerExperience} / {adventurerNextLevelCost}";
 
         //Health
@@ -767,12 +748,12 @@
     }
 
     private List<Tile> GetOrderTiles() {
-        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Levels != null) {
-            Level? level = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-            if (level != null && level.Id != Guid.Empty) {
-                return level.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
+        if (dungeon != null && dungeon.Id != Guid.Empty && dungeon.Floors != null) {
+
+            if (floor != null && floor.Id != Guid.Empty) {
+                return floor.Tiles.OrderBy(t => t.Row).OrderBy(t => t.Column).ToList();
             } else {
-                throw new Exception("Dungeon Level response was badly formed.");
+                throw new Exception("Dungeon Floor response was badly formed.");
             }
         } else {
             throw new Exception("Could not place tiles as Dungeon response was badly formed.");
@@ -788,7 +769,6 @@
             }
 
             bool updateSuccess = await UpdateValues();
-            DungeonRefresh();
 
             await InvokeAsync(StateHasChanged);
 
@@ -809,7 +789,6 @@
             }
 
             bool updateSuccess = await UpdateValues();
-            DungeonRefresh();
 
             await InvokeAsync(StateHasChanged);
 
@@ -821,25 +800,13 @@
         return false;
     }
 
-    private async Task<bool> RemainOnLevel() {
+    private async Task<bool> RemainOnFloor() {
         await Task.Delay(1);
-
-        if (dungeon == null || dungeon.Id == Guid.Empty) {
-            //todo: report error
-            return false;
-        }
-
         dungeon.StairsDiscovered = false;
-
         return true;
     }
 
     private async Task<bool> MonsterFlee() {
-        if (dungeon == null || dungeon.Id == Guid.Empty || dungeon.CombatTile == Guid.Empty) {
-            //todo: report error
-            return false;
-        }
-
         try {
             dungeon = await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile);
             bool updateSuccess = await UpdateValues();
@@ -855,7 +822,7 @@
     }
 
     private async Task<bool> MonsterFight() {
-        if (dungeon == null || dungeon.Id == Guid.Empty || dungeon.CombatTile == Guid.Empty) {
+        if (dungeon.CombatTile == Guid.Empty) {
             //todo: report error
             return false;
         }

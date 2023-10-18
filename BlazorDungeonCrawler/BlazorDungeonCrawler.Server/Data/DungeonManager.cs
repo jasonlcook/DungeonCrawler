@@ -9,7 +9,7 @@ using BlazorDungeonCrawler.Database.Resources.Queries.Get;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
-using SharedLevel = BlazorDungeonCrawler.Shared.Models.Level;
+using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
@@ -36,19 +36,19 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 Adventurer adventurer = new(health, damage, protection);
 
-                //  Level
-                Levels levels = new();
+                //  Floors
+                Floors floors = new();
 
                 int depth = 1;
-                Level newLevel = new(depth);
+                Floor newFloor = new(depth);
 
                 messages.Add(new Message($"DUNGEON DEPTH {depth}"));
 
                 //  Tiles
-                Tiles tiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
-                newLevel.Tiles = tiles.GetTiles();
+                Tiles tiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
+                newFloor.Tiles = tiles.GetTiles();
 
-                levels.Add(newLevel);
+                floors.Add(newFloor);
 
                 //  Dungon
                 string apiVersion = new Version(0, 2, 0).ToString();
@@ -57,14 +57,12 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     Adventurer = adventurer.SharedModelMapper(),
 
-                    Levels = levels.SharedModelMapper(),
+                    Floors = floors.SharedModelMapper(),
                     Messages = messages.SharedModelMapper(),
 
                     Depth = depth,
 
-                    ApiVersion = apiVersion,
-
-                    RefreshRequired = true
+                    ApiVersion = apiVersion
                 };
 
                 DungeonCreate.Create(sharedDungeon);
@@ -97,7 +95,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
-                if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
                 if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
 
                 //reset stairs
@@ -109,16 +107,16 @@ namespace BlazorDungeonCrawler.Server.Data {
                 Adventurer adventurer = new(dungeon.Adventurer);
                 adventurer.DurationDecrement();
 
-                SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-                if (currentLevel == null) { throw new ArgumentNullException("Dungeon current Level"); }
+                SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+                if (currentFloor == null) { throw new ArgumentNullException("Dungeon current Floor"); }
 
-                Tiles currentLevelTiles = new(currentLevel.Tiles);
+                Tiles currentFloorTiles = new(currentFloor.Tiles);
 
                 Tile selectedTile = new();
 
                 bool setSelectable = true;
 
-                foreach (Tile tile in currentLevelTiles.GetTiles()) {
+                foreach (Tile tile in currentFloorTiles.GetTiles()) {
                     tile.Current = false;
                     tile.Selectable = false;
 
@@ -137,8 +135,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                         } else {
                             messages.Add(new Message("WELL DONE."));
 
-                            currentLevelTiles.Unhide();
-                            TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+                            currentFloorTiles.Unhide();
+                            TilesUpdate.Update(currentFloorTiles.SharedModelMapper());
 
                             setSelectable = false;
                             //todo: show summary 
@@ -162,55 +160,51 @@ namespace BlazorDungeonCrawler.Server.Data {
                         setSelectable = false;
                         break;
                     case DungeonEvents.StairsDescending:
-                        //  Set surrounding selecteable tiles for when the user returns to this level
-                        currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                        TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+                        //  Set surrounding selecteable tiles for when the user returns to this floor
+                        currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        TilesUpdate.Update(currentFloorTiles.SharedModelMapper());
 
                         int increasedDepth = dungeon.Depth + 1;
+                        SharedFloor? deeperFloor = dungeon.Floors.Where(l => l.Depth == increasedDepth).FirstOrDefault();
 
-                        SharedLevel? deeperLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
-                        //If deeper level does not exist create it
-                        if (deeperLevel == null || deeperLevel.Id == Guid.Empty) {
-                            //Next level
-                            Level newLevel = new(increasedDepth);
+                        //If deeper floor does not exist create it
+                        if (deeperFloor == null || deeperFloor.Id == Guid.Empty) {
+                            //Next floor
+                            Floor newFloor = new(increasedDepth);
                             messages.Add(new Message($"DUNGEON DEPTH {increasedDepth} DISCOVERD"));
 
                             //  Tiles
-                            Tiles newLevelTiles = new(newLevel.Depth, newLevel.Rows, newLevel.Columns);
-                            newLevel.Tiles = newLevelTiles.GetTiles();
+                            Tiles newFloorTiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
+                            newFloor.Tiles = newFloorTiles.GetTiles();
 
-                            deeperLevel = newLevel.SharedModelMapper();
+                            deeperFloor = newFloor.SharedModelMapper();
 
-                            dungeon.Levels.Add(deeperLevel);
+                            dungeon.Floors.Add(deeperFloor);
 
-                            LevelCreate.Create(dungeon.Id, deeperLevel);
+                            FloorCreate.Create(dungeon.Id, deeperFloor);
 
                             dungeon.StairsDiscovered = true;
                         } else {
                             dungeon.Depth = increasedDepth;
-                            currentLevel = deeperLevel;
-                            currentLevelTiles = new Tiles(deeperLevel.Tiles);
+                            currentFloor = deeperFloor;
+                            currentFloorTiles = new Tiles(deeperFloor.Tiles);
                         }
 
-                        dungeon.RefreshRequired = true;
                         setSelectable = false;
                         break;
                     case DungeonEvents.StairsAscending:
-                        //  Set surrounding selecteable tiles for when the user returns to this level
-                        currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                        TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
+                        //  Set surrounding selecteable tiles for when the user returns to this floor
+                        currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        TilesUpdate.Update(currentFloorTiles.SharedModelMapper());
 
                         int decreaseDepth = dungeon.Depth -= 1;
                         dungeon.Depth = decreaseDepth;
 
-                        currentLevel = dungeon.Levels.Where(l => l.Depth == decreaseDepth).FirstOrDefault();
-                        if (currentLevel == null || currentLevel.Id == Guid.Empty || currentLevel.Tiles == null) {
-                            throw new Exception("Level not found");
-                        }
+                        currentFloor = dungeon.Floors.Where(l => l.Depth == decreaseDepth).FirstOrDefault();
+                        if (currentFloor == null || currentFloor.Id == Guid.Empty || currentFloor.Tiles == null) { throw new ArgumentNullException("Floor"); }
 
-                        currentLevelTiles = new Tiles(currentLevel.Tiles);
+                        currentFloorTiles = new Tiles(currentFloor.Tiles);
 
-                        dungeon.RefreshRequired = true;
                         setSelectable = false;
                         break;
                     case DungeonEvents.Chest:
@@ -379,7 +373,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
 
                 if (setSelectable) {
-                    currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                    currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                 }
 
                 //Update Adventurer
@@ -393,12 +387,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                 dungeon.Messages.AddRange(sharedMessages);
                 MessagesCreate.Create(dungeon.Id, sharedMessages);
 
-                List<SharedTile> sharedTiles = currentLevelTiles.SharedModelMapper();
-                currentLevel.Tiles = sharedTiles;
+                List<SharedTile> sharedTiles = currentFloorTiles.SharedModelMapper();
+                currentFloor.Tiles = sharedTiles;
 
-                for (int i = 0; i < dungeon.Levels.Count; i++) {
-                    if (dungeon.Levels[i].Id != currentLevel.Id) {
-                        dungeon.Levels[i] = currentLevel;
+                for (int i = 0; i < dungeon.Floors.Count; i++) {
+                    if (dungeon.Floors[i].Id != currentFloor.Id) {
+                        dungeon.Floors[i] = currentFloor;
                     }
                 }
 
@@ -452,17 +446,17 @@ namespace BlazorDungeonCrawler.Server.Data {
             try {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
-                if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Floors == null || dungeon.Floors.Count > 0) { throw new ArgumentNullException("Dungeon Floors"); }
 
-                SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-                if (currentLevel == null || currentLevel.Tiles == null || currentLevel.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
+                SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+                if (currentFloor == null || currentFloor.Tiles == null || currentFloor.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floors Tiles"); }
 
                 if (dungeon.StairsDiscovered) {
                     return await DescendStairs(dungeonId);
                 } else if (dungeon.InCombat) {
                     //fight the fight
-                    SharedTile? currentTile = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
-                    if (currentTile == null || currentTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level current Tiles"); }
+                    SharedTile? currentTile = currentFloor.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                    if (currentTile == null || currentTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floors current Tiles"); }
 
                     return await MonsterFight(dungeonId, currentTile.Id);
                 } else {
@@ -470,16 +464,16 @@ namespace BlazorDungeonCrawler.Server.Data {
                     Guid selectedTileId = Guid.Empty;
                     if (dungeon.MacGuffinFound) {
                         //plot a course between current position and stairs
-                        SharedTile? current = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                        SharedTile? current = currentFloor.Tiles.Where(t => t.Current == true).FirstOrDefault();
                         if (current != null && current.Id != Guid.Empty) {
                             int currentRow = current.Row;
                             int currentColumn = current.Column;
 
                             SharedTile? destination;
                             if (dungeon.Depth == 1) {
-                                destination = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
+                                destination = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
                             } else {
-                                destination = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
+                                destination = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
                             }
 
                             if (destination != null && destination.Id != Guid.Empty) {
@@ -488,7 +482,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 string directionOfTravel = getDirectionOfTravel(destinationRow, destinationColumn, currentRow, currentColumn);
 
-                                List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).ToList();
+                                List<SharedTile>? selectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).ToList();
                                 foreach (SharedTile tile in selectableTile) {
                                     if (matchesDirectionOfTravel(directionOfTravel, tile.Row, tile.Column, currentRow, currentColumn)) {
                                         selectedTileId = tile.Id;
@@ -499,7 +493,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                     } else {
                         //randomly selecte and hidden tile from the selectables
-                        List<SharedTile>? hiddenSelectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Hidden == true).ToList();
+                        List<SharedTile>? hiddenSelectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).Where(t => t.Hidden == true).ToList();
                         if (hiddenSelectableTile != null && hiddenSelectableTile.Count > 0) {
                             //if there are hidden tiles in the current selectable rnage
                             int tilesCount = hiddenSelectableTile.Count();
@@ -508,12 +502,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                             selectedTileId = hiddenSelectableTile[randomTileIndex].Id;
                         } else {
                             //if there are no hidden tiles in the selectable range
-                            SharedTile? current = currentLevel.Tiles.Where(t => t.Current == true).FirstOrDefault();
+                            SharedTile? current = currentFloor.Tiles.Where(t => t.Current == true).FirstOrDefault();
                             if (current != null && current.Id != Guid.Empty) {
                                 int currentRow = current.Row;
                                 int currentColumn = current.Column;
 
-                                List<SharedTile>? hiddenColumnTiles = currentLevel.Tiles.Where(t => t.Hidden == true).ToList();
+                                List<SharedTile>? hiddenColumnTiles = currentFloor.Tiles.Where(t => t.Hidden == true).ToList();
 
                                 string directionOfTravel = string.Empty;
                                 SharedTile? targetTile = null;
@@ -527,21 +521,21 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     }
 
                                     targetTile = hiddenTiles.OrderBy(t => t.Value).First().Key;
-                                    selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
+                                    selectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
                                 } else {
                                     //if all hidden tiles have been uncoverd then make way to relivnt stairs 
 
                                     if (dungeon.MacGuffinFound) {
                                         if (dungeon.Depth == 1) {
-                                            targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
+                                            targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
                                         } else {
-                                            targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
-                                        }                                        
+                                            targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
+                                        }
                                     } else {
-                                        targetTile = currentLevel.Tiles.Where(t => t.Type == DungeonEvents.StairsDescending).FirstOrDefault();
+                                        targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsDescending).FirstOrDefault();
                                     }
 
-                                    selectableTile = currentLevel.Tiles.Where(t => t.Selectable == true).ToList();
+                                    selectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).ToList();
                                 }
 
                                 if (selectableTile != null && selectableTile.Count > 0) {
@@ -555,7 +549,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                             break;
                                         }
                                     }
-                                }                                
+                                }
                             }
                         }
                     }
@@ -568,7 +562,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
 
                     if (selectedTileId == Guid.Empty) {
-                        List<SharedTile>? selectableTile = currentLevel.Tiles.Where(t => t.Selectable).ToList();
+                        List<SharedTile>? selectableTile = currentFloor.Tiles.Where(t => t.Selectable).ToList();
                         if (selectableTile != null && selectableTile.Count > 0) {
                             int tilesCount = selectableTile.Count();
                             int randomTileIndex = Dice.RandomNumber(0, tilesCount - 1);
@@ -713,12 +707,12 @@ namespace BlazorDungeonCrawler.Server.Data {
             try {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
-                if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
 
                 int increasedDepth = dungeon.Depth += 1;
-                SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
-                if (currentLevel == null || currentLevel.Id == Guid.Empty || currentLevel.Tiles == null) {
-                    throw new Exception("Level not found");
+                SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == increasedDepth).FirstOrDefault();
+                if (currentFloor == null || currentFloor.Id == Guid.Empty || currentFloor.Tiles == null) {
+                    throw new Exception("Floor not found");
                 }
 
                 dungeon.StairsDiscovered = false;
@@ -740,16 +734,16 @@ namespace BlazorDungeonCrawler.Server.Data {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
-                if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
                 if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
 
-                SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-                if (currentLevel == null || currentLevel.Tiles == null || currentLevel.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Level Tiles"); }
+                SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+                if (currentFloor == null || currentFloor.Tiles == null || currentFloor.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tiles"); }
 
-                SharedTile? selectedTile = currentLevel.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
-                if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level selected Tile"); }
+                SharedTile? selectedTile = currentFloor.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+                if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor selected Tile"); }
 
-                Tiles currentLevelTiles = new(currentLevel.Tiles);
+                Tiles currentFloorTiles = new(currentFloor.Tiles);
 
                 Messages messages = new();
 
@@ -763,11 +757,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     messages.Add(new Message("ADVENTURER FLEES COMBAT"));
 
-                    currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                    currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                 } else {
                     messages.Add(new Message("ADVENTURER FAILED TO FLEE"));
 
-                    if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
+                    if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
                     List<SharedMonster> monsters = selectedTile.Monsters;
                     int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
@@ -785,7 +779,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             dungeon.InCombat = false;
 
-                            currentLevelTiles.Unhide();
+                            currentFloorTiles.Unhide();
 
                             messages.Add(new Message($"ADVENTURER KILLED WITH {adventurerDammage}"));
                         } else {
@@ -808,7 +802,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 MessagesCreate.Create(dungeon.Id, sharedMessages);
 
                 //Update Tiles
-                List<SharedTile> sharedTiles = currentLevelTiles.SharedModelMapper();
+                List<SharedTile> sharedTiles = currentFloorTiles.SharedModelMapper();
 
                 //  Current Tile
                 SharedTile currentSharedTiles;
@@ -819,11 +813,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
 
-                currentLevel.Tiles = sharedTiles;
+                currentFloor.Tiles = sharedTiles;
 
-                for (int i = 0; i < dungeon.Levels.Count; i++) {
-                    if (dungeon.Levels[i].Id != currentLevel.Id) {
-                        dungeon.Levels[i] = currentLevel;
+                for (int i = 0; i < dungeon.Floors.Count; i++) {
+                    if (dungeon.Floors[i].Id != currentFloor.Id) {
+                        dungeon.Floors[i] = currentFloor;
                     }
                 }
 
@@ -857,17 +851,17 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
-                if (dungeon.Levels == null) { throw new ArgumentNullException("Dungeon Level"); }
+                if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floor"); }
 
-                SharedLevel? currentLevel = dungeon.Levels.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
-                if (currentLevel == null) { throw new ArgumentNullException("Dungeon current Level"); }
+                SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+                if (currentFloor == null) { throw new ArgumentNullException("Dungeon current Floor"); }
 
-                Tiles currentLevelTiles = new(currentLevel.Tiles);
+                Tiles currentFloorTiles = new(currentFloor.Tiles);
 
                 //todo: get this from dungeon 
-                SharedTile? selectedTile = currentLevel.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
-                if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Level selected Tile"); }
-                if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Level Tile Monsters"); }
+                SharedTile? selectedTile = currentFloor.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
+                if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor selected Tile"); }
+                if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
                 Messages messages = new();
                 List<SharedMonster> monsters = selectedTile.Monsters.OrderBy(m => m.Index).ToList();
@@ -946,15 +940,15 @@ namespace BlazorDungeonCrawler.Server.Data {
                             //checked for remaining monsters
                             if (monsters.Count == 0) {
                                 //Update Adventurer
-                                int previousAdventurerLevel = adventurer.Level;
+                                int previousAdventurerLevel = adventurer.ExperienceLevel;
                                 int previousAdventurerHealth = adventurer.HealthBase;
                                 int previousAdventurerDamage = adventurer.DamageBase;
                                 int previousAdventurerProtection = adventurer.ProtectionBase;
 
                                 adventurer.LevelUp();
-                                if (adventurer.Level > previousAdventurerLevel) {
+                                if (adventurer.ExperienceLevel > previousAdventurerLevel) {
 
-                                    int currentAdventurerLevel = adventurer.Level;
+                                    int currentAdventurerLevel = adventurer.ExperienceLevel;
                                     int currentAdventurerHealth = adventurer.HealthBase;
                                     int currentAdventurerDamage = adventurer.DamageBase;
                                     int currentAdventurerProtection = adventurer.ProtectionBase;
@@ -974,7 +968,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 selectedTile.FightWon = true;
                                 selectedTile.Type = DungeonEvents.FightWon;
 
-                                currentLevelTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                                currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                             };
                         }
 
@@ -1029,7 +1023,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 dungeon.InCombat = false;
 
-                                currentLevelTiles.Unhide();
+                                currentFloorTiles.Unhide();
 
                                 break;
                             }
@@ -1050,7 +1044,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 MessagesCreate.Create(dungeon.Id, sharedMessages);
 
                 //Update Tiles
-                List<SharedTile> sharedTiles = currentLevelTiles.SharedModelMapper();
+                List<SharedTile> sharedTiles = currentFloorTiles.SharedModelMapper();
 
                 //  Current Tile
                 SharedTile currentSharedTiles;
@@ -1061,11 +1055,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
 
-                currentLevel.Tiles = sharedTiles;
+                currentFloor.Tiles = sharedTiles;
 
-                for (int i = 0; i < dungeon.Levels.Count; i++) {
-                    if (dungeon.Levels[i].Id != currentLevel.Id) {
-                        dungeon.Levels[i] = currentLevel;
+                for (int i = 0; i < dungeon.Floors.Count; i++) {
+                    if (dungeon.Floors[i].Id != currentFloor.Id) {
+                        dungeon.Floors[i] = currentFloor;
                     }
                 }
 

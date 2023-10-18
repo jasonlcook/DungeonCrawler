@@ -32,23 +32,23 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Type
-        //      Level 1 - 2
+        //      Floor 1 - 2
         //          1 - 5:  Rock
         //          6:      Club
 
-        //      Level 3 - 4
+        //      Floor 3 - 4
         //          1:      Rock
         //          2 - 5:  Club
         //          6:      Mace
 
-        //      Level 5 +
+        //      Floor 5 +
         //          1:      Club
         //          2 - 3:  Mace
         //          4 - 5:  Axe
         //          6:      Sword
         private WeaponTypes GetType(int depth, int value) {
             if (depth > 4) {
-                //Level 5 +
+                //Floor 5 +
                 switch (value) {
                     case 1:
                         return WeaponTypes.Club;
@@ -64,7 +64,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Weapon type selection");
                 }
             } else if (depth > 2) {
-                //Level 3 - 4
+                //Floor 3 - 4
                 switch (value) {
                     case 1:
                         return WeaponTypes.Rock;
@@ -79,7 +79,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Weapon type selection");
                 }
             } else {
-                //      Level 1 - 2
+                //      Floor 1 - 2
                 switch (value) {
                     case 1:
                     case 2:
@@ -114,23 +114,23 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Type
-        //      Level 1 - 2
+        //      Floor 1 - 2
         //          1 - 5:  Broken
         //          6:      Rusty
 
-        //      Level 3 - 4
+        //      Floor 3 - 4
         //          1:      Broken
         //          2 - 5:  Rusty
         //          6:      Chipped
 
-        //      Level 5 +
+        //      Floor 5 +
         //          1:      Rusty
         //          2 - 3:  Chipped
         //          4 - 5:  Sharp
         //          6:      Flaming
         private WeaponConditions GetCondition(int depth, int value) {
             if (depth > 4) {
-                //Level 5 +
+                //Floor 5 +
                 switch (value) {
                     case 1:
                         return WeaponConditions.Rusty;
@@ -146,7 +146,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Weapon conditions selection");
                 }
             } else if (depth > 2) {
-                //Level 3 - 4
+                //Floor 3 - 4
                 switch (value) {
                     case 1:
                         return WeaponConditions.Broken;
@@ -161,7 +161,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                         throw new ArgumentOutOfRangeException("Weapon conditions selection");
                 }
             } else {
-                //      Level 1 - 2
+                //      Floor 1 - 2
                 switch (value) {
                     case 1:
                     case 2:

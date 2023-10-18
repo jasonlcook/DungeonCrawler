@@ -5,9 +5,9 @@ namespace BlazorDungeonCrawler.Server.Models {
     public class Adventurer {
         //attributes
         public Guid Id { get; private set; }
-        public int Level { get; set; }
+        public int ExperienceLevel { get; set; }
         public int Experience { get; set; }
-        public int NextLevelCost { get; set; }
+        public int NextExperienceLevelCost { get; set; }
         public int HealthBase { get; set; }
         public int HealthInitial { get; set; }
         public int AuraPotion { get; set; }
@@ -31,9 +31,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Adventurer(int health, int damage, int protection) {
             this.Id = Guid.NewGuid();
 
-            this.Level = 1;
+            this.ExperienceLevel = 1;
             this.Experience = 0;
-            this.NextLevelCost = GetLevelCost(this.Level + 1);
+            this.NextExperienceLevelCost = GetLevelCost(this.ExperienceLevel + 1);
 
             this.HealthInitial = health;
             this.HealthBase = health;
@@ -46,9 +46,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         //mapping
         public Adventurer(SharedAdventurer adventurer) {
             this.Id = adventurer.Id;
-            this.Level = adventurer.Level;
+            this.ExperienceLevel = adventurer.ExperienceLevel;
             this.Experience = adventurer.Experience;
-            this.NextLevelCost = adventurer.NextLevelCost;
+            this.NextExperienceLevelCost = adventurer.NextExperienceLevelCost;
             this.HealthBase = adventurer.HealthBase;
             this.HealthInitial = adventurer.HealthInitial;
             this.AuraPotion = adventurer.AuraPotion;
@@ -71,9 +71,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,
-                Level = this.Level,
+                ExperienceLevel = this.ExperienceLevel,
                 Experience = this.Experience,
-                NextLevelCost = this.NextLevelCost,
+                NextExperienceLevelCost = this.NextExperienceLevelCost,
                 HealthBase = this.HealthBase,
                 HealthInitial = this.HealthInitial,
                 AuraPotion = this.AuraPotion,
@@ -106,9 +106,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         public void LevelUp() {
-            if (Experience >= NextLevelCost) {
-                this.Level += 1;
-                NextLevelCost = GetLevelCost(Level);
+            if (Experience >= NextExperienceLevelCost) {
+                this.ExperienceLevel += 1;
+                NextExperienceLevelCost = GetLevelCost(ExperienceLevel);
 
                 int healthUpgrade = HealthInitial / 2;
                 if (healthUpgrade < 1) {

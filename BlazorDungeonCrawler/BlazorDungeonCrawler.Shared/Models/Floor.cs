@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlazorDungeonCrawler.Shared.Models {
-    public class Level {
+    public class Floor {
 
         [Key]
         public Guid Id { get; set; } 
@@ -16,7 +16,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public List<Tile> Tiles { get; set; }
 
-        public Level() {
+        public Floor() {
             Id = Guid.Empty;
             Tiles = new();
         }
