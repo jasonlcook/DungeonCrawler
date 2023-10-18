@@ -146,15 +146,14 @@ namespace BlazorDungeonCrawler.Server.Data {
                         break;
                     case DungeonEvents.Fight:
                         if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
-                            //generate new monsters
-                            monsters.Generate(dungeon.Depth);
-                            selectedTile.Monsters = monsters.Get();
-
-                            if (selectedTile.Monsters.Count == 1) {
+                            monsters = SetMonsters(selectedTile.Id, dungeon.Depth);
+                            if (monsters.Count() == 1) {
                                 messages.Add(new Message($"A {monsters.GetName()}"));
                             } else {
                                 messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
                             }
+
+                            selectedTile.Monsters = monsters.Get();
                         }
 
                         dungeon.InCombat = true;
@@ -168,7 +167,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                         TilesUpdate.Update(currentLevelTiles.SharedModelMapper());
 
                         int increasedDepth = dungeon.Depth + 1;
-                        SharedLevel deeperLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
+
+                        SharedLevel? deeperLevel = dungeon.Levels.Where(l => l.Depth == increasedDepth).FirstOrDefault();
                         //If deeper level does not exist create it
                         if (deeperLevel == null || deeperLevel.Id == Guid.Empty) {
                             //Next level
@@ -337,30 +337,42 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                         break;
                     case DungeonEvents.Macguffin:
-                        monsters.Generate(999);
-                        selectedTile.Monsters = monsters.Get();
+                        monsters = SetMonsters(selectedTile.Id, 999);
+                        messages.Add(new Message($"YOU HAVE UNCOVERED THE LAIR OF THE {monsters.GetName()}"));
 
-                        if (selectedTile.Monsters.Count == 1) {
-                            messages.Add(new Message($"A {monsters.GetName()}"));
-                        } else {
-                            messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
-                        }
+                        selectedTile.Monsters = monsters.Get();
 
                         dungeon.InCombat = true;
                         dungeon.CombatTile = selectedTile.Id;
 
                         setSelectable = false;
                         break;
-                    case DungeonEvents.FoundWeapon:
-                    case DungeonEvents.FoundProtection:
-                    case DungeonEvents.FoundPotion:
+                    case DungeonEvents.Empty:
+                    case DungeonEvents.FightWon:
                     case DungeonEvents.TakenWeapon:
                     case DungeonEvents.TakenProtection:
                     case DungeonEvents.TakenPotion:
-                    case DungeonEvents.Empty:
-                    case DungeonEvents.FightWon:
+                        int value = Dice.RollDSix();
+                        if (value == 1) {
+                            monsters = SetMonsters(selectedTile.Id, dungeon.Depth);
+                            if (monsters.Count() == 1) {
+                                messages.Add(new Message($"A {monsters.GetName()}"));
+                            } else {
+                                messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
+                            }
 
+                            selectedTile.Type = DungeonEvents.Fight;
+                            selectedTile.Monsters = monsters.Get();
+
+                            dungeon.InCombat = true;
+                            dungeon.CombatTile = selectedTile.Id;
+
+                            setSelectable = false;
+                        }
                         break;
+                    case DungeonEvents.FoundWeapon:
+                    case DungeonEvents.FoundProtection:
+                    case DungeonEvents.FoundPotion:
                     case DungeonEvents.Unknown:
                     default:
                         throw new ArgumentOutOfRangeException("Selected Dungeon Tiles Tile Type");
@@ -392,9 +404,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 TilesUpdate.Update(sharedTiles);
 
-                if (monsters.Count() > 0) {
-                    MonstersCreate.Create(selectedTile.Id, monsters.SharedModelMapper());
-                }
+
 
                 //Update Dungon
                 DungeonUpdate.Update(dungeon);
@@ -403,6 +413,19 @@ namespace BlazorDungeonCrawler.Server.Data {
             } catch (Exception ex) {
                 throw;
             }
+        }
+
+        private Monsters SetMonsters(Guid tileId, int depth) {
+            Monsters monsters = new();
+
+            //generate new monsters
+            monsters.Generate(depth);
+
+            if (monsters.Count() > 0) {
+                MonstersCreate.Create(tileId, monsters.SharedModelMapper());
+            }
+
+            return monsters;
         }
 
         //Loot
@@ -512,7 +535,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                             }
                                         }
                                     }
-                                }
+                                } 
                             }
                         }
                     }
