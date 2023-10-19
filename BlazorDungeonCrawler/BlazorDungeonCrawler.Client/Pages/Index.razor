@@ -19,8 +19,8 @@
     </div>
 }
 
-<div id="play-area">
-    <div id="dungeon">
+<div id="external-frame">
+    <div id="play-area">
         <div id="messages">
             @if (errorMessages.Count > 0) {
                 foreach (string message in errorMessages) {
@@ -38,7 +38,7 @@
                 }
             }
         </div>
-        <div id="stage">
+        <div id="dungeon" style="width: 250px; height: 270px;">
             @if (dungeon == null) {
                 <div class="loading">
                     <img src="/images/tiles/blue/base_tile.png" />
@@ -52,20 +52,38 @@
                     if (orderedTiles != null) {
                         string selectableClass = string.Empty;
 
-                        string tilePosition;
-                        int dungonWidth = 782;
-                        int dungonHeight = 632;
+                        string tilePosition = "";
 
                         int tileWidth = 100;
+                        int nestedTileWidth = (tileWidth / 4) * 3;
+
                         int tileHeight = 90;
 
-                        int tileTop, tileLeft;
+                        int dungeonWidth = nestedTileWidth * floor.Rows + (tileWidth / 4);
+                        int dungeonHeight = tileHeight * floor.Columns;
+                        
+                        string dungeonPosition = $"width: {dungeonWidth}px; height: {dungeonHeight}px;";
+
+                        string tiles = string.Empty;
+                        
+                        int hexagonTop, hexagonLeft, hexGroupColumn, hexGroupRow;
                         foreach (Tile tile in orderedTiles) {
-                            tileTop = 0;
-                            tileLeft = 0;
+                            hexagonTop = 0;
+                            hexagonLeft = 0;
 
-                            tilePosition = $"top: {tileTop}; left: {tileLeft};";
+                            hexGroupColumn = tile.Column;
+                            hexGroupRow = tile.Row;
 
+                            hexagonLeft += hexGroupColumn * nestedTileWidth;
+                            if ((hexGroupColumn % 2) == 1) {
+                                //long
+                                hexagonTop += hexGroupRow * tileHeight;
+                            } else {
+                                //short
+                                hexagonTop += (hexGroupRow * tileHeight) + (tileHeight / 2);
+                            }
+                            
+                            tilePosition = $"top: {hexagonTop}px; left: {hexagonLeft}px;";
                             <div class="hexagon-tile-group" style="@tilePosition">
                                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
@@ -353,7 +371,7 @@
         </div>
     </div>
 </div>
-<div id="dungeon-footer">
+<div id="external-frame-footer">
     <div id="version">
         <span class="api-version">
             @((MarkupString)apiVersion)
