@@ -28,8 +28,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors                
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -44,8 +43,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -60,8 +58,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }        
 
@@ -76,8 +73,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -92,8 +88,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -109,8 +104,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -125,8 +119,7 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                //todo log errors
-                return StatusCode(500);
+                return StatusCode(500, ex.Message);
             }
         }
 
