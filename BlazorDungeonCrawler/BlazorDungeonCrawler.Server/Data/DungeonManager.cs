@@ -446,7 +446,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             try {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
-                if (dungeon.Floors == null || dungeon.Floors.Count > 0) { throw new ArgumentNullException("Dungeon Floors"); }
+                if (dungeon.Floors == null || dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungeon Floors"); }
 
                 SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
                 if (currentFloor == null || currentFloor.Tiles == null || currentFloor.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floors Tiles"); }
