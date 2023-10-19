@@ -1,23 +1,18 @@
 using Microsoft.JSInterop;
 
 using BlazorDungeonCrawler.Shared.Models;
-using System.Reflection.Emit;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
+        //Page elements
         public bool AdvanceDisabled { get; set; } = true;
 
         public string DungeonDepth { get; set; } = "0";
 
         public string ApiVersion { get; set; } = "API V0.0.0";
 
-        //Page elements
-        List<string> errorMessages = new();
-        List<string> infoMessages = new();
-
-        public async Task WriteLog(string message) {
-            await this.JS.InvokeVoidAsync("console.log", message);
-        }
+        List<string> errorReports = new();
+        List<string> informationReports = new();
 
         //Cookies
         bool? foundCookie = null;
@@ -25,6 +20,21 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         Guid cookieId = Guid.Empty;
 
+        //Dungeon
+        Dungeon dungeon = new();
+        Floor floor = new();
+        Adventurer adventurer = new();
+
+        List<Attribute> adventurerExperienceStats = new();
+        List<Attribute> adventurerHealthStats = new();
+        List<Attribute> adventurerDamageStats = new();
+        List<Attribute> adventurerProtectionStats = new();
+
+        public async Task WriteLog(string message) {
+            await this.JS.InvokeVoidAsync("console.log", message);
+        }
+
+        //Cookies
         protected override void OnInitialized() {
             if (foundCookie == null) {
                 CheckCookies();
@@ -69,15 +79,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
         }
 
         //Dungeon
-        Dungeon dungeon = new Dungeon();
-        Floor floor = new Floor();
-        Adventurer adventurer = new Adventurer();
-
-        List<Attribute> adventurerExperienceStats = new();
-        List<Attribute> adventurerHealthStats = new();
-        List<Attribute> adventurerDamageStats = new();
-        List<Attribute> adventurerProtectionStats = new();
-
         protected override async void OnAfterRender(bool firstRender) {
             try {
                 if (dungeon == null || dungeon.Id == Guid.Empty) {
@@ -86,14 +87,14 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         ValidateDungeon(await DungeonManager.GenerateNewDungeon());
 
                         if (!await UpdatePageVariables()) {
-                            infoMessages.Add("Dungeon values could not udpdated.");
+                            informationReports.Add("Dungeon values could not udpdated.");
                         }
                     } catch (Exception ex) {
-                        errorMessages.Add(ex.Message);
+                        errorReports.Add(ex.Message);
                     }
                 }
             } catch (Exception ex) {
-                errorMessages.Add(ex.Message);
+                errorReports.Add(ex.Message);
             }
         }
 
@@ -108,17 +109,17 @@ namespace BlazorDungeonCrawler.Client.Pages {
                     try {
                         ValidateDungeon(await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id));
                     } catch (Exception ex) {
-                        errorMessages.Add(ex.Message);
+                        errorReports.Add(ex.Message);
                     }
 
                     if (!await UpdatePageVariables()) {
-                        infoMessages.Add("Dungeon values could not udpdated.");
+                        informationReports.Add("Dungeon values could not udpdated.");
                     }
                 } else {
-                    infoMessages.Add("Dungeon can not be automatically advance as Dungeon has not been set");
+                    informationReports.Add("Dungeon can not be automatically advance as Dungeon has not been set");
                 }
             } catch (Exception ex) {
-                errorMessages.Add(ex.Message);
+                errorReports.Add(ex.Message);
             }
         }
 
@@ -137,8 +138,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //Check and assign Dungeon Floor
                 if (_dungeon.Adventurer == null || _dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 adventurer = _dungeon.Adventurer;
+
             } catch (Exception ex) {
-                errorMessages.Add(ex.Message);
+                errorReports.Add(ex.Message);
             }
         }
 

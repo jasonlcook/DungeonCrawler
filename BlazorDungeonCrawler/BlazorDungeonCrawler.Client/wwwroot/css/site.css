@@ -291,14 +291,14 @@ body {
         align-items: center;
     }
 
-        #external-frame #play-area #messages {
+        #external-frame #play-area #reports {
             position: absolute;
             top: 0;
             left: 0;
             width: 820px;
         }
 
-            #external-frame #play-area #messages .message {
+            #external-frame #play-area #reports .report {
                 color: #fff;
                 text-align: center;
                 padding: 5px 0;
@@ -307,11 +307,11 @@ body {
                 border-style: solid;
             }
 
-                #external-frame #play-area #messages .message.message-error {
+                #external-frame #play-area #reports .report.report-error {
                     background-color: #ff7070;
                 }
 
-                #external-frame #play-area #messages .message.message-info {
+                #external-frame #play-area #reports .report.report-info {
                     background-color: #ffb070;
                 }
 
