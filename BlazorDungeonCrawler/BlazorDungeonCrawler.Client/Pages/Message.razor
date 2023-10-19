@@ -1,0 +1,16 @@
+﻿@if (ErrorMessages != null && ErrorMessages.Count > 0) {
+    foreach (string message in ErrorMessages) {
+        @if (message != string.Empty) {
+            <div class="message message-error">@message</div>
+        }
+    }
+}
+
+@if (InfoMessages != null && InfoMessages.Count > 0) {
+    foreach (string message in InfoMessages) {
+        @if (message != string.Empty) {
+            <div class="message message-info">@message</div>
+        }
+    }
+}
+

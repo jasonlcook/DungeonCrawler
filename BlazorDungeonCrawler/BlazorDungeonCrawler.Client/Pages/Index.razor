@@ -3,6 +3,7 @@
 @using BlazorDungeonCrawler.Shared.Enumerators;
 @using BlazorDungeonCrawler.Shared.Responses;
 @using BlazorDungeonCrawler.Shared.Interfaces;
+@using BlazorDungeonCrawler.Client.Pages;
 
 @inject IJSRuntime JS
 @inject IDungeonDataManager DungeonManager
@@ -10,7 +11,9 @@
 
 <div id="external-frame">
     <div id="play-area">
-        <div id="messages"></div>
+        <div id="messages">
+            <Message ErrorMessages=errorMessages InfoMessages=infoMessages />
+        </div>
         <div id="dungeon"></div>
     </div>
     <div class="button">
@@ -60,7 +63,7 @@
 </div>
 <div id="external-frame-footer">
     <div id="version">
-        <span class="api-version"></span>
+        <span class="api-version">@ApiVersion</span>
         <span class="client-version">Client V0.2.1</span>
     </div>
 </div>
