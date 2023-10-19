@@ -1,0 +1,12 @@
+﻿<div class="adventurer-stats-section">
+    @foreach (Attribute element in Attributes) {
+        <div class="adventurer-stats-row">
+            <span class="label">@element.Label</span>
+            <span class="value">@element.Value</span>
+            @if (element.Duration != null) {
+                <span class="duration">@element.Duration</span>
+            }
+        </div>
+    }
+</div>
+
