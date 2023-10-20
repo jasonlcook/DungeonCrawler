@@ -25,14 +25,18 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 //Create
                 //  Adventurer
+                Message message = new Message($"ADVENTURER");
+
                 int health = Dice.RollDSix();
-                messages.Add(new Message($"ADVENTURER HEALTH {health}", health));
+                message.AddChild(new Message($"ADVENTURER HEALTH {health}", health));
 
                 int damage = Dice.RollDSix();
-                messages.Add(new Message($"ADVENTURER DAMAGE {damage}", damage));
+                message.AddChild(new Message($"ADVENTURER DAMAGE {damage}", damage));
 
                 int protection = Dice.RollDSix();
-                messages.Add(new Message($"ADVENTURER PROTECTION {protection}", protection));
+                message.AddChild(new Message($"ADVENTURER PROTECTION {protection}", protection));
+
+                messages.Add(message);
 
                 Adventurer adventurer = new(health, damage, protection);
 
@@ -148,7 +152,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             if (monsters.Count() == 1) {
                                 messages.Add(new Message($"A {monsters.GetName()}"));
                             } else {
-                                messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
+                                messages.Add(new Message($"{monsters.Count()} {monsters.GetName()}s"));
                             }
 
                             selectedTile.Monsters = monsters.Get();
@@ -219,31 +223,30 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Weapons weapons = new(dungeon.Depth, weaponsTypeValue, weaponsConditionValue);
 
-                                messages.Add(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue));
-                                messages.Add(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue));
-
-                                messages.Add(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
-
                                 int currentWeaponValue = adventurer.Weapon;
 
+                                string weaponsMessage;
                                 if (weapons.WeaponValue > currentWeaponValue) {
                                     adventurer.Weapon = weapons.WeaponValue;
-                                    messages.Add(new Message($"PICKUP A {weapons.Description()}"));
+                                    weaponsMessage = $"PICKUP A {weapons.Description()}";
                                 } else {
-                                    messages.Add(new Message($"REJECT A {weapons.Description()}"));
+                                    weaponsMessage = $"REJECTED A {weapons.Description()}";
                                 }
 
+                                Message weaponsMessages = new(weaponsMessage);
+
+                                weaponsMessages.AddChild(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue));
+                                weaponsMessages.AddChild(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue));
+
+                                weaponsMessages.AddChild(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
+
+                                messages.Add(weaponsMessages);
                                 break;
                             case DungeonEvents.TakenProtection:
                                 int armourTypeValue = Dice.RollDSix();
                                 int armourConditionValue = Dice.RollDSix();
 
                                 Armour armour = new(dungeon.Depth, armourTypeValue, armourConditionValue);
-
-                                messages.Add(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue));
-                                messages.Add(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue));
-
-                                messages.Add(new Message($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
 
                                 bool pickedUp = false;
                                 switch (armour.Type) {
@@ -282,12 +285,21 @@ namespace BlazorDungeonCrawler.Server.Data {
                                         throw new ArgumentOutOfRangeException("Armour type selection");
                                 }
 
+                                string armourMessage;
                                 if (pickedUp) {
-                                    messages.Add(new Message($"EQUIPT {armour.Description()}"));
+                                    armourMessage = $"EQUIPT {armour.Description()}";
                                 } else {
-                                    messages.Add(new Message($"REJECT {armour.Description()}"));
+                                    armourMessage = $"REJECT {armour.Description()}";
                                 }
 
+                                Message armourMessages = new(armourMessage);
+
+                                armourMessages.AddChild(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue));
+                                armourMessages.AddChild(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue));
+
+                                armourMessages.AddChild(new Message($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
+
+                                messages.Add(armourMessages);
                                 break;
                             case DungeonEvents.TakenPotion:
                                 int potionTypeValue = Dice.RollDSix();
@@ -295,10 +307,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 int potionDurationValue = Dice.RollDSix();
 
                                 Potions potion = new(dungeon.Depth, potionTypeValue, potionSizeValue, potionDurationValue);
-
-                                messages.Add(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue));
-                                messages.Add(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue));
-                                messages.Add(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue));
 
                                 switch (potion.Type) {
                                     case PotionTypes.Aura:
@@ -323,8 +331,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                                         break;
                                 }
 
-                                messages.Add(new Message($"DRINK A {potion.Description()}"));
+                                Message potionMessages = new($"DRINK A {potion.Description()}");
 
+                                potionMessages.AddChild(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue));
+                                potionMessages.AddChild(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue));
+                                potionMessages.AddChild(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue));
+
+                                messages.Add(potionMessages);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException("Loot tile type.");
@@ -447,6 +460,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                 SharedDungeon? dungeon = DungeonQueries.Get(dungeonId);
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Floors == null || dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungeon Floors"); }
+
+                SharedAdventurer? adventurer = dungeon.Adventurer;
+                if (adventurer == null || adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Adventurer"); }
+
+                if (!adventurer.IsAlive) {
+                    return dungeon;
+                }
 
                 SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
                 if (currentFloor == null || currentFloor.Tiles == null || currentFloor.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floors Tiles"); }
@@ -863,7 +883,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor selected Tile"); }
                 if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
-                Messages messages = new();
+
                 List<SharedMonster> monsters = selectedTile.Monsters.OrderBy(m => m.Index).ToList();
 
                 //Adventurer details
@@ -875,19 +895,27 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int adventurerProtection = adventurer.GetProtection();
 
                 bool adventurerInitiatesCombat = true;
+
+                Message? summaryMessage = null;
+
+                Message? combatInitiated = null;
+                Message? adventurerCombatResult = null;
+                Message? monsterCombatResult = null;
+
                 if (!dungeon.CombatInitiated) {
                     adventurerInitiatesCombat = AdventurerInitiatesCombat();
 
                     if (adventurerInitiatesCombat) {
-                        messages.Add(new Message("ADVENTURER INITIATES COMBAT"));
+                        combatInitiated = new Message("ADVENTURER INITIATES COMBAT");
                     } else {
-                        messages.Add(new Message("MONSTER INITIATES COMBAT"));
+                        combatInitiated = new Message("MONSTER INITIATES COMBAT");
                     }
 
                     dungeon.CombatInitiated = true;
                 }
 
                 if (adventurerInitiatesCombat) {
+
                     //Monster defend
                     int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
                     Monster currentMonster = new(monsters[monsterindex]);
@@ -906,8 +934,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                     //Monster wounds
                     int monsterWounds = 0;
                     if (adventurerAttackValue > monsterDodgeValue) {
-                        messages.Add(new Message($"ADVENTURER ATTACK ({adventurerAttackValue}) WINS OVER MONSTER DODGE ({monsterDodgeValue})"));
-
                         monsterWounds = adventurerDamage - monsterProtection;
 
                         int currentHealth = monsterHealth - monsterWounds;
@@ -918,21 +944,37 @@ namespace BlazorDungeonCrawler.Server.Data {
                             MonsterUpdate.Update(sharedMonster);
 
                             monsters[monsterindex] = sharedMonster;
+                            
+                            string importantMessage = $"MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING";
+                            summaryMessage = new Message(importantMessage);
+                            adventurerCombatResult = new Message(importantMessage);
 
-                            messages.Add(new Message($"MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING"));
+                            if (combatInitiated != null) {
+                                adventurerCombatResult.AddChild(combatInitiated);
+                            }
+
+                            adventurerCombatResult.AddChild(new Message($"ADVENTURER ATTACK ({adventurerAttackValue}) WINS OVER MONSTER DODGE ({monsterDodgeValue})"));
                         } else {
                             monsterHealth = 0;
 
                             adventurer.Experience += currentMonster.Experience;
 
-                            messages.Add(new Message($"MONSTER KILLED WITH {monsterWounds}"));
-
                             //if the user kills the Beholder
+                            string monsterKilled;
                             if (currentMonster.TypeName == "Beholder") {
+                                monsterKilled = $"BOSS KILLED FIND YOUR WAY OUT";
                                 dungeon.MacGuffinFound = true;
-                                messages.Add(new Message($"BOSS KILLED FIND YOUR WAY OUT"));
+                            } else {
+                                monsterKilled = $"MONSTER KILLED WITH {monsterWounds}";
                             }
 
+                            summaryMessage = new Message(monsterKilled);
+                            adventurerCombatResult = new Message(monsterKilled);
+
+                            if (combatInitiated != null) {
+                                adventurerCombatResult.AddChild(combatInitiated);
+                            }
+                            
                             //remove monster at stack
                             MonsterDelete.Delete(currentMonster.Id);
                             monsters.RemoveAt(monsterindex);
@@ -947,16 +989,17 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 adventurer.LevelUp();
                                 if (adventurer.ExperienceLevel > previousAdventurerLevel) {
-
                                     int currentAdventurerLevel = adventurer.ExperienceLevel;
                                     int currentAdventurerHealth = adventurer.HealthBase;
                                     int currentAdventurerDamage = adventurer.DamageBase;
                                     int currentAdventurerProtection = adventurer.ProtectionBase;
 
-                                    messages.Add(new Message($"NEW LEVEL ({currentAdventurerLevel})"));
-                                    messages.Add(new Message($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
-                                    messages.Add(new Message($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
-                                    messages.Add(new Message($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
+                                    Message levelUp = new Message($"NEW LEVEL ({currentAdventurerLevel})");
+                                    levelUp.AddChild(new Message($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
+                                    levelUp.AddChild(new Message($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
+                                    levelUp.AddChild(new Message($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
+
+                                    adventurerCombatResult.AddChild(levelUp);
                                 }
 
                                 //Update Dungeon
@@ -974,7 +1017,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         selectedTile.Monsters = monsters;
                     } else {
-                        messages.Add(new Message($"MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})"));
+                        adventurerCombatResult = new Message($"MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})");
                     }
                 }
 
@@ -998,7 +1041,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //Adventurer wounds
                         int adventurerWounds = 0;
                         if (monsterAttackValue > adventurerDodgeValue) {
-                            messages.Add(new Message($"MONSTER ATTACK ({monsterAttackValue}) WINS OVER ADVENTURER DODGE ({adventurerDodgeValue})"));
 
                             adventurerWounds = monsterDamage - adventurerProtection;
 
@@ -1008,30 +1050,60 @@ namespace BlazorDungeonCrawler.Server.Data {
                             }
 
                             int currentHealth = adventurer.HealthBase - adventurerWounds;
-
                             if (currentHealth > 0) {
                                 adventurer.HealthBase = currentHealth;
 
-                                messages.Add(new Message($"ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING"));
+                                string importantMessage = $"ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
+                                summaryMessage = new Message(importantMessage);
+                                monsterCombatResult = new Message(importantMessage);                                 
                             } else {
                                 adventurer.HealthBase = 0;
                                 adventurer.IsAlive = false;
 
                                 selectedTile.Type = DungeonEvents.FightLost;
 
-                                messages.Add(new Message($"ADVENTURER DIED WITH {adventurerWounds} WOUNDS"));
-
+                                string importantMessage = $"ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
+                                summaryMessage = new Message(importantMessage); 
+                                monsterCombatResult = new Message(importantMessage); 
+                                
                                 dungeon.InCombat = false;
 
                                 currentFloorTiles.Unhide();
 
                                 break;
                             }
+
+                            if (combatInitiated != null) {
+                                monsterCombatResult.AddChild(combatInitiated);
+                            }
+
+                            monsterCombatResult.AddChild(new Message($"MONSTER ATTACK ({monsterAttackValue}) WINS OVER ADVENTURER DODGE ({adventurerDodgeValue})"));
+
                         } else {
-                            messages.Add(new Message($"ADVENTURER DODGE ({monsterAttackValue}) WINS OVER MONSTER ATTACK ({adventurerDodgeValue})"));
+                            monsterCombatResult = new Message($"ADVENTURER DODGE ({monsterAttackValue}) WINS OVER MONSTER ATTACK ({adventurerDodgeValue})");
+
+
+                            if (combatInitiated != null) {
+                                monsterCombatResult.AddChild(combatInitiated);
+                            }
                         }
                     }
                 }
+
+                if (summaryMessage == null) {
+                    summaryMessage = new Message("NO DAMAGE DONE");
+                }
+
+                if (adventurerCombatResult != null) {
+                    summaryMessage.AddChild(adventurerCombatResult);
+                }
+
+                if (monsterCombatResult != null) {
+                    summaryMessage.AddChild(monsterCombatResult);
+                }
+
+                Messages messages = new Messages();
+                messages.Add(summaryMessage);
 
                 SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
                 dungeon.Adventurer = sharedAdventurer;
