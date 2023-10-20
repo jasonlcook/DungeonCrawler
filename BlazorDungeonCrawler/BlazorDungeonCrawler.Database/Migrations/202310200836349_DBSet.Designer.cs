@@ -7,13 +7,13 @@ namespace BlazorDungeonCrawler.Database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class DBSetup : IMigrationMetadata
+    public sealed partial class DBSet : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(DBSetup));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(DBSet));
         
         string IMigrationMetadata.Id
         {
-            get { return "202310181727331_DBSetup"; }
+            get { return "202310200836349_DBSet"; }
         }
         
         string IMigrationMetadata.Source

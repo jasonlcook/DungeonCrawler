@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DBSetup : DbMigration
+    public partial class DBSet : DbMigration
     {
         public override void Up()
         {
@@ -109,13 +109,15 @@
                 c => new
                     {
                         Id = c.Guid(nullable: false),
-                        Index = c.Int(nullable: false),
                         Datestamp = c.Double(nullable: false),
                         Text = c.String(),
+                        Message_Id = c.Guid(),
                         Dungeon_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Messages", t => t.Message_Id)
                 .ForeignKey("dbo.Dungeons", t => t.Dungeon_Id)
+                .Index(t => t.Message_Id)
                 .Index(t => t.Dungeon_Id);
             
         }
@@ -123,11 +125,13 @@
         public override void Down()
         {
             DropForeignKey("dbo.Messages", "Dungeon_Id", "dbo.Dungeons");
+            DropForeignKey("dbo.Messages", "Message_Id", "dbo.Messages");
             DropForeignKey("dbo.Floors", "Dungeon_Id", "dbo.Dungeons");
             DropForeignKey("dbo.Tiles", "Floor_Id", "dbo.Floors");
             DropForeignKey("dbo.Monsters", "Tile_Id", "dbo.Tiles");
             DropForeignKey("dbo.Dungeons", "Adventurer_Id", "dbo.Adventurers");
             DropIndex("dbo.Messages", new[] { "Dungeon_Id" });
+            DropIndex("dbo.Messages", new[] { "Message_Id" });
             DropIndex("dbo.Monsters", new[] { "Tile_Id" });
             DropIndex("dbo.Tiles", new[] { "Floor_Id" });
             DropIndex("dbo.Floors", new[] { "Dungeon_Id" });

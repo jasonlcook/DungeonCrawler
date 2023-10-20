@@ -6,7 +6,7 @@ namespace BlazorDungeonCrawler.Database.Resources.Queries.Get {
         public static Dungeon? Get(Guid dungeonId) {
             try {
                 using (var context = new DungeonContext()) {
-                    return context.Dungeons.Include("Adventurer").Include("Floors").Include("Floors.Tiles").Include("Floors.Tiles.Monsters").Include("Messages").Where(d => d.Id == dungeonId).FirstOrDefault();
+                    return context.Dungeons.Include("Adventurer").Include("Floors").Include("Floors.Tiles").Include("Floors.Tiles.Monsters").Include("Messages").Include("Messages.Children").Where(d => d.Id == dungeonId).FirstOrDefault();
                 }
             } catch (Exception ex) {
                 throw new Exception("Dungeon retrieval failed.");
