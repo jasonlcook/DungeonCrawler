@@ -8,13 +8,5 @@ namespace BlazorDungeonCrawler.Client.Pages
 
         [ParameterAttribute]
         public List<Message> Messages { get; set; } = new();
-
-        private void ShowLogActions(List<int> dice) {
-            
-        }
-
-        private void HideLogActions() {
-
-        }
     }
 }
