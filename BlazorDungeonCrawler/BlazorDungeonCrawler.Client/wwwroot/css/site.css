@@ -24,10 +24,6 @@ body {
 
 /* Loading */
 #external-frame #play-area #dungeon .loading {
-    margin: 0 auto;
-    position: absolute;
-    left: 355px;
-    top: 270px;
     animation: loading 4s ease-in-out infinite;
 }
 
@@ -366,7 +362,6 @@ body {
 
 
 #external-frame #play-area #dungeon {
-    border: 1px solid red;
     position: relative;
 }
 
