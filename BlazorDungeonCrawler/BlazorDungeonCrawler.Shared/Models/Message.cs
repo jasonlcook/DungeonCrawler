@@ -7,7 +7,6 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Guid Id { get; set; }
 
 
-        public int Index { get; set; }
         public double Datestamp { get; set; }
 
 
@@ -16,10 +15,13 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public List<int> Dice { get; set; }
 
+        public List<Message> Children { get; set; }
+
         public Message() {
             Id = Guid.Empty;
             Text = string.Empty;
-            Dice = new List<int>();
+            Dice = new();
+            Children = new();
         }
     }
 }
