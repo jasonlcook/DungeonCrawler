@@ -11,6 +11,8 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         public string ApiVersion { get; set; } = "API V0.0.0";
 
+        public List<Message> Messages { get; set; } = new();
+
         List<string> errorReports = new();
         List<string> informationReports = new();
 
@@ -139,6 +141,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 if (_dungeon.Adventurer == null || _dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 adventurer = _dungeon.Adventurer;
 
+                //Check and assign Dungeon Messages
+                if (_dungeon.Messages == null || _dungeon.Messages.Count == 0) { throw new ArgumentNullException("Dungeon Messages"); }
+                Messages = _dungeon.Messages.OrderBy(m => m.Datestamp).ToList();
             } catch (Exception ex) {
                 errorReports.Add(ex.Message);
             }
@@ -293,6 +298,10 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         Label = "Protection",
                         Value = protection.ToString()
                     });
+                }
+
+                if (!adventurer.IsAlive) {
+                    AdvanceDisabled = true;
                 }
 
                 //API version

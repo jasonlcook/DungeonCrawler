@@ -1,0 +1,18 @@
+﻿@if (Messages != null && Messages.Count > 0) {
+    foreach (Message message in Messages) {
+        <div data-identity="@message.Id" class="log-entry">
+            <span class="log-entry-message" @onmouseenter="() => ShowLogActions(message.Dice)" @onmouseleave="HideLogActions">
+                @message.Text
+            </span>
+            @if (message.Children != null && message.Children.Count > 0) {
+                <div class="log-actions">
+                    @foreach (Message childMessage in message.Children) {
+                        <span class="log-action-message" @onmouseenter="() => ShowLogActions(childMessage.Dice)" @onmouseleave="HideLogActions">
+                            @childMessage.Text
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    }
+}
