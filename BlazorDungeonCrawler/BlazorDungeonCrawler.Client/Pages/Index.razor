@@ -12,9 +12,9 @@
 <div id="external-frame">
     <div id="play-area">
         <div id="reports">
-            <Reports ErrorReports=errorReports InformationReports=informationReports />
+            <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
         </div>
-        <div id="dungeon"></div>
+        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth MacGuffinFound=MacGuffinFound TileRows=TileRows TileColumns=TileColumns />
     </div>
     <div class="button">
         <button @onclick="AutomaticallyAdvanceDungeon" class="dungeon-button" disabled="@AdvanceDisabled">Advance</button>
@@ -23,13 +23,13 @@
         <div class="adventurer">
             <div class="dungeon-floor">
                 <span class="label">Depth</span>
-                <span class="value" id="current-floor">@DungeonDepth</span>
+                <span class="value" id="current-floor">@DungeonDepth.ToString()</span>
             </div>
             <div class="adventurer-stats">
-                <AdventurerAttribute Attributes=adventurerExperienceStats />
-                <AdventurerAttribute Attributes=adventurerHealthStats />
-                <AdventurerAttribute Attributes=adventurerDamageStats />
-                <AdventurerAttribute Attributes=adventurerProtectionStats />
+                <AdventurerAttribute Attributes=AdventurerExperienceStats />
+                <AdventurerAttribute Attributes=AdventurerHealthStats />
+                <AdventurerAttribute Attributes=AdventurerDamageStats />
+                <AdventurerAttribute Attributes=AdventurerProtectionStats />
             </div>
             <div class="dice"></div>
         </div>

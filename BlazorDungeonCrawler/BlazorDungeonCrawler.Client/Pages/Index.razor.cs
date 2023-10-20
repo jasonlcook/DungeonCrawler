@@ -2,19 +2,33 @@ using Microsoft.JSInterop;
 
 using BlazorDungeonCrawler.Shared.Models;
 
+using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
+using Microsoft.AspNetCore.Components;
+
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
         //Page elements
+        public List<string> ErrorReports { get; set; } = new();
+        public List<string> InformationReports { get; set; } = new();
+
         public bool AdvanceDisabled { get; set; } = true;
 
-        public string DungeonDepth { get; set; } = "0";
+        public int DungeonDepth { get; set; } = 0;
+
+        public int TileRows { get; set; } = 0;
+        public int TileColumns { get; set; } = 0;
+
+        public bool MacGuffinFound { get; set; } = false;
 
         public string ApiVersion { get; set; } = "API V0.0.0";
 
-        public List<Message> Messages { get; set; } = new();
+        List<SharedTile> DungeonTiles { get; set; } = new();
 
-        List<string> errorReports = new();
-        List<string> informationReports = new();
+        public List<Attribute> AdventurerExperienceStats { get; set; } = new();
+        public List<Attribute> AdventurerHealthStats { get; set; } = new();
+        public List<Attribute> AdventurerDamageStats { get; set; } = new();
+        public List<Attribute> AdventurerProtectionStats { get; set; } = new();
+        public List<Message> Messages { get; set; } = new();
 
         //Cookies
         bool? foundCookie = null;
@@ -26,11 +40,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
         Dungeon dungeon = new();
         Floor floor = new();
         Adventurer adventurer = new();
-
-        List<Attribute> adventurerExperienceStats = new();
-        List<Attribute> adventurerHealthStats = new();
-        List<Attribute> adventurerDamageStats = new();
-        List<Attribute> adventurerProtectionStats = new();
 
         public async Task WriteLog(string message) {
             await this.JS.InvokeVoidAsync("console.log", message);
@@ -82,6 +91,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         //Dungeon
         protected override async void OnAfterRender(bool firstRender) {
+            ErrorReports = new();
+            InformationReports = new();
+
             try {
                 if (dungeon == null || dungeon.Id == Guid.Empty) {
                     try {
@@ -89,39 +101,66 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         ValidateDungeon(await DungeonManager.GenerateNewDungeon());
 
                         if (!await UpdatePageVariables()) {
-                            informationReports.Add("Dungeon values could not udpdated.");
+                            InformationReports.Add("Dungeon values could not udpdated.");
                         }
                     } catch (Exception ex) {
-                        errorReports.Add(ex.Message);
+                        ErrorReports.Add(ex.Message);
                     }
                 }
             } catch (Exception ex) {
-                errorReports.Add(ex.Message);
+                ErrorReports.Add(ex.Message);
             }
+        }
+
+        public async Task<bool> SelectTile(Guid tileId) {
+            ErrorReports = new();
+            InformationReports = new();
+
+            try {
+                if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
+                    try {
+                        dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
+                    } catch (Exception ex) {
+                        ErrorReports.Add(ex.Message);
+                    }
+
+                    if (!await UpdatePageVariables()) {
+                        InformationReports.Add("Dungeon values could not udpdated.");
+                    }
+
+                    return true;
+                } else {
+                    //todo: trap error
+                }
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+
+            return false;
         }
 
         private async Task AutomaticallyAdvanceDungeon() {
             try {
-                adventurerExperienceStats = new();
-                adventurerHealthStats = new();
-                adventurerDamageStats = new();
-                adventurerProtectionStats = new();
+                AdventurerExperienceStats = new();
+                AdventurerHealthStats = new();
+                AdventurerDamageStats = new();
+                AdventurerProtectionStats = new();
 
                 if (dungeon != null && dungeon.Id != Guid.Empty) {
                     try {
                         ValidateDungeon(await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id));
                     } catch (Exception ex) {
-                        errorReports.Add(ex.Message);
+                        ErrorReports.Add(ex.Message);
                     }
 
                     if (!await UpdatePageVariables()) {
-                        informationReports.Add("Dungeon values could not udpdated.");
+                        InformationReports.Add("Dungeon values could not udpdated.");
                     }
                 } else {
-                    informationReports.Add("Dungeon can not be automatically advance as Dungeon has not been set");
+                    InformationReports.Add("Dungeon can not be automatically advance as Dungeon has not been set");
                 }
             } catch (Exception ex) {
-                errorReports.Add(ex.Message);
+                ErrorReports.Add(ex.Message);
             }
         }
 
@@ -137,6 +176,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 if (_floor == null || _floor.Id == Guid.Empty) { throw new ArgumentNullException("Dungon Floor"); };
                 floor = _floor;
 
+                if (_floor.Tiles == null || _floor.Tiles.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
+                List<SharedTile>? _tiles = _floor.Tiles;
+                if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungon Floor Tiles"); };
+                DungeonTiles = _tiles;
+
                 //Check and assign Dungeon Floor
                 if (_dungeon.Adventurer == null || _dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 adventurer = _dungeon.Adventurer;
@@ -145,7 +189,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 if (_dungeon.Messages == null || _dungeon.Messages.Count == 0) { throw new ArgumentNullException("Dungeon Messages"); }
                 Messages = _dungeon.Messages.OrderBy(m => m.Datestamp).ToList();
             } catch (Exception ex) {
-                errorReports.Add(ex.Message);
+                ErrorReports.Add(ex.Message);
             }
         }
 
@@ -156,17 +200,22 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 AdvanceDisabled = false;
 
                 //Dungeon
-                DungeonDepth = dungeon.Depth.ToString();
+                DungeonDepth = dungeon.Depth;
+
+                TileRows = floor.Rows;
+                TileColumns = floor.Columns;
+
+                MacGuffinFound = dungeon.MacGuffinFound;
 
                 //Adventurer
                 //  Stats
                 //      XP
-                adventurerExperienceStats.Add(new Attribute() {
+                AdventurerExperienceStats.Add(new Attribute() {
                     Label = "Level",
                     Value = adventurer.ExperienceLevel.ToString()
                 });
 
-                adventurerExperienceStats.Add(new Attribute() {
+                AdventurerExperienceStats.Add(new Attribute() {
                     Label = "Experience",
                     Value = $"{adventurer.Experience} / {adventurer.NextExperienceLevelCost}"
                 });
@@ -176,19 +225,19 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 int auraPotionDuration = adventurer.AuraPotionDuration;
 
                 if (auraPotionDuration > 0) {
-                    adventurerHealthStats.Add(new Attribute() {
+                    AdventurerHealthStats.Add(new Attribute() {
                         Label = "Aura potion",
                         Value = auraPotion.ToString(),
                         Duration = auraPotionDuration.ToString()
                     });
 
-                    adventurerHealthStats.Add(new Attribute() {
+                    AdventurerHealthStats.Add(new Attribute() {
                         Label = "Base",
                         Value = adventurer.HealthBase.ToString()
                     });
                 }
 
-                adventurerHealthStats.Add(new Attribute() {
+                AdventurerHealthStats.Add(new Attribute() {
                     Label = "Health",
                     Value = $"{adventurer.HealthBase + auraPotionDuration} / {adventurer.HealthInitial}"
                 });
@@ -198,7 +247,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 int damagePotion = adventurer.DamagePotion;
                 int damagePotionDuration = adventurer.DamagePotionDuration;
                 if (damagePotionDuration > 0) {
-                    adventurerDamageStats.Add(new Attribute() {
+                    AdventurerDamageStats.Add(new Attribute() {
                         Label = "Damage potion",
                         Value = damagePotion.ToString(),
                         Duration = damagePotionDuration.ToString()
@@ -208,20 +257,20 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //          Weapon
                 int weapon = adventurer.Weapon;
                 if (weapon > 0) {
-                    adventurerDamageStats.Add(new Attribute() {
+                    AdventurerDamageStats.Add(new Attribute() {
                         Label = "Weapon",
                         Value = weapon.ToString()
                     });
                 }
 
                 if (damagePotionDuration > 0 || weapon > 0) {
-                    adventurerDamageStats.Add(new Attribute() {
+                    AdventurerDamageStats.Add(new Attribute() {
                         Label = "Base",
                         Value = adventurer.DamageBase.ToString()
                     });
                 }
 
-                adventurerDamageStats.Add(new Attribute() {
+                AdventurerDamageStats.Add(new Attribute() {
                     Label = "Damage",
                     Value = (adventurer.DamageBase + damagePotion + weapon).ToString()
                 });
@@ -231,7 +280,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 int shieldPotion = adventurer.ShieldPotion;
                 int shieldPotionDuration = adventurer.ShieldPotionDuration;
                 if (shieldPotionDuration > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Shield potion",
                         Value = shieldPotion.ToString(),
                         Duration = shieldPotionDuration.ToString()
@@ -242,7 +291,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //              Helmet
                 int armourHelmet = adventurer.ArmourHelmet;
                 if (armourHelmet > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Helmet",
                         Value = armourHelmet.ToString()
                     });
@@ -251,7 +300,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //              Breastplate
                 int armourBreastplate = adventurer.ArmourBreastplate;
                 if (armourBreastplate > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Breastplate",
                         Value = armourBreastplate.ToString()
                     });
@@ -260,7 +309,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //              Gauntlet
                 int armourGauntlet = adventurer.ArmourGauntlet;
                 if (armourGauntlet > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Gauntlet",
                         Value = armourGauntlet.ToString()
                     });
@@ -269,7 +318,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //              Greave
                 int armourGreave = adventurer.ArmourGreave;
                 if (armourGreave > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Greave",
                         Value = armourGreave.ToString()
                     });
@@ -278,7 +327,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //              Boots
                 int armourBoots = adventurer.ArmourBoots;
                 if (armourBoots > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Boots",
                         Value = armourBoots.ToString()
                     });
@@ -286,7 +335,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
                 int protectionAdditions = shieldPotion + armourHelmet + armourBreastplate + armourGauntlet + armourGreave + armourBoots;
                 if (protectionAdditions > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Base",
                         Value = adventurer.ProtectionBase.ToString()
                     });
@@ -294,7 +343,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
                 int protection = adventurer.ProtectionBase + protectionAdditions;
                 if (protection > 0) {
-                    adventurerProtectionStats.Add(new Attribute() {
+                    AdventurerProtectionStats.Add(new Attribute() {
                         Label = "Protection",
                         Value = protection.ToString()
                     });

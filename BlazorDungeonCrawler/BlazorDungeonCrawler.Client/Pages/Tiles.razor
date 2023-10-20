@@ -1,0 +1,55 @@
+﻿@if (DungeonTiles.Count() == 0 && DungeonDepth == 0) {
+    <div id="dungeon">
+        <div class="loading">
+            <img src="/images/tiles/blue/base_tile.png" />
+        </div>
+    </div>
+} else {
+    <div id="dungeon" style=@getDungeonPosition(TileRows, TileColumns)>
+        @foreach (var DungeonTile in DungeonTiles) {
+            string colourClass = @getColourClass(DungeonDepth);
+
+            <div class="hexagon-tile-group" style=@getTileGroupPosition(DungeonTile.Row, DungeonTile.Column)>
+                <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
+
+                @if (DungeonTile.Current) {
+                    <div class="hexagon-tile hexagon-tile-current"></div>
+                }
+
+                @if (DungeonTile.Selectable) {
+                    string selectableClass = "hexagon-tile-selectable";
+                    @if (DungeonTile.Hidden) {
+                        selectableClass = "hexagon-tile-hidden-selectable";
+                    }
+
+                    <div class="hexagon-tile @colourClass @selectableClass">
+                        <span></span>
+                    </div>
+                }
+
+                @if (DungeonTile.Hidden) {
+                    <div class="hexagon-tile hexagon-tile-hidden"></div>
+                } else {
+                    <div class="hexagon-tile @colourClass @getTypeClass(MacGuffinFound, DungeonTile.Type)"></div>
+
+                    @if (!DungeonTile.Current && !DungeonTile.Selectable) {
+                        <div class="hexagon-tile hexagon-for-of-war"></div>
+                    }
+                }
+
+                @if (DungeonTile.Monsters.Count > 0) {
+                    foreach (Monster monster in DungeonTile.Monsters) {
+                        string monsterTop = $"{monster.ClientY}px";
+                        string monsterLeft = $"{monster.ClientX}px";
+
+                        <span class="monster-counter" style="top: @monsterTop; left: @monsterLeft;">
+                            <span class="monster-counter-health">
+                                @monster.Health
+                            </span>
+                        </span>
+                    }
+                }
+            </div>
+        }
+    </div>
+}
