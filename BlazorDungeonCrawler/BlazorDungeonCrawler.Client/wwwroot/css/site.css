@@ -293,7 +293,62 @@ body {
         display: flex;
         justify-content: space-around;
         align-items: center;
+        overflow: hidden;
     }
+
+
+        #external-frame #play-area #level-select {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+            #external-frame #play-area #level-select .level {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                width: 20px;
+                height: 20px;
+                border-color: #000;
+                border-width: 1px;
+                border-style: solid;
+                margin: 0 0 5px 0;
+                background-position: center;
+                color: #fff;
+            }
+
+                #external-frame #play-area #level-select .level.selectable-level {
+                    cursor: pointer;
+                }
+
+                #external-frame #play-area #level-select .level.selected-level {
+                    color: #000;
+                    background-color: #fff;                
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-red {
+                    background-image: url("../images/tiles/red/base_tile.png");
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-blue {
+                    background-image: url("../images/tiles/blue/base_tile.png");
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-purple {
+                    background-image: url("../images/tiles/purple/base_tile.png");
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-green {
+                    background-image: url("../images/tiles/green/base_tile.png");
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-pink {
+                    background-image: url("../images/tiles/pink/base_tile.png");
+                }
+
+                #external-frame #play-area #level-select .level.base-colour-unknown {
+                    background-image: url("../images/tiles/grey/base_tile.png");
+                }
 
         #external-frame #play-area #reports {
             position: absolute;
