@@ -140,31 +140,31 @@ namespace BlazorDungeonCrawler.Client.Pages {
             }
         }
 
-        public async Task<bool> SelectTile(Guid tileId) {
-            ErrorReports = new();
-            InformationReports = new();
+        public async Task SelectTile(Guid tileId) {
+            if (tileId != Guid.Empty) {
+                ErrorReports = new();
+                InformationReports = new();
 
-            try {
-                if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-                    try {
-                        dungeon = await DungeonManager.SelectDungeonTile(dungeon.Id, tileId);
-                    } catch (Exception ex) {
-                        ErrorReports.Add(ex.Message);
+                try {
+                    if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
+                        try {
+                            ValidateDungeon(await DungeonManager.SelectDungeonTile(dungeon.Id, tileId));
+                        } catch (Exception ex) {
+                            ErrorReports.Add(ex.Message);
+                        }
+
+                        if (!await UpdatePageVariables()) {
+                            InformationReports.Add("Dungeon values could not udpdated.");
+                        }
+                    } else {
+                        //todo: trap error
                     }
-
-                    if (!await UpdatePageVariables()) {
-                        InformationReports.Add("Dungeon values could not udpdated.");
-                    }
-
-                    return true;
-                } else {
-                    //todo: trap error
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
                 }
-            } catch (Exception ex) {
-                ErrorReports.Add(ex.Message);
+            } else {
+                throw new ArgumentNullException("Selected Tile id invalid");
             }
-
-            return false;
         }
 
         private async Task AutomaticallyAdvanceDungeon() {

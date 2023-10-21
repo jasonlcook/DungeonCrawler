@@ -20,6 +20,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
         [ParameterAttribute]
         public bool MacGuffinFound { get; set; }
 
+        [Parameter]
+        public EventCallback<Guid> OnClickCallback { get; set; }
+
         private readonly int tileWidth = 100;
         private readonly int nestedTileWidth = (100 / 4) * 3;
         private readonly int tileHeight = 90;
@@ -27,6 +30,10 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public Tiles() {
             DungeonTiles = new();
             DungeonDepth = 0;
+        }
+
+        private async Task CallParentSelectedTileFunction(Guid tileId) {
+            await OnClickCallback.InvokeAsync(tileId);
         }
 
         public string getDungeonPosition(int tileRows, int tileColumns) {

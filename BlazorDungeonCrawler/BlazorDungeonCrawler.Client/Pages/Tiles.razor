@@ -23,7 +23,7 @@
                     }
 
                     <div class="hexagon-tile @colourClass @selectableClass">
-                        <span></span>
+                        <span @onclick="@(() => CallParentSelectedTileFunction(DungeonTile.Id))"></span>
                     </div>
                 }
 
