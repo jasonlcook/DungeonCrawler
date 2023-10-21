@@ -16,7 +16,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             List<MonsterType> availableMonsters = monsterTypes.GetMonstersAtDepth(depth);
 
             if (availableMonsters.Count > 0) {
-                int currentMonsterTypeIndex = Dice.RandomNumber(1, availableMonsters.Count - 1);
+                int currentMonsterTypeIndex = Dice.RandomNumber(0, availableMonsters.Count - 1);
                 MonsterType currentMonsterType = availableMonsters[currentMonsterTypeIndex];
 
                 if (currentMonsterType.Name != string.Empty) {
