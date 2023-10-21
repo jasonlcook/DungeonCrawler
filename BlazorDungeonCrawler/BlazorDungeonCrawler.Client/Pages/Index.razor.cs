@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using BlazorDungeonCrawler.Shared.Models;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
+using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
@@ -26,6 +27,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public string ApiVersion { get; set; } = "API V0.0.0";
 
         List<SharedTile> DungeonTiles { get; set; } = new();
+
+        public bool AdventurerAlive { get; set; } = true;
+        public List<SharedFloor> DungeonFloors { get; set; } = new();
 
         public List<Attribute> AdventurerExperienceStats { get; set; } = new();
         public List<Attribute> AdventurerHealthStats { get; set; } = new();
@@ -140,6 +144,18 @@ namespace BlazorDungeonCrawler.Client.Pages {
             }
         }
 
+        public void SelectDungeonDepth(int dungeonDepth) {
+            if (dungeonDepth == 0) { throw new Exception("Dungeon depth element was badly formed."); }
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
+
+            try {
+                dungeon.Depth = dungeonDepth;
+                ValidateDungeon(dungeon);
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+        }
+
         public async Task SelectTile(Guid tileId) {
             if (tileId != Guid.Empty) {
                 ErrorReports = new();
@@ -198,11 +214,26 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 if (_dungeon == null || _dungeon.Id == Guid.Empty) { throw new ArgumentNullException("Dungon"); };
                 dungeon = _dungeon;
 
+                //If cookie has been set then refresh cookie with new dungeon Id
+                if (FoundCookie == true && cookieId != dungeon.Id) {
+                    StoreCookie(dungeon.Id);
+                }
+
+                DungeonId = dungeon.Id;
+                DungeonDepth = dungeon.Depth;
+
+                MacGuffinFound = dungeon.MacGuffinFound;
+
                 //Check and assign Dungeon Floor
                 if (_dungeon.Floors == null || _dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
-                Floor? _floor = _dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
+                DungeonFloors = _dungeon.Floors.OrderBy(f => f.Depth).ToList();
+
+                Floor? _floor = _dungeon.Floors.Where(l => l.Depth == DungeonDepth).FirstOrDefault();
                 if (_floor == null || _floor.Id == Guid.Empty) { throw new ArgumentNullException("Dungon Floor"); };
                 floor = _floor;
+
+                TileRows = floor.Rows;
+                TileColumns = floor.Columns;
 
                 if (_floor.Tiles == null || _floor.Tiles.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
                 List<SharedTile>? _tiles = _floor.Tiles;
@@ -213,9 +244,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 if (_dungeon.Adventurer == null || _dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 adventurer = _dungeon.Adventurer;
 
+                AdventurerAlive = adventurer.IsAlive;
+
                 //Check and assign Dungeon Messages
                 if (_dungeon.Messages == null || _dungeon.Messages.Count == 0) { throw new ArgumentNullException("Dungeon Messages"); }
-                Messages = _dungeon.Messages.OrderBy(m => m.Datestamp).ToList();
+                Messages = _dungeon.Messages.OrderByDescending(m => m.Datestamp).ToList();
             } catch (Exception ex) {
                 ErrorReports.Add(ex.Message);
             }
@@ -223,20 +256,15 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         private async Task<bool> UpdatePageVariables() {
             try {
+                AdventurerExperienceStats = new();
+                AdventurerHealthStats = new();
+                AdventurerDamageStats = new();
+                AdventurerProtectionStats = new();
+
                 //Advance button
                 //  Enable
                 AdvanceDisabled = false;
 
-                //Dungeon
-                DungeonId = dungeon.Id;
-                DungeonDepth = dungeon.Depth;
-
-                TileRows = floor.Rows;
-                TileColumns = floor.Columns;
-
-                MacGuffinFound = dungeon.MacGuffinFound;
-
-                //Adventurer
                 //  Stats
                 //      XP
                 AdventurerExperienceStats.Add(new Attribute() {

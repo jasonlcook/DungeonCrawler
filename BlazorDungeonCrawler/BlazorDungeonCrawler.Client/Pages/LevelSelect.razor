@@ -1,0 +1,14 @@
+﻿@if (AdventurerAlive == false && DungeonFloors.Count() > 0) {
+    <div id="level-select">
+        @foreach (var dungeonFloor in DungeonFloors) {
+            int dungeonFloorDepth = dungeonFloor.Depth;
+
+            @if (dungeonFloorDepth != DungeonDepth) {
+                <div class="level @getColourClass(dungeonFloorDepth) selectable-level" @onclick="@(() => CallParentSelectDungeonDepthFunction(dungeonFloorDepth))">@dungeonFloorDepth</div>
+            } else {
+                <div class="level selected-level">@dungeonFloorDepth</div>
+            }
+        }
+    </div>
+}
+

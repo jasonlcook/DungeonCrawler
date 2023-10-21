@@ -14,7 +14,8 @@
         <div id="reports">
             <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
         </div>
-        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth MacGuffinFound=MacGuffinFound TileRows=TileRows TileColumns=TileColumns OnClickCallback=@SelectTile />        
+        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth MacGuffinFound=MacGuffinFound TileRows=TileRows TileColumns=TileColumns OnClickCallback=@SelectTile />
+        <LevelSelect DungeonFloors=DungeonFloors AdventurerAlive=AdventurerAlive DungeonDepth=DungeonDepth OnClickCallback =@SelectDungeonDepth />
     </div>
     <div class="button">
         <button @onclick="AutomaticallyAdvanceDungeon" class="dungeon-button" disabled="@AdvanceDisabled">Advance</button>
