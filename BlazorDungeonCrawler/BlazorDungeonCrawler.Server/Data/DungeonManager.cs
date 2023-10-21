@@ -365,7 +365,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             if (monsters.Count() == 1) {
                                 messages.Add(new Message($"A {monsters.GetName()}"));
                             } else {
-                                messages.Add(new Message($"{selectedTile.Monsters.Count} {monsters.GetName()}s"));
+                                messages.Add(new Message($"{monsters.Count()} {monsters.GetName()}s"));
                             }
 
                             selectedTile.Type = DungeonEvents.Fight;
@@ -799,6 +799,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             dungeon.InCombat = false;
 
+                            //todo: unhide tiles for all floors upon death
+                            //todo: remove all current and selectable from each floor
                             currentFloorTiles.Unhide();
 
                             messages.Add(new Message($"ADVENTURER KILLED WITH {adventurerDammage}"));
