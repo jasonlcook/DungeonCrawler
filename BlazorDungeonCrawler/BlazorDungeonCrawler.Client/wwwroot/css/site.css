@@ -257,7 +257,6 @@ body {
                     border-style: solid;
                     border-width: 1px 0px 0 0px;
                     background-color: #fff;
-
                     display: none;
                     visibility: hidden;
                 }
@@ -269,17 +268,17 @@ body {
                     visibility: visible;
                 }
 
-                    #external-frame .details #log .log-entry .log-actions .log-action-message {
-                        margin: 5px;
-                        padding: 2px 5px;
-                        display: block;
-                    }
+                #external-frame .details #log .log-entry .log-actions .log-action-message {
+                    margin: 5px;
+                    padding: 2px 5px;
+                    display: block;
+                }
 
-                        #external-frame .details #log .log-entry .log-actions .log-action-message:active,
-                        #external-frame .details #log .log-entry .log-actions .log-action-message:hover,
-                        #external-frame .details #log .log-entry .log-actions .log-action-message:focus {
-                            background-color: antiquewhite;
-                        }
+                    #external-frame .details #log .log-entry .log-actions .log-action-message:active,
+                    #external-frame .details #log .log-entry .log-actions .log-action-message:hover,
+                    #external-frame .details #log .log-entry .log-actions .log-action-message:focus {
+                        background-color: antiquewhite;
+                    }
 
     /* Dungeon */
     #external-frame #play-area {
@@ -814,4 +813,84 @@ body {
 
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/pink/death.png");
+        }
+
+        /*  Unknown (Grey) */
+        /*          Base */
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-base {
+            background-image: url("../images/tiles/grey/base_tile.png");
+        }
+
+        /*          Selectable */
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-selectable {
+            background-image: url("../images/tiles/grey/base_tile_selectable.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-hidden-selectable {
+            background-image: url('../images/tiles/grey/base_tile_hidden_selectable.png');
+        }
+
+        /*          Element */
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance {
+            background-image: url("../images/tiles/grey/entrance.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/grey/entrance_active.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-exit {
+            background-image: url("../images/tiles/grey/exit.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending {
+            background-image: url("../images/tiles/grey/stairs_ascending.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending-active {
+            background-image: url("../images/tiles/grey/stairs_ascending_active.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending {
+            background-image: url("../images/tiles/grey/stairs_descending.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending-active {
+            background-image: url("../images/tiles/grey/stairs_descending_active.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight {
+            background-image: url("../images/tiles/grey/fight.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight-won {
+            background-image: url("../images/tiles/grey/fight_won.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-chest {
+            background-image: url("../images/tiles/grey/chest.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-protection {
+            background-image: url("../images/tiles/grey/protection.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-weapon {
+            background-image: url("../images/tiles/grey/weapons.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-empty {
+            background-image: url("../images/tiles/grey/empty.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-potion {
+            background-image: url("../images/tiles/grey/potion.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-macguffin {
+            background-image: url("../images/tiles/grey/maguffin.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-adventurer-death {
+            background-image: url("../images/tiles/grey/death.png");
         }
