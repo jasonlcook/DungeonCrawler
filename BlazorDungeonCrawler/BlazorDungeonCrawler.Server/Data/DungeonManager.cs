@@ -25,16 +25,17 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 //Create
                 //  Adventurer
-                Message message = new Message($"ADVENTURER");
 
                 int health = Dice.RollDSix();
-                message.AddChild(new Message($"ADVENTURER HEALTH {health}", health));
-
                 int damage = Dice.RollDSix();
-                message.AddChild(new Message($"ADVENTURER DAMAGE {damage}", damage));
-
                 int protection = Dice.RollDSix();
-                message.AddChild(new Message($"ADVENTURER PROTECTION {protection}", protection));
+
+                List<int> adventurerRolls = new() { health, damage, protection };
+                Message message = new Message($"ADVENTURER", adventurerRolls, null);
+
+                message.AddChild(new Message($"ADVENTURER HEALTH {health}", health, null));
+                message.AddChild(new Message($"ADVENTURER DAMAGE {damage}", damage, null));
+                message.AddChild(new Message($"ADVENTURER PROTECTION {protection}", protection, null));
 
                 messages.Add(message);
 
@@ -159,8 +160,13 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             Message monsterFight = new(monsterMessage);
 
+                            string monsterDetails = string.Empty;
+                            List<int> monsterDetailsRolls = new List<int>();
                             foreach (Monster monster in monsters.Get()) {
-                                monsterFight.AddChild(new Message($"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}."));
+                                monsterDetails = $"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}.";
+                                monsterDetailsRolls = new() { monster.Damage, monster.Health, monster.Protection };
+
+                                monsterFight.AddChild(new Message(monsterDetails, monsterDetailsRolls, null));
                             }
 
                             messages.Add(monsterFight);
@@ -245,8 +251,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Message weaponsMessages = new(weaponsMessage);
 
-                                weaponsMessages.AddChild(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue));
-                                weaponsMessages.AddChild(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue));
+                                weaponsMessages.AddChild(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue, null));
+                                weaponsMessages.AddChild(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue, null));
 
                                 weaponsMessages.AddChild(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
 
@@ -304,8 +310,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Message armourMessages = new(armourMessage);
 
-                                armourMessages.AddChild(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue));
-                                armourMessages.AddChild(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue));
+                                armourMessages.AddChild(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue, null));
+                                armourMessages.AddChild(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue, null));
 
                                 armourMessages.AddChild(new Message($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
 
@@ -343,9 +349,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 Message potionMessages = new($"DRINK A {potion.Description()}");
 
-                                potionMessages.AddChild(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue));
-                                potionMessages.AddChild(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue));
-                                potionMessages.AddChild(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue));
+                                potionMessages.AddChild(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue, null));
+                                potionMessages.AddChild(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue, null));
+                                potionMessages.AddChild(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue, null));
 
                                 messages.Add(potionMessages);
                                 break;
@@ -382,8 +388,13 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             Message wanderingMonster = new(monsterMessage);
 
+                            string monsterDetails = string.Empty;
+                            List<int> monsterDetailsRolls = new List<int>();
                             foreach (Monster monster in monsters.Get()) {
-                                wanderingMonster.AddChild(new Message($"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}."));
+                                monsterDetails = $"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}.";
+                                monsterDetailsRolls = new() { monster.Damage, monster.Health, monster.Protection };
+
+                                wanderingMonster.AddChild(new Message(monsterDetails, monsterDetailsRolls, null));
                             }
 
                             messages.Add(wanderingMonster);
@@ -813,16 +824,15 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     //Adventurer wounds
                     int adventurerWounds = monsterDamage - adventurerProtection;
-
                     if (adventurerWounds > 0) {
                         int currentHealth = adventurer.HealthBase - adventurerWounds;
                         if (currentHealth > 0) {
                             adventurer.HealthBase = currentHealth;
 
                             string importantMessage = $"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
-                            
+
                             monsterFlee = new Message(importantMessage);
-                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})", adventurerProtection, monsterDamage));
                         } else {
                             adventurer.HealthBase = 0;
                             adventurer.IsAlive = false;
@@ -830,9 +840,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                             selectedTile.Type = DungeonEvents.FightLost;
 
                             string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
-                            
+
                             monsterFlee = new Message(importantMessage);
-                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})", adventurerProtection, monsterDamage));
 
                             dungeon.InCombat = false;
 
@@ -844,7 +854,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         string monsterCombatWiff = "MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER";
 
                         monsterFlee = new Message(monsterCombatWiff);
-                        monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                        monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})", adventurerProtection, monsterDamage));
                     }
 
                     messages.Add(monsterFlee);
