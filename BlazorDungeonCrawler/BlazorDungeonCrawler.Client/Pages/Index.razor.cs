@@ -157,51 +157,38 @@ namespace BlazorDungeonCrawler.Client.Pages {
         }
 
         public async Task SelectTile(Guid tileId) {
-            if (tileId != Guid.Empty) {
-                ErrorReports = new();
-                InformationReports = new();
+            if (tileId == Guid.Empty) { throw new Exception("Tile element was badly formed."); }
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
 
-                try {
-                    if (dungeon != null && dungeon.Id != Guid.Empty && tileId != Guid.Empty) {
-                        try {
-                            ValidateDungeon(await DungeonManager.SelectDungeonTile(dungeon.Id, tileId));
-                        } catch (Exception ex) {
-                            ErrorReports.Add(ex.Message);
-                        }
+            ErrorReports = new();
+            InformationReports = new();
 
-                        if (!await UpdatePageVariables()) {
-                            InformationReports.Add("Dungeon values could not udpdated.");
-                        }
-                    } else {
-                        //todo: trap error
-                    }
-                } catch (Exception ex) {
-                    ErrorReports.Add(ex.Message);
-                }
-            } else {
-                throw new ArgumentNullException("Selected Tile id invalid");
+            try {
+                ValidateDungeon(await DungeonManager.SelectDungeonTile(dungeon.Id, tileId));
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
             }
+
+            if (!await UpdatePageVariables()) { InformationReports.Add("Dungeon values could not udpdated."); }
         }
 
         private async Task AutomaticallyAdvanceDungeon() {
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
+
             try {
                 AdventurerExperienceStats = new();
                 AdventurerHealthStats = new();
                 AdventurerDamageStats = new();
                 AdventurerProtectionStats = new();
 
-                if (dungeon != null && dungeon.Id != Guid.Empty) {
-                    try {
-                        ValidateDungeon(await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id));
-                    } catch (Exception ex) {
-                        ErrorReports.Add(ex.Message);
-                    }
+                try {
+                    ValidateDungeon(await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id));
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
+                }
 
-                    if (!await UpdatePageVariables()) {
-                        InformationReports.Add("Dungeon values could not udpdated.");
-                    }
-                } else {
-                    InformationReports.Add("Dungeon can not be automatically advance as Dungeon has not been set");
+                if (!await UpdatePageVariables()) {
+                    InformationReports.Add("Dungeon values could not udpdated.");
                 }
             } catch (Exception ex) {
                 ErrorReports.Add(ex.Message);
