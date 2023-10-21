@@ -1,27 +1,35 @@
-﻿using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
+﻿using System.Text;
+using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Message {
         public Guid Id { get; private set; }
         public double Datestamp { get; set; }
         public string Text { get; set; }
-        public List<int>? Dice { get; private set; }
         public List<Message> Children { get; private set; }
+        public List<int>? SafeDice { get; private set; }
+        public List<int>? DangerDice { get; private set; }
 
         public Message(string text) {
             Id = Guid.NewGuid();
             Datestamp = (DateTime.Now.ToUniversalTime() - new DateTime(2023, 10, 1)).TotalSeconds;
             Text = text;
-            Dice = null;
             Children = new();
         }
 
-        public Message(string text, int die) : this(text) {
-            Dice = new List<int> { die };
+        public Message(string text, int? safeDie, int? dangerDie) : this(text) {
+            if (safeDie != null) {
+                SafeDice = new List<int>() { (int)safeDie };
+            }
+
+            if (dangerDie != null) {
+                DangerDice = new() { (int)dangerDie };
+            }
         }
 
-        public Message(string text, List<int> dice) : this(text) {
-            Dice = dice;
+        public Message(string text, List<int>? safeDice, List<int>? dangerDice) : this(text) {
+            SafeDice = safeDice;
+            DangerDice = dangerDice;
         }
 
         public void AddChild(Message message) {
@@ -35,10 +43,24 @@ namespace BlazorDungeonCrawler.Server.Models {
                 Text = this.Text
             };
 
-            if (Dice != null && Dice.Count > 0) {
-                foreach (int die in this.Dice) {
-                    sharedMessage.Dice.Add(die);
+            if (SafeDice != null && SafeDice.Count > 0) {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                foreach (int safeDie in this.SafeDice) {
+                    stringBuilder.Append(safeDie + ",");
                 }
+
+                sharedMessage.SafeDice = stringBuilder.ToString().Substring(0, stringBuilder.Length - 1);
+            }
+
+            if (DangerDice != null && DangerDice.Count > 0) {
+                StringBuilder stringBuilder = new StringBuilder();
+
+                foreach (int dangerDice in this.DangerDice) {
+                    stringBuilder.Append(dangerDice + ",");
+                }
+
+                sharedMessage.DangerDice = stringBuilder.ToString().Substring(0, stringBuilder.Length - 1);
             }
 
             if (Children != null && Children.Count > 0) {
