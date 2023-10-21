@@ -149,11 +149,21 @@ namespace BlazorDungeonCrawler.Server.Data {
                     case DungeonEvents.Fight:
                         if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
                             monsters = SetMonsters(selectedTile.Id, dungeon.Depth);
+
+                            string monsterMessage;
                             if (monsters.Count() == 1) {
-                                messages.Add(new Message($"A {monsters.GetName()}"));
+                                monsterMessage = $"MONSTER CAMP: A {monsters.GetName()}";
                             } else {
-                                messages.Add(new Message($"{monsters.Count()} {monsters.GetName()}s"));
+                                monsterMessage = $"MONSTER CAMP: {monsters.Count()} {monsters.GetName()}s";
                             }
+
+                            Message monsterFight = new(monsterMessage);
+
+                            foreach (Monster monster in monsters.Get()) {
+                                monsterFight.AddChild(new Message($"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}."));
+                            }
+
+                            messages.Add(monsterFight);
 
                             selectedTile.Monsters = monsters.Get();
                         }
@@ -362,11 +372,21 @@ namespace BlazorDungeonCrawler.Server.Data {
                         int value = Dice.RollDSix();
                         if (value == 1) {
                             monsters = SetMonsters(selectedTile.Id, dungeon.Depth);
+
+                            string monsterMessage;
                             if (monsters.Count() == 1) {
-                                messages.Add(new Message($"A {monsters.GetName()}"));
+                                monsterMessage = $"WANDERING MONSTER: A {monsters.GetName()}";
                             } else {
-                                messages.Add(new Message($"{monsters.Count()} {monsters.GetName()}s"));
+                                monsterMessage = $"WANDERING MONSTER: {monsters.Count()} {monsters.GetName()}s";
                             }
+
+                            Message wanderingMonster = new(monsterMessage);
+
+                            foreach (Monster monster in monsters.Get()) {
+                                wanderingMonster.AddChild(new Message($"DAMAGE: {monster.Damage}.  HEALTH: {monster.Health}.  PROTECTION: {monster.Protection}."));
+                            }
+
+                            messages.Add(wanderingMonster);
 
                             selectedTile.Type = DungeonEvents.Fight;
                             selectedTile.Monsters = monsters.Get();
@@ -779,8 +799,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
                 } else {
-                    messages.Add(new Message("ADVENTURER FAILED TO FLEE"));
+                    Message monsterFlee = new("ADVENTURER FAILED TO FLEE");
 
+                    //todo: replace this with monster attack round function 
                     if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
                     List<SharedMonster> monsters = selectedTile.Monsters;
@@ -790,26 +811,43 @@ namespace BlazorDungeonCrawler.Server.Data {
                     int adventurerProtection = adventurer.GetProtection();
                     int monsterDamage = currentMonster.Damage;
 
-                    int woundsReceived = monsterDamage - adventurerProtection;
-                    if (woundsReceived > 0) {
-                        int adventurerDammage = adventurer.reciveWounds(woundsReceived);
+                    //Adventurer wounds
+                    int adventurerWounds = monsterDamage - adventurerProtection;
 
-                        if (!adventurer.IsAlive) {
+                    if (adventurerWounds > 0) {
+                        int currentHealth = adventurer.HealthBase - adventurerWounds;
+                        if (currentHealth > 0) {
+                            adventurer.HealthBase = currentHealth;
+
+                            string importantMessage = $"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
+                            
+                            monsterFlee = new Message(importantMessage);
+                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                        } else {
+                            adventurer.HealthBase = 0;
+                            adventurer.IsAlive = false;
+
                             selectedTile.Type = DungeonEvents.FightLost;
+
+                            string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
+                            
+                            monsterFlee = new Message(importantMessage);
+                            monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
 
                             dungeon.InCombat = false;
 
                             //todo: unhide tiles for all floors upon death
                             //todo: remove all current and selectable from each floor
                             currentFloorTiles.Unhide();
-
-                            messages.Add(new Message($"ADVENTURER KILLED WITH {adventurerDammage}"));
-                        } else {
-                            messages.Add(new Message($"ADVENTURER HIT FOR {adventurerDammage} WITH {adventurer.HealthBase} REMAINING"));
                         }
                     } else {
-                        messages.Add(new Message("MONSTER WAS UNABLE TO CAUSE HARM"));
+                        string monsterCombatWiff = "MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER";
+
+                        monsterFlee = new Message(monsterCombatWiff);
+                        monsterFlee.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
                     }
+
+                    messages.Add(monsterFlee);
                 }
 
                 //Update Adventurer
@@ -938,88 +976,96 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (adventurerAttackValue > monsterDodgeValue) {
                         monsterWounds = adventurerDamage - monsterProtection;
 
-                        int currentHealth = monsterHealth - monsterWounds;
-                        if (currentHealth > 0) {
-                            currentMonster.Health = currentHealth;
-                            SharedMonster sharedMonster = currentMonster.SharedModelMapper();
+                        if (monsterWounds > 0) {
+                            int currentHealth = monsterHealth - monsterWounds;
+                            if (currentHealth > 0) {
+                                currentMonster.Health = currentHealth;
+                                SharedMonster sharedMonster = currentMonster.SharedModelMapper();
 
-                            MonsterUpdate.Update(sharedMonster);
+                                MonsterUpdate.Update(sharedMonster);
 
-                            monsters[monsterindex] = sharedMonster;
-                            
-                            string importantMessage = $"MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING";
-                            summaryMessage = new Message(importantMessage);
-                            adventurerCombatResult = new Message(importantMessage);
+                                monsters[monsterindex] = sharedMonster;
 
-                            if (combatInitiated != null) {
-                                adventurerCombatResult.AddChild(combatInitiated);
-                            }
+                                string importantMessage = $"ADVENTURER ATTACK: MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING";
+                                summaryMessage = new Message(importantMessage);
+                                adventurerCombatResult = new Message(importantMessage);
 
-                            adventurerCombatResult.AddChild(new Message($"ADVENTURER ATTACK ({adventurerAttackValue}) WINS OVER MONSTER DODGE ({monsterDodgeValue})"));
-                        } else {
-                            monsterHealth = 0;
-
-                            adventurer.Experience += currentMonster.Experience;
-
-                            //if the user kills the Beholder
-                            string monsterKilled;
-                            if (currentMonster.TypeName == "Beholder") {
-                                monsterKilled = $"BOSS KILLED FIND YOUR WAY OUT";
-                                dungeon.MacGuffinFound = true;
-                            } else {
-                                monsterKilled = $"MONSTER KILLED WITH {monsterWounds}";
-                            }
-
-                            summaryMessage = new Message(monsterKilled);
-                            adventurerCombatResult = new Message(monsterKilled);
-
-                            if (combatInitiated != null) {
-                                adventurerCombatResult.AddChild(combatInitiated);
-                            }
-                            
-                            //remove monster at stack
-                            MonsterDelete.Delete(currentMonster.Id);
-                            monsters.RemoveAt(monsterindex);
-
-                            //checked for remaining monsters
-                            if (monsters.Count == 0) {
-                                //Update Adventurer
-                                int previousAdventurerLevel = adventurer.ExperienceLevel;
-                                int previousAdventurerHealth = adventurer.HealthBase;
-                                int previousAdventurerDamage = adventurer.DamageBase;
-                                int previousAdventurerProtection = adventurer.ProtectionBase;
-
-                                adventurer.LevelUp();
-                                if (adventurer.ExperienceLevel > previousAdventurerLevel) {
-                                    int currentAdventurerLevel = adventurer.ExperienceLevel;
-                                    int currentAdventurerHealth = adventurer.HealthBase;
-                                    int currentAdventurerDamage = adventurer.DamageBase;
-                                    int currentAdventurerProtection = adventurer.ProtectionBase;
-
-                                    Message levelUp = new Message($"NEW LEVEL ({currentAdventurerLevel})");
-                                    levelUp.AddChild(new Message($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
-                                    levelUp.AddChild(new Message($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
-                                    levelUp.AddChild(new Message($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
-
-                                    adventurerCombatResult.AddChild(levelUp);
+                                if (combatInitiated != null) {
+                                    adventurerCombatResult.AddChild(combatInitiated);
                                 }
 
-                                //Update Dungeon
-                                dungeon.InCombat = false;
-                                dungeon.CombatTile = Guid.Empty;
-                                dungeon.CombatInitiated = false;
+                                adventurerCombatResult.AddChild(new Message($"ADVENTURER'S ATTACK ({adventurerAttackValue}) WINS OVER MONSTER DODGE ({monsterDodgeValue})"));
+                            } else {
+                                monsterHealth = 0;
 
-                                //Update Level
-                                selectedTile.FightWon = true;
-                                selectedTile.Type = DungeonEvents.FightWon;
+                                adventurer.Experience += currentMonster.Experience;
 
-                                currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                            };
+                                //if the user kills the Beholder
+                                string monsterKilled;
+                                if (currentMonster.TypeName == "Beholder") {
+                                    monsterKilled = $"ADVENTURER ATTACK: BOSS KILLED FIND YOUR WAY OUT";
+                                    dungeon.MacGuffinFound = true;
+                                } else {
+                                    monsterKilled = $"ADVENTURER ATTACK: MONSTER KILLED WITH {monsterWounds}";
+                                }
+
+                                summaryMessage = new Message(monsterKilled);
+                                adventurerCombatResult = new Message(monsterKilled);
+
+                                if (combatInitiated != null) {
+                                    adventurerCombatResult.AddChild(combatInitiated);
+                                }
+
+                                //remove monster at stack
+                                MonsterDelete.Delete(currentMonster.Id);
+                                monsters.RemoveAt(monsterindex);
+
+                                //checked for remaining monsters
+                                if (monsters.Count == 0) {
+                                    //Update Adventurer
+                                    int previousAdventurerLevel = adventurer.ExperienceLevel;
+                                    int previousAdventurerHealth = adventurer.HealthBase;
+                                    int previousAdventurerDamage = adventurer.DamageBase;
+                                    int previousAdventurerProtection = adventurer.ProtectionBase;
+
+                                    adventurer.LevelUp();
+                                    if (adventurer.ExperienceLevel > previousAdventurerLevel) {
+                                        int currentAdventurerLevel = adventurer.ExperienceLevel;
+                                        int currentAdventurerHealth = adventurer.HealthBase;
+                                        int currentAdventurerDamage = adventurer.DamageBase;
+                                        int currentAdventurerProtection = adventurer.ProtectionBase;
+
+                                        Message levelUp = new Message($"NEW LEVEL ({currentAdventurerLevel})");
+                                        levelUp.AddChild(new Message($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
+                                        levelUp.AddChild(new Message($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
+                                        levelUp.AddChild(new Message($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
+
+                                        adventurerCombatResult.AddChild(levelUp);
+                                    }
+
+                                    //Update Dungeon
+                                    dungeon.InCombat = false;
+                                    dungeon.CombatTile = Guid.Empty;
+                                    dungeon.CombatInitiated = false;
+
+                                    //Update Level
+                                    selectedTile.FightWon = true;
+                                    selectedTile.Type = DungeonEvents.FightWon;
+
+                                    currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                                };
+                            }
+                        } else {
+                            string adventurerCombatWiff = "ADVENTURER ATTACK: NO DAMAGE DONE TO MONSTER";
+
+                            summaryMessage = new Message(adventurerCombatWiff);
+                            adventurerCombatResult = new Message(adventurerCombatWiff);
+                            adventurerCombatResult.AddChild(new Message($"ADVENTURER DAMAGE ({adventurerDamage}) MONSTER PROTECTION ({monsterProtection})"));
                         }
 
                         selectedTile.Monsters = monsters;
                     } else {
-                        adventurerCombatResult = new Message($"MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})");
+                        adventurerCombatResult = new Message($"ADVENTURER ATTACK: MONSTER DODGE ({monsterDodgeValue}) WINS OVER ADVENTURER ATTACK ({adventurerAttackValue})");
                     }
                 }
 
@@ -1027,6 +1073,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon.InCombat) {
                     int monsterDamage, monsterProtection, monsterHealth;
                     foreach (SharedMonster monster in selectedTile.Monsters) {
+
+                        //todo: replace this with monster attack round function
+
                         //Monster details
                         //todo: get this from dungeon 
                         monsterDamage = monster.Damage;
@@ -1043,47 +1092,51 @@ namespace BlazorDungeonCrawler.Server.Data {
                         //Adventurer wounds
                         int adventurerWounds = 0;
                         if (monsterAttackValue > adventurerDodgeValue) {
-
                             adventurerWounds = monsterDamage - adventurerProtection;
 
-                            //do at least one damage to monsters to prevent deadlocking 
-                            if (adventurerWounds < 1) {
-                                adventurerWounds = 1;
-                            }
+                            if (adventurerWounds > 0) {
+                                int currentHealth = adventurer.HealthBase - adventurerWounds;
+                                if (currentHealth > 0) {
+                                    adventurer.HealthBase = currentHealth;
 
-                            int currentHealth = adventurer.HealthBase - adventurerWounds;
-                            if (currentHealth > 0) {
-                                adventurer.HealthBase = currentHealth;
+                                    string importantMessage = $"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
+                                    summaryMessage = new Message(importantMessage);
+                                    monsterCombatResult = new Message(importantMessage);
+                                    monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                                } else {
+                                    adventurer.HealthBase = 0;
+                                    adventurer.IsAlive = false;
 
-                                string importantMessage = $"ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
-                                summaryMessage = new Message(importantMessage);
-                                monsterCombatResult = new Message(importantMessage);                                 
+                                    selectedTile.Type = DungeonEvents.FightLost;
+
+                                    string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
+                                    summaryMessage = new Message(importantMessage);
+                                    monsterCombatResult = new Message(importantMessage);
+                                    monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+
+                                    dungeon.InCombat = false;
+
+                                    //todo: unhide tiles for all floors upon death
+                                    //todo: remove all current and selectable from each floor
+                                    currentFloorTiles.Unhide();
+
+                                    break;
+                                }
+
+                                if (combatInitiated != null) {
+                                    monsterCombatResult.AddChild(combatInitiated);
+                                }
+
+                                monsterCombatResult.AddChild(new Message($"MONSTER ATTACK ({monsterAttackValue}) WINS OVER ADVENTURER DODGE ({adventurerDodgeValue})"));
                             } else {
-                                adventurer.HealthBase = 0;
-                                adventurer.IsAlive = false;
+                                string monsterCombatWiff = "MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER";
 
-                                selectedTile.Type = DungeonEvents.FightLost;
-
-                                string importantMessage = $"ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
-                                summaryMessage = new Message(importantMessage); 
-                                monsterCombatResult = new Message(importantMessage); 
-                                
-                                dungeon.InCombat = false;
-
-                                currentFloorTiles.Unhide();
-
-                                break;
+                                summaryMessage = new Message(monsterCombatWiff);
+                                monsterCombatResult = new Message(monsterCombatWiff);
+                                monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
                             }
-
-                            if (combatInitiated != null) {
-                                monsterCombatResult.AddChild(combatInitiated);
-                            }
-
-                            monsterCombatResult.AddChild(new Message($"MONSTER ATTACK ({monsterAttackValue}) WINS OVER ADVENTURER DODGE ({adventurerDodgeValue})"));
-
                         } else {
-                            monsterCombatResult = new Message($"ADVENTURER DODGE ({monsterAttackValue}) WINS OVER MONSTER ATTACK ({adventurerDodgeValue})");
-
+                            monsterCombatResult = new Message($"MONSTER ATTACK: ADVENTURER DODGE ({monsterAttackValue}) WINS OVER MONSTER ATTACK ({adventurerDodgeValue})");
 
                             if (combatInitiated != null) {
                                 monsterCombatResult.AddChild(combatInitiated);
