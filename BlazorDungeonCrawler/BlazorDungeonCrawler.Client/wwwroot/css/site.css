@@ -452,7 +452,7 @@ body {
         }
 
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance-active {
-            background-image: url("../images/tiles/red/entrance.png");
+            background-image: url("../images/tiles/red/entrance_active.png");
         }
 
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-exit {
@@ -531,6 +531,10 @@ body {
             background-image: url("../images/tiles/blue/entrance.png");
         }
 
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/blue/entrance_active.png");
+        }
+
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-exit {
             background-image: url("../images/tiles/blue/exit.png");
         }
@@ -605,6 +609,10 @@ body {
         /*          Element */
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance {
             background-image: url("../images/tiles/purple/entrance.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/purple/entrance_active.png");
         }
 
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-exit {
@@ -683,6 +691,10 @@ body {
             background-image: url("../images/tiles/green/entrance.png");
         }
 
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/green/entrance_active.png");
+        }
+
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-exit {
             background-image: url("../images/tiles/green/exit.png");
         }
@@ -757,6 +769,10 @@ body {
         /*          Element */
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance {
             background-image: url("../images/tiles/pink/entrance.png");
+        }
+
+        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance-active {
+            background-image: url("../images/tiles/pink/entrance_active.png");
         }
 
         #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-exit {
