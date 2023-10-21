@@ -1,0 +1,13 @@
+﻿@inject IJSRuntime JS
+
+@if (DungeonId != Guid.Empty && RejectedCookie == false && FoundCookie != null && FoundCookie == false) {
+    <div id="cookie-consent" class="alert alert-info alert-dismissible fade show" role="alert">
+        Would you like a cookie?
+        <button type="button" class="accept-policy close dungeon-button" @onclick="RejectCookies">
+            Reject Cookie
+        </button>
+        <button type="button" class="accept-policy close dungeon-button" @onclick="AcceptCookies">
+            Accept Cookie
+        </button>
+    </div>
+}

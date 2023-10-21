@@ -3,16 +3,19 @@ using Microsoft.JSInterop;
 using BlazorDungeonCrawler.Shared.Models;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
-using Microsoft.AspNetCore.Components;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
         //Page elements
+        public bool? FoundCookie { get; set; } = null;
+        public bool RejectedCookie { get; set; } = false;
+
         public List<string> ErrorReports { get; set; } = new();
         public List<string> InformationReports { get; set; } = new();
 
         public bool AdvanceDisabled { get; set; } = true;
 
+        public Guid DungeonId { get; set; } = Guid.Empty;
         public int DungeonDepth { get; set; } = 0;
 
         public int TileRows { get; set; } = 0;
@@ -31,7 +34,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public List<Message> Messages { get; set; } = new();
 
         //Cookies
-        bool? foundCookie = null;
         string cookieKeyId = "BlazorWebAppCookies-Id";
 
         Guid cookieId = Guid.Empty;
@@ -47,9 +49,29 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         //Cookies
         protected override void OnInitialized() {
-            if (foundCookie == null) {
+            if (FoundCookie == null) {
                 CheckCookies();
             }
+        }
+
+        //  Create
+        private async void StoreCookie(Guid dungeonId) {
+            string safeDungeonId = dungeonId.ToString();
+            string cookie = BakeCookie(cookieKeyId, safeDungeonId, 7);
+            await SetCookie(cookie);
+        }
+
+        private string BakeCookie(string key, string value, double days) {
+            string dateStamp = "";
+            if (days > 0) {
+                dateStamp = DateTime.Now.AddDays(days).ToUniversalTime().ToString("R");
+            }
+
+            return $"{key}={value}; expires={dateStamp}; path=/";
+        }
+
+        private async Task SetCookie(string cookie) {
+            await JS.InvokeVoidAsync("eval", $"document.cookie = \"{cookie}\"");
         }
 
         //  Retrieve
@@ -58,13 +80,13 @@ namespace BlazorDungeonCrawler.Client.Pages {
             Dictionary<string, string> cookies = ParseCookieResponse(response);
 
             if (cookies.ContainsKey(cookieKeyId)) {
-                foundCookie = true;
+                FoundCookie = true;
 
                 if (Guid.TryParse(cookies[cookieKeyId], out cookieId)) {
                     await WriteLog($"COOKIEID: {cookieId}");
                 }
             } else {
-                foundCookie = false;
+                FoundCookie = false;
             }
         }
 
@@ -96,15 +118,21 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
             try {
                 if (dungeon == null || dungeon.Id == Guid.Empty) {
+                    Dungeon? dungeon;
                     try {
-                        //Get Dungeon
-                        ValidateDungeon(await DungeonManager.GenerateNewDungeon());
-
-                        if (!await UpdatePageVariables()) {
-                            InformationReports.Add("Dungeon values could not udpdated.");
+                        if (cookieId != Guid.Empty) {
+                            dungeon = await DungeonManager.GetDungeon(cookieId);
+                        } else {
+                            dungeon = await DungeonManager.GenerateNewDungeon();
                         }
+
+                        ValidateDungeon(dungeon);
                     } catch (Exception ex) {
                         ErrorReports.Add(ex.Message);
+                    }
+
+                    if (!await UpdatePageVariables()) {
+                        InformationReports.Add("Dungeon values could not udpdated.");
                     }
                 }
             } catch (Exception ex) {
@@ -200,6 +228,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 AdvanceDisabled = false;
 
                 //Dungeon
+                DungeonId = dungeon.Id;
                 DungeonDepth = dungeon.Depth;
 
                 TileRows = floor.Rows;
