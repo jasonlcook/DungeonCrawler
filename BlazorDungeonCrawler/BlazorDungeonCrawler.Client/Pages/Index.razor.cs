@@ -8,34 +8,65 @@ using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
         //Page elements
-        public bool? FoundCookie { get; set; } = null;
-        public bool RejectedCookie { get; set; } = false;
+        public bool? FoundCookie { get; set; }
+        public bool RejectedCookie { get; set; }
 
-        public List<string> ErrorReports { get; set; } = new();
-        public List<string> InformationReports { get; set; } = new();
+        public List<string> ErrorReports { get; set; }
+        public List<string> InformationReports { get; set; }
 
-        public bool AdvanceDisabled { get; set; } = true;
+        public bool AdvanceDisabled { get; set; }
 
-        public Guid DungeonId { get; set; } = Guid.Empty;
-        public int DungeonDepth { get; set; } = 0;
+        public Guid DungeonId { get; set; }
+        public int DungeonDepth { get; set; }
 
-        public int TileRows { get; set; } = 0;
-        public int TileColumns { get; set; } = 0;
+        public int TileRows { get; set; }
+        public int TileColumns { get; set; }
 
-        public bool MacGuffinFound { get; set; } = false;
+        public bool MacGuffinFound { get; set; }
 
-        public string ApiVersion { get; set; } = "API V0.0.0";
+        public string ApiVersion { get; set; }
 
-        List<SharedTile> DungeonTiles { get; set; } = new();
+        List<SharedTile> DungeonTiles { get; set; }
 
-        public bool AdventurerAlive { get; set; } = true;
-        public List<SharedFloor> DungeonFloors { get; set; } = new();
+        public bool AdventurerAlive { get; set; }
+        public List<SharedFloor> DungeonFloors { get; set; }
 
-        public List<Attribute> AdventurerExperienceStats { get; set; } = new();
-        public List<Attribute> AdventurerHealthStats { get; set; } = new();
-        public List<Attribute> AdventurerDamageStats { get; set; } = new();
-        public List<Attribute> AdventurerProtectionStats { get; set; } = new();
-        public List<Message> Messages { get; set; } = new();
+        public List<Attribute> AdventurerExperienceStats { get; set; }
+        public List<Attribute> AdventurerHealthStats { get; set; }
+        public List<Attribute> AdventurerDamageStats { get; set; }
+        public List<Attribute> AdventurerProtectionStats { get; set; }
+        public List<Message> Messages { get; set; }
+
+        public Index() {
+            FoundCookie = null;
+            RejectedCookie = false;
+
+            ErrorReports = new();
+            InformationReports = new();
+
+            AdvanceDisabled = true;
+
+            DungeonId = Guid.Empty;
+            DungeonDepth = 0;
+
+            TileRows = 0;
+            TileColumns = 0;
+
+            MacGuffinFound = false;
+
+            ApiVersion = "API V0.0.0";
+
+            DungeonTiles = new();
+
+            AdventurerAlive = true;
+            DungeonFloors = new();
+
+            AdventurerExperienceStats = new();
+            AdventurerHealthStats = new();
+            AdventurerDamageStats = new();
+            AdventurerProtectionStats = new();
+            Messages = new();
+        }
 
         //Cookies
         string cookieKeyId = "BlazorWebAppCookies-Id";

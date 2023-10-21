@@ -25,17 +25,27 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         private readonly int tileWidth = 100;
         private readonly int nestedTileWidth = (100 / 4) * 3;
+
         private readonly int tileHeight = 90;
 
         public Tiles() {
             DungeonTiles = new();
+
             DungeonDepth = 0;
+
+            TileRows = 0;
+            TileColumns = 0;
+
+            MacGuffinFound = false;
+
+            OnClickCallback = new();
         }
 
         private async Task CallParentSelectedTileFunction(Guid tileId) {
             await OnClickCallback.InvokeAsync(tileId);
         }
 
+        //todo: calculate this not like and idiot
         public string getDungeonPosition(int tileRows, int tileColumns) {
             int dungeonWidth = nestedTileWidth * tileRows + (tileWidth / 4);
             int dungeonHeight = tileHeight * tileColumns;

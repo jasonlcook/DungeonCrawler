@@ -5,10 +5,10 @@ namespace BlazorDungeonCrawler.Client.Pages {
     public partial class CookieConsent {
         [ParameterAttribute]
         public bool? FoundCookie { get; set; }
-        
+
         [ParameterAttribute]
         public bool RejectedCookie { get; set; }
-        
+
         [ParameterAttribute]
         public Guid DungeonId { get; set; }
 
@@ -20,7 +20,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
             DungeonId = Guid.Empty;
         }
-
 
         private async void AcceptCookies() {
             Guid dungeonId = Guid.Empty;

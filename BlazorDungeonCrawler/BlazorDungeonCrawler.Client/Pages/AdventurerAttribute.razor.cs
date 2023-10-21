@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public class Attribute {
-        public string Label { get; set; } 
-        public string Value { get; set; } 
-        public string? Duration { get; set; } 
+        public string Label { get; set; }
+        public string Value { get; set; }
+        public string? Duration { get; set; }
 
         public Attribute() {
             Label = "0";
@@ -14,6 +14,10 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
     public partial class AdventurerAttribute {
         [ParameterAttribute]
-        public List<Attribute> Attributes { get; set; } = new();
+        public List<Attribute> Attributes { get; set; }
+
+        public AdventurerAttribute() {
+            Attributes = new();
+        }
     }
 }

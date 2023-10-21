@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Components;
 
 using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 
-namespace BlazorDungeonCrawler.Client.Pages
-{
+namespace BlazorDungeonCrawler.Client.Pages {
     public partial class LevelSelect {
         [ParameterAttribute]
         public List<SharedFloor> DungeonFloors { get; set; }
-                
+
         [ParameterAttribute]
         public bool AdventurerAlive { get; set; }
 
@@ -20,6 +19,8 @@ namespace BlazorDungeonCrawler.Client.Pages
         public LevelSelect() {
             DungeonFloors = new();
             AdventurerAlive = true;
+            DungeonDepth = 0;
+            OnClickCallback = new();
         }
 
         private async Task CallParentSelectDungeonDepthFunction(int dungeonDepth) {
