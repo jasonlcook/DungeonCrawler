@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DBSet : DbMigration
+    public partial class DBSetup : DbMigration
     {
         public override void Up()
         {
@@ -111,6 +111,8 @@
                         Id = c.Guid(nullable: false),
                         Datestamp = c.Double(nullable: false),
                         Text = c.String(),
+                        SafeDice = c.String(),
+                        DangerDice = c.String(),
                         Message_Id = c.Guid(),
                         Dungeon_Id = c.Guid(),
                     })
