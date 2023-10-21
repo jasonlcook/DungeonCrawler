@@ -15,7 +15,17 @@
             <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
         </div>
         <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth MacGuffinFound=MacGuffinFound TileRows=TileRows TileColumns=TileColumns OnClickCallback=@SelectTile />
-        <LevelSelect DungeonFloors=DungeonFloors AdventurerAlive=AdventurerAlive DungeonDepth=DungeonDepth OnClickCallback =@SelectDungeonDepth />
+        <LevelSelect DungeonFloors=DungeonFloors AdventurerAlive=AdventurerAlive DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
+
+        @if (dungeon != null) {
+            @if (dungeon.InCombat) {
+                <ActionDialog DialogText="MONSTER FIGHT" OnCallAcceptFunction=@MonsterFight AcceptLabel="Fight" OnCallRejectFunction=@MonsterFlee RejectLabel="Flee" />
+            }
+
+            @if (dungeon.StairsDiscovered) {
+                <ActionDialog DialogText="STAIRS" OnCallAcceptFunction=@DescendStairs AcceptLabel="Descend" OnCallRejectFunction=@RemainOnFloor RejectLabel="Stay" />
+            }
+        }
     </div>
     <div class="button">
         <button @onclick="AutomaticallyAdvanceDungeon" class="dungeon-button" disabled="@AdvanceDisabled">Advance</button>

@@ -226,6 +226,64 @@ namespace BlazorDungeonCrawler.Client.Pages {
             }
         }
 
+        private async Task MonsterFight() {
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
+
+            try {
+                try {
+                    ValidateDungeon(await DungeonManager.MonsterFight(dungeon.Id, dungeon.CombatTile));
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
+                }
+
+                if (!await UpdatePageVariables()) {
+                    InformationReports.Add("Dungeon values could not udpdated.");
+                }
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+        }
+
+        private async Task MonsterFlee() {
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
+
+            try {
+                try {
+                    ValidateDungeon(await DungeonManager.MonsterFlee(dungeon.Id, dungeon.CombatTile));
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
+                }
+
+                if (!await UpdatePageVariables()) {
+                    InformationReports.Add("Dungeon values could not udpdated.");
+                }
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+        }
+
+        private void RemainOnFloor() {
+            dungeon.StairsDiscovered = false;
+        }
+
+        private async Task DescendStairs() {
+            if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
+
+            try {
+                try {
+                    ValidateDungeon(await DungeonManager.DescendStairs(dungeon.Id));
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
+                }
+
+                if (!await UpdatePageVariables()) {
+                    InformationReports.Add("Dungeon values could not udpdated.");
+                }
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+        }
+
         private void ValidateDungeon(Dungeon _dungeon) {
             try {
                 //Check and assign Dungeon
