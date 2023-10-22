@@ -11,9 +11,9 @@
                             @childMessage.Text
                         </span>
                         @if (childMessage.Children != null && childMessage.Children.Count > 0) {
-                            <div class="log-actions">
+                            <div class="log-action-child">
                                 @foreach (Message grandchildMessage in childMessage.Children) {
-                                    <span class="log-action-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(grandchildMessage.SafeDice, grandchildMessage.DangerDice))">
+                                    <span class="log-action-child-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(grandchildMessage.SafeDice, grandchildMessage.DangerDice))">
                                         @grandchildMessage.Text
                                     </span>
                                 }

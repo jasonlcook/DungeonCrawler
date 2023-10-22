@@ -283,6 +283,22 @@ body {
                         background-color: antiquewhite;
                     }
 
+                #external-frame .details #log .log-entry .log-actions .log-action-child {
+                    margin: -5px 0 0 0;
+                }
+
+                    #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message {
+                        margin: 0 0 0 20px;
+                        padding: 2px 5px;
+                        display: block;
+                    }
+
+                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:active,
+                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:hover,
+                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:focus {
+                            background-color: antiquewhite;
+                        }
+
     /* Dungeon */
     #external-frame #play-area {
         border-color: #000;
@@ -327,7 +343,7 @@ body {
 
                 #external-frame #play-area #level-select .level.selected-level {
                     color: #000;
-                    background-color: #fff;                
+                    background-color: #fff;
                 }
 
                 #external-frame #play-area #level-select .level.base-colour-red {
