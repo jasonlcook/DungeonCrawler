@@ -138,9 +138,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                         if (!dungeon.MacGuffinFound) {
                             messages.Add(new Message("NO MACGUFFIN. GO FIND IT!"));
                         } else {
-                            messages.Add(new Message("WELL DONE."));
-                            
                             dungeon.GameOver = true;
+
+                            Message gameOverMessage = GenerateGameOverMessage("WELL DONE.", dungeon);
+                            messages.Add(gameOverMessage);
 
                             currentFloorTiles.Unhide();
                             TilesUpdate.Update(currentFloorTiles.SharedModelMapper());
@@ -854,9 +855,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             dungeon.GameOver = true;
 
+                            Message gameOverMessage = GenerateGameOverMessage($"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS", dungeon);
+                            monsterFlee = gameOverMessage;
+
                             selectedTile.Type = DungeonEvents.FightLost;
 
-                            monsterFlee = new Message($"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS");
                             monsterFlee.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
 
                             dungeon.InCombat = false;
@@ -963,6 +966,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                 Message? combatInitiated = null;
                 Message? adventurerCombatResult = null;
                 Message? monsterCombatResult = null;
+
+                Message? gameOverMessage = null;
 
                 bool adventurerInitiatesCombat = true;
                 if (!dungeon.CombatInitiated) {
@@ -1135,10 +1140,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                     dungeon.GameOver = true;
 
+                                    string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
                                     selectedTile.Type = DungeonEvents.FightLost;
 
-                                    string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
-                                    summaryMessage = new Message(importantMessage);
                                     monsterCombatResult = new Message(importantMessage);
                                     monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
 
@@ -1147,6 +1151,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     //todo: unhide tiles for all floors upon death
                                     //todo: remove all current and selectable from each floor
                                     currentFloorTiles.Unhide();
+
+                                    gameOverMessage = GenerateGameOverMessage(importantMessage, dungeon);
 
                                     break;
                                 }
@@ -1188,6 +1194,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                 Messages messages = new Messages();
                 messages.Add(summaryMessage);
 
+                if (gameOverMessage != null) {
+                    messages.Add(gameOverMessage);
+                }
+
                 SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
                 dungeon.Adventurer = sharedAdventurer;
 
@@ -1227,6 +1237,62 @@ namespace BlazorDungeonCrawler.Server.Data {
             } catch (Exception ex) {
                 throw;
             }
+        }
+
+        public Message GenerateGameOverMessage(string message, SharedDungeon dungeon) {
+            Message endOfGameMessage = new(message);
+
+            //Floor            
+            int floorsDiscovered = dungeon.Floors.Count();
+            endOfGameMessage.AddChild(new Message($"{floorsDiscovered} FLOORS DISCOVERED."));
+                        
+            //Tiles
+            foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
+                int tilesTotal = floor.Tiles.Count();
+                int tilesFound = floor.Tiles.Where(t => t.Hidden == false).ToList().Count();
+
+                endOfGameMessage.AddChild(new Message($"FLOOR {floor.Depth}: DISCOVERED TILES {tilesFound} / {tilesTotal}."));
+            }
+
+            //Loot
+            foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
+                int takenWeapon = floor.Tiles.Where(t => t.Type == DungeonEvents.TakenWeapon).ToList().Count();
+                int takenPotion = floor.Tiles.Where(t => t.Type == DungeonEvents.TakenPotion).ToList().Count();
+                int takenProtection = floor.Tiles.Where(t => t.Type == DungeonEvents.TakenProtection).ToList().Count();
+
+                int chestsLooted = takenWeapon + takenPotion + takenProtection;
+
+                Message lootMessage = new Message($"FLOOR {floor.Depth}: CHESTS LOOTED {chestsLooted}.");
+
+                //todo: track weapons abandoned
+                lootMessage.AddChild(new Message($"WEAPONS TAKEN {takenWeapon}."));
+
+                //todo: track protection abandoned
+                lootMessage.AddChild(new Message($"PROTECTION TAKEN {takenProtection}."));
+
+                //todo: track potion types 
+                lootMessage.AddChild(new Message($"POTIONS TAKEN {takenPotion}."));
+
+                endOfGameMessage.AddChild(lootMessage);
+            }
+
+            //Monsters
+            foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
+                //var monsters = floor.Tiles.Where(t => t.Monsters.Count > 0).ToList();
+                int fightsFleed = floor.Tiles.Where(t => t.Type == DungeonEvents.Fight).Where(t => t.Hidden == false).ToList().Count();
+                int fightsWon = floor.Tiles.Where(t => t.Type == DungeonEvents.FightWon).Where(t => t.Hidden == false).ToList().Count();
+
+                int fights = fightsFleed + fightsWon;
+
+                Message monstersMessage = new Message($"FLOOR {floor.Depth}: FIGHTS {fights}.");
+
+                monstersMessage.AddChild(new Message($"FIGHTS FLEED {fightsFleed}."));
+                monstersMessage.AddChild(new Message($"FIGHTS WON {fightsWon}."));
+
+                endOfGameMessage.AddChild(monstersMessage);
+            }
+
+            return endOfGameMessage;
         }
     }
 }
