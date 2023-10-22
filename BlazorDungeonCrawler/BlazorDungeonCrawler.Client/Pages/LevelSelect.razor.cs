@@ -8,7 +8,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public List<SharedFloor> DungeonFloors { get; set; }
 
         [ParameterAttribute]
-        public bool AdventurerAlive { get; set; }
+        public bool GameOver { get; set; }
 
         [ParameterAttribute]
         public int DungeonDepth { get; set; }
@@ -18,7 +18,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         public LevelSelect() {
             DungeonFloors = new();
-            AdventurerAlive = true;
+            GameOver = false;
             DungeonDepth = 0;
             OnClickCallback = new();
         }

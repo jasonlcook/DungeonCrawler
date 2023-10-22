@@ -1,4 +1,4 @@
-﻿@if (AdventurerAlive == false && DungeonFloors.Count() > 0) {
+﻿@if (GameOver == true && DungeonFloors.Count() > 0) {
     <div id="level-select">
         @foreach (var dungeonFloor in DungeonFloors) {
             int dungeonFloorDepth = dungeonFloor.Depth;
@@ -11,4 +11,3 @@
         }
     </div>
 }
-

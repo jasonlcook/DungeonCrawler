@@ -139,6 +139,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                             messages.Add(new Message("NO MACGUFFIN. GO FIND IT!"));
                         } else {
                             messages.Add(new Message("WELL DONE."));
+                            
+                            dungeon.GameOver = true;
 
                             currentFloorTiles.Unhide();
                             TilesUpdate.Update(currentFloorTiles.SharedModelMapper());
@@ -507,12 +509,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
                 if (dungeon.Floors == null || dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungeon Floors"); }
 
-                SharedAdventurer? adventurer = dungeon.Adventurer;
-                if (adventurer == null || adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Adventurer"); }
-
-                if (!adventurer.IsAlive) {
+                if (dungeon.GameOver) {
                     return dungeon;
                 }
+
+                SharedAdventurer? adventurer = dungeon.Adventurer;
+                if (adventurer == null || adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Adventurer"); }
 
                 SharedFloor? currentFloor = dungeon.Floors.Where(l => l.Depth == dungeon.Depth).FirstOrDefault();
                 if (currentFloor == null || currentFloor.Tiles == null || currentFloor.Tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floors Tiles"); }
@@ -850,6 +852,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                             adventurer.HealthBase = 0;
                             adventurer.IsAlive = false;
 
+                            dungeon.GameOver = true;
+
                             selectedTile.Type = DungeonEvents.FightLost;
 
                             monsterFlee = new Message($"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS");
@@ -1128,6 +1132,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 } else {
                                     adventurer.HealthBase = 0;
                                     adventurer.IsAlive = false;
+
+                                    dungeon.GameOver = true;
 
                                     selectedTile.Type = DungeonEvents.FightLost;
 

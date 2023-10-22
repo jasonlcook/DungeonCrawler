@@ -15,9 +15,13 @@
             <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
         </div>
         <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth MacGuffinFound=MacGuffinFound TileRows=TileRows TileColumns=TileColumns OnClickCallback=@SelectTile />
-        <LevelSelect DungeonFloors=DungeonFloors AdventurerAlive=AdventurerAlive DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
+        <LevelSelect DungeonFloors=DungeonFloors GameOver=GameOver DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
 
         @if (dungeon != null) {
+            @if (dungeon.GameOver) {
+                <ActionDialog DialogText="GAME OVER" OnCallAcceptFunction=@NewGame AcceptLabel="New Game?" />
+            }
+
             @if (dungeon.InCombat) {
                 <ActionDialog DialogText="MONSTER FIGHT" OnCallAcceptFunction=@MonsterFight AcceptLabel="Fight" OnCallRejectFunction=@MonsterFlee RejectLabel="Flee" />
             }

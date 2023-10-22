@@ -1,9 +1,10 @@
-﻿@inject IJSRuntime JS
-
-<div id="action-dialog">
+﻿<div id="action-dialog">
     <div class="action-dialog-body">@DialogText</div>
     <div class="action-dialog-buttons">
         <button @onclick=@OnCallAcceptFunction class="dungeon-button">@AcceptLabel</button>
-        <button @onclick=@OnCallRejectFunction class="dungeon-button">@RejectLabel</button>
+
+        @if (OnCallRejectFunction.HasDelegate) {
+            <button @onclick=@OnCallRejectFunction class="dungeon-button">@RejectLabel</button>
+        }        
     </div>
 </div>

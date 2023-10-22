@@ -29,7 +29,8 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         List<SharedTile> DungeonTiles { get; set; }
 
-        public bool AdventurerAlive { get; set; }
+        public bool GameOver { get; set; }
+
         public List<SharedFloor> DungeonFloors { get; set; }
 
         public List<Attribute> AdventurerExperienceStats { get; set; }
@@ -62,7 +63,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
             DungeonTiles = new();
 
-            AdventurerAlive = true;
+            GameOver = false;
             DungeonFloors = new();
 
             AdventurerExperienceStats = new();
@@ -298,6 +299,19 @@ namespace BlazorDungeonCrawler.Client.Pages {
             await InvokeAsync(StateHasChanged);
         }
 
+        public async Task NewGame() {
+            try {
+                Dungeon? dungeon = await DungeonManager.GenerateNewDungeon();
+                ValidateDungeon(dungeon);
+
+                if (!await UpdatePageVariables()) {
+                    InformationReports.Add("Dungeon values could not udpdated.");
+                }
+            } catch (Exception ex) {
+                ErrorReports.Add(ex.Message);
+            }
+        }
+
         private void ValidateDungeon(Dungeon _dungeon) {
             try {
                 //Check and assign Dungeon
@@ -313,6 +327,12 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 DungeonDepth = dungeon.Depth;
 
                 MacGuffinFound = dungeon.MacGuffinFound;
+
+                GameOver = dungeon.GameOver;
+
+                if (dungeon.GameOver) {
+                    AdvanceDisabled = true;
+                }
 
                 //Check and assign Dungeon Floor
                 if (_dungeon.Floors == null || _dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
@@ -333,8 +353,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 //Check and assign Dungeon Floor
                 if (_dungeon.Adventurer == null || _dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
                 adventurer = _dungeon.Adventurer;
-
-                AdventurerAlive = adventurer.IsAlive;
 
                 //Check and assign Dungeon Messages
                 if (_dungeon.Messages == null || _dungeon.Messages.Count == 0) { throw new ArgumentNullException("Dungeon Messages"); }
@@ -494,10 +512,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         Label = "Protection",
                         Value = protection.ToString()
                     });
-                }
-
-                if (!adventurer.IsAlive) {
-                    AdvanceDisabled = true;
                 }
 
                 //API version

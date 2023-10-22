@@ -47,6 +47,7 @@
                         InCombat = c.Boolean(nullable: false),
                         CombatTile = c.Guid(nullable: false),
                         CombatInitiated = c.Boolean(nullable: false),
+                        GameOver = c.Boolean(nullable: false),
                         Adventurer_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.Id)
