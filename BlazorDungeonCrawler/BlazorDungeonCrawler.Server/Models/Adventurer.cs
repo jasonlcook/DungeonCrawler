@@ -146,63 +146,6 @@ namespace BlazorDungeonCrawler.Server.Models {
             return ProtectionBase + ShieldPotion + ArmourHelmet + ArmourBreastplate + ArmourGauntlet + ArmourGreave + ArmourBoots;
         }
 
-        //  Health
-
-        //  Wounds
-        public int reciveWounds(int woundsReceived) {
-            int remainingDammagePoints, adventurerDammage = 0;
-
-            //take dammage to shield potion
-            if (ShieldPotion > 0) {
-                if (woundsReceived < ShieldPotion) {
-                    remainingDammagePoints = 0;
-
-                    //shield potion took all damage points
-                    ShieldPotion -= woundsReceived;
-                } else {
-                    //shield potion took some damage points
-                    remainingDammagePoints = woundsReceived - ShieldPotion;
-                    ShieldPotion = 0;
-                }
-
-                woundsReceived = remainingDammagePoints;
-            }
-
-            //take dammage to aura potion
-            if (woundsReceived > 0 && AuraPotion > 0) {
-                if (woundsReceived < AuraPotion) {
-                    remainingDammagePoints = 0;
-
-                    //aura potion took all damage points
-                    AuraPotion -= woundsReceived;
-                } else {
-
-                    //aura potion took some damage points
-                    remainingDammagePoints = woundsReceived - AuraPotion;
-
-                    AuraPotion = 0;
-                }
-
-                woundsReceived = remainingDammagePoints;
-            }
-
-            //take dammage to Adventurer
-            if (woundsReceived > 0) {
-                adventurerDammage = woundsReceived;
-
-                int updatedHealth = HealthBase - woundsReceived;
-
-                if (updatedHealth > 0) {
-                    HealthBase = updatedHealth;
-                } else {
-                    HealthBase = 0;
-                    IsAlive = false;
-                }
-            }
-
-            return adventurerDammage;
-        }
-
         //  Potion
         public void DurationDecrement() {
             if (AuraPotionDuration > 0) {
