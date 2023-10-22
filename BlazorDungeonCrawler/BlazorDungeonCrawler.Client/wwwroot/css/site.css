@@ -304,6 +304,7 @@ body {
             position: absolute;
             right: 10px;
             top: 10px;
+            z-index: 2;
         }
 
             #external-frame #play-area #level-select .level {
