@@ -42,10 +42,12 @@
                 <AdventurerAttribute Attributes=AdventurerDamageStats />
                 <AdventurerAttribute Attributes=AdventurerProtectionStats />
             </div>
-            <div class="dice"></div>
+            <div class="dice">
+                <DiceRolls SafeDice=@SafeDice DangerDice=@DangerDice />
+            </div>
         </div>
         <div id="log">
-            <Logs Messages=Messages />
+            <Logs Messages=Messages OnMouseEnterCallback=@UpdateDice />
         </div>
     </div>
 </div>

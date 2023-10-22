@@ -8,8 +8,15 @@ namespace BlazorDungeonCrawler.Client.Pages {
         [ParameterAttribute]
         public List<Message> Messages { get; set; }
 
+        [Parameter]
+        public EventCallback<(string, string)> OnMouseEnterCallback { get; set; }
+
         public Logs() {
             Messages = new();
+        }
+
+        private async Task CallParentUpdateDiceFunction(string safeDice, string dangerDice) {
+            await OnMouseEnterCallback.InvokeAsync((safeDice, dangerDice));
         }
     }
 }

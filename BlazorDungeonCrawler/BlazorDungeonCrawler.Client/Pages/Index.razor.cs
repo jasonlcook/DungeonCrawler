@@ -4,6 +4,7 @@ using BlazorDungeonCrawler.Shared.Models;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
+using System.Runtime.CompilerServices;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
@@ -37,6 +38,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public List<Attribute> AdventurerProtectionStats { get; set; }
         public List<Message> Messages { get; set; }
 
+        public string SafeDice { get; set; }
+        public string DangerDice { get; set; }
+
         public Index() {
             FoundCookie = null;
             RejectedCookie = false;
@@ -66,6 +70,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
             AdventurerDamageStats = new();
             AdventurerProtectionStats = new();
             Messages = new();
+
+            SafeDice = string.Empty;
+            DangerDice = string.Empty;
         }
 
         //Cookies
@@ -282,6 +289,13 @@ namespace BlazorDungeonCrawler.Client.Pages {
             } catch (Exception ex) {
                 ErrorReports.Add(ex.Message);
             }
+        }
+
+        public async Task UpdateDice((string safeDice, string dangerDice) args) {
+            SafeDice = args.safeDice;
+            DangerDice = args.dangerDice;
+
+            await InvokeAsync(StateHasChanged);
         }
 
         private void ValidateDungeon(Dungeon _dungeon) {

@@ -1,0 +1,13 @@
+﻿@if (SafeDice != string.Empty) {
+    List<Die> dice = parseDice(SafeDice, "safe");
+    foreach (Die die in dice) {
+        <div class="die @die.Face @die.Type" style="rotate: @die.Rotation"></div>
+    }
+}
+
+@if (DangerDice != string.Empty) {
+    List<Die> dice = parseDice(DangerDice, "danger");
+    foreach (Die die in dice) {
+        <div class="die @die.Face @die.Type" style="rotate: @die.Rotation"></div>
+    }
+}

@@ -1,13 +1,13 @@
 ﻿@if (Messages != null && Messages.Count > 0) {
     foreach (Message message in Messages) {
         <div data-identity="@message.Id" class="log-entry">
-            <span class="log-entry-message" data-safe-dice="@message.SafeDice" data-danger-dice="@message.DangerDice">
+            <span class="log-entry-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(message.SafeDice, message.DangerDice))">
                 @message.Text
             </span>
             @if (message.Children != null && message.Children.Count > 0) {
                 <div class="log-actions">
                     @foreach (Message childMessage in message.Children) {
-                        <span class="log-action-message" data-safe-dice="@message.SafeDice" data-danger-dice="@message.DangerDice">
+                        <span class="log-action-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(childMessage.SafeDice, childMessage.DangerDice))">
                             @childMessage.Text
                         </span>
                     }

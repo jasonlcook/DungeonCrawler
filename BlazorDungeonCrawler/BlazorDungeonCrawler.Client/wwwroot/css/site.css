@@ -82,7 +82,7 @@ body {
             border-style: solid;
             margin: 10px;
             width: 250px;
-            min-height: 350px;
+            height: 450px;
         }
 
             #external-frame .details .adventurer .dungeon-floor {
@@ -144,6 +144,8 @@ body {
                 border-color: #000;
                 border-width: 1px 0 0 0;
                 border-style: solid;
+                height: 80px;
+                overflow: auto;
             }
 
                 #external-frame .details .adventurer .dice .die {
@@ -225,6 +227,7 @@ body {
             display: flex;
             flex-direction: column;
             align-items: stretch;
+            height: 450px;
         }
 
             #external-frame .details #log .log-entry {
