@@ -592,16 +592,23 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     targetTile = hiddenTiles.OrderBy(t => t.Value).First().Key;
                                     selectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).Where(t => t.Type != DungeonEvents.StairsDescending).Where(t => t.Type != DungeonEvents.StairsAscending).Where(t => t.Type != DungeonEvents.DungeonEntrance).ToList();
                                 } else {
-                                    //if all hidden tiles have been uncoverd then make way to relivnt stairs 
-
+                                    //if all hidden tiles have been uncoverd then make way to relevant tile
                                     if (dungeon.MacGuffinFound) {
                                         if (dungeon.Depth == 1) {
+                                            //if first floor then get to the Dungeon entrance
                                             targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.DungeonEntrance).FirstOrDefault();
                                         } else {
+                                            //if lower floor then get to the ascending stairs
                                             targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsAscending).FirstOrDefault();
                                         }
                                     } else {
-                                        targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsDescending).FirstOrDefault();
+                                        if (dungeon.Depth == 10) {
+                                            //if lowest floor then get to the Macguffin
+                                            targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.Macguffin).FirstOrDefault();
+                                        } else {
+                                            //if higher floor then get to the descending stairs
+                                            targetTile = currentFloor.Tiles.Where(t => t.Type == DungeonEvents.StairsDescending).FirstOrDefault();
+                                        }                                        
                                     }
 
                                     selectableTile = currentFloor.Tiles.Where(t => t.Selectable == true).ToList();
