@@ -23,7 +23,7 @@ body {
     }
 
 /* Loading */
-#external-frame #play-area #dungeon .loading {
+#dungeon .loading {
     animation: loading 4s ease-in-out infinite;
 }
 
@@ -64,363 +64,363 @@ body {
     margin: 0px auto;
 }
 
-    /* Buttons */
-    #external-frame .button {
-        padding: 10px;
-        margin: 10px 10px 0 10px;
-    }
+/* Buttons */
+#advance-dungeon {
+    padding: 10px;
+    margin: 10px 10px 0 10px;
+}
 
-    /* Details */
-    #external-frame .details {
-        display: flex;
-    }
+/* Details */
+#dungeon-details {
+    display: flex;
+}
 
-        #external-frame .details .adventurer {
-            text-align: center;
-            border-color: #000;
-            border-width: 1px;
-            border-style: solid;
-            margin: 10px;
-            width: 250px;
-            height: 450px;
-        }
-
-            #external-frame .details .adventurer .dungeon-floor {
-                border-color: #000;
-                border-width: 0px 0px 1px;
-                border-style: solid;
-                padding: 10px 0px;
-            }
-
-            #external-frame .details .adventurer .adventurer-stats {
-                padding: 10px;
-                text-align: left;
-                display: flex;
-                flex-direction: column;
-            }
-
-                #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section {
-                    margin: 0 0 10px 0;
-                }
-
-                    #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row {
-                        display: flex;
-                        flex-direction: row;
-                    }
-
-                        #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .label {
-                            width: 110px;
-                            display: block;
-                        }
-
-                        #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .value {
-                            width: 70px;
-                            display: block;
-                        }
-
-                        #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .duration {
-                            display: block;
-                        }
-
-                        #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-base {
-                            border-color: #000;
-                            border-width: 0 0 1px 0;
-                            border-style: dotted;
-                            padding: 0 0 1px 0;
-                            margin: 0 0 2px 0;
-                        }
-
-                        #external-frame .details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-total {
-                            font-weight: bold;
-                        }
-
-            #external-frame .details .adventurer .dice {
-                padding: 10px;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                align-content: space-around;
-                align-items: center;
-                border-color: #000;
-                border-width: 1px 0 0 0;
-                border-style: solid;
-                height: 80px;
-                overflow: auto;
-            }
-
-                #external-frame .details .adventurer .dice .die {
-                    width: 20px;
-                    height: 20px;
-                    background-repeat: no-repeat;
-                    background-position: center;
-                    background-size: contain;
-                    margin: 5px;
-                }
-
-                    /* Dice */
-                    /*  Safe */
-                    #external-frame .details .adventurer .dice .die.safe {
-                        background-image: url("../images/dice/safe/empty.png");
-                    }
-
-                        #external-frame .details .adventurer .dice .die.safe.one {
-                            background-image: url("../images/dice/safe/one.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.safe.two {
-                            background-image: url("../images/dice/safe/two.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.safe.three {
-                            background-image: url("../images/dice/safe/three.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.safe.four {
-                            background-image: url("../images/dice/safe/four.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.safe.five {
-                            background-image: url("../images/dice/safe/five.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.safe.six {
-                            background-image: url("../images/dice/safe/six.png");
-                        }
-
-                    /*  Danger */
-                    #external-frame .details .adventurer .dice .die.danger {
-                        background-image: url("../images/dice/danger/empty.png");
-                    }
-
-                        #external-frame .details .adventurer .dice .die.danger.one {
-                            background-image: url("../images/dice/danger/one.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.danger.two {
-                            background-image: url("../images/dice/danger/two.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.danger.three {
-                            background-image: url("../images/dice/danger/three.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.danger.four {
-                            background-image: url("../images/dice/danger/four.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.danger.five {
-                            background-image: url("../images/dice/danger/five.png");
-                        }
-
-                        #external-frame .details .adventurer .dice .die.danger.six {
-                            background-image: url("../images/dice/danger/six.png");
-                        }
-
-        /* Log */
-        #external-frame .details #log {
-            border-color: #000;
-            border-width: 1px;
-            border-style: solid;
-            margin: 10px 10px 10px 0;
-            overflow: hidden scroll;
-            width: 558px;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            height: 450px;
-        }
-
-            #external-frame .details #log .log-entry {
-                padding: 0 10px 5px 10px;
-                border: none;
-                border-color: #000;
-                border-width: 0 0 1px 0;
-                border-style: solid;
-                margin: 0 10px;
-            }
-
-                #external-frame .details #log .log-entry:active,
-                #external-frame .details #log .log-entry:hover,
-                #external-frame .details #log .log-entry:focus {
-                    background-color: aliceblue;
-                }
-
-                #external-frame .details #log .log-entry .log-entry-message {
-                    padding: 5px 10px;
-                    display: block;
-                }
-
-                #external-frame .details #log .log-entry:last-child {
-                    border: none;
-                }
-
-                #external-frame .details #log .log-entry .log-actions {
-                    margin: 5px 0px;
-                    border-color: #000;
-                    border-style: solid;
-                    border-width: 1px 0px 0 0px;
-                    background-color: #fff;
-                    display: none;
-                    visibility: hidden;
-                }
-
-                #external-frame .details #log .log-entry:active .log-actions,
-                #external-frame .details #log .log-entry:hover .log-actions,
-                #external-frame .details #log .log-entry:focus .log-actions {
-                    display: block;
-                    visibility: visible;
-                }
-
-                #external-frame .details #log .log-entry .log-actions .log-action-message {
-                    margin: 5px;
-                    padding: 2px 5px;
-                    display: block;
-                }
-
-                    #external-frame .details #log .log-entry .log-actions .log-action-message:active,
-                    #external-frame .details #log .log-entry .log-actions .log-action-message:hover,
-                    #external-frame .details #log .log-entry .log-actions .log-action-message:focus {
-                        background-color: antiquewhite;
-                    }
-
-                #external-frame .details #log .log-entry .log-actions .log-action-child {
-                    margin: -5px 0 0 0;
-                }
-
-                    #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message {
-                        margin: 0 0 0 20px;
-                        padding: 2px 5px;
-                        display: block;
-                    }
-
-                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:active,
-                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:hover,
-                        #external-frame .details #log .log-entry .log-actions .log-action-child .log-action-child-message:focus {
-                            background-color: antiquewhite;
-                        }
-
-    /* Dungeon */
-    #external-frame #play-area {
+    #dungeon-details .adventurer {
+        text-align: center;
         border-color: #000;
         border-width: 1px;
         border-style: solid;
-        padding: 10px;
-        margin: 10px 10px 0px;
-        width: 800px;
-        height: 640px;
-        position: relative;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        overflow: hidden;
+        margin: 10px;
+        width: 250px;
+        height: 450px;
     }
 
-
-        #external-frame #play-area #level-select {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            z-index: 2;
+        #dungeon-details .adventurer .dungeon-floor {
+            border-color: #000;
+            border-width: 0px 0px 1px;
+            border-style: solid;
+            padding: 10px 0px;
         }
 
-            #external-frame #play-area #level-select .level {
-                display: flex;
-                align-items: center;
-                justify-content: space-evenly;
+        #dungeon-details .adventurer .adventurer-stats {
+            padding: 10px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+            #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section {
+                margin: 0 0 10px 0;
+            }
+
+                #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row {
+                    display: flex;
+                    flex-direction: row;
+                }
+
+                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .label {
+                        width: 110px;
+                        display: block;
+                    }
+
+                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .value {
+                        width: 70px;
+                        display: block;
+                    }
+
+                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .duration {
+                        display: block;
+                    }
+
+                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-base {
+                        border-color: #000;
+                        border-width: 0 0 1px 0;
+                        border-style: dotted;
+                        padding: 0 0 1px 0;
+                        margin: 0 0 2px 0;
+                    }
+
+                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-total {
+                        font-weight: bold;
+                    }
+
+        #dice {
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            align-items: center;
+            border-color: #000;
+            border-width: 1px 0 0 0;
+            border-style: solid;
+            height: 80px;
+            overflow: auto;
+        }
+
+            #dice .die {
                 width: 20px;
                 height: 20px;
-                border-color: #000;
-                border-width: 1px;
-                border-style: solid;
-                margin: 0 0 5px 0;
+                background-repeat: no-repeat;
                 background-position: center;
-                color: #fff;
+                background-size: contain;
+                margin: 5px;
             }
 
-                #external-frame #play-area #level-select .level.selectable-level {
-                    cursor: pointer;
+                /* Dice */
+                /*  Safe */
+                #dice .die.safe {
+                    background-image: url("../images/dice/safe/empty.png");
                 }
 
-                #external-frame #play-area #level-select .level.selected-level {
-                    color: #000;
-                    background-color: #fff;
+                    #dice .die.safe.one {
+                        background-image: url("../images/dice/safe/one.png");
+                    }
+
+                    #dice .die.safe.two {
+                        background-image: url("../images/dice/safe/two.png");
+                    }
+
+                    #dice .die.safe.three {
+                        background-image: url("../images/dice/safe/three.png");
+                    }
+
+                    #dice .die.safe.four {
+                        background-image: url("../images/dice/safe/four.png");
+                    }
+
+                    #dice .die.safe.five {
+                        background-image: url("../images/dice/safe/five.png");
+                    }
+
+                    #dice .die.safe.six {
+                        background-image: url("../images/dice/safe/six.png");
+                    }
+
+                /*  Danger */
+                #dice .die.danger {
+                    background-image: url("../images/dice/danger/empty.png");
                 }
 
-                #external-frame #play-area #level-select .level.base-colour-red {
-                    background-image: url("../images/tiles/red/base_tile.png");
-                }
+                    #dice .die.danger.one {
+                        background-image: url("../images/dice/danger/one.png");
+                    }
 
-                #external-frame #play-area #level-select .level.base-colour-blue {
-                    background-image: url("../images/tiles/blue/base_tile.png");
-                }
+                    #dice .die.danger.two {
+                        background-image: url("../images/dice/danger/two.png");
+                    }
 
-                #external-frame #play-area #level-select .level.base-colour-purple {
-                    background-image: url("../images/tiles/purple/base_tile.png");
-                }
+                    #dice .die.danger.three {
+                        background-image: url("../images/dice/danger/three.png");
+                    }
 
-                #external-frame #play-area #level-select .level.base-colour-green {
-                    background-image: url("../images/tiles/green/base_tile.png");
-                }
+                    #dice .die.danger.four {
+                        background-image: url("../images/dice/danger/four.png");
+                    }
 
-                #external-frame #play-area #level-select .level.base-colour-pink {
-                    background-image: url("../images/tiles/pink/base_tile.png");
-                }
+                    #dice .die.danger.five {
+                        background-image: url("../images/dice/danger/five.png");
+                    }
 
-                #external-frame #play-area #level-select .level.base-colour-unknown {
-                    background-image: url("../images/tiles/grey/base_tile.png");
-                }
+                    #dice .die.danger.six {
+                        background-image: url("../images/dice/danger/six.png");
+                    }
 
-        #external-frame #play-area #reports {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 820px;
+/* Log */
+#log {
+    border-color: #000;
+    border-width: 1px;
+    border-style: solid;
+    margin: 10px 10px 10px 0;
+    overflow: hidden scroll;
+    width: 558px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 450px;
+}
+
+    #log .log-entry {
+        padding: 0 10px 5px 10px;
+        border: none;
+        border-color: #000;
+        border-width: 0 0 1px 0;
+        border-style: solid;
+        margin: 0 10px;
+    }
+
+        #log .log-entry:active,
+        #log .log-entry:hover,
+        #log .log-entry:focus {
+            background-color: aliceblue;
         }
 
-            #external-frame #play-area #reports .report {
-                color: #fff;
-                text-align: center;
-                padding: 5px 0;
-                border-width: 0 0 1px 0;
-                border-color: #000;
-                border-style: solid;
-            }
+        #log .log-entry .log-entry-message {
+            padding: 5px 10px;
+            display: block;
+        }
 
-                #external-frame #play-area #reports .report.report-error {
-                    background-color: #ff7070;
-                }
+        #log .log-entry:last-child {
+            border: none;
+        }
 
-                #external-frame #play-area #reports .report.report-info {
-                    background-color: #ffb070;
-                }
-
-
-        /* Action dialog */
-        #external-frame #play-area #action-dialog {
-            position: absolute;
-            bottom: 0;
-            background-color: #fff;
-            left: 0;
-            width: 820px;
-            border-width: 1px 0 0 0;
+        #log .log-entry .log-actions {
+            margin: 5px 0px;
             border-color: #000;
             border-style: solid;
+            border-width: 1px 0px 0 0px;
+            background-color: #fff;
+            display: none;
+            visibility: hidden;
         }
 
-            #external-frame #play-area #action-dialog .action-dialog-body {
-                float: left;
-                padding: 11px 0 11px 12px;
+        #log .log-entry:active .log-actions,
+        #log .log-entry:hover .log-actions,
+        #log .log-entry:focus .log-actions {
+            display: block;
+            visibility: visible;
+        }
+
+        #log .log-entry .log-actions .log-action-message {
+            margin: 5px;
+            padding: 2px 5px;
+            display: block;
+        }
+
+            #log .log-entry .log-actions .log-action-message:active,
+            #log .log-entry .log-actions .log-action-message:hover,
+            #log .log-entry .log-actions .log-action-message:focus {
+                background-color: antiquewhite;
             }
 
-            #external-frame #play-area #action-dialog .action-dialog-buttons {
-                float: right;
-                padding: 5px 5px 0 0;
+        #log .log-entry .log-actions .log-action-child {
+            margin: -5px 0 0 0;
+        }
+
+            #log .log-entry .log-actions .log-action-child .log-action-child-message {
+                margin: 0 0 0 20px;
+                padding: 2px 5px;
+                display: block;
             }
 
-                #external-frame #play-area #action-dialog .action-dialog-buttons button {
-                    float: left;
-                    margin: 0 0 0 10px;
+                #log .log-entry .log-actions .log-action-child .log-action-child-message:active,
+                #log .log-entry .log-actions .log-action-child .log-action-child-message:hover,
+                #log .log-entry .log-actions .log-action-child .log-action-child-message:focus {
+                    background-color: antiquewhite;
                 }
+
+/* Dungeon */
+#play-area {
+    border-color: #000;
+    border-width: 1px;
+    border-style: solid;
+    padding: 10px;
+    margin: 10px 10px 0px;
+    width: 800px;
+    height: 640px;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    overflow: hidden;
+}
+
+
+#level-select {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+}
+
+    #level-select .level {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 20px;
+        height: 20px;
+        border-color: #000;
+        border-width: 1px;
+        border-style: solid;
+        margin: 0 0 5px 0;
+        background-position: center;
+        color: #fff;
+    }
+
+        #level-select .level.selectable-level {
+            cursor: pointer;
+        }
+
+        #level-select .level.selected-level {
+            color: #000;
+            background-color: #fff;
+        }
+
+        #level-select .level.base-colour-red {
+            background-image: url("../images/tiles/red/base_tile.png");
+        }
+
+        #level-select .level.base-colour-blue {
+            background-image: url("../images/tiles/blue/base_tile.png");
+        }
+
+        #level-select .level.base-colour-purple {
+            background-image: url("../images/tiles/purple/base_tile.png");
+        }
+
+        #level-select .level.base-colour-green {
+            background-image: url("../images/tiles/green/base_tile.png");
+        }
+
+        #level-select .level.base-colour-pink {
+            background-image: url("../images/tiles/pink/base_tile.png");
+        }
+
+        #level-select .level.base-colour-unknown {
+            background-image: url("../images/tiles/grey/base_tile.png");
+        }
+
+#reports {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 820px;
+}
+
+    #reports .report {
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-width: 0 0 1px 0;
+        border-color: #000;
+        border-style: solid;
+    }
+
+        #reports .report.report-error {
+            background-color: #ff7070;
+        }
+
+        #reports .report.report-info {
+            background-color: #ffb070;
+        }
+
+
+/* Action dialog */
+#action-dialog {
+    position: absolute;
+    bottom: 0;
+    background-color: #fff;
+    left: 0;
+    width: 820px;
+    border-width: 1px 0 0 0;
+    border-color: #000;
+    border-style: solid;
+}
+
+    #action-dialog .action-dialog-body {
+        float: left;
+        padding: 11px 0 11px 12px;
+    }
+
+    #action-dialog .action-dialog-buttons {
+        float: right;
+        padding: 5px 5px 0 0;
+    }
+
+        #action-dialog .action-dialog-buttons button {
+            float: left;
+            margin: 0 0 0 10px;
+        }
 
 /* Footer */
 #external-frame-footer {
@@ -435,15 +435,15 @@ body {
     }
 
 
-#external-frame #play-area #dungeon {
+#dungeon {
     position: relative;
 }
 
-    #external-frame #play-area #dungeon .hexagon-tile-group {
+    #dungeon .hexagon-tile-group {
         position: absolute;
     }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile {
+        #dungeon .hexagon-tile-group .hexagon-tile {
             position: absolute;
             height: 90px;
             width: 100px;
@@ -451,7 +451,7 @@ body {
             background-position: center center;
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .monster-counter {
+        #dungeon .hexagon-tile-group .monster-counter {
             background-image: url(../images/tiles/monster_counter.png);
             width: 26px;
             display: block;
@@ -461,7 +461,7 @@ body {
             background-position: center center;
         }
 
-            #external-frame #play-area #dungeon .hexagon-tile-group .monster-counter .monster-counter-health {
+            #dungeon .hexagon-tile-group .monster-counter .monster-counter-health {
                 color: #bbb;
                 position: absolute;
                 top: 5px;
@@ -470,7 +470,7 @@ body {
                 overflow: hidden;
             }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile span {
+        #dungeon .hexagon-tile-group .hexagon-tile span {
             position: absolute;
             top: 15px;
             left: 20px;
@@ -483,505 +483,505 @@ body {
             z-index: 1;
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:active,
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:hover,
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:focus,
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:active,
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:hover,
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:focus {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:active,
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:hover,
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden-selectable span:focus,
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:active,
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:hover,
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-selectable span:focus {
             color: black;
             cursor: grab;
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-current {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-current {
             background-image: url('../images/tiles/effects/current.png');
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-tile-hidden {
             background-image: url("../images/tiles/effects/hidden_overlay.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-for-of-war {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-for-of-war {
             background-image: url("../images/tiles/effects/fog_of_war_overlay.png");
         }
 
         /* Tiles */
         /*      Red */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-base {
             background-image: url("../images/tiles/red/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-selectable {
             background-image: url("../images/tiles/red/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/red/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance {
             background-image: url("../images/tiles/red/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/red/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-exit {
             background-image: url("../images/tiles/red/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/red/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/red/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/red/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/red/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-fight {
             background-image: url("../images/tiles/red/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-fight-won {
             background-image: url("../images/tiles/red/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-chest {
             background-image: url("../images/tiles/red/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-protection {
             background-image: url("../images/tiles/red/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-weapon {
             background-image: url("../images/tiles/red/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-empty {
             background-image: url("../images/tiles/red/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-potion {
             background-image: url("../images/tiles/red/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-macguffin {
             background-image: url("../images/tiles/red/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-red.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/red/death.png");
         }
 
         /*  Blue */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-base {
             background-image: url("../images/tiles/blue/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-selectable {
             background-image: url("../images/tiles/blue/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/blue/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance {
             background-image: url("../images/tiles/blue/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/blue/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-exit {
             background-image: url("../images/tiles/blue/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/blue/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/blue/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/blue/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/blue/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight {
             background-image: url("../images/tiles/blue/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-fight-won {
             background-image: url("../images/tiles/blue/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-chest {
             background-image: url("../images/tiles/blue/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-protection {
             background-image: url("../images/tiles/blue/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-weapon {
             background-image: url("../images/tiles/blue/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-empty {
             background-image: url("../images/tiles/blue/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-potion {
             background-image: url("../images/tiles/blue/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-macguffin {
             background-image: url("../images/tiles/blue/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-blue.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/blue/death.png");
         }
 
         /*  Purple */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-base {
             background-image: url("../images/tiles/purple/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-selectable {
             background-image: url("../images/tiles/purple/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/purple/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance {
             background-image: url("../images/tiles/purple/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/purple/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-exit {
             background-image: url("../images/tiles/purple/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/purple/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/purple/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/purple/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/purple/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight {
             background-image: url("../images/tiles/purple/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-fight-won {
             background-image: url("../images/tiles/purple/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-chest {
             background-image: url("../images/tiles/purple/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-protection {
             background-image: url("../images/tiles/purple/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-weapon {
             background-image: url("../images/tiles/purple/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-empty {
             background-image: url("../images/tiles/purple/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-potion {
             background-image: url("../images/tiles/purple/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-macguffin {
             background-image: url("../images/tiles/purple/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-purple.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/purple/death.png");
         }
 
         /*  Green */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-base {
             background-image: url("../images/tiles/green/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-selectable {
             background-image: url("../images/tiles/green/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/green/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance {
             background-image: url("../images/tiles/green/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/green/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-exit {
             background-image: url("../images/tiles/green/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/green/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/green/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/green/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/green/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-fight {
             background-image: url("../images/tiles/green/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-fight-won {
             background-image: url("../images/tiles/green/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-chest {
             background-image: url("../images/tiles/green/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-protection {
             background-image: url("../images/tiles/green/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-weapon {
             background-image: url("../images/tiles/green/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-empty {
             background-image: url("../images/tiles/green/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-potion {
             background-image: url("../images/tiles/green/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-macguffin {
             background-image: url("../images/tiles/green/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-green.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/green/death.png");
         }
 
         /*  Pink */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-base {
             background-image: url("../images/tiles/pink/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-selectable {
             background-image: url("../images/tiles/pink/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/pink/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance {
             background-image: url("../images/tiles/pink/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/pink/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-exit {
             background-image: url("../images/tiles/pink/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/pink/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/pink/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/pink/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/pink/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight {
             background-image: url("../images/tiles/pink/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-fight-won {
             background-image: url("../images/tiles/pink/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-chest {
             background-image: url("../images/tiles/pink/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-protection {
             background-image: url("../images/tiles/pink/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-weapon {
             background-image: url("../images/tiles/pink/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-empty {
             background-image: url("../images/tiles/pink/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-potion {
             background-image: url("../images/tiles/pink/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-macguffin {
             background-image: url("../images/tiles/pink/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-pink.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/pink/death.png");
         }
 
         /*  Unknown (Grey) */
         /*          Base */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-base {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-base {
             background-image: url("../images/tiles/grey/base_tile.png");
         }
 
         /*          Selectable */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-selectable {
             background-image: url("../images/tiles/grey/base_tile_selectable.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-hidden-selectable {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-hidden-selectable {
             background-image: url('../images/tiles/grey/base_tile_hidden_selectable.png');
         }
 
         /*          Element */
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance {
             background-image: url("../images/tiles/grey/entrance.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-entrance-active {
             background-image: url("../images/tiles/grey/entrance_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-exit {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-exit {
             background-image: url("../images/tiles/grey/exit.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending {
             background-image: url("../images/tiles/grey/stairs_ascending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-ascending-active {
             background-image: url("../images/tiles/grey/stairs_ascending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending {
             background-image: url("../images/tiles/grey/stairs_descending.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending-active {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-stairs-descending-active {
             background-image: url("../images/tiles/grey/stairs_descending_active.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight {
             background-image: url("../images/tiles/grey/fight.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight-won {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-fight-won {
             background-image: url("../images/tiles/grey/fight_won.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-chest {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-chest {
             background-image: url("../images/tiles/grey/chest.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-protection {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-protection {
             background-image: url("../images/tiles/grey/protection.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-weapon {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-weapon {
             background-image: url("../images/tiles/grey/weapons.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-empty {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-empty {
             background-image: url("../images/tiles/grey/empty.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-potion {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-potion {
             background-image: url("../images/tiles/grey/potion.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-macguffin {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-macguffin {
             background-image: url("../images/tiles/grey/maguffin.png");
         }
 
-        #external-frame #play-area #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-adventurer-death {
+        #dungeon .hexagon-tile-group .hexagon-tile.hexagon-colour-unknown.hexagon-tile-adventurer-death {
             background-image: url("../images/tiles/grey/death.png");
         }
