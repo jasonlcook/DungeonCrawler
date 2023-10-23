@@ -8,8 +8,8 @@
     currentTile = DungeonTiles.Where(t => t.Current == true).First();
     <div id="dungeon" style=@getTileGroupPosition(currentTile.Row, currentTile.Column).ToDungonStyle()>
         @foreach (var tile in DungeonTiles) {
-            string element = $"{tile.Row}, {tile.Column}";
             string colourClass = @getColourClass(DungeonDepth);
+            
 
             <div class="hexagon-tile-group" style=@getTileGroupPosition(tile.Row, tile.Column).ToTileGroupStyle()>
                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
@@ -40,10 +40,18 @@
                     }
                 }
 
-                <div style="color: #fff; text-align: center; width: 100px; position: absolute;">
-                    @element
+@* 
+                <!--debug helper-->
+                @{
+                    string tileLocation = $"{tile.Row}, {tile.Column}";
+                }
+                <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 10px;">
+                    @tileLocation
                 </div>
-
+                <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 70px; font-size: 3px; }">
+                    @tile.Id
+                </div>
+ *@
                 @if (tile.Monsters.Count > 0) {
                     foreach (Monster monster in tile.Monsters) {
                         string monsterTop = $"{monster.ClientY}px";
