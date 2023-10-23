@@ -20,9 +20,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public Guid DungeonId { get; set; }
         public int DungeonDepth { get; set; }
 
-        public int TileRows { get; set; }
-        public int TileColumns { get; set; }
-
         public bool MacGuffinFound { get; set; }
 
         public string ApiVersion { get; set; }
@@ -53,9 +50,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
             DungeonId = Guid.Empty;
             DungeonDepth = 0;
-
-            TileRows = 0;
-            TileColumns = 0;
 
             MacGuffinFound = false;
 
@@ -341,9 +335,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 Floor? _floor = _dungeon.Floors.Where(l => l.Depth == DungeonDepth).FirstOrDefault();
                 if (_floor == null || _floor.Id == Guid.Empty) { throw new ArgumentNullException("Dungon Floor"); };
                 floor = _floor;
-
-                TileRows = floor.Rows;
-                TileColumns = floor.Columns;
 
                 if (_floor.Tiles == null || _floor.Tiles.Count == 0) { throw new ArgumentNullException("Dungon Floors"); };
                 List<SharedTile>? _tiles = _floor.Tiles;

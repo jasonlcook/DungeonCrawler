@@ -5,40 +5,47 @@
         </div>
     </div>
 } else {
-    <div id="dungeon" style=@getDungeonPosition(TileRows, TileColumns)>
-        @foreach (var DungeonTile in DungeonTiles) {
+    currentTile = DungeonTiles.Where(t => t.Current == true).First();
+    <div id="dungeon" style=@getTileGroupPosition(currentTile.Row, currentTile.Column).ToDungonStyle()>
+        @foreach (var tile in DungeonTiles) {
+            string element = $"{tile.Row}, {tile.Column}";
             string colourClass = @getColourClass(DungeonDepth);
 
-            <div class="hexagon-tile-group" style=@getTileGroupPosition(DungeonTile.Row, DungeonTile.Column)>
+            <div class="hexagon-tile-group" style=@getTileGroupPosition(tile.Row, tile.Column).ToTileGroupStyle()>
                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
 
-                @if (DungeonTile.Current) {
+                @if (tile.Current) {
                     <div class="hexagon-tile hexagon-tile-current"></div>
                 }
 
-                @if (DungeonTile.Selectable) {
+                @if (tile.Selectable) {
                     string selectableClass = "hexagon-tile-selectable";
-                    @if (DungeonTile.Hidden) {
+                    @if (tile.Hidden) {
                         selectableClass = "hexagon-tile-hidden-selectable";
                     }
 
                     <div class="hexagon-tile @colourClass @selectableClass">
-                        <span @onclick="@(() => CallParentSelectedTileFunction(DungeonTile.Id))"></span>
+                        <span @onclick="@(() => CallParentSelectedTileFunction(tile.Id))"></span>
                     </div>
                 }
 
-                @if (DungeonTile.Hidden) {
+                @if (tile.Hidden) {
                     <div class="hexagon-tile hexagon-tile-hidden"></div>
                 } else {
-                    <div class="hexagon-tile @colourClass @getTypeClass(MacGuffinFound, DungeonTile.Type)"></div>
+                    <div class="hexagon-tile @colourClass @getTypeClass(HighlightAscending, tile.Type)"></div>
 
-                    @if (!DungeonTile.Current && !DungeonTile.Selectable) {
+                    //todo: add DungeonTile.Discoverd so when the Adventurer dies fog of war can be applied to the unhidden undiscoverd tiles
+                    @if (!tile.Current && !tile.Selectable) {
                         <div class="hexagon-tile hexagon-for-of-war"></div>
                     }
                 }
 
-                @if (DungeonTile.Monsters.Count > 0) {
-                    foreach (Monster monster in DungeonTile.Monsters) {
+                <div style="color: #fff; text-align: center; width: 100px; position: absolute;">
+                    @element
+                </div>
+
+                @if (tile.Monsters.Count > 0) {
+                    foreach (Monster monster in tile.Monsters) {
                         string monsterTop = $"{monster.ClientY}px";
                         string monsterLeft = $"{monster.ClientX}px";
 

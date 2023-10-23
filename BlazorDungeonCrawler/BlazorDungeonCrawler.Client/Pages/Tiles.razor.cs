@@ -1,9 +1,30 @@
-using BlazorDungeonCrawler.Shared.Enumerators;
 using Microsoft.AspNetCore.Components;
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
 namespace BlazorDungeonCrawler.Client.Pages {
+    public class TilePosition {
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public TilePosition(int width, int height) {
+            Width = width;
+            Height = height;
+        }
+
+        public string ToTileGroupStyle() {
+            return $"top: {Height}px; left: {Width}px;";
+        }
+
+        public string ToDungonStyle() {
+            int tileHeight = Tiles.TileHeight / 2;
+            int tileWidth = Tiles.TileWidth / 2;
+            return $"top: -{Height + tileHeight}px; left: -{Width + tileWidth}px;";
+        }
+    }
+
     public partial class Tiles {
         [ParameterAttribute]
         public List<SharedTile> DungeonTiles { get; set; }
@@ -12,45 +33,31 @@ namespace BlazorDungeonCrawler.Client.Pages {
         public int DungeonDepth { get; set; }
 
         [ParameterAttribute]
-        public int TileRows { get; set; }
-
-        [ParameterAttribute]
-        public int TileColumns { get; set; }
-
-        [ParameterAttribute]
-        public bool MacGuffinFound { get; set; }
+        public bool HighlightAscending { get; set; }
 
         [Parameter]
         public EventCallback<Guid> OnClickCallback { get; set; }
 
-        private readonly int tileWidth = 100;
-        private readonly int nestedTileWidth = (100 / 4) * 3;
+        public SharedTile currentTile;
 
-        private readonly int tileHeight = 90;
+        public static readonly int TileHeight = 90;
+        public static readonly int TileWidth = 100;
+        private readonly int nestedTileWidth = (100 / 4) * 3;
 
         public Tiles() {
             DungeonTiles = new();
 
             DungeonDepth = 0;
 
-            TileRows = 0;
-            TileColumns = 0;
-
-            MacGuffinFound = false;
+            HighlightAscending = false;
 
             OnClickCallback = new();
+
+            currentTile = new();
         }
 
         private async Task CallParentSelectedTileFunction(Guid tileId) {
             await OnClickCallback.InvokeAsync(tileId);
-        }
-
-        //todo: calculate this not like and idiot
-        public string getDungeonPosition(int tileRows, int tileColumns) {
-            int dungeonWidth = nestedTileWidth * tileRows + (tileWidth / 4);
-            int dungeonHeight = tileHeight * tileColumns;
-
-            return $"width: {dungeonWidth}px; height: {dungeonHeight}px;";
         }
 
         public string getColourClass(int dungeonDepth) {
@@ -75,19 +82,19 @@ namespace BlazorDungeonCrawler.Client.Pages {
             }
         }
 
-        public string getTileGroupPosition(int tileRow, int tileColumn) {
+        public TilePosition getTileGroupPosition(int tileRow, int tileColumn) {
             int hexagonLeft = tileColumn * nestedTileWidth;
 
             int hexagonTop;
             if ((tileColumn % 2) == 1) {
                 //long
-                hexagonTop = tileRow * tileHeight;
+                hexagonTop = tileRow * TileHeight;
             } else {
                 //short
-                hexagonTop = (tileRow * tileHeight) + (tileHeight / 2);
+                hexagonTop = (tileRow * TileHeight) + (TileHeight / 2);
             }
 
-            return $"top: {hexagonTop}px; left: {hexagonLeft}px;";
+            return new TilePosition(hexagonLeft, hexagonTop);
         }
 
         public string getTypeClass(bool macGuffinFound, DungeonEvents type) {
@@ -107,7 +114,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         return "hexagon-tile-stairs-ascending";
                     }
                 case DungeonEvents.StairsDescending:
-                    return "hexagon-tile-stairs-descending";
+                        return "hexagon-tile-stairs-descending";
                 case DungeonEvents.Fight:
                     return "hexagon-tile-fight";
                 case DungeonEvents.FightWon:
