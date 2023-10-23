@@ -31,9 +31,7 @@
             }
         }
     </div>
-    <div class="button">
-        <button @onclick="AutomaticallyAdvanceDungeon" class="dungeon-button" disabled="@AdvanceDisabled">Advance</button>
-    </div>
+    <AdvanceDungeon OnCallClickFunction=@AutomaticallyAdvanceDungeon ButtonState=@AdvanceDisabled />
     <div class="details">
         <div class="adventurer">
             <div class="dungeon-floor">
