@@ -209,10 +209,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
             if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
 
             try {
-                AdventurerExperienceStats = new();
-                AdventurerHealthStats = new();
-                AdventurerDamageStats = new();
-                AdventurerProtectionStats = new();
+                AdvanceDisabled = true;
 
                 try {
                     ValidateDungeon(await DungeonManager.AutomaticallyAdvanceDungeon(dungeon.Id));
