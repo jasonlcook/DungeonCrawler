@@ -1014,6 +1014,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (adventurerAttackValue > monsterDodgeValue) {
                         monsterWounds = adventurerDamage - monsterProtection;
 
+                        //todo: find a bettwer way to prevent wiffing
+                        if (monsterWounds < 1) {
+                            monsterWounds = 1;
+                        }
+
                         if (monsterWounds > 0) {
                             int currentHealth = monsterHealth - monsterWounds;
                             if (currentHealth > 0) {
