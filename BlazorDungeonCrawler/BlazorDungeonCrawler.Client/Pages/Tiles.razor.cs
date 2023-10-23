@@ -114,7 +114,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
                         return "hexagon-tile-stairs-ascending";
                     }
                 case DungeonEvents.StairsDescending:
+                    if (!macGuffinFound) {
+                        return "hexagon-tile-stairs-descending-active";
+                    } else {
                         return "hexagon-tile-stairs-descending";
+                    }
                 case DungeonEvents.Fight:
                     return "hexagon-tile-fight";
                 case DungeonEvents.FightWon:
@@ -136,7 +140,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
                 case DungeonEvents.TakenPotion:
                     return "hexagon-tile-potion";
                 case DungeonEvents.Macguffin:
-                    return "hexagon-tile-macguffin";
+                    if (!macGuffinFound) {
+                        return "hexagon-tile-macguffin-active";
+                    } else {
+                        return "hexagon-tile-macguffin";
+                    }
                 default:
                     return "hexagon-tile-unknown";
             }
