@@ -10,13 +10,12 @@
 @inject HttpClient Http
 
 <div id="external-frame">
+    <div id="dungeon-floor">
+        <span class="label">Depth</span>
+        <span class="value" id="current-floor">@DungeonDepth.ToString()</span>
+    </div>
     <div id="play-area">
-        <div id="reports">
-            <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
-        </div>
-        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth HighlightAscending=MacGuffinFound OnClickCallback=@SelectTile />
-        <LevelSelect DungeonFloors=DungeonFloors GameOver=GameOver DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
-
+        <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
         @if (dungeon != null) {
             @if (dungeon.GameOver) {
                 <ActionDialog DialogText="GAME OVER" OnCallAcceptFunction=@NewGame AcceptLabel="New Game?" />
@@ -30,27 +29,23 @@
                 <ActionDialog DialogText="STAIRS" OnCallAcceptFunction=@DescendStairs AcceptLabel="Descend" OnCallRejectFunction=@RemainOnFloor RejectLabel="Stay" />
             }
         }
+        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth HighlightAscending=MacGuffinFound OnClickCallback=@SelectTile />
+        <LevelSelect DungeonFloors=DungeonFloors GameOver=GameOver DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
     </div>
     <AdvanceDungeon OnCallClickFunction=@AutomaticallyAdvanceDungeon ButtonState=@AdvanceDisabled />
-    <div id="dungeon-details">
-        <div class="adventurer">
-            <div class="dungeon-floor">
-                <span class="label">Depth</span>
-                <span class="value" id="current-floor">@DungeonDepth.ToString()</span>
-            </div>
-            <div class="adventurer-stats">
-                <AdventurerAttribute Attributes=AdventurerExperienceStats />
-                <AdventurerAttribute Attributes=AdventurerHealthStats />
-                <AdventurerAttribute Attributes=AdventurerDamageStats />
-                <AdventurerAttribute Attributes=AdventurerProtectionStats />
-            </div>
-            <div class="dice">
-                <DiceRolls SafeDice=@SafeDice DangerDice=@DangerDice />
-            </div>
+    <div id="character-sheet">
+        <div id="adventurer-stats">
+            <AdventurerAttribute Attributes=AdventurerExperienceStats />
+            <AdventurerAttribute Attributes=AdventurerHealthStats />
+            <AdventurerAttribute Attributes=AdventurerDamageStats />
+            <AdventurerAttribute Attributes=AdventurerProtectionStats />
         </div>
-        <div id="log">
-            <Logs Messages=Messages OnMouseEnterCallback=@UpdateDice />
+        <div id="dice">
+            <DiceRolls SafeDice=@SafeDice DangerDice=@DangerDice />
         </div>
+    </div>
+    <div id="log">
+        <Logs Messages=Messages OnMouseEnterCallback=@UpdateDice />
     </div>
 </div>
 <div id="external-frame-footer">

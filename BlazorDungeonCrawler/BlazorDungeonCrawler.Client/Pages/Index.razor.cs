@@ -167,7 +167,6 @@ namespace BlazorDungeonCrawler.Client.Pages {
                     } catch (Exception ex) {
                         ErrorReports.Add(ex.Message);
                     }
-
                     if (!await UpdatePageVariables()) {
                         InformationReports.Add("Dungeon values could not udpdated.");
                     }

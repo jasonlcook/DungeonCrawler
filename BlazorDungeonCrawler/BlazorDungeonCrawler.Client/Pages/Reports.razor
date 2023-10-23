@@ -1,15 +1,17 @@
-﻿@if (ErrorReports != null && ErrorReports.Count > 0) {
-    foreach (string report in ErrorReports) {
-        @if (report != string.Empty) {
-            <div class="report report-error">@report</div>
+﻿<div id="reports">
+    @if (ErrorReports != null && ErrorReports.Count > 0) {
+        foreach (string report in ErrorReports) {
+            @if (report != string.Empty) {
+                <div class="report report-error">@report</div>
+            }
         }
     }
-}
 
-@if (InformationReports != null && InformationReports.Count > 0) {
-    foreach (string report in InformationReports) {
-        @if (report != string.Empty) {
-            <div class="report report-info">@report</div>
+    @if (InformationReports != null && InformationReports.Count > 0) {
+        foreach (string report in InformationReports) {
+            @if (report != string.Empty) {
+                <div class="report report-info">@report</div>
+            }
         }
     }
-}
+</div>

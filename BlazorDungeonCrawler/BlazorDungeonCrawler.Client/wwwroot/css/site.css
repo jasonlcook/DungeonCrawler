@@ -29,13 +29,13 @@ body {
 
 /* Buttons */
 .dungeon-button {
-    background: none;
     border: 1px solid #000;
     padding: 5px 8px;
     display: block;
-    margin: 0 auto;
     font-family: inherit;
     font-size: inherit;
+    background: #fff;
+    margin: 0 auto;
 }
 
     .dungeon-button:hover,
@@ -57,177 +57,166 @@ body {
     }
 }
 
+#dungeon-floor {
+    border-color: #000;
+    border-width: 0 0 1px 0px;
+    border-style: solid;
+    padding: 10px 0px;
+    text-align: center;
+    margin: 0 0 10px 0;
+}
+
 /* Play area */
 #external-frame {
     border: 1px solid #000;
-    width: min-content;
-    margin: 0px auto;
+    margin: 10px auto 0px auto;
+    width: 50%;
+    min-width: 320px;
 }
 
 /* Buttons */
 #advance-dungeon {
     padding: 10px;
-    margin: 10px 10px 0 10px;
+    background-color: #fff;
+    border-width: 1px 0;
+    border-color: #000;
+    border-style: solid;
+    margin: 0 0 10px 0;
 }
 
 /* Details */
-#dungeon-details {
+#character-sheet {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
-    #dungeon-details .adventurer {
-        text-align: center;
-        border-color: #000;
-        border-width: 1px;
-        border-style: solid;
-        margin: 10px;
-        width: 250px;
-        height: 450px;
+#adventurer-stats {
+    padding: 10px;
+}
+
+    #adventurer-stats .adventurer-stats-section {
+        margin: 0 0 10px 0;
     }
 
-        #dungeon-details .adventurer .dungeon-floor {
-            border-color: #000;
-            border-width: 0px 0px 1px;
-            border-style: solid;
-            padding: 10px 0px;
-        }
-
-        #dungeon-details .adventurer .adventurer-stats {
-            padding: 10px;
-            text-align: left;
+        #adventurer-stats .adventurer-stats-section .adventurer-stats-row {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
         }
 
-            #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section {
-                margin: 0 0 10px 0;
+            #adventurer-stats .adventurer-stats-section .adventurer-stats-row .label {
+                width: 110px;
+                display: block;
             }
 
-                #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row {
-                    display: flex;
-                    flex-direction: row;
-                }
-
-                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .label {
-                        width: 110px;
-                        display: block;
-                    }
-
-                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .value {
-                        width: 70px;
-                        display: block;
-                    }
-
-                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row .duration {
-                        display: block;
-                    }
-
-                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-base {
-                        border-color: #000;
-                        border-width: 0 0 1px 0;
-                        border-style: dotted;
-                        padding: 0 0 1px 0;
-                        margin: 0 0 2px 0;
-                    }
-
-                    #dungeon-details .adventurer .adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-total {
-                        font-weight: bold;
-                    }
-
-        #dice {
-            padding: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            align-content: space-around;
-            align-items: center;
-            border-color: #000;
-            border-width: 1px 0 0 0;
-            border-style: solid;
-            height: 80px;
-            overflow: auto;
-        }
-
-            #dice .die {
-                width: 20px;
-                height: 20px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: contain;
-                margin: 5px;
+            #adventurer-stats .adventurer-stats-section .adventurer-stats-row .value {
+                width: 70px;
+                display: block;
             }
 
-                /* Dice */
-                /*  Safe */
-                #dice .die.safe {
-                    background-image: url("../images/dice/safe/empty.png");
-                }
+            #adventurer-stats .adventurer-stats-section .adventurer-stats-row .duration {
+                display: block;
+            }
 
-                    #dice .die.safe.one {
-                        background-image: url("../images/dice/safe/one.png");
-                    }
+            #adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-base {
+                border-color: #000;
+                border-width: 0 0 1px 0;
+                border-style: dotted;
+                padding: 0 0 1px 0;
+                margin: 0 0 2px 0;
+            }
 
-                    #dice .die.safe.two {
-                        background-image: url("../images/dice/safe/two.png");
-                    }
+            #adventurer-stats .adventurer-stats-section .adventurer-stats-row.adventurer-stats-row-total {
+                font-weight: bold;
+            }
 
-                    #dice .die.safe.three {
-                        background-image: url("../images/dice/safe/three.png");
-                    }
+#dice {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
 
-                    #dice .die.safe.four {
-                        background-image: url("../images/dice/safe/four.png");
-                    }
+    #dice .die {
+        width: 30px;
+        height: 30px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        margin: 10px;
+    }
 
-                    #dice .die.safe.five {
-                        background-image: url("../images/dice/safe/five.png");
-                    }
+        /* Dice */
+        /*  Safe */
+        #dice .die.safe {
+            background-image: url("../images/dice/safe/empty.png");
+        }
 
-                    #dice .die.safe.six {
-                        background-image: url("../images/dice/safe/six.png");
-                    }
+            #dice .die.safe.one {
+                background-image: url("../images/dice/safe/one.png");
+            }
 
-                /*  Danger */
-                #dice .die.danger {
-                    background-image: url("../images/dice/danger/empty.png");
-                }
+            #dice .die.safe.two {
+                background-image: url("../images/dice/safe/two.png");
+            }
 
-                    #dice .die.danger.one {
-                        background-image: url("../images/dice/danger/one.png");
-                    }
+            #dice .die.safe.three {
+                background-image: url("../images/dice/safe/three.png");
+            }
 
-                    #dice .die.danger.two {
-                        background-image: url("../images/dice/danger/two.png");
-                    }
+            #dice .die.safe.four {
+                background-image: url("../images/dice/safe/four.png");
+            }
 
-                    #dice .die.danger.three {
-                        background-image: url("../images/dice/danger/three.png");
-                    }
+            #dice .die.safe.five {
+                background-image: url("../images/dice/safe/five.png");
+            }
 
-                    #dice .die.danger.four {
-                        background-image: url("../images/dice/danger/four.png");
-                    }
+            #dice .die.safe.six {
+                background-image: url("../images/dice/safe/six.png");
+            }
 
-                    #dice .die.danger.five {
-                        background-image: url("../images/dice/danger/five.png");
-                    }
+        /*  Danger */
+        #dice .die.danger {
+            background-image: url("../images/dice/danger/empty.png");
+        }
 
-                    #dice .die.danger.six {
-                        background-image: url("../images/dice/danger/six.png");
-                    }
+            #dice .die.danger.one {
+                background-image: url("../images/dice/danger/one.png");
+            }
+
+            #dice .die.danger.two {
+                background-image: url("../images/dice/danger/two.png");
+            }
+
+            #dice .die.danger.three {
+                background-image: url("../images/dice/danger/three.png");
+            }
+
+            #dice .die.danger.four {
+                background-image: url("../images/dice/danger/four.png");
+            }
+
+            #dice .die.danger.five {
+                background-image: url("../images/dice/danger/five.png");
+            }
+
+            #dice .die.danger.six {
+                background-image: url("../images/dice/danger/six.png");
+            }
 
 /* Log */
 #log {
     border-color: #000;
-    border-width: 1px;
+    border-width: 1px 0 0 0;
     border-style: solid;
-    margin: 10px 10px 10px 0;
     overflow: hidden scroll;
-    width: 558px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    height: 450px;
+    max-height: 450px;
+    min-height: 100px;
+}
 }
 
     #log .log-entry {
@@ -236,7 +225,6 @@ body {
         border-color: #000;
         border-width: 0 0 1px 0;
         border-style: solid;
-        margin: 0 10px;
     }
 
         #log .log-entry:active,
@@ -304,15 +292,14 @@ body {
     border-color: #000;
     border-width: 1px;
     border-style: solid;
-    padding: 10px;
-    margin: 10px 10px 0px;
-    width: 800px;
-    height: 640px;
+    margin: 10px;
+    height: 300px;
     position: relative;
     display: flex;
     justify-content: space-around;
     align-items: center;
     overflow: hidden;
+    min-width: 300px;
 }
 
 
@@ -373,48 +360,50 @@ body {
 #reports {
     position: absolute;
     top: 0;
+    z-index: 1;
     left: 0;
-    width: 820px;
+    width: -webkit-fill-available;
 }
 
-    #reports .report {
-        color: #fff;
-        text-align: center;
-        padding: 5px 0;
-        border-width: 0 0 1px 0;
-        border-color: #000;
-        border-style: solid;
-    }
-
-        #reports .report.report-error {
-            background-color: #ff7070;
-        }
-
-        #reports .report.report-info {
-            background-color: #ffb070;
-        }
-
-
-/* Action dialog */
-#action-dialog {
-    position: absolute;
-    bottom: 0;
-    background-color: #fff;
-    left: 0;
-    width: 820px;
-    border-width: 1px 0 0 0;
+#reports .report {
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-width: 0 0 1px 0;
     border-color: #000;
     border-style: solid;
 }
 
+    #reports .report.report-error {
+        background-color: #ff7070;
+    }
+
+    #reports .report.report-info {
+        background-color: #ffb070;
+    }
+
+
+/* Action dialog */
+#action-dialog {
+    background-color: #fff;
+    border-width: 1px 0;
+    border-color: #000;
+    border-style: solid;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    left: 0;
+    width: -webkit-fill-available;
+}
+
     #action-dialog .action-dialog-body {
-        float: left;
-        padding: 11px 0 11px 12px;
     }
 
     #action-dialog .action-dialog-buttons {
-        float: right;
-        padding: 5px 5px 0 0;
     }
 
         #action-dialog .action-dialog-buttons button {
@@ -426,8 +415,7 @@ body {
 #external-frame-footer {
     margin: 10px auto 0 auto;
     font-size: 10px;
-    width: 844px;
-    text-align: right;
+    text-align: center;
 }
 
     #external-frame-footer #version span {
