@@ -2,7 +2,7 @@
 
 using BlazorDungeonCrawler.Shared.Models;
 
-namespace BlazorDungeonCrawler.Database.Data {
+namespace BlazorDungeonCrawler.Server.Database {
     public class DungeonContext : DbContext {
         public DbSet<Dungeon> Dungeons { get; set; }
         public DbSet<Adventurer> Adventurers { get; set; }
@@ -11,6 +11,6 @@ namespace BlazorDungeonCrawler.Database.Data {
         public DbSet<Message> Messages { get; set; }
         public DbSet<Monster> Monsters { get; set; }
 
-        public DungeonContext() : base("DungeonContext") { }
+        public DungeonContext() : base("name=BlazorDungeonCrawler") { }
     }
 }

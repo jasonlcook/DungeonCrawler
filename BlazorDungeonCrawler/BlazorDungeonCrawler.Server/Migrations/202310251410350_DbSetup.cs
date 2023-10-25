@@ -1,9 +1,9 @@
-﻿namespace BlazorDungeonCrawler.Database.Migrations
+﻿namespace BlazorDungeonCrawler.Server.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class DBSetup : DbMigration
+    public partial class DbSetup : DbMigration
     {
         public override void Up()
         {

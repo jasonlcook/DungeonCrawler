@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorDungeonCrawler.Database\BlazorDungeonCrawler.Database.csproj" />
     <ProjectReference Include="..\BlazorDungeonCrawler.Shared\BlazorDungeonCrawler.Shared.csproj" />
   </ItemGroup>
 

@@ -1,13 +1,18 @@
-﻿using BlazorDungeonCrawler.Database.Data;
-using BlazorDungeonCrawler.Shared.Models;
+﻿using BlazorDungeonCrawler.Shared.Models;
 
-namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
-    public static class FloorCreate {
-        public static void Create(Guid dungeonId, Floor floor) {
-            try {
-                using (var context = new DungeonContext()) {
+namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create
+{
+    public static class FloorCreate
+    {
+        public static void Create(Guid dungeonId, Floor floor)
+        {
+            try
+            {
+                using (var context = new DungeonContext())
+                {
                     Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
-                    if (attachedDungeon != null) {
+                    if (attachedDungeon != null)
+                    {
                         attachedDungeon.Floors = new();
                         attachedDungeon.Floors.Add(floor);
 
@@ -16,7 +21,9 @@ namespace BlazorDungeonCrawler.Database.Resources.Commands.Create {
 
                     context.SaveChanges();
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Message create failed.");
 
             }
