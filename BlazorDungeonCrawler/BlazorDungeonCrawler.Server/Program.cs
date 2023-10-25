@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 
 using BlazorDungeonCrawler.Server.Data;
+using BlazorDungeonCrawler.Server.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddSingleton<DungeonManager>();
+builder.Services.AddSingleton<DungeonDbContext>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy(name: "AllowAnyOriginMethodHeader", builder =>
