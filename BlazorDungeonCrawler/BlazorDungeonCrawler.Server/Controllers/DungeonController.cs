@@ -43,7 +43,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
@@ -58,9 +62,13 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
-        }        
+        }
 
         [HttpGet("{dungeonId}/automaticallyadvancedungeon")]
         [EnableCors("AllowAnyOriginMethodHeader")]
@@ -73,7 +81,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
@@ -88,7 +100,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
@@ -104,7 +120,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
@@ -119,7 +139,11 @@ namespace BlazorDungeonCrawler.Server.Controllers {
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
