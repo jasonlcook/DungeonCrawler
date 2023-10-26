@@ -1,17 +1,27 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public static class TilesUpdate {
-        public static void Update(DungeonDbContext context, List<Tile> tiles) {
+    public class TilesUpdate : IDisposable {
+        protected readonly DungeonDbContext _dbContext;
+
+        public TilesUpdate(DungeonDbContext dbContext) {
+            _dbContext = dbContext;
+        }
+        public async Task Update(List<Tile> tiles) {
             try {
                 foreach (var tile in tiles) {
-                    context.Tiles.Update(tile);
+                    _dbContext.Tiles.Update(tile);
                 }
 
-                context.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                throw new Exception("Tile update failed.");
+                //todo: log exception with Application Insights
+                throw new Exception("Database error while attempting to update a Tile.");
             }
+        }
+
+        public void Dispose() {
+            //todo: dispose current context 
         }
     }
 }

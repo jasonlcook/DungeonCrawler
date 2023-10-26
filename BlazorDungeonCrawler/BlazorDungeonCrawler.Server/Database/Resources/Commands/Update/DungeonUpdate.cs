@@ -1,14 +1,26 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public static class DungeonUpdate {
-        public static void Update(DungeonDbContext context, Dungeon dungeon) {
+    public  class DungeonUpdate : IDisposable {
+        protected readonly DungeonDbContext _dbContext;
+
+        public DungeonUpdate(DungeonDbContext dbContext) {
+            _dbContext = dbContext;
+        }
+
+        public async Task Update(Dungeon dungeon) {
             try {
-                context.Dungeons.Update(dungeon);
-                context.SaveChanges();
+                _dbContext.Dungeons.Update(dungeon);
+
+                await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                throw new Exception("Dungeon update failed.");
+                //todo: log exception with Application Insights
+                throw new Exception("Database error while attempting to update the Dungeon.");
             }
+        }
+
+        public void Dispose() {
+            //todo: dispose current context 
         }
     }
 }

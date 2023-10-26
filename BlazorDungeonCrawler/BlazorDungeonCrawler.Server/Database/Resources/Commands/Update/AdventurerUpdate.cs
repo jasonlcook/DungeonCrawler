@@ -1,15 +1,26 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public static class AdventurerUpdate {
-        public static void Update(DungeonDbContext context, Adventurer adventurer) {
-            try {
-                context.Adventurers.Update(adventurer);
-                context.SaveChanges();
-            } catch (Exception ex) {
-                throw new Exception("Adventurer update failed.");
+    public class AdventurerUpdate : IDisposable {
+        protected readonly DungeonDbContext _dbContext;
 
+        public AdventurerUpdate(DungeonDbContext dbContext) {
+            _dbContext = (DungeonDbContext)dbContext;
+        }
+
+        public async Task Update(Adventurer adventurer) {
+            try {
+                _dbContext.Adventurers.Update(adventurer);
+
+                await _dbContext.SaveChangesAsync();
+            } catch (Exception ex) {
+                //todo: log exception with Application Insights
+                throw new Exception("Database error while attempting to update the Adventurer.");
             }
+        }
+
+        public void Dispose() {
+            _dbContext.Dispose();
         }
     }
 }

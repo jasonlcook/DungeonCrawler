@@ -1,10 +1,16 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
-    public static class MessagesCreate {
-        public static void Create(DungeonDbContext context, Guid dungeonId, List<Message> messages) {
+    public class MessagesCreate : IDisposable {
+        protected readonly DungeonDbContext _dbContext;
+
+        public MessagesCreate(DungeonDbContext dbContext) {
+            _dbContext = dbContext;
+        }
+
+        public async Task Create(Guid dungeonId, List<Message> messages) {
             try {
-                Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
+                Dungeon? attachedDungeon = _dbContext.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
                 if (attachedDungeon != null) {
                     attachedDungeon.Messages = new();
 
@@ -13,15 +19,19 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                     }
 
                     foreach (Message message in attachedDungeon.Messages) {
-                        context.Messages.Add(message);
+                        _dbContext.Messages.Add(message);
                     }
                 }
 
-                context.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                throw new Exception("Message create failed.");
-
+                //todo: log exception with Application Insights
+                throw new Exception("Database error while attempting to create a Messages.");
             }
+        }
+
+        public void Dispose() {
+            //todo: dispose current context 
         }
     }
 }

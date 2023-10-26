@@ -1,22 +1,33 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
-    public static class FloorCreate {
-        public static void Create(DungeonDbContext context, Guid dungeonId, Floor floor) {
+    public class FloorCreate : IDisposable {
+        protected readonly DungeonDbContext _dbContext;
+
+        public FloorCreate(DungeonDbContext dbContext) {
+            _dbContext = dbContext;
+        }
+
+        public async Task Create(Guid dungeonId, Floor floor) {
             try {
-                Dungeon? attachedDungeon = context.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
+                Dungeon? attachedDungeon = _dbContext.Dungeons.Where(d => d.Id == dungeonId).FirstOrDefault();
+
                 if (attachedDungeon != null) {
                     attachedDungeon.Floors = new();
                     attachedDungeon.Floors.Add(floor);
 
-                    context.Floors.Add(attachedDungeon.Floors.First());
+                    _dbContext.Floors.Add(attachedDungeon.Floors.First());
                 }
 
-                context.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                throw new Exception("Message create failed.");
-
+                //todo: log exception with Application Insights
+                throw new Exception("Database error while attempting to create a Dungeon floor.");
             }
+        }
+
+        public void Dispose() {
+            //todo: dispose current context 
         }
     }
 }
