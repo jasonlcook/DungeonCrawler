@@ -4,7 +4,6 @@ using BlazorDungeonCrawler.Shared.Models;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
-using System.Runtime.CompilerServices;
 
 namespace BlazorDungeonCrawler.Client.Pages {
     public partial class Index {
@@ -150,30 +149,38 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         //Dungeon
         protected override async void OnAfterRender(bool firstRender) {
-            ErrorReports = new();
-            InformationReports = new();
+            if (firstRender) {
+                ErrorReports = new();
+                InformationReports = new();
 
-            try {
-                if (dungeon == null || dungeon.Id == Guid.Empty) {
-                    Dungeon? dungeon;
-                    try {
-                        if (cookieId != Guid.Empty) {
-                            dungeon = await DungeonManager.GetDungeon(cookieId);
-                        } else {
-                            dungeon = await DungeonManager.GenerateNewDungeon();
+                try {
+                    if (dungeon == null || dungeon.Id == Guid.Empty) {
+                        Dungeon? dungeon;
+                        try {
+                            if (cookieId != Guid.Empty) {
+                                try {
+                                    dungeon = await DungeonManager.GetDungeon(cookieId);
+                                } catch (Exception ex) {
+                                    dungeon = await DungeonManager.GenerateNewDungeon();
+                                    ErrorReports.Add(ex.Message);
+                                }                                
+                            } else {
+                                dungeon = await DungeonManager.GenerateNewDungeon();
+                            }
+
+                            ValidateDungeon(dungeon);
+                        } catch (Exception ex) {
+                            ErrorReports.Add(ex.Message);
+
                         }
-
-                        ValidateDungeon(dungeon);
-                    } catch (Exception ex) {
-                        ErrorReports.Add(ex.Message);
+                        if (!await UpdatePageVariables()) {
+                            InformationReports.Add("Dungeon values could not udpdated.");
+                        }
                     }
-                    if (!await UpdatePageVariables()) {
-                        InformationReports.Add("Dungeon values could not udpdated.");
-                    }
+                } catch (Exception ex) {
+                    ErrorReports.Add(ex.Message);
                 }
-            } catch (Exception ex) {
-                ErrorReports.Add(ex.Message);
-            }
+            }            
         }
 
         public void SelectDungeonDepth(int dungeonDepth) {
