@@ -4,14 +4,14 @@ using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database {
     public class DungeonDbContext : DbContext {
-        public IConfiguration _config { get; set; }
+        public IConfiguration _dbContext { get; set; }
 
-        public DungeonDbContext(IConfiguration config) {
-            _config = config;
+        public DungeonDbContext(IConfiguration _dbContext) {
+            this._dbContext = _dbContext;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlServer(_config.GetConnectionString("BlazorDungeonCrawler"));
+            optionsBuilder.UseSqlServer(_dbContext.GetConnectionString("BlazorDungeonCrawler"));
         }
 
         public DbSet<Dungeon> Dungeons { get; set; }
