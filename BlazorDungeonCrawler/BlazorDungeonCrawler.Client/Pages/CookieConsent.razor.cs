@@ -24,7 +24,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
         private async void AcceptCookies() {
             Guid dungeonId = Guid.Empty;
 
-            if (DungeonId != null && DungeonId != Guid.Empty) {
+            if (DungeonId != Guid.Empty) {
                 dungeonId = DungeonId;
             }
 
