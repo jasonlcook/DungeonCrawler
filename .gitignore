@@ -407,3 +407,8 @@ FodyWeavers.xsd
 *.sln.iml
 /BlazorDungeonCrawler/BlazorDungeonCrawler.Server/appsettings.json
 /BlazorDungeonCrawler/BlazorDungeonCrawler.Database/App.config
+
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Server/appsettings.Development.json
+
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Client/Properties/ServiceDependencies/BlazorDungeonCrawler - Web Deploy/profile.arm.json
+/BlazorDungeonCrawler/BlazorDungeonCrawler.Server/Properties/ServiceDependencies/blazordungeoncrawler-server - Web Deploy/profile.arm.json
