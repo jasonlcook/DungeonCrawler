@@ -1,11 +1,13 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public  class DungeonUpdate  {
+    public  class DungeonUpdate {
         protected readonly DungeonDbContext _dbContext;
+        private readonly ILogger _logger;
 
-        public DungeonUpdate(DungeonDbContext dbContext) {
+        public DungeonUpdate(DungeonDbContext dbContext, ILogger logger) {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task Update(Dungeon dungeon) {
@@ -14,7 +16,7 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
 
                 await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                //todo: log exception with Application Insights
+                _logger.LogError(ex.Message);
                 throw new Exception("Database error while attempting to update the Dungeon.");
             }
         }

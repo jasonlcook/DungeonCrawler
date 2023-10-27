@@ -3,9 +3,11 @@
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
     public class MessagesCreate  {
         protected readonly DungeonDbContext _dbContext;
+        private readonly ILogger _logger;
 
-        public MessagesCreate(DungeonDbContext dbContext) {
+        public MessagesCreate(DungeonDbContext dbContext, ILogger logger) {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task Create(Guid dungeonId, List<Message> messages) {
@@ -25,7 +27,7 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
 
                 await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                //todo: log exception with Application Insights
+                _logger.LogError(ex.Message);
                 throw new Exception("Database error while attempting to create a Messages.");
             }
         }

@@ -3,9 +3,11 @@
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Delete {
     public class MonsterDelete {
         protected readonly DungeonDbContext _dbContext;
+        private readonly ILogger _logger;
 
-        public MonsterDelete(DungeonDbContext dbContext) {
+        public MonsterDelete(DungeonDbContext dbContext, ILogger logger) {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task Delete(Guid mmonsterId) {
@@ -16,7 +18,7 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Delete {
 
                 await _dbContext.SaveChangesAsync();
             } catch (Exception ex) {
-                //todo: log exception with Application Insights
+                _logger.LogError(ex.Message);
                 throw new Exception("Database error while attempting to delete a Monster.");
             }
         }
