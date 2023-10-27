@@ -1,7 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
-    public class MessagesCreate : IDisposable {
+    public class MessagesCreate  {
         protected readonly DungeonDbContext _dbContext;
 
         public MessagesCreate(DungeonDbContext dbContext) {
@@ -28,10 +28,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to create a Messages.");
             }
-        }
-
-        public void Dispose() {
-            //todo: dispose current context 
         }
     }
 }

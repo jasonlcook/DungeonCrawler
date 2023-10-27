@@ -1,7 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public class TilesUpdate : IDisposable {
+    public class TilesUpdate  {
         protected readonly DungeonDbContext _dbContext;
 
         public TilesUpdate(DungeonDbContext dbContext) {
@@ -18,10 +18,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to update a Tile.");
             }
-        }
-
-        public void Dispose() {
-            //todo: dispose current context 
         }
     }
 }

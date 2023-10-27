@@ -1,7 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
-    public class MonstersCreate : IDisposable {
+    public class MonstersCreate  {
         protected readonly DungeonDbContext _dbContext;
 
         public MonstersCreate(DungeonDbContext dbContext) {
@@ -26,10 +26,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to create a Monster.");
             }
-        }
-
-        public void Dispose() {
-            //todo: dispose current context 
         }
     }
 }

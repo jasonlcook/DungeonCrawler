@@ -1,7 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
-    public class FloorCreate : IDisposable {
+    public class FloorCreate  {
         protected readonly DungeonDbContext _dbContext;
 
         public FloorCreate(DungeonDbContext dbContext) {
@@ -24,10 +24,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to create a Dungeon floor.");
             }
-        }
-
-        public void Dispose() {
-            //todo: dispose current context 
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
-    public class AdventurerUpdate : IDisposable {
+    public class AdventurerUpdate  {
         protected readonly DungeonDbContext _dbContext;
 
         public AdventurerUpdate(DungeonDbContext dbContext) {
@@ -17,10 +17,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to update the Adventurer.");
             }
-        }
-
-        public void Dispose() {
-            _dbContext.Dispose();
         }
     }
 }

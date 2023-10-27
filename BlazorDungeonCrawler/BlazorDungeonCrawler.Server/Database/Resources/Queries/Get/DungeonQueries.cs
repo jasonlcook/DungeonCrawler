@@ -3,11 +3,11 @@
 using BlazorDungeonCrawler.Shared.Models;
 
 namespace BlazorDungeonCrawler.Server.Database.Resources.Queries.Get {
-    public class DungeonQueries : IDisposable {
+    public class DungeonQueries {
         protected readonly DungeonDbContext _dbContext;
 
         public DungeonQueries(DungeonDbContext dbContext) {
-            _dbContext = (DungeonDbContext)dbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<Dungeon?> Get(Guid dungeonId) {
@@ -17,10 +17,6 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Queries.Get {
                 //todo: log exception with Application Insights
                 throw new Exception("Database error while attempting to retrieve the Dungeon.");
             }
-        }
-
-        public void Dispose() {
-            _dbContext.Dispose();
         }
     }
 }
