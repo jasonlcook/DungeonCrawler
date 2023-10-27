@@ -2,15 +2,16 @@ using Microsoft.AspNetCore.ResponseCompression;
 
 using BlazorDungeonCrawler.Server.Data;
 using BlazorDungeonCrawler.Server.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
 builder.Services.AddSingleton<DungeonManager>();
-builder.Services.AddSingleton<DungeonDbContext>();
+builder.Services.AddDbContextFactory<DungeonDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorDungeonCrawler")));
 
 builder.Services.AddCors(options => {
     options.AddPolicy(name: "AllowAnyOriginMethodHeader", builder =>

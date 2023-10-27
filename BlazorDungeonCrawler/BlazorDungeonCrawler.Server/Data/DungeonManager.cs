@@ -1,4 +1,6 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿using Microsoft.EntityFrameworkCore;
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using BlazorDungeonCrawler.Server.Models;
 
@@ -17,9 +19,9 @@ using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
-        private DungeonDbContext dbContext;
-        public DungeonManager(DungeonDbContext _dbContext) {
-            dbContext = _dbContext;
+        private readonly IDbContextFactory<DungeonDbContext> _contextFactory;
+        public DungeonManager(IDbContextFactory<DungeonDbContext> contextFactory) {
+            _contextFactory = contextFactory;
         }
 
         public async Task<SharedDungeon> Generate() {
@@ -72,15 +74,16 @@ namespace BlazorDungeonCrawler.Server.Data {
                 ApiVersion = apiVersion
             };
 
-            using DungeonCreate dungeonQueries = new(dbContext);
-            await dungeonQueries.Create(sharedDungeon);
+            DungeonCreate dungeonCreate = new(_contextFactory.CreateDbContext());
+            await dungeonCreate.Create(sharedDungeon);
 
             return sharedDungeon;
         }
 
         public async Task<SharedDungeon> RetrieveDungeon(Guid dungeonId) {
-            using DungeonQueries dungeonQueries = new(dbContext);
-            SharedDungeon? sharedDungeon = await dungeonQueries.Get(dungeonId);
+            DungeonQueries dungeonQueries = new(_contextFactory.CreateDbContext());
+            SharedDungeon?  sharedDungeon = await dungeonQueries.Get(dungeonId);
+
             if (sharedDungeon == null || sharedDungeon.Id == Guid.Empty) { throw new Exception("Requested Dungeon could not be found"); }
 
             return sharedDungeon;
@@ -123,7 +126,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
-            using TilesUpdate tilesUpdate = new(dbContext);
             switch (selectedTile.Type) {
                 case DungeonEvents.DungeonEntrance:
                     if (!dungeon.MacGuffinFound) {
@@ -135,8 +137,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                         messages.Add(gameOverMessage);
 
                         currentFloorTiles.Unhide();
-
-                        await tilesUpdate.Update(currentFloorTiles.SharedModelMapper());
 
                         setSelectable = false;
                         //todo: show summary 
@@ -185,8 +185,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                     //  Set surrounding selecteable tiles for when the user returns to this floor
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
 
-                    await tilesUpdate.Update(currentFloorTiles.SharedModelMapper());
-
                     int increasedDepth = dungeon.Depth + 1;
                     SharedFloor? deeperFloor = dungeon.Floors.Where(l => l.Depth == increasedDepth).FirstOrDefault();
 
@@ -204,9 +202,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         dungeon.Floors.Add(deeperFloor);
 
-                        using FloorCreate floorCreate = new(dbContext);
+                        FloorCreate floorCreate = new(_contextFactory.CreateDbContext());
                         await floorCreate.Create(dungeon.Id, deeperFloor);
-
                         dungeon.StairsDiscovered = true;
                     } else {
                         dungeon.Depth = increasedDepth;
@@ -219,8 +216,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 case DungeonEvents.StairsAscending:
                     //  Set surrounding selecteable tiles for when the user returns to this floor
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-
-                    await tilesUpdate.Update(currentFloorTiles.SharedModelMapper());
 
                     int decreaseDepth = dungeon.Depth -= 1;
                     dungeon.Depth = decreaseDepth;
@@ -437,16 +432,17 @@ namespace BlazorDungeonCrawler.Server.Data {
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
             dungeon.Adventurer = sharedAdventurer;
 
-            using AdventurerUpdate adventurerUpdate = new(dbContext);
+            AdventurerUpdate adventurerUpdate = new(_contextFactory.CreateDbContext());
             await adventurerUpdate.Update(sharedAdventurer);
 
             //Update Messages
             List<SharedMessage> sharedMessages = messages.SharedModelMapper();
             dungeon.Messages.AddRange(sharedMessages);
 
-            using MessagesCreate messagesCreate = new(dbContext);
+            MessagesCreate messagesCreate = new(_contextFactory.CreateDbContext());
             await messagesCreate.Create(dungeon.Id, sharedMessages);
 
+            //Update Tiles
             List<SharedTile> sharedTiles = currentFloorTiles.SharedModelMapper();
             currentFloor.Tiles = sharedTiles;
 
@@ -456,10 +452,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
+            TilesUpdate tilesUpdate = new(_contextFactory.CreateDbContext());
             await tilesUpdate.Update(sharedTiles);
 
             //Update Dungon
-            using DungeonUpdate dungeonUpdate = new(dbContext);
+            DungeonUpdate dungeonUpdate = new(_contextFactory.CreateDbContext());
             await dungeonUpdate.Update(dungeon);
 
             return dungeon;
@@ -472,7 +469,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             monsters.Generate(depth);
 
             if (monsters.Count() > 0) {
-                using MonstersCreate monstersCreate = new(dbContext);
+                MonstersCreate monstersCreate = new(_contextFactory.CreateDbContext());
                 await monstersCreate.Create(tileId, monsters.SharedModelMapper());
             }
 
@@ -781,8 +778,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             dungeon.StairsDiscovered = false;
 
-            //Update Dungon
-            using DungeonUpdate dungeonUpdate = new(dbContext);
+            //Update Dungon            
+            DungeonUpdate dungeonUpdate = new(_contextFactory.CreateDbContext());
             await dungeonUpdate.Update(dungeon);
 
             return dungeon;
@@ -869,14 +866,14 @@ namespace BlazorDungeonCrawler.Server.Data {
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
             dungeon.Adventurer = sharedAdventurer;
 
-            using AdventurerUpdate adventurerUpdate = new(dbContext);
+            AdventurerUpdate adventurerUpdate = new(_contextFactory.CreateDbContext());
             await adventurerUpdate.Update(sharedAdventurer);
 
             //Update Messages
             List<SharedMessage> sharedMessages = messages.SharedModelMapper();
             dungeon.Messages.AddRange(sharedMessages);
 
-            using MessagesCreate messagesCreate = new(dbContext);
+            MessagesCreate messagesCreate = new(_contextFactory.CreateDbContext());
             await messagesCreate.Create(dungeon.Id, sharedMessages);
 
             //Update Tiles
@@ -899,11 +896,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
-            using TilesUpdate tilesUpdate = new(dbContext);
+            TilesUpdate tilesUpdate = new(_contextFactory.CreateDbContext());
             await tilesUpdate.Update(sharedTiles);
 
             //Update Dungon
-            using DungeonUpdate dungeonUpdate = new(dbContext);
+            DungeonUpdate dungeonUpdate = new(_contextFactory.CreateDbContext());
             await dungeonUpdate.Update(dungeon);
 
             return dungeon;
@@ -974,7 +971,6 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
 
             if (adventurerInitiatesCombat) {
-
                 //Monster defend
                 int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
                 Monster currentMonster = new(monsters[monsterindex]);
@@ -1004,9 +1000,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                         int currentHealth = monsterHealth - monsterWounds;
                         if (currentHealth > 0) {
                             currentMonster.Health = currentHealth;
+
                             SharedMonster sharedMonster = currentMonster.SharedModelMapper();
 
-                            using MonsterUpdate monsterUpdate = new(dbContext);
+                            MonsterUpdate monsterUpdate = new(_contextFactory.CreateDbContext());
                             await monsterUpdate.Update(sharedMonster);
 
                             monsters[monsterindex] = sharedMonster;
@@ -1044,7 +1041,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             //todo: stop deleteing monsters once killed
 
                             //remove monster at stack
-                            using MonsterDelete monsterDelete = new(dbContext);
+                            MonsterDelete monsterDelete = new(_contextFactory.CreateDbContext());
                             await monsterDelete.Delete(currentMonster.Id);
 
                             monsters.RemoveAt(monsterindex);
@@ -1196,17 +1193,18 @@ namespace BlazorDungeonCrawler.Server.Data {
                 messages.Add(gameOverMessage);
             }
 
+            //Update Adventurer
             SharedAdventurer sharedAdventurer = adventurer.SharedModelMapper();
             dungeon.Adventurer = sharedAdventurer;
 
-            using AdventurerUpdate adventurerUpdate = new(dbContext);
+            AdventurerUpdate adventurerUpdate = new(_contextFactory.CreateDbContext());
             await adventurerUpdate.Update(sharedAdventurer);
 
             //Update Messages
             List<SharedMessage> sharedMessages = messages.SharedModelMapper();
             dungeon.Messages.AddRange(sharedMessages);
 
-            using MessagesCreate messagesCreate = new(dbContext);
+            MessagesCreate messagesCreate = new(_contextFactory.CreateDbContext());
             await messagesCreate.Create(dungeon.Id, sharedMessages);
 
             //Update Tiles
@@ -1229,11 +1227,11 @@ namespace BlazorDungeonCrawler.Server.Data {
                 }
             }
 
-            using TilesUpdate tilesUpdate = new(dbContext);
+            TilesUpdate tilesUpdate = new(_contextFactory.CreateDbContext());
             await tilesUpdate.Update(sharedTiles);
 
             //Update Dungon
-            using DungeonUpdate dungeonUpdate = new(dbContext);
+            DungeonUpdate dungeonUpdate = new(_contextFactory.CreateDbContext());
             await dungeonUpdate.Update(dungeon);
 
             return dungeon;
