@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 using BlazorDungeonCrawler.Server.Data;
 using BlazorDungeonCrawler.Server.Database;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +23,18 @@ builder.Services.AddResponseCompression(options => {
     options.EnableForHttps = true;
     options.Providers.Add<GzipCompressionProvider>();
 });
+
+//Logging
+builder.Logging.ClearProviders();           // remove all previous logging providers
+builder.Logging.AddConsole();               // add logging to console
+builder.Logging.AddDebug();                 // add logging to debug window
+
+// report logging to application insights
+builder.Logging.AddApplicationInsights(
+    configureTelemetryConfiguration: (config) =>
+        config.ConnectionString = "InstrumentationKey=8090da4c-d1ed-4233-aca7-1cdea70a4a3c;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/",
+        configureApplicationInsightsLoggerOptions: (options) => { }
+    );
 
 var app = builder.Build();
 

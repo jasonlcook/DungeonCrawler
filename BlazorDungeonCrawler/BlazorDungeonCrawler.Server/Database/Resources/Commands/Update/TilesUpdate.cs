@@ -16,8 +16,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
                 }
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("Tiles updated");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"TilesUpdate Update Error: {ex.Message}");
                 throw new Exception("Database error while attempting to update a Tile.");
             }
         }

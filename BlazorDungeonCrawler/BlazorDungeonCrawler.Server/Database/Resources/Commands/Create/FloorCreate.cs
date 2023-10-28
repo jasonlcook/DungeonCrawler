@@ -22,8 +22,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 }
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("New Floor created");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"FloorCreate Create Error: {ex.Message}");
                 throw new Exception("Database error while attempting to create a Dungeon floor.");
             }
         }

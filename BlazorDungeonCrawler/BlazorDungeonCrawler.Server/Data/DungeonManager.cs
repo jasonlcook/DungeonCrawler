@@ -21,9 +21,11 @@ namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
         private readonly ILogger _logger;
         private readonly IDbContextFactory<DungeonDbContext> _contextFactory;
-        public DungeonManager(IDbContextFactory<DungeonDbContext> contextFactory, ILogger logger) {
+        public DungeonManager(IDbContextFactory<DungeonDbContext> contextFactory, ILogger<DungeonManager> logger) {
             _contextFactory = contextFactory;
             _logger = logger;
+
+            _logger.LogInformation("Dungeon manager initiated. {DT}", DateTime.UtcNow.ToLongTimeString());
         }
 
         public async Task<SharedDungeon> Generate() {
@@ -37,11 +39,11 @@ namespace BlazorDungeonCrawler.Server.Data {
             int protection = Dice.RollDSix();
 
             List<int> adventurerRolls = new() { health, damage, protection };
-            Message message = new Message($"ADVENTURER", adventurerRolls, null);
+            Message message = new($"ADVENTURER", adventurerRolls, null);
 
-            message.AddChild(new Message($"ADVENTURER HEALTH {health}", health, null));
-            message.AddChild(new Message($"ADVENTURER DAMAGE {damage}", damage, null));
-            message.AddChild(new Message($"ADVENTURER PROTECTION {protection}", protection, null));
+            message.AddChild(new($"ADVENTURER HEALTH {health}", health, null));
+            message.AddChild(new($"ADVENTURER DAMAGE {damage}", damage, null));
+            message.AddChild(new($"ADVENTURER PROTECTION {protection}", protection, null));
 
             messages.Add(message);
 
@@ -53,7 +55,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             int depth = 1;
             Floor newFloor = new(depth);
 
-            messages.Add(new Message($"DUNGEON DEPTH {depth}"));
+            messages.Add(new($"DUNGEON DEPTH {depth}"));
 
             //  Tiles
             Tiles tiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
@@ -79,12 +81,16 @@ namespace BlazorDungeonCrawler.Server.Data {
             DungeonCreate dungeonCreate = new(_contextFactory.CreateDbContext(), _logger);
             await dungeonCreate.Create(sharedDungeon);
 
+            _logger.LogInformation($"Dungeon {sharedDungeon.Id} generated.");
+
             return sharedDungeon;
         }
 
         public async Task<SharedDungeon> RetrieveDungeon(Guid dungeonId) {
+            _logger.LogInformation($"Dungeon {dungeonId} retrieve.");
+
             DungeonQueries dungeonQueries = new(_contextFactory.CreateDbContext(), _logger);
-            SharedDungeon?  sharedDungeon = await dungeonQueries.Get(dungeonId);
+            SharedDungeon? sharedDungeon = await dungeonQueries.Get(dungeonId);
 
             if (sharedDungeon == null || sharedDungeon.Id == Guid.Empty) { throw new Exception("Requested Dungeon could not be found"); }
 
@@ -92,6 +98,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public async Task<SharedDungeon> GetSelectedDungeonTiles(Guid dungeonId, Guid tileId) {
+            _logger.LogInformation($"Dungeon {dungeonId} tile {tileId} selected.");
+
             SharedDungeon? dungeon = await RetrieveDungeon(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
@@ -131,7 +139,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             switch (selectedTile.Type) {
                 case DungeonEvents.DungeonEntrance:
                     if (!dungeon.MacGuffinFound) {
-                        messages.Add(new Message("NO MACGUFFIN. GO FIND IT!"));
+                        messages.Add(new("NO MACGUFFIN. GO FIND IT!"));
                     } else {
                         dungeon.GameOver = true;
 
@@ -165,7 +173,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
-                            monsterDetailsMessages.Add(new Message(monsterDetails, null, monsterDetailsRoll));
+                            monsterDetailsMessages.Add(new(monsterDetails, null, monsterDetailsRoll));
                         }
 
                         Message monsterGeneration = new(monsterMessage, null, monsterDetailsRollCollection);
@@ -194,7 +202,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (deeperFloor == null || deeperFloor.Id == Guid.Empty) {
                         //Next floor
                         Floor newFloor = new(increasedDepth);
-                        messages.Add(new Message($"DUNGEON DEPTH {increasedDepth} DISCOVERD"));
+                        messages.Add(new($"DUNGEON DEPTH {increasedDepth} DISCOVERD"));
 
                         //  Tiles
                         Tiles newFloorTiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
@@ -253,10 +261,10 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             Message weaponsMessages = new(weaponsMessage, new List<int> { weaponsTypeValue, weaponsConditionValue }, null);
 
-                            weaponsMessages.AddChild(new Message($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue, null));
-                            weaponsMessages.AddChild(new Message($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue, null));
+                            weaponsMessages.AddChild(new($"Weapons condition: {weapons.Condition} (ROLL: {weaponsConditionValue})", weaponsConditionValue, null));
+                            weaponsMessages.AddChild(new($"Weapons type: {weapons.Type} (ROLL: {weaponsTypeValue})", weaponsTypeValue, null));
 
-                            weaponsMessages.AddChild(new Message($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
+                            weaponsMessages.AddChild(new($"Weapon value: {weapons.WeaponValue} ({weapons.TypeValue} * {weapons.ConditionValue})"));
 
                             messages.Add(weaponsMessages);
                             break;
@@ -312,10 +320,10 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             Message armourMessages = new(armourMessage, new List<int> { armourConditionValue, armourTypeValue }, null);
 
-                            armourMessages.AddChild(new Message($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue, null));
-                            armourMessages.AddChild(new Message($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue, null));
+                            armourMessages.AddChild(new($"Armour condition: {armour.Condition} (ROLL: {armourConditionValue})", armourConditionValue, null));
+                            armourMessages.AddChild(new($"Armour type: {armour.Type} (ROLL: {armourTypeValue})", armourTypeValue, null));
 
-                            armourMessages.AddChild(new Message($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
+                            armourMessages.AddChild(new($"Armour value: {armour.ArmourValue} ({armour.TypeValue} * {armour.ConditionValue})"));
 
                             messages.Add(armourMessages);
                             break;
@@ -334,7 +342,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     }
 
                                     if (regainedHealth > 0) {
-                                        messages.Add(new Message($"Regained {regainedHealth} health"));
+                                        messages.Add(new($"Regained {regainedHealth} health"));
                                     }
                                     break;
                                 case PotionTypes.Damage:
@@ -351,9 +359,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                             Message potionMessages = new($"DRINK A {potion.Description()}", new List<int> { potionTypeValue, potionSizeValue, potionDurationValue }, null);
 
-                            potionMessages.AddChild(new Message($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue, null));
-                            potionMessages.AddChild(new Message($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue, null));
-                            potionMessages.AddChild(new Message($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue, null));
+                            potionMessages.AddChild(new($"Potion type: {potion.Type} (ROLL: {potionTypeValue})", potionTypeValue, null));
+                            potionMessages.AddChild(new($"Potion size: {potion.Size} (ROLL: {potionSizeValue})", potionSizeValue, null));
+                            potionMessages.AddChild(new($"Potion duration: {potion.Duration} (ROLL: {potionDurationValue})", potionDurationValue, null));
 
                             messages.Add(potionMessages);
                             break;
@@ -363,7 +371,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     break;
                 case DungeonEvents.Macguffin:
                     monsters = await SetMonsters(selectedTile.Id, 999);
-                    messages.Add(new Message($"YOU HAVE UNCOVERED THE LAIR OF THE {monsters.GetName()}"));
+                    messages.Add(new($"YOU HAVE UNCOVERED THE LAIR OF THE {monsters.GetName()}"));
 
                     selectedTile.Monsters = monsters.Get();
 
@@ -398,7 +406,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
-                            monsterDetailsMessages.Add(new Message(monsterDetails, null, monsterDetailsRoll));
+                            monsterDetailsMessages.Add(new(monsterDetails, null, monsterDetailsRoll));
                         }
 
                         Message monsterGeneration = new(monsterMessage, null, monsterDetailsRollCollection);
@@ -499,6 +507,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public async Task<SharedDungeon> AutomaticallyAdvanceDungeon(Guid dungeonId) {
+            _logger.LogInformation($"Dungeon {dungeonId} automatically advanced.");
+
             SharedDungeon? dungeon = await RetrieveDungeon(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Floors == null || dungeon.Floors.Count == 0) { throw new ArgumentNullException("Dungeon Floors"); }
@@ -768,6 +778,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public async Task<SharedDungeon> DescendStairs(Guid dungeonId) {
+            _logger.LogInformation($"Descend Dungeon {dungeonId} stairs.");
+
             SharedDungeon? dungeon = await RetrieveDungeon(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
@@ -788,6 +800,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
+            _logger.LogInformation($"Flee Dungeon {dungeonId} monster at tile {tileId}.");
+
             SharedDungeon? dungeon = await RetrieveDungeon(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Messages == null) { throw new ArgumentNullException("Dungeon Messages"); }
@@ -812,7 +826,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 dungeon.CombatTile = Guid.Empty;
                 dungeon.CombatInitiated = false;
 
-                messages.Add(new Message("ADVENTURER FLEES COMBAT"));
+                messages.Add(new("ADVENTURER FLEES COMBAT"));
 
                 currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
             } else {
@@ -835,8 +849,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                     if (currentHealth > 0) {
                         adventurer.HealthBase = currentHealth;
 
-                        monsterFlee = new Message($"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING");
-                        monsterFlee.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
+                        monsterFlee = new($"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING");
+                        monsterFlee.AddChild(new($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
                     } else {
                         adventurer.HealthBase = 0;
                         adventurer.IsAlive = false;
@@ -848,7 +862,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         selectedTile.Type = DungeonEvents.FightLost;
 
-                        monsterFlee.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
+                        monsterFlee.AddChild(new($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
 
                         dungeon.InCombat = false;
 
@@ -857,8 +871,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                         currentFloorTiles.Unhide();
                     }
                 } else {
-                    monsterFlee = new Message("MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER");
-                    monsterFlee.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
+                    monsterFlee = new("MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER");
+                    monsterFlee.AddChild(new($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
                 }
 
                 messages.Add(monsterFlee);
@@ -920,6 +934,8 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         public async Task<SharedDungeon> MonsterFight(Guid dungeonId, Guid tileId) {
+            _logger.LogInformation($"Fight Dungeon {dungeonId} monster at tile {tileId}.");
+
             SharedDungeon? dungeon = await RetrieveDungeon(dungeonId);
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Adventurer == null || dungeon.Adventurer.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Adventurer"); }
@@ -963,10 +979,10 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 if (adventurerRoll > monsterRoll) {
                     adventurerInitiatesCombat = true;
-                    combatInitiated = new Message("ADVENTURER INITIATES COMBAT", adventurerRoll, monsterRoll);
+                    combatInitiated = new("ADVENTURER INITIATES COMBAT", adventurerRoll, monsterRoll);
                 } else {
                     adventurerInitiatesCombat = false;
-                    combatInitiated = new Message("MONSTER INITIATES COMBAT", adventurerRoll, monsterRoll);
+                    combatInitiated = new("MONSTER INITIATES COMBAT", adventurerRoll, monsterRoll);
                 }
 
                 dungeon.CombatInitiated = true;
@@ -1011,14 +1027,14 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsters[monsterindex] = sharedMonster;
 
                             string importantMessage = $"ADVENTURER ATTACK: MONSTER HIT FOR {monsterWounds} WITH {currentHealth} REMAINING";
-                            summaryMessage = new Message(importantMessage);
-                            adventurerCombatResult = new Message(importantMessage);
+                            summaryMessage = new(importantMessage);
+                            adventurerCombatResult = new(importantMessage);
 
                             if (combatInitiated != null) {
                                 adventurerCombatResult.AddChild(combatInitiated);
                             }
 
-                            adventurerCombatResult.AddChild(new Message($"ADVENTURER'S ATTACK {adventurerAttackValue} WINS OVER MONSTER DODGE {monsterDodgeValue}", adventurerAttackDice, monsterDodgeRolls));
+                            adventurerCombatResult.AddChild(new($"ADVENTURER'S ATTACK {adventurerAttackValue} WINS OVER MONSTER DODGE {monsterDodgeValue}", adventurerAttackDice, monsterDodgeRolls));
                         } else {
                             monsterHealth = 0;
 
@@ -1033,8 +1049,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 monsterKilled = $"ADVENTURER ATTACK: MONSTER KILLED WITH {monsterWounds}";
                             }
 
-                            summaryMessage = new Message(monsterKilled);
-                            adventurerCombatResult = new Message(monsterKilled);
+                            summaryMessage = new(monsterKilled);
+                            adventurerCombatResult = new(monsterKilled);
 
                             if (combatInitiated != null) {
                                 adventurerCombatResult.AddChild(combatInitiated);
@@ -1063,10 +1079,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     int currentAdventurerDamage = adventurer.DamageBase;
                                     int currentAdventurerProtection = adventurer.ProtectionBase;
 
-                                    Message levelUp = new Message($"NEW LEVEL ({currentAdventurerLevel})");
-                                    levelUp.AddChild(new Message($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
-                                    levelUp.AddChild(new Message($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
-                                    levelUp.AddChild(new Message($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
+                                    Message levelUp = new($"NEW LEVEL ({currentAdventurerLevel})");
+                                    levelUp.AddChild(new($"NEW HEALTH {adventurer.HealthBase} (+ {currentAdventurerHealth - previousAdventurerHealth})"));
+                                    levelUp.AddChild(new($"NEW DAMAGE {adventurer.DamageBase} (+ {currentAdventurerDamage - previousAdventurerDamage})"));
+                                    levelUp.AddChild(new($"NEW PROTECTION {adventurer.ProtectionBase} (+ {currentAdventurerProtection - previousAdventurerProtection})"));
 
                                     adventurerCombatResult.AddChild(levelUp);
                                 }
@@ -1086,14 +1102,14 @@ namespace BlazorDungeonCrawler.Server.Data {
                     } else {
                         string adventurerCombatWiff = "ADVENTURER ATTACK: NO DAMAGE DONE TO MONSTER";
 
-                        summaryMessage = new Message(adventurerCombatWiff);
-                        adventurerCombatResult = new Message(adventurerCombatWiff);
-                        adventurerCombatResult.AddChild(new Message($"ADVENTURER DAMAGE ({adventurerDamage}) MONSTER PROTECTION ({monsterProtection})"));
+                        summaryMessage = new(adventurerCombatWiff);
+                        adventurerCombatResult = new(adventurerCombatWiff);
+                        adventurerCombatResult.AddChild(new($"ADVENTURER DAMAGE ({adventurerDamage}) MONSTER PROTECTION ({monsterProtection})"));
                     }
 
                     selectedTile.Monsters = monsters;
                 } else {
-                    adventurerCombatResult = new Message($"ADVENTURER ATTACK: MONSTER DODGE {monsterDodgeValue} WINS OVER ADVENTURER ATTACK {adventurerAttackValue}", adventurerAttackDice, monsterDodgeRolls);
+                    adventurerCombatResult = new($"ADVENTURER ATTACK: MONSTER DODGE {monsterDodgeValue} WINS OVER ADVENTURER ATTACK {adventurerAttackValue}", adventurerAttackDice, monsterDodgeRolls);
                 }
             }
 
@@ -1128,9 +1144,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 adventurer.HealthBase = currentHealth;
 
                                 string importantMessage = $"MONSTER ATTACK: ADVENTURER HIT FOR {adventurerWounds} WITH {adventurer.HealthBase} REMAINING";
-                                summaryMessage = new Message(importantMessage);
-                                monsterCombatResult = new Message(importantMessage);
-                                monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
+                                summaryMessage = new(importantMessage);
+                                monsterCombatResult = new(importantMessage);
+                                monsterCombatResult.AddChild(new($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
                             } else {
                                 adventurer.HealthBase = 0;
                                 adventurer.IsAlive = false;
@@ -1140,8 +1156,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 string importantMessage = $"MONSTER ATTACK: ADVENTURER DIED WITH {adventurerWounds} WOUNDS";
                                 selectedTile.Type = DungeonEvents.FightLost;
 
-                                monsterCombatResult = new Message(importantMessage);
-                                monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
+                                monsterCombatResult = new(importantMessage);
+                                monsterCombatResult.AddChild(new($"MONSTER DAMAGE {monsterDamage} ADVENTURER PROTECTION {adventurerProtection}"));
 
                                 dungeon.InCombat = false;
 
@@ -1158,16 +1174,16 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 monsterCombatResult.AddChild(combatInitiated);
                             }
 
-                            monsterCombatResult.AddChild(new Message($"MONSTER ATTACK {monsterAttackValue} WINS OVER ADVENTURER DODGE {adventurerDodgeValue}", adventurerDodgeRolls, monsterAttackDice));
+                            monsterCombatResult.AddChild(new($"MONSTER ATTACK {monsterAttackValue} WINS OVER ADVENTURER DODGE {adventurerDodgeValue}", adventurerDodgeRolls, monsterAttackDice));
                         } else {
                             string monsterCombatWiff = "MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER";
 
-                            summaryMessage = new Message(monsterCombatWiff);
-                            monsterCombatResult = new Message(monsterCombatWiff);
-                            monsterCombatResult.AddChild(new Message($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
+                            summaryMessage = new(monsterCombatWiff);
+                            monsterCombatResult = new(monsterCombatWiff);
+                            monsterCombatResult.AddChild(new($"MONSTER DAMAGE ({monsterDamage}) ADVENTURER PROTECTION ({adventurerProtection})"));
                         }
                     } else {
-                        monsterCombatResult = new Message($"MONSTER ATTACK: ADVENTURER DODGE {monsterAttackValue} WINS OVER MONSTER ATTACK {adventurerDodgeValue}", adventurerDodgeRolls, monsterAttackDice);
+                        monsterCombatResult = new($"MONSTER ATTACK: ADVENTURER DODGE {monsterAttackValue} WINS OVER MONSTER ATTACK {adventurerDodgeValue}", adventurerDodgeRolls, monsterAttackDice);
 
                         if (combatInitiated != null) {
                             monsterCombatResult.AddChild(combatInitiated);
@@ -1177,7 +1193,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
 
             if (summaryMessage == null) {
-                summaryMessage = new Message("NO DAMAGE DONE");
+                summaryMessage = new("NO DAMAGE DONE");
             }
 
             if (adventurerCombatResult != null) {
@@ -1188,7 +1204,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 summaryMessage.AddChild(monsterCombatResult);
             }
 
-            Messages messages = new Messages();
+            Messages messages = new();
             messages.Add(summaryMessage);
 
             if (gameOverMessage != null) {
@@ -1245,14 +1261,14 @@ namespace BlazorDungeonCrawler.Server.Data {
             //Floor            
             if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
             int floorsDiscovered = dungeon.Floors.Count();
-            endOfGameMessage.AddChild(new Message($"{floorsDiscovered} FLOORS DISCOVERED."));
+            endOfGameMessage.AddChild(new($"{floorsDiscovered} FLOORS DISCOVERED."));
 
             //Tiles
             foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
                 int tilesTotal = floor.Tiles.Count();
                 int tilesFound = floor.Tiles.Where(t => t.Hidden == false).ToList().Count();
 
-                endOfGameMessage.AddChild(new Message($"FLOOR {floor.Depth}: DISCOVERED TILES {tilesFound} / {tilesTotal}."));
+                endOfGameMessage.AddChild(new($"FLOOR {floor.Depth}: DISCOVERED TILES {tilesFound} / {tilesTotal}."));
             }
 
             //Loot
@@ -1263,16 +1279,16 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 int chestsLooted = takenWeapon + takenPotion + takenProtection;
 
-                Message lootMessage = new Message($"FLOOR {floor.Depth}: CHESTS LOOTED {chestsLooted}.");
+                Message lootMessage = new ($"FLOOR {floor.Depth}: CHESTS LOOTED {chestsLooted}.");
 
                 //todo: track weapons abandoned
-                lootMessage.AddChild(new Message($"WEAPONS TAKEN {takenWeapon}."));
+                lootMessage.AddChild(new ($"WEAPONS TAKEN {takenWeapon}."));
 
                 //todo: track protection abandoned
-                lootMessage.AddChild(new Message($"PROTECTION TAKEN {takenProtection}."));
+                lootMessage.AddChild(new ($"PROTECTION TAKEN {takenProtection}."));
 
                 //todo: track potion types 
-                lootMessage.AddChild(new Message($"POTIONS TAKEN {takenPotion}."));
+                lootMessage.AddChild(new ($"POTIONS TAKEN {takenPotion}."));
 
                 endOfGameMessage.AddChild(lootMessage);
             }
@@ -1280,15 +1296,15 @@ namespace BlazorDungeonCrawler.Server.Data {
             //Monsters
             foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
                 //var monsters = floor.Tiles.Where(t => t.Monsters.Count > 0).ToList();
-                int fightsFleed = floor.Tiles.Where(t => t.Type == DungeonEvents.Fight).Where(t => t.Hidden == false).ToList().Count();
-                int fightsWon = floor.Tiles.Where(t => t.Type == DungeonEvents.FightWon).Where(t => t.Hidden == false).ToList().Count();
+                int fightsFleed = floor.Tiles.Where(t => t.Type == DungeonEvents.Fight).Where(t => t.Hidden == false).ToList().Count;
+                int fightsWon = floor.Tiles.Where(t => t.Type == DungeonEvents.FightWon).Where(t => t.Hidden == false).ToList().Count;
 
                 int fights = fightsFleed + fightsWon;
 
-                Message monstersMessage = new Message($"FLOOR {floor.Depth}: FIGHTS {fights}.");
+                Message monstersMessage = new($"FLOOR {floor.Depth}: FIGHTS {fights}.");
 
-                monstersMessage.AddChild(new Message($"FIGHTS FLEED {fightsFleed}."));
-                monstersMessage.AddChild(new Message($"FIGHTS WON {fightsWon}."));
+                monstersMessage.AddChild(new($"FIGHTS FLEED {fightsFleed}."));
+                monstersMessage.AddChild(new($"FIGHTS WON {fightsWon}."));
 
                 endOfGameMessage.AddChild(monstersMessage);
             }

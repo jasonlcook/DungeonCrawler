@@ -5,30 +5,40 @@ using BlazorDungeonCrawler.Shared.Responses;
 using BlazorDungeonCrawler.Server.Data;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
+using Microsoft.Extensions.Logging;
 
 namespace BlazorDungeonCrawler.Server.Controllers {
 
     [ApiController]
     [Route("api/[controller]")]
     public class DungeonController : Controller {
-        private DungeonManager dungeonManager;
+        private ILogger<DungeonController> _logger;
+        private DungeonManager _dungeonManager;
 
-        public DungeonController(DungeonManager _dungeonManager) {
-            dungeonManager = _dungeonManager;
+        public DungeonController(DungeonManager dungeonManager, ILogger<DungeonController> logger) {
+            this._dungeonManager = dungeonManager;
+            this._logger = logger;
+
         }
 
         [HttpGet]
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> Generate() {
             try {
-                SharedDungeon dungeon = await dungeonManager.Generate();
+                SharedDungeon dungeon = await _dungeonManager.Generate();
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                _logger.LogError($"Generate Dungeon Error: {ex.Message}");
+
+                return StatusCode(500, new DungeonResponse() {
+                    Success = false,
+                    Dungeon = new(),
+                    ErrorMessages = ex.Message
+                });
             }
         }
 
@@ -36,13 +46,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> RetrieveDungeon(Guid dungeonId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.RetrieveDungeon(dungeonId);
+                SharedDungeon dungeon = await _dungeonManager.RetrieveDungeon(dungeonId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Retrieve Dungeon Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),
@@ -55,13 +67,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> SelectedDungeonTile(Guid dungeonId, Guid tileId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.GetSelectedDungeonTiles(dungeonId, tileId);
+                SharedDungeon dungeon = await _dungeonManager.GetSelectedDungeonTiles(dungeonId, tileId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Selected Dungeon tile Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),
@@ -74,13 +88,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> AutomaticallyAdvanceDungeon(Guid dungeonId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.AutomaticallyAdvanceDungeon(dungeonId);
+                SharedDungeon dungeon = await _dungeonManager.AutomaticallyAdvanceDungeon(dungeonId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Automatically advance Dungeon Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),
@@ -93,13 +109,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> DescendStairs(Guid dungeonId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.DescendStairs(dungeonId);
+                SharedDungeon dungeon = await _dungeonManager.DescendStairs(dungeonId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Descend Dungeon stairs Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),
@@ -113,13 +131,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> MonsterFlee(Guid dungeonId, Guid tileId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.MonsterFlee(dungeonId, tileId);
+                SharedDungeon dungeon = await _dungeonManager.MonsterFlee(dungeonId, tileId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Monster flee Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),
@@ -132,13 +152,15 @@ namespace BlazorDungeonCrawler.Server.Controllers {
         [EnableCors("AllowAnyOriginMethodHeader")]
         public async Task<ActionResult<DungeonResponse>> MonsterFight(Guid dungeonId, Guid tileId) {
             try {
-                SharedDungeon dungeon = await dungeonManager.MonsterFight(dungeonId, tileId);
+                SharedDungeon dungeon = await _dungeonManager.MonsterFight(dungeonId, tileId);
 
                 return Ok(new DungeonResponse() {
                     Success = true,
                     Dungeon = dungeon
                 });
             } catch (Exception ex) {
+                _logger.LogError($"Monster fight Error: {ex.Message}");
+
                 return StatusCode(500, new DungeonResponse() {
                     Success = false,
                     Dungeon = new(),

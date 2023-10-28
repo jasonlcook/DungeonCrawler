@@ -24,8 +24,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 }
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("New Monsters created");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"MonstersCreate Create Error: {ex.Message}");
                 throw new Exception("Database error while attempting to create a Monster.");
             }
         }

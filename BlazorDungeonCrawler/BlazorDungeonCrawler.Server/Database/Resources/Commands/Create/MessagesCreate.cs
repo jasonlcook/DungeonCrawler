@@ -26,8 +26,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Create {
                 }
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("New Messages created");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"MessagesCreate Create Error: {ex.Message}");
                 throw new Exception("Database error while attempting to create a Messages.");
             }
         }

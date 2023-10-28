@@ -15,8 +15,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Update {
                 _dbContext.Monsters.Update(monster);
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("Monster updated");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"MonsterUpdate Update Error: {ex.Message}");
                 throw new Exception("Database error while attempting to update a Monster.");
             }
         }

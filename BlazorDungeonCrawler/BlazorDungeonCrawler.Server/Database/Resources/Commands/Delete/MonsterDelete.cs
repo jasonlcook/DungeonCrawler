@@ -17,8 +17,10 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Commands.Delete {
                 _dbContext.Monsters.Remove(mmonster);
 
                 await _dbContext.SaveChangesAsync();
+
+                _logger.LogInformation("Monster deleted created");
             } catch (Exception ex) {
-                _logger.LogError(ex.Message);
+                _logger.LogError($"MonsterDelete Delete Error: {ex.Message}");
                 throw new Exception("Database error while attempting to delete a Monster.");
             }
         }
