@@ -5,16 +5,18 @@ using Newtonsoft.Json;
 using BlazorDungeonCrawler.Shared.Interfaces;
 using BlazorDungeonCrawler.Shared.Models;
 using BlazorDungeonCrawler.Shared.Responses;
+using Microsoft.Extensions.Options;
 
 namespace BlazorDungeonCrawler.Client.Services {
-    public class ApiDungeonManager : IDungeonDataManager { 
-        //todo: read this from config
-        private readonly string baseUrl = "https://localhost:7224";
+    public class ApiDungeonManager : IDungeonDataManager {
+        private readonly string _baseUrl;
 
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
-        public ApiDungeonManager(HttpClient _httpClient) {
-            httpClient = _httpClient;
+        public ApiDungeonManager(HttpClient httpClient, IOptions<ConfigurationElements> config) {
+            this._httpClient = httpClient;
+
+            this._baseUrl = config.Value.BaseUrl;
         }
 
         private async Task<Dungeon> ParseServerResponse(HttpResponseMessage? result) {
@@ -40,16 +42,16 @@ namespace BlazorDungeonCrawler.Client.Services {
         }
 
         public async Task<Dungeon> GenerateNewDungeon() {
-            HttpResponseMessage? result = await httpClient.GetAsync($"{baseUrl}/api/dungeon");
+            HttpResponseMessage? result = await _httpClient.GetAsync($"{_baseUrl}/api/dungeon");
             return await ParseServerResponse(result);
         }
 
         public async Task<Dungeon> GetDungeon(Guid dungeonId) {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
 
-            string url = $"{baseUrl}/api/dungeon/{safeDungeonId}";
+            string url = $"{_baseUrl}/api/dungeon/{safeDungeonId}";
 
-            HttpResponseMessage? result = await httpClient.GetAsync(url);
+            HttpResponseMessage? result = await _httpClient.GetAsync(url);
             return await ParseServerResponse(result);
         }
 
@@ -59,10 +61,10 @@ namespace BlazorDungeonCrawler.Client.Services {
             string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
             //parse url
-            string url = $"{baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}";
+            string url = $"{_baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}";
 
             //get HTTP response
-            HttpResponseMessage? result = await httpClient.GetAsync(url);
+            HttpResponseMessage? result = await _httpClient.GetAsync(url);
             return await ParseServerResponse(result);
         }
 
@@ -71,10 +73,10 @@ namespace BlazorDungeonCrawler.Client.Services {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
 
             //parse url
-            string url = $"{baseUrl}/api/dungeon/{safeDungeonId}/automaticallyadvancedungeon";
+            string url = $"{_baseUrl}/api/dungeon/{safeDungeonId}/automaticallyadvancedungeon";
 
             //get HTTP response
-            HttpResponseMessage? result = await httpClient.GetAsync(url);
+            HttpResponseMessage? result = await _httpClient.GetAsync(url);
             return await ParseServerResponse(result);
         }
 
@@ -82,9 +84,9 @@ namespace BlazorDungeonCrawler.Client.Services {
         public async Task<Dungeon> DescendStairs(Guid dungeonId) {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
 
-            string url = $"{baseUrl}/api/dungeon/{safeDungeonId}/descendstairs";
+            string url = $"{_baseUrl}/api/dungeon/{safeDungeonId}/descendstairs";
 
-            HttpResponseMessage? response = await httpClient.GetAsync(url);
+            HttpResponseMessage? response = await _httpClient.GetAsync(url);
             return await ParseServerResponse(response);
         }
 
@@ -92,9 +94,9 @@ namespace BlazorDungeonCrawler.Client.Services {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
             string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
-            string url = $"{baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}/flee";
+            string url = $"{_baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}/flee";
 
-            HttpResponseMessage? result = await httpClient.GetAsync(url);
+            HttpResponseMessage? result = await _httpClient.GetAsync(url);
             return await ParseServerResponse(result);
         }
 
@@ -103,7 +105,7 @@ namespace BlazorDungeonCrawler.Client.Services {
             string safeDungeonId = WebUtility.HtmlEncode(dungeonId.ToString());
             string safeTileId = WebUtility.HtmlEncode(tileId.ToString());
 
-            HttpResponseMessage? result = await httpClient.GetAsync($"{baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}/fight");
+            HttpResponseMessage? result = await _httpClient.GetAsync($"{_baseUrl}/api/dungeon/{safeDungeonId}/tile/{safeTileId}/fight");
             return await ParseServerResponse(result);
         }
     }
