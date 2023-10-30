@@ -1,5 +1,4 @@
-﻿using BlazorDungeonCrawler.Shared.Models;
-using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
+﻿using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Adventurer {
