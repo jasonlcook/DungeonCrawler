@@ -60,7 +60,6 @@ namespace BlazorDungeonCrawler.Server.Models {
                 switch (value) {
                     case 1:
                         return ArmourTypes.Greave;
-                        break;
                     case 2:
                     case 3:
                     case 4:
