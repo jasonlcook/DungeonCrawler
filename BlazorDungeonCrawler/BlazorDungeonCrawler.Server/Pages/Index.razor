@@ -1,28 +1,105 @@
 ﻿@page "/"
 
+@inject IJSRuntime JS
+@inject ILogger<Index> logger
+
 <HeadContent>
     <link href="css/cssreset-min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
-
-    <script src="scripts/jquery-3.7.1.min.js"></script>
 </HeadContent>
 
 <h1>API endpoints</h1>
 
 <article>
     <h2>Dungeon</h2>
-    <table class="table-endpoint">
-        <thead>
-            <tr> 
-                <th class="table-functions">Function</th>
-                <th class="table-description">Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><a target="_blank" href="./api/dungeon">/api/dungeon</a></td>
-                <td>Return new Dungeon</td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="endpoints">
+        <div class="endpoint">
+            <h3>Generate new Dungeon</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon</span>
+                <button class="action-button" type="button" @onclick=GenerateNewDungon>launch</button>
+            </div>
+            <div class="endpoint-description">
+                Generates a new Dungeon
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Retrieve Dungeon</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <button class="action-button" type="button" @onclick=RetrieveDungeon>launch</button>
+            </div>
+            <div class="endpoint-description">
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Automatically advance Dungeon</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon/</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <span>/automaticallyadvancedungeon</span>
+
+                <button class="action-button" type="button" @onclick=AutomaticallyAdvanceDungeon>launch</button>
+            </div>
+            <div class="endpoint-description">
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Descend Dungeon stairs</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon/</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <span>/descendstairs</span>
+
+                <button class="action-button" type="button" @onclick=DescendDungeonStairs>launch</button>
+            </div>
+            <div class="endpoint-description">
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Selected Dungeon Tile</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon/</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <span>/tile/</span>
+                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                <button class="action-button" type="button" @onclick=SelectDungeonTile>launch</button>
+            </div>
+            <div class="endpoint-description">
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Flee from tile</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon/</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <span>/tile/</span>
+                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                <span>/flee</span>
+
+                <button class="action-button" type="button" @onclick=FleeFromTile>launch</button>
+            </div>
+            <div class="endpoint-description">
+                Flee tile from monster fight.
+            </div>
+        </div>
+        <div class="endpoint">
+            <h3>Fight at tile</h3>
+            <div class="endpoint-action">
+                <span>./api/dungeon/</span>
+                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <span>/tile/</span>
+                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                <span>/flee</span>
+
+                <button class="action-button" type="button" @onclick=FightAtTile>launch</button>
+            </div>
+            <div class="endpoint-description">
+                Fight a monster at the current tile.
+            </div>
+        </div>
+    </div>
 </article>
+

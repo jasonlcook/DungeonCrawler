@@ -4,6 +4,7 @@ main {
     margin: 0 auto;
     width: 800px;
     font-family: monospace;
+    font-size: 13px;
 }
 
 article {
@@ -17,19 +18,45 @@ h1 {
 
 h2 {
     font-size: 1.5em;
-    margin: 0 0 5px 0;
+    margin: 0 0 25px 0;
 }
 
-.table-endpoint {
-    width: 100%;
+h3 {
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0 0 10px 0;
 }
-    .table-endpoint th {
-        font-weight: bold;
-    }
 
-    .table-endpoint .table-functions {
-        width: 35%;
-    }
+input[type=text] {
+    width: 275px;
+}
 
-    .table-endpoint .table-description {
+:focus-visible {
+    outline: none;
+}
+
+.endpoint {
+    margin: 0 0 20px 0;
+}
+
+
+.endpoint-action {
+    font-style: italic;
+    margin: 0 0 10px 0;
+    min-width: 850px;
+}
+
+
+.action-button {
+    border: 1px solid #000;
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    background: #fff;
+    float: right;
+}
+
+    .action-button:hover,
+    .action-button:focus {
+        background-color: aliceblue;
     }
