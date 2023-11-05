@@ -12,6 +12,10 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<DungeonManager>();
 builder.Services.AddDbContextFactory<DungeonDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorDungeonCrawler")));
 
+builder.Services.AddLocalization(options => {
+    options.ResourcesPath = "Resources";
+});
+
 builder.Services.AddCors(options => {
     options.AddPolicy(name: "AllowAnyOriginMethodHeader", builder =>
     builder.AllowAnyOrigin()
