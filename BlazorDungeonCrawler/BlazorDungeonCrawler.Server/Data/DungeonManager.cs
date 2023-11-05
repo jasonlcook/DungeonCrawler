@@ -1399,7 +1399,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int fights = fightsFleed + fightsWon;
                 Message monstersMessage = new(messageEndOfGameFightsTotal.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[FIGHTS_TOTAL]", fights.ToString()));
                 
-                monstersMessage.AddChild(new(messageEndOfGameFightsFleed.Replace("[FIGHTS_FLEED]", fightsFleed.ToString())));
+                monstersMessage.AddChild(new(messageEndOfGameFightsFleed.Replace("[FIGHTS_FLED]", fightsFleed.ToString())));
                 monstersMessage.AddChild(new(messageEndOfGameFightsWon.Replace("[FIGHTS_WON]", fightsWon.ToString())));
 
                 endOfGameMessage.AddChild(monstersMessage);

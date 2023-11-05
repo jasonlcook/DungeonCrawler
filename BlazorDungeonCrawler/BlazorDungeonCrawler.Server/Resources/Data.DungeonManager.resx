@@ -187,7 +187,7 @@
     <value>NO DAMAGE DONE</value>
   </data>
   <data name="MessageDungeonDepth" xml:space="preserve">
-    <value>DUNGEON DEPTH [INCREASED_DEPTH] DISCOVERD.</value>
+    <value>DUNGEON DEPTH [INCREASED_DEPTH] DISCOVERED.</value>
   </data>
   <data name="MessageDungeonExitFail" xml:space="preserve">
     <value>NO MACGUFFIN. GO FIND IT!</value>
@@ -196,10 +196,10 @@
     <value>WELL DONE.</value>
   </data>
   <data name="MessageEndOfGameFightsFleed" xml:space="preserve">
-    <value>FIGHTS FLEED [FIGHTS_FLEED].</value>
+    <value>FIGHTS FLED [FIGHTS_FLED].</value>
   </data>
   <data name="MessageEndOfGameFightsTotal" xml:space="preserve">
-    <value>FIGHTFLOOR [FLOOR_DEPTH]: FIGHTS [FIGHTS_TOTAL]."</value>
+    <value>FLOOR [FLOOR_DEPTH]: FIGHTS [FIGHTS_TOTAL]."</value>
   </data>
   <data name="MessageEndOfGameFightsWon" xml:space="preserve">
     <value>FIGHTS WON [FIGHTS_WON].</value>
