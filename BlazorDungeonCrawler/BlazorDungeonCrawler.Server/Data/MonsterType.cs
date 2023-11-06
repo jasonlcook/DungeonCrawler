@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BlazorDungeonCrawler.Server.Data {
-
-    //todo: add how many monsters in a group
+﻿namespace BlazorDungeonCrawler.Server.Data {
     public class MonsterType {
 
         public string Name { get; set; } 

@@ -156,12 +156,10 @@ namespace BlazorDungeonCrawler.Server.Data {
                         currentFloorTiles.Unhide();
 
                         setSelectable = false;
-                        //todo: show summary 
                     }
                     break;
                 case DungeonEvents.Fight:
                     if (!selectedTile.FightWon && selectedTile.Monsters.Count == 0) {
-                        //todo: functionaise and merge with wandering monster generation
                         monsters = await SetMonsters(selectedTile.Id, dungeon.Depth);
 
                         string monsterMessage;
@@ -425,7 +423,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 case DungeonEvents.TakenPotion:
                     int value = Dice.RollDSix();
                     if (value == 1) {
-                        //todo: functionaise and merge with DungeonEvents.Fight monster generation
                         monsters = await SetMonsters(selectedTile.Id, dungeon.Depth);
 
                         string monsterMessage;
@@ -681,13 +678,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                     }
                 }
 
-                //todo: if no tiles were selected score the avalible ones
-
-                //go towards hidden
-                //go towards stairs decending
-                //away from fights
-
-
                 if (selectedTileId == Guid.Empty) {
                     List<SharedTile>? selectableTile = currentFloor.Tiles.Where(t => t.Selectable).ToList();
                     if (selectableTile != null && selectableTile.Count > 0) {
@@ -702,7 +692,6 @@ namespace BlazorDungeonCrawler.Server.Data {
             }
         }
 
-        //todo: replace this with Manhattan distance and let the matchesDirectionOfTravel function chose the best tile for NE and SE conditions
         private string getDirectionOfTravel(int destinationRow, int destinationColumn, int currentRow, int currentColumn) {
             if (currentColumn == destinationColumn) {
                 if (currentRow > destinationRow) {
@@ -881,8 +870,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             } else {
                 string messageAdventurerFleeFail = _localiser["MessageAdventurerFleeFail"];
                 Message monsterFlee = new(messageAdventurerFleeFail);
-
-                //todo: replace this with monster attack round function 
+                                
                 if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
                 List<SharedMonster> monsters = selectedTile.Monsters;
@@ -922,8 +910,6 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         dungeon.InCombat = false;
 
-                        //todo: unhide tiles for all floors upon death
-                        //todo: remove all current and selectable from each floor
                         currentFloorTiles.Unhide();
                     }
                 } else {
@@ -1006,7 +992,6 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             Tiles currentFloorTiles = new(currentFloor.Tiles);
 
-            //todo: get this from dungeon 
             SharedTile? selectedTile = currentFloor.Tiles.Where(t => t.Id == tileId).FirstOrDefault();
             if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor selected Tile"); }
             if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
@@ -1015,7 +1000,6 @@ namespace BlazorDungeonCrawler.Server.Data {
             List<SharedMonster> monsters = selectedTile.Monsters.OrderBy(m => m.Index).ToList();
 
             //Adventurer details
-            //todo: get this from dungeon 
             Adventurer adventurer = new(dungeon.Adventurer);
             adventurer.DurationDecrement();
 
@@ -1068,7 +1052,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (adventurerAttackValue > monsterDodgeValue) {
                     monsterWounds = adventurerDamage - monsterProtection;
 
-                    //todo: find a bettwer way to prevent wiffing
                     if (monsterWounds < 1) {
                         monsterWounds = 1;
                     }
@@ -1118,8 +1101,6 @@ namespace BlazorDungeonCrawler.Server.Data {
                             if (combatInitiated != null) {
                                 adventurerCombatResult.AddChild(combatInitiated);
                             }
-
-                            //todo: stop deleteing monsters once killed
 
                             //remove monster at stack
                             MonsterDelete monsterDelete = new(_contextFactory.CreateDbContext(), _logger);
@@ -1193,11 +1174,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             if (dungeon.InCombat) {
                 int monsterDamage, monsterProtection, monsterHealth;
                 foreach (SharedMonster monster in selectedTile.Monsters) {
-
-                    //todo: replace this with monster attack round function
-
                     //Monster details
-                    //todo: get this from dungeon 
                     monsterDamage = monster.Damage;
                     monsterProtection = monster.Protection;
                     monsterHealth = monster.Health;
@@ -1244,8 +1221,6 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 dungeon.InCombat = false;
 
-                                //todo: unhide tiles for all floors upon death
-                                //todo: remove all current and selectable from each floor
                                 currentFloorTiles.Unhide();
 
                                 gameOverMessage = GenerateGameOverMessage(importantMessage, dungeon);
@@ -1372,15 +1347,9 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int takenProtection = floor.Tiles.Where(t => t.Type == DungeonEvents.TakenProtection).ToList().Count();
 
                 int chestsLooted = takenWeapon + takenPotion + takenProtection;
-                Message lootMessage = new(messageEndOfGameLootedChests.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[CHESTS_LOOTED]", chestsLooted.ToString()));
-
-                //todo: track weapons abandoned
+                Message lootMessage = new(messageEndOfGameLootedChests.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[CHESTS_LOOTED]", chestsLooted.ToString()));              
                 lootMessage.AddChild(new(messageEndOfGameLootedWepons.Replace("[WEAPONS_LOOTED]", takenWeapon.ToString())));
-
-                //todo: track protection abandoned
                 lootMessage.AddChild(new(messageEndOfGameLootedProtection.Replace("[PROTECTION_LOOTED]", takenProtection.ToString())));
-
-                //todo: track potion types 
                 lootMessage.AddChild(new(messageEndOfGameLootedPotions.Replace("[POTIONS_LOOTED]", takenPotion.ToString())));
 
                 endOfGameMessage.AddChild(lootMessage);
