@@ -17,7 +17,9 @@
         <div class="endpoint">
             <h3>Generate new Dungeon</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon</span>
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon</span>
+                </div>
                 <button class="action-button" type="button" @onclick=GenerateNewDungon>launch</button>
             </div>
             <div class="endpoint-description">
@@ -27,8 +29,10 @@
         <div class="endpoint">
             <h3>Retrieve Dungeon</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                </div>
                 <button class="action-button" type="button" @onclick=RetrieveDungeon>launch</button>
             </div>
             <div class="endpoint-description">
@@ -37,10 +41,11 @@
         <div class="endpoint">
             <h3>Automatically advance Dungeon</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon/</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
-                <span>/automaticallyadvancedungeon</span>
-
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon/</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                    <span>/automaticallyadvancedungeon</span>
+                </div>
                 <button class="action-button" type="button" @onclick=AutomaticallyAdvanceDungeon>launch</button>
             </div>
             <div class="endpoint-description">
@@ -49,10 +54,11 @@
         <div class="endpoint">
             <h3>Descend Dungeon stairs</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon/</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
-                <span>/descendstairs</span>
-
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon/</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                    <span>/descendstairs</span>
+                </div>
                 <button class="action-button" type="button" @onclick=DescendDungeonStairs>launch</button>
             </div>
             <div class="endpoint-description">
@@ -61,10 +67,12 @@
         <div class="endpoint">
             <h3>Selected Dungeon Tile</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon/</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
-                <span>/tile/</span>
-                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon/</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                    <span>/tile/</span>
+                    <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                </div>
                 <button class="action-button" type="button" @onclick=SelectDungeonTile>launch</button>
             </div>
             <div class="endpoint-description">
@@ -73,12 +81,13 @@
         <div class="endpoint">
             <h3>Flee from tile</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon/</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
-                <span>/tile/</span>
-                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
-                <span>/flee</span>
-
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon/</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                    <span>/tile/</span>
+                    <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                    <span>/flee</span>
+                </div>
                 <button class="action-button" type="button" @onclick=FleeFromTile>launch</button>
             </div>
             <div class="endpoint-description">
@@ -88,12 +97,13 @@
         <div class="endpoint">
             <h3>Fight at tile</h3>
             <div class="endpoint-action">
-                <span>./api/dungeon/</span>
-                <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
-                <span>/tile/</span>
-                <input type="text" @bind=TileIdValue placeholder="Tile Id" />
-                <span>/flee</span>
-
+                <div class="endpoint-action-url">
+                    <span>./api/dungeon/</span>
+                    <input type="text" @bind=DungeonIdValue placeholder="Dungeon Id" />
+                    <span>/tile/</span>
+                    <input type="text" @bind=TileIdValue placeholder="Tile Id" />
+                    <span>/flee</span>
+                </div>
                 <button class="action-button" type="button" @onclick=FightAtTile>launch</button>
             </div>
             <div class="endpoint-description">

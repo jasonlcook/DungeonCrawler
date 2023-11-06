@@ -18,7 +18,7 @@ h1 {
 
 h2 {
     font-size: 1.5em;
-    margin: 0 0 25px 0;
+    margin: 0 0 10px 0;
 }
 
 h3 {
@@ -37,15 +37,22 @@ input[type=text] {
 
 .endpoint {
     margin: 0 0 20px 0;
+    border: 1px solid #000;
+    padding: 10px 20px 10px 20px;
+    min-width: 850px;
 }
-
 
 .endpoint-action {
     font-style: italic;
     margin: 0 0 10px 0;
-    min-width: 850px;
+    display: flex;
+    justify-content: space-between;
 }
 
+.endpoint-action-url {
+    display: flex;
+    justify-content: flex-start;
+}
 
 .action-button {
     border: 1px solid #000;
@@ -53,7 +60,6 @@ input[type=text] {
     font-family: inherit;
     font-size: inherit;
     background: #fff;
-    float: right;
 }
 
     .action-button:hover,
