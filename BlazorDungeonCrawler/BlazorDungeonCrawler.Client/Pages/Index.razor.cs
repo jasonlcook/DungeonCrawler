@@ -23,7 +23,8 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
         public string ApiVersion { get; set; }
 
-        List<SharedTile> DungeonTiles { get; set; }
+        public bool NewDungeon { get; set; }
+        public List<SharedTile> DungeonTiles { get; set; }
 
         public bool GameOver { get; set; }
 
@@ -54,6 +55,7 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
             ApiVersion = "API V0.0.0";
 
+            NewDungeon = false;
             DungeonTiles = new();
 
             GameOver = false;
@@ -329,6 +331,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
                 if (dungeon.GameOver) {
                     AdvanceDisabled = true;
+                }
+
+                NewDungeon = false;
+                if (dungeon.NewDungeon) {
+                    NewDungeon = true;
                 }
 
                 //Check and assign Dungeon Floor

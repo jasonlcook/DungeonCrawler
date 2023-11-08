@@ -27,6 +27,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
 
     public partial class Tiles {
         [ParameterAttribute]
+        public bool NewDungeon { get; set; }        
+
+        [ParameterAttribute]
         public List<SharedTile> DungeonTiles { get; set; }
 
         [ParameterAttribute]

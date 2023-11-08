@@ -29,7 +29,7 @@
                 <ActionDialog DialogText="STAIRS" OnCallAcceptFunction=@DescendStairs AcceptLabel="Descend" OnCallRejectFunction=@RemainOnFloor RejectLabel="Stay" />
             }
         }
-        <Tiles DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth HighlightAscending=MacGuffinFound OnClickCallback=@SelectTile />
+        <Tiles NewDungeon=NewDungeon DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth HighlightAscending=MacGuffinFound OnClickCallback=@SelectTile />
         <LevelSelect DungeonFloors=DungeonFloors GameOver=GameOver DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
     </div>
     <AdvanceDungeon OnCallClickFunction=@AutomaticallyAdvanceDungeon ButtonState=@AdvanceDisabled />

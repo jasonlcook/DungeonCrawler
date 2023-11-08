@@ -9,7 +9,6 @@
     <div id="dungeon" style=@getTileGroupPosition(currentTile.Row, currentTile.Column).ToDungonStyle()>
         @foreach (var tile in DungeonTiles) {
             string colourClass = @getColourClass(DungeonDepth);
-            
 
             <div class="hexagon-tile-group" style=@getTileGroupPosition(tile.Row, tile.Column).ToTileGroupStyle()>
                 <div class="hexagon-tile @colourClass hexagon-tile-base"></div>
@@ -19,6 +18,10 @@
                 }
 
                 @if (tile.Selectable) {
+                    if (NewDungeon) {
+                        <div class="hexagon-tile @colourClass hexagon-tile-hidden-selectable-animated"></div>
+                    }
+
                     string selectableClass = "hexagon-tile-selectable";
                     @if (tile.Hidden) {
                         selectableClass = "hexagon-tile-hidden-selectable";
@@ -40,18 +43,18 @@
                     }
                 }
 
-@* 
-                <!--debug helper-->
-                @{
-                    string tileLocation = $"{tile.Row}, {tile.Column}";
-                }
-                <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 10px;">
-                    @tileLocation
-                </div>
-                <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 70px; font-size: 3px; }">
-                    @tile.Id
-                </div>
- *@
+                @*
+        <!--debug helper-->
+        @{
+        string tileLocation = $"{tile.Row}, {tile.Column}";
+        }
+        <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 10px;">
+        @tileLocation
+        </div>
+        <div style="color: #fff; text-align: center; width: 100px; position: absolute; top: 70px; font-size: 3px; }">
+        @tile.Id
+        </div>
+        *@
                 @if (tile.Monsters.Count > 0) {
                     foreach (Monster monster in tile.Monsters) {
                         string monsterTop = $"{monster.ClientY}px";
