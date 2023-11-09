@@ -1,15 +1,33 @@
-﻿using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
+﻿//**********************************************************************************************************************
+//  Floor
+//  Each Dungeon floor is comprised of a grid hexagon of tiles, with each tile having an allocated potion within that grid.
+
+using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Floor {
-        public Guid Id { get; private set; }
-        public int Depth { get; set; }
+        //****************************
+        //***************** Attributes
+        public Guid Id { get; private set; }                //Database Id
+
+        public int Depth { get; set; }                      //Current floor depth
+
+
+        public List<Tile> Tiles { get; set; }               //the collection of tiles that make up the dungeon floor
+        
+
+        //  Details of the floor layout used to both populate the floor with the correct amount of tile and and position the floor on the client
         public int Rows { get; set; }
         public int Columns { get; set; }
-        public List<Tile> Tiles { get; set; }
+        
 
-        public Floor() { }
+        //****************************
+        //*************** Constructors
+        public Floor() {
+            Id = Guid.Empty;
+            Tiles = new();
+        }
 
         public Floor(int depth) {
             Id = Guid.NewGuid();
@@ -21,6 +39,9 @@ namespace BlazorDungeonCrawler.Server.Models {
             GetRowsAndColumnsForCurrentDepth();
         }
 
+        //******************** Mapping
+
+        //  DB > Class
         public Floor(SharedFloor floor) {
             Id = floor.Id;
             Depth = floor.Depth;
@@ -33,6 +54,28 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //  Class > DB
+        public SharedFloor SharedModelMapper() {
+            SharedFloor floor = new() {
+                Id = this.Id,
+                Depth = this.Depth,
+                Rows = this.Rows,
+                Columns = this.Columns
+            };
+
+            floor.Tiles = new();
+
+            foreach (Tile tile in this.Tiles) {
+                floor.Tiles.Add(tile.SharedModelMapper());
+            }
+
+            return floor;
+        }
+
+        //****************************
+        //****************** Operation
+
+        //Retrive the floor size
         public void GetRowsAndColumnsForCurrentDepth() {
             switch (Depth) {
                 case 1:
@@ -60,23 +103,6 @@ namespace BlazorDungeonCrawler.Server.Models {
                 default:
                     throw new ArgumentOutOfRangeException("DungeonDepth");
             }
-        }
-
-        public SharedFloor SharedModelMapper() {
-            SharedFloor floor = new() {
-                Id = this.Id,
-                Depth = this.Depth,
-                Rows = this.Rows,
-                Columns = this.Columns
-            };
-
-            floor.Tiles = new();
-
-            foreach (Tile tile in this.Tiles) {
-                floor.Tiles.Add(tile.SharedModelMapper());
-            }
-
-            return floor;
         }
     }
 }

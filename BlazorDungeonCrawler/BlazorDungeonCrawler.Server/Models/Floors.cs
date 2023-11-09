@@ -1,13 +1,25 @@
-﻿using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
+﻿//**********************************************************************************************************************
+//  Floors
+//  A collection of the dungeon floors currently discovered 
+
+using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Floors {
-        private readonly List<Floor> _floors;
+        //****************************
+        //***************** Attributes
+        private readonly List<Floor> _floors;               //Collection of floors
 
+
+        //****************************
+        //*************** Constructors
         public Floors() {
             _floors = new();
         }
 
+        //******************** Mapping
+
+        //  DB > Class
         public Floors(List<SharedFloor> sharedFloors) {
             _floors = new();
 
@@ -16,27 +28,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        public int Count() {
-            return _floors.Count();
-        }
-
-        public void Add(Floor floor) {
-            _floors.Add(floor);
-        }
-
-        private List<Tile> GetTiles(int currentFloor) {
-            if (_floors != null) {
-                Floor? floor = _floors.Where(l => l.Depth == currentFloor).FirstOrDefault();
-                if (floor != null && floor.Id != Guid.Empty) {
-                    return floor.Tiles;
-                } else {
-                    throw new Exception("Dungeon Floor response was badly formed.");
-                }
-            } else {
-                throw new Exception("Could not place tiles as Dungeon response was badly formed.");
-            }
-        }
-
+        //  Class > DB
         public List<SharedFloor> SharedModelMapper() {
             List<SharedFloor> sharedFloors = new();
 
@@ -45,6 +37,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
 
             return sharedFloors;
+        }
+
+        //****************************
+        //****************** Operation
+        
+        //Add additional floor to the dungeon
+        public void Add(Floor floor) {
+            _floors.Add(floor);
         }
     }
 }

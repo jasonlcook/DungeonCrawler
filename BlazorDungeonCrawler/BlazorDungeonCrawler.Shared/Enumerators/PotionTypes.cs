@@ -3,6 +3,6 @@
         Unknown,
         Aura,
         Damage,
-        Sheild
+        Shield
     }
 }

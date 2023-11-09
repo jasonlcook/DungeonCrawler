@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Dungeon {
@@ -29,6 +30,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public bool CombatInitiated { get; set; }
 
         public bool GameOver { get; set; }
+
+        [NotMapped]
+        public bool NewDungeon { get; set; }
 
         public Dungeon() {
             Id = Guid.Empty;

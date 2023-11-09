@@ -1,4 +1,8 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿//**********************************************************************************************************************
+//  DungeonEvent
+//  Return the dungon tile tile from a simulated D6 dice roll
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public static class DungeonEvent {

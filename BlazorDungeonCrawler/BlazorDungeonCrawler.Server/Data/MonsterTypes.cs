@@ -1,4 +1,12 @@
-﻿namespace BlazorDungeonCrawler.Server.Data {
+﻿//**********************************************************************************************************************
+//  Monster library
+//  The list of potential enemies.
+//  As this is a static list there is no need to waste the database traffic.
+
+using BlazorDungeonCrawler.Server.Models;
+
+namespace BlazorDungeonCrawler.Server.Data
+{
     public class MonsterTypes {
         private readonly List<MonsterType> _monsterTypes;
 

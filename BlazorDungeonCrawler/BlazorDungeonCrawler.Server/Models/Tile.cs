@@ -1,20 +1,42 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿//**********************************************************************************************************************
+//  Tile
+//  Details of an individual tile that makes up the dungeon floor
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Tile {
-        public Guid Id { get; set; }
+        //****************************
+        //***************** Attributes
+
+        public Guid Id { get; set; }                        //Database Id
+
+        
+        public DungeonEvents Type { get; set; }             //Current tyle type
+
+
+        public bool Hidden { get; set; }                    //Is the tile type known 
+
+        public bool Selectable { get; set; }                //Is the tile currently selectable (accessable by the adventurer)
+
+        public bool Current { get; set; }                   //Is the Adventurer currently located on this tile
+                
+        public bool FightWon { get; set; }                  //Is there a fight currently ongoing on this tile
+
+
+        public List<Monster> Monsters { get; set; }         //List of monsters currently on this tile
+
+
+        //  Position 
+        //  The location of the tile on the floor grid
         public int Row { get; set; }
         public int Column { get; set; }
-        public DungeonEvents Type { get; set; }
-        public bool Current { get; set; }
-        public bool Hidden { get; set; }
-        public bool Selectable { get; set; }
-        public bool FightWon { get; set; }
-        public List<Monster> Monsters { get; set; }
 
+        //****************************
+        //*************** Constructors
         public Tile() {
             Id = Guid.NewGuid();
 
@@ -43,6 +65,9 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //******************** Mapping
+
+        //  Class > DB
         public SharedTile SharedModelMapper() {
             SharedTile tile = new SharedTile() {
                 Id = this.Id,

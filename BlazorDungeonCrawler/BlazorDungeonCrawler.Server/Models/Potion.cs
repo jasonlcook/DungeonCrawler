@@ -1,14 +1,33 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿//**********************************************************************************************************************
+//  Potion
+//  There are three potion types each effecting one of the adventurer's base stats.  Each potion will have a maximum
+//  value and will last a given duration. all three values are decided by dice rolls some are affected by the dungeon
+//  depth of where they are found.
+//  Can be found as part of the loot table gained by discovering a chest
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Server.Models {
-    public class Potions {
-        public PotionTypes Type { get; set; }
-        public PotionSizes Size { get; set; }
-        public int SizeValue { get; set; }
-        public PotionDurations Duration { get; set; }
-        public int DurationValue { get; set; }
+    public class Potion {
+        //****************************
+        //***************** Attributes
+        public PotionTypes Type { get; set; }               //Potion type (which stat is effected)
 
-        public Potions(int depth, int typeValue, int sizeValue, int durationValue) {
+        public PotionSizes Size { get; set; }               //Potion size (value of the potion)
+        public int SizeValue { get; set; }                  //Value of the potion size
+
+        public PotionDurations Duration { get; set; }       //Potion duration (how many steps the potion lasts)
+        public int DurationValue { get; set; }              //Value of the potion duration
+
+        //****************************
+        //*************** Constructors
+        public Potion() {
+            Type = PotionTypes.Unknown;
+            Size = PotionSizes.Unknown;
+            Duration = PotionDurations.Unknown;
+        }
+
+        public Potion(int depth, int typeValue, int sizeValue, int durationValue) {
             Type = GetType(typeValue);
 
             Size = GetSize(depth, sizeValue);
@@ -18,19 +37,26 @@ namespace BlazorDungeonCrawler.Server.Models {
             DurationValue = GetDurationValue();
         }
 
+        //****************************
+        //****************** Operation
+
+        //  return the current potion details description as text  
         public string Description() {
             return $"Drink a {Size} of {Duration} duration {Type} potion.";
         }
 
         //  Type
-        //      1 - 2:  Sheild (Protection)
-        //      3 - 4:  Damage
-        //      5 - 6:  Aura (Health)
+        //  The type of the potion obtainable depends on the value of a dice roll.
+
+        //      Get the potion type from the dice roll
+        //          1 - 2:  Shield  (Protection)
+        //          3 - 4:  Damage
+        //          5 - 6:  Aura (Health)
         private PotionTypes GetType(int value) {
             switch (value) {
                 case 1:
                 case 2:
-                    return PotionTypes.Sheild;
+                    return PotionTypes.Shield;
                 case 3:
                 case 4:
                     return PotionTypes.Damage;
@@ -43,14 +69,18 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Size
-        //      Floor 1 - 4
-        //          1 - 5:  Vial
-        //          6:      Flask
+        //  The size of the obtainable potion depends on the current floor depth and the value of the dice roll.
+        //  The larger the size the higher the possible effect value and the deeper the floor the larger the possible size.
 
-        //      Floor 5 +
-        //          1:      Vial
-        //          2 - 5:  Flask
-        //          6:      Bottle
+        //      Get the potion size from the floor depth and dice roll
+        //          Floor 1 - 4
+        //              1 - 5:  Vial
+        //              6:      Flask
+
+        //          Floor 5 +
+        //              1:      Vial
+        //              2 - 5:  Flask
+        //              6:      Bottle
         private PotionSizes GetSize(int depth, int value) {
             if (depth > 4) {
                 switch (value) {
@@ -82,6 +112,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //      Get the potion's effect value from the potion size
         private int GetSizeValue() {
             switch (Size) {
                 case PotionSizes.Vial:
@@ -97,9 +128,13 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //  Duration
-        //      1 - 2:  Short
-        //      3 - 4:  Medium
-        //      5 - 6:  Long
+        //  Each potion will last a set amount of steps and once the potion is exhasted the effects will stop.
+        //  The larger die value the longer the potion's duration
+
+        //      Get the potion duration from the dice roll
+        //          1 - 2:  Short
+        //          3 - 4:  Medium
+        //          5 - 6:  Long
         private PotionDurations GetDuration(int value) {
             switch (value) {
                 case 1:
@@ -116,6 +151,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //      Get the potion duration value from the potion duration type.
         private int GetDurationValue() {
             switch (Duration) {
                 case PotionDurations.Short:

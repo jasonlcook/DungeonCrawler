@@ -7,18 +7,11 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Guid Id { get; set; }
 
 
+        public bool IsAlive { get; set; }
+
+
         public int ExperienceLevel { get; set; }
         public int Experience { get; set; }
-
-        //Level      XP
-        //1           0
-        //2           1
-        //3           3
-        //4           7
-        //5          15
-        //6          31
-        //7          63
-        //8         127
         public int NextExperienceLevelCost { get; set; }
 
 
@@ -46,9 +39,6 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int ArmourGauntlet { get; set; }
         public int ArmourGreave { get; set; }
         public int ArmourBoots { get; set; }
-
-
-        public bool IsAlive { get; set; }
 
 
         public Adventurer() {

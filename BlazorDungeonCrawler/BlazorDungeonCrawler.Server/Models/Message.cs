@@ -1,15 +1,31 @@
-﻿using System.Text;
+﻿//**********************************************************************************************************************
+//  Message
+//  A message that will be dispayed in the client log
+
+using System.Text;
+
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Message {
-        public Guid Id { get; private set; }
-        public double Datestamp { get; set; }
-        public string Text { get; set; }
-        public List<Message> Children { get; private set; }
-        public List<int>? SafeDice { get; private set; }
-        public List<int>? DangerDice { get; private set; }
+        //****************************
+        //***************** Attributes
+        public Guid Id { get; private set; }                //Database Id
 
+        public double Datestamp { get; set; }               //A short datestamp used to order the messages
+        
+        public string Text { get; set; }                    //The message text
+        
+        public List<Message> Children { get; private set; } //Nested child messages (Used for action details)
+        
+        //  Dice
+        public List<int>? SafeDice { get; private set; }    //Adventurer dice
+        public List<int>? DangerDice { get; private set; }  //Monster dice
+
+        //****************************
+        //*************** Constructors
+
+        //Message with just text
         public Message(string text) {
             Id = Guid.NewGuid();
             Datestamp = (DateTime.Now.ToUniversalTime() - new DateTime(2023, 10, 1)).TotalSeconds;
@@ -17,6 +33,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             Children = new();
         }
 
+        //Message with text and single die
         public Message(string text, int? safeDie, int? dangerDie) : this(text) {
             if (safeDie != null) {
                 SafeDice = new List<int>() { (int)safeDie };
@@ -27,15 +44,15 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //Message with text and dice
         public Message(string text, List<int>? safeDice, List<int>? dangerDice) : this(text) {
             SafeDice = safeDice;
             DangerDice = dangerDice;
         }
 
-        public void AddChild(Message message) {
-            Children.Add(message);
-        }
+        //******************** Mapping
 
+        //  Class > DB
         public SharedMessage SharedModelMapper() {
             SharedMessage sharedMessage = new SharedMessage() {
                 Id = this.Id,
@@ -74,5 +91,15 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             return sharedMessage;
         }
+
+        //****************************
+        //****************** Operation
+
+        //Add additional nested message for message action
+        public void AddChild(Message message) {
+            Children.Add(message);
+        }
+
+
     }
 }

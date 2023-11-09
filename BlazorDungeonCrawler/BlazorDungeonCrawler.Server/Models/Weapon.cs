@@ -1,16 +1,30 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
-using BlazorDungeonCrawler.Shared.Models;
+﻿//**********************************************************************************************************************
+//  Weapon
+//  The value of each weapon is calculated from the value of its type multiplied by the value of its condition.  Both
+//  the type and condition values are calculated from dice rolls.
+//  Can be found as part of the loot table gained by discovering a chest
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Server.Models {
-    public class Weapons {
-        public WeaponTypes Type { get; set; }
-        public int TypeValue { get; set; }
-        public WeaponConditions Condition { get; set; }
-        public int ConditionValue { get; set; }
+    public class Weapon {
+        //****************************
+        //***************** Attributes
+        public int WeaponValue { get; set; }                //Numeric value of the weapon, calculated from the type value multiplied by the condition
+                                                            
+        //  Type                                            
+        public WeaponTypes Type { get; set; }               //Type of weapon
+        public int TypeValue { get; set; }                  //Damage value of weapon type
+                                                            
+                                                            
+        //  Condition                                       
+        public WeaponConditions Condition { get; set; }     //Condition type
+        public int ConditionValue { get; set; }             //Value of the condition multiplier
 
-        public int WeaponValue { get; set; }
 
-        public Weapons(int depth, int typeValue, int conditionValue) {
+        //****************************
+        //*************** Constructors
+        public Weapon(int depth, int typeValue, int conditionValue) {
             Type = GetType(depth, typeValue);
             TypeValue = GetTypeValue();
 
@@ -18,34 +32,42 @@ namespace BlazorDungeonCrawler.Server.Models {
             if (Type != WeaponTypes.Rock || Type != WeaponTypes.Club) {
                 Condition = GetCondition(depth, conditionValue);
                 ConditionValue = GetConditionValue();
-            } 
+            }
 
             WeaponValue = TypeValue * ConditionValue;
         }
 
+        //****************************
+        //****************** Operation        
+
+        //  Return the current armour details description as text  
         public string Description() {
             if (Type == WeaponTypes.Rock || Type == WeaponTypes.Club) {
                 return Type.ToString();
             } else {
-                return  $"{Condition} {Type}";
+                return $"{Condition} {Type}";
             }
         }
 
         //  Type
-        //      Floor 1 - 2
-        //          1 - 5:  Rock
-        //          6:      Club
+        //  The type of obtainable weapon depends on the current floor depth and the value of the dice roll.
+        //  The deeper the floor the greater the possible damage is available from the weapon.
 
-        //      Floor 3 - 4
-        //          1:      Rock
-        //          2 - 5:  Club
-        //          6:      Mace
+        //      Get the weapon type from the floor depth and dice roll
+        //          Floor 1 - 2
+        //              1 - 5:  Rock
+        //              6:      Club
 
-        //      Floor 5 +
-        //          1:      Club
-        //          2 - 3:  Mace
-        //          4 - 5:  Axe
-        //          6:      Sword
+        //          Floor 3 - 4
+        //              1:      Rock
+        //              2 - 5:  Club
+        //              6:      Mace
+
+        //          Floor 5 +
+        //              1:      Club
+        //              2 - 3:  Mace
+        //              4 - 5:  Axe
+        //              6:      Sword
         private WeaponTypes GetType(int depth, int value) {
             if (depth > 4) {
                 //Floor 5 +
@@ -113,7 +135,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
-        //  Type
+        //  Condition
         //      Floor 1 - 2
         //          1 - 5:  Broken
         //          6:      Rusty

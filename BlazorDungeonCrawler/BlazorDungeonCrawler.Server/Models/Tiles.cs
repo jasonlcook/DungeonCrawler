@@ -1,43 +1,20 @@
-﻿using BlazorDungeonCrawler.Shared.Enumerators;
+﻿//**********************************************************************************************************************
+//  Tiles
+//  A collection of a dungeon's floor tiles
+
+using BlazorDungeonCrawler.Shared.Enumerators;
 
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Tiles {
-        private List<Tile> _tiles;
+        //****************************
+        //***************** Attributes
+        private List<Tile> _tiles;                          //Collection of tiles
 
-        public List<Tile> GetTiles() {
-            return _tiles;
-        }
-
-        public Tiles(List<SharedTile> tiles) {
-            _tiles = new();
-
-            Monster monster = new Monster();
-            foreach (SharedTile tile in tiles) {
-                List<Monster> monsters = new();
-
-                if (tile.Monsters != null && tile.Monsters.Count > 0) {
-                    foreach (SharedMonster sharedMonster in tile.Monsters) {
-                        monsters.Add(monster.ServerModelMapper(sharedMonster));
-                    }
-                }
-
-                _tiles.Add(new Tile() {
-                    Id = tile.Id,
-                    Row = tile.Row,
-                    Column = tile.Column,
-                    Type = tile.Type,
-                    Current = tile.Current,
-                    Hidden = tile.Hidden,
-                    Selectable = tile.Selectable,
-                    FightWon = tile.FightWon,
-                    Monsters = monsters
-                });
-            }
-        }
-
+        //****************************
+        //*************** Constructors
         public Tiles(int depth, int floorRows, int floorColumns) {
             _tiles = new();
 
@@ -115,6 +92,63 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
         }
 
+        //******************** Mapping
+
+        //  DB > Class
+        public Tiles(List<SharedTile> tiles) {
+            _tiles = new();
+
+            Monster monster = new Monster();
+            foreach (SharedTile tile in tiles) {
+                List<Monster> monsters = new();
+
+                if (tile.Monsters != null && tile.Monsters.Count > 0) {
+                    foreach (SharedMonster sharedMonster in tile.Monsters) {
+                        monsters.Add(monster.ServerModelMapper(sharedMonster));
+                    }
+                }
+
+                _tiles.Add(new Tile() {
+                    Id = tile.Id,
+                    Row = tile.Row,
+                    Column = tile.Column,
+                    Type = tile.Type,
+                    Current = tile.Current,
+                    Hidden = tile.Hidden,
+                    Selectable = tile.Selectable,
+                    FightWon = tile.FightWon,
+                    Monsters = monsters
+                });
+            }
+        }
+
+        //  Class > DB
+        public List<SharedTile> SharedModelMapper() {
+            List<SharedTile> sharedTiles = new();
+
+            foreach (var tile in _tiles) {
+                sharedTiles.Add(tile.SharedModelMapper());
+            }
+
+            return sharedTiles;
+        }
+
+        //****************************
+        //****************** Operation
+
+        //  Return all tiles
+        public List<Tile> GetTiles() {
+            return _tiles;
+        }
+
+        //  Unhide all tiles
+        public void Unhide() {
+            foreach (Tile tile in _tiles) {
+                tile.Hidden = false;
+            }
+        }
+
+        //  Set the tiles surrounding the adventurers current location
         public void SetSelectableTiles(int currentRow, int currentColumn) {
             int previousTileRow, currentTileRow, nextTileRow, previousTileColumn, currentTileColumn, nextTileColumn;
             foreach (Tile tile in _tiles) {
@@ -157,22 +191,6 @@ namespace BlazorDungeonCrawler.Server.Models {
                         }
                     }
                 }
-            }
-        }
-
-        public List<SharedTile> SharedModelMapper() {
-            List<SharedTile> sharedTiles = new();
-
-            foreach (var tile in _tiles) {
-                sharedTiles.Add(tile.SharedModelMapper());
-            }
-
-            return sharedTiles;
-        }
-
-        public void Unhide() {
-            foreach (Tile tile in _tiles) {
-                tile.Hidden = false;
             }
         }
     }

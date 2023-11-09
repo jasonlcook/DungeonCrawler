@@ -1,16 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//**********************************************************************************************************************
+//  DungeonManager
+//  The DungeonManager class contains the functionality to progress, parse, save and return the Dungeon state
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 using BlazorDungeonCrawler.Shared.Enumerators;
-
 using BlazorDungeonCrawler.Server.Models;
 
+//  Database methods
 using BlazorDungeonCrawler.Server.Database;
 using BlazorDungeonCrawler.Server.Database.Resources.Commands.Create;
 using BlazorDungeonCrawler.Server.Database.Resources.Commands.Delete;
 using BlazorDungeonCrawler.Server.Database.Resources.Commands.Update;
 using BlazorDungeonCrawler.Server.Database.Resources.Queries.Get;
 
+//  Namespace aliasing
+//  The database is built using the shared models, however the related models methods are limited in scope to the server project.
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
@@ -20,9 +26,14 @@ using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Data {
     public class DungeonManager {
-        private readonly IStringLocalizer<DungeonManager> _localiser;
-        private readonly ILogger _logger;
-        private readonly IDbContextFactory<DungeonDbContext> _contextFactory;
+        private readonly ILogger _logger;                                       //  Logger.               Errors and important information is returned to Azure application insights and the debug console.
+        private readonly IStringLocalizer<DungeonManager> _localiser;           //  Localiser.            All messages returned to the user from the localiser via the DungeonManager resource file. 
+        private readonly IDbContextFactory<DungeonDbContext> _contextFactory;   //	Database Context.     Reference to the database context.
+
+        private readonly string apiVersion = new Version(0, 2, 1).ToString();   //	API version.
+
+        //***********************************************************
+        //*********************************************** Constructor
         public DungeonManager(IDbContextFactory<DungeonDbContext> contextFactory, ILogger<DungeonManager> logger, IStringLocalizer<DungeonManager> localiser) {
             this._localiser = localiser;
             this._contextFactory = contextFactory;
@@ -31,12 +42,14 @@ namespace BlazorDungeonCrawler.Server.Data {
             _logger.LogInformation("Dungeon manager initiated. {DT}", DateTime.UtcNow.ToLongTimeString());
         }
 
+        //***********************************************************
+        //************************************************** Generate
+
+        //	Generate new Dungeon and child elements 
+
         public async Task<SharedDungeon> Generate() {
-            Messages messages = new();
-
-            //Create
-            //  Adventurer
-
+            //	Create
+            //	  Adventurer
             int health = Dice.RollDSix();
             int damage = Dice.RollDSix();
             int protection = Dice.RollDSix();
@@ -54,24 +67,24 @@ namespace BlazorDungeonCrawler.Server.Data {
             string messageAdventureProtection = _localiser["MessageAdventureProtection"];
             message.AddChild(new(messageAdventureProtection.Replace("[ADVENTURER_PROTECTION]", protection.ToString()), protection, null));
 
+            Messages messages = new();
             messages.Add(message);
 
             Adventurer adventurer = new(health, damage, protection);
 
-            //  Floors
+            //	  Floors
             Floors floors = new();
 
             int depth = 1;
             Floor newFloor = new(depth);
 
-            //  Tiles
+            //	  Tiles
             Tiles tiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
             newFloor.Tiles = tiles.GetTiles();
 
             floors.Add(newFloor);
 
-            //  Dungon
-            string apiVersion = new Version(0, 2, 0).ToString();
+            //	  Dungon
             SharedDungeon sharedDungeon = new() {
                 Id = Guid.NewGuid(),
 
@@ -82,7 +95,9 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 Depth = depth,
 
-                ApiVersion = apiVersion
+                ApiVersion = apiVersion,
+
+                NewDungeon = true
             };
 
             DungeonCreate dungeonCreate = new(_contextFactory.CreateDbContext(), _logger);
@@ -92,6 +107,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             return sharedDungeon;
         }
+
+        //***********************************************************
+        //******************************************* RetrieveDungeon
+
+        //	Retrieve Dungeon and child elements from database
 
         public async Task<SharedDungeon> RetrieveDungeon(Guid dungeonId) {
             _logger.LogInformation($"Dungeon {dungeonId} retrieve.");
@@ -103,6 +123,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             return sharedDungeon;
         }
+
+        //***********************************************************
+        //*********************************** GetSelectedDungeonTiles
+
+        //	Process current Dungeon Tile
 
         public async Task<SharedDungeon> GetSelectedDungeonTiles(Guid dungeonId, Guid tileId) {
             _logger.LogInformation($"Dungeon {dungeonId} tile {tileId} selected.");
@@ -207,7 +232,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     setSelectable = false;
                     break;
                 case DungeonEvents.StairsDescending:
-                    //  Set surrounding selecteable tiles for when the user returns to this floor
+                    //Set surrounding selecteable tiles for when the user returns to this floor
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
 
                     int increasedDepth = dungeon.Depth + 1;
@@ -264,7 +289,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             int weaponsTypeValue = Dice.RollDSix();
                             int weaponsConditionValue = Dice.RollDSix();
 
-                            Weapons weapons = new(dungeon.Depth, weaponsTypeValue, weaponsConditionValue);
+                            Weapon weapons = new(dungeon.Depth, weaponsTypeValue, weaponsConditionValue);
 
                             int currentWeaponValue = adventurer.Weapon;
 
@@ -360,7 +385,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             int potionSizeValue = Dice.RollDSix();
                             int potionDurationValue = Dice.RollDSix();
 
-                            Potions potion = new(dungeon.Depth, potionTypeValue, potionSizeValue, potionDurationValue);
+                            Potion potion = new(dungeon.Depth, potionTypeValue, potionSizeValue, potionDurationValue);
 
                             switch (potion.Type) {
                                 case PotionTypes.Aura:
@@ -377,7 +402,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                     adventurer.DamagePotion += potion.SizeValue;
                                     adventurer.DamagePotionDuration = +potion.DurationValue;
                                     break;
-                                case PotionTypes.Sheild:
+                                case PotionTypes.Shield:
                                     adventurer.ShieldPotion += potion.SizeValue;
                                     adventurer.ShieldPotionDuration += potion.DurationValue;
                                     break;
@@ -518,10 +543,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         }
 
         private async Task<Monsters> SetMonsters(Guid tileId, int depth) {
-            Monsters monsters = new();
-
-            //generate new monsters
-            monsters.Generate(depth);
+            Monsters monsters = new(depth);
 
             if (monsters.Count() > 0) {
                 MonstersCreate monstersCreate = new(_contextFactory.CreateDbContext(), _logger);
@@ -550,6 +572,12 @@ namespace BlazorDungeonCrawler.Server.Data {
                     throw new ArgumentOutOfRangeException("Loot type roll value");
             }
         }
+
+
+        //***********************************************************
+        //******************************* AutomaticallyAdvanceDungeon
+
+        //	Automatically progress the Adventurer by selecting, the most desirable from the available tiles
 
         public async Task<SharedDungeon> AutomaticallyAdvanceDungeon(Guid dungeonId) {
             _logger.LogInformation($"Dungeon {dungeonId} automatically advanced.");
@@ -814,6 +842,11 @@ namespace BlazorDungeonCrawler.Server.Data {
             return false;
         }
 
+        //***********************************************************
+        //********************************************* DescendStairs
+        
+        //	Process confirmation of changing to lower floor
+
         public async Task<SharedDungeon> DescendStairs(Guid dungeonId) {
             _logger.LogInformation($"Descend Dungeon {dungeonId} stairs.");
 
@@ -835,6 +868,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             return dungeon;
         }
+
+        //***********************************************************
+        //*********************************************** MonsterFlee
+
+        //	Adventurer flees from fight
 
         public async Task<SharedDungeon> MonsterFlee(Guid dungeonId, Guid tileId) {
             _logger.LogInformation($"Flee Dungeon {dungeonId} monster at tile {tileId}.");
@@ -870,7 +908,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             } else {
                 string messageAdventurerFleeFail = _localiser["MessageAdventurerFleeFail"];
                 Message monsterFlee = new(messageAdventurerFleeFail);
-                                
+
                 if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
                 List<SharedMonster> monsters = selectedTile.Monsters;
@@ -977,6 +1015,11 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             return false;
         }
+
+        //***********************************************************
+        //********************************************** MonsterFight
+
+        //	Adventurer fights monsters on current tile
 
         public async Task<SharedDungeon> MonsterFight(Guid dungeonId, Guid tileId) {
             _logger.LogInformation($"Fight Dungeon {dungeonId} monster at tile {tileId}.");
@@ -1317,6 +1360,12 @@ namespace BlazorDungeonCrawler.Server.Data {
             return dungeon;
         }
 
+        //***********************************************************
+        //*********************************** GenerateGameOverMessage
+
+        //	End of game summary
+        //	Once the Adventurer dies, or returns victorious to the Dungeon entrance, a summery of the game will be generated from the database.
+
         public Message GenerateGameOverMessage(string message, SharedDungeon dungeon) {
             Message endOfGameMessage = new(message);
 
@@ -1347,7 +1396,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int takenProtection = floor.Tiles.Where(t => t.Type == DungeonEvents.TakenProtection).ToList().Count();
 
                 int chestsLooted = takenWeapon + takenPotion + takenProtection;
-                Message lootMessage = new(messageEndOfGameLootedChests.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[CHESTS_LOOTED]", chestsLooted.ToString()));              
+                Message lootMessage = new(messageEndOfGameLootedChests.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[CHESTS_LOOTED]", chestsLooted.ToString()));
                 lootMessage.AddChild(new(messageEndOfGameLootedWepons.Replace("[WEAPONS_LOOTED]", takenWeapon.ToString())));
                 lootMessage.AddChild(new(messageEndOfGameLootedProtection.Replace("[PROTECTION_LOOTED]", takenProtection.ToString())));
                 lootMessage.AddChild(new(messageEndOfGameLootedPotions.Replace("[POTIONS_LOOTED]", takenPotion.ToString())));
@@ -1367,7 +1416,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                 int fights = fightsFleed + fightsWon;
                 Message monstersMessage = new(messageEndOfGameFightsTotal.Replace("[FLOOR_DEPTH]", floor.Depth.ToString()).Replace("[FIGHTS_TOTAL]", fights.ToString()));
-                
+
                 monstersMessage.AddChild(new(messageEndOfGameFightsFleed.Replace("[FIGHTS_FLED]", fightsFleed.ToString())));
                 monstersMessage.AddChild(new(messageEndOfGameFightsWon.Replace("[FIGHTS_WON]", fightsWon.ToString())));
 

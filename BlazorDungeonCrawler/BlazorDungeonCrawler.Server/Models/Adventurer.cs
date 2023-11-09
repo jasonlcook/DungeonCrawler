@@ -1,34 +1,55 @@
-﻿using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
+﻿//**********************************************************************************************************************
+//  Adventurer
+//  Server version of the Database and Client class containing mothods for updating state and mapping between Shared
+//  version
+
+using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Adventurer {
-        //attributes
-        public Guid Id { get; private set; }
-        public int ExperienceLevel { get; set; }
-        public int Experience { get; set; }
-        public int NextExperienceLevelCost { get; set; }
-        public int HealthBase { get; set; }
-        public int HealthInitial { get; set; }
-        public int AuraPotion { get; set; }
-        public int AuraPotionDuration { get; set; }
-        public int DamageBase { get; set; }
-        public int DamagePotion { get; set; }
-        public int DamagePotionDuration { get; set; }
-        public int ProtectionBase { get; set; }
-        public int ShieldPotion { get; set; }
-        public int ShieldPotionDuration { get; set; }
-        public int Weapon { get; set; }
-        public int ArmourHelmet { get; set; }
+        //****************************
+        //***************** Attributes
+        public Guid Id { get; private set; }                //Database Id
+
+        public bool IsAlive { get; set; }                   //Player status
+
+        //  Experience
+        public int ExperienceLevel { get; set; }            //Current experience level
+        public int Experience { get; set; }                 //Amount of experience points
+        public int NextExperienceLevelCost { get; set; }    //Required experience points for next level
+
+        //  Health
+        public int HealthBase { get; set; }                 //Current health points
+        public int HealthInitial { get; set; }              //Initial health roll  
+        public int AuraPotion { get; set; }                 //Amount of protection potion affords
+        public int AuraPotionDuration { get; set; }         //How many steps the Aura potion will last
+
+        //  Dammage
+        public int DamageBase { get; set; }                 //Initial damage dealt to monsters
+        public int DamagePotion { get; set; }               //Amount of additional damage from potion effect
+        public int DamagePotionDuration { get; set; }       //How many steps the potion will last
+        
+        //  Protection
+        public int ProtectionBase { get; set; }             //Initial protection from monster attacks
+        public int ShieldPotion { get; set; }               //Amount of additional protection the potion affords
+        public int ShieldPotionDuration { get; set; }       //How many steps the shield potion will last
+        public int Weapon { get; set; }                     //Current weapon attack value
+
+        //      Armour
+        //      If any of the below values are above zero that piece of armour is being worn providing that amount of
+        //      additional protection
+        public int ArmourHelmet { get; set; }               
         public int ArmourBreastplate { get; set; }
         public int ArmourGauntlet { get; set; }
         public int ArmourGreave { get; set; }
         public int ArmourBoots { get; set; }
-        public bool IsAlive { get; set; }
 
-        //constructors
-
+        //****************************
+        //*************** Constructors
         public Adventurer(int health, int damage, int protection) {
             this.Id = Guid.NewGuid();
+
+            this.IsAlive = true;
 
             this.ExperienceLevel = 1;
             this.Experience = 0;
@@ -38,13 +59,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.HealthBase = health;
             this.DamageBase = damage;
             this.ProtectionBase = protection;
-
-            this.IsAlive = true;
         }
 
-        //mapping
+        //******************** Mapping
+
+        //  DB > Class
         public Adventurer(SharedAdventurer adventurer) {
             this.Id = adventurer.Id;
+            this.IsAlive = adventurer.IsAlive;
             this.ExperienceLevel = adventurer.ExperienceLevel;
             this.Experience = adventurer.Experience;
             this.NextExperienceLevelCost = adventurer.NextExperienceLevelCost;
@@ -64,12 +86,13 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.ArmourGauntlet = adventurer.ArmourGauntlet;
             this.ArmourGreave = adventurer.ArmourGreave;
             this.ArmourBoots = adventurer.ArmourBoots;
-            this.IsAlive = adventurer.IsAlive;
         }
 
+        //  Class > DB
         public SharedAdventurer SharedModelMapper() {
             return new SharedAdventurer() {
                 Id = this.Id,
+                IsAlive = this.IsAlive,
                 ExperienceLevel = this.ExperienceLevel,
                 Experience = this.Experience,
                 NextExperienceLevelCost = this.NextExperienceLevelCost,
@@ -88,12 +111,13 @@ namespace BlazorDungeonCrawler.Server.Models {
                 ArmourBreastplate = this.ArmourBreastplate,
                 ArmourGauntlet = this.ArmourGauntlet,
                 ArmourGreave = this.ArmourGreave,
-                ArmourBoots = this.ArmourBoots,
-                IsAlive = this.IsAlive
+                ArmourBoots = this.ArmourBoots
             };
         }
 
-        //operation
+        //****************************
+        //****************** Operation
+
         //  Leveling
         public int GetLevelCost(int level) {
             return GeometricSeries(1d, 2d, level);
@@ -170,7 +194,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //      Aura
-        //      if health has been lost then use the potion point to heal (up to inital rolled value) and add remaining points as Aura
+        //      If health has been lost then use the potion point to heal (up to initial rolled value) and add remaining points as Aura
         public int SetAuraPotion(int sizeValue) {
             int regainedHealth = 0;
 

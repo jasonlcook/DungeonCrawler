@@ -1,19 +1,34 @@
-﻿using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
+﻿//**********************************************************************************************************************
+//  Monster
+//  Server version of the Database and Client class containing mothods for updating state and mapping between Shared
+//  version
+
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Models {
     public class Monster {
-        //attributes
-        public Guid Id { get; set; }
-        public int Index { get; set; }
-        public string TypeName { get; set; }
-        public int Experience { get; set; }
-        public int Health { get; set; }
-        public int Damage { get; set; }
-        public int Protection { get; set; }
+        //****************************
+        //***************** Attributes
+        public Guid Id { get; set; }                        //Database Id
+
+        public int Index { get; set; }                      //Monster's place in party
+        
+        public string TypeName { get; set; }                //Monster display name
+        
+        public int Experience { get; set; }                 //Amount of experience gained by killing the monster
+
+        public int Health { get; set; }                     //Current health points
+        public int Damage { get; set; }                     //Damage dealt to adventurer
+        public int Protection { get; set; }                 //Protection from adventurer's attacks
+
+        //  Counter position
+        //  Each monster is displayed as a counter showing its current health.The location of the counter is set when the tile is generated.
         public int ClientX { get; set; }
         public int ClientY { get; set; }
 
-        //constructors
+        //****************************
+        //*************** Constructors
         public Monster() {
             Id = Guid.NewGuid();
             TypeName = string.Empty;
@@ -31,7 +46,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             ClientY = monster.ClientY;
         }
 
-        //mapping
+        //******************** Mapping
+
+        //  DB > Class
+        public Monster ServerModelMapper(SharedMonster monster) {
+            return new Monster(monster);
+        }
+
+        //  Class > DB
         public SharedMonster SharedModelMapper() {
             return new SharedMonster() {
                 Id = this.Id,
@@ -44,11 +66,6 @@ namespace BlazorDungeonCrawler.Server.Models {
                 ClientX = this.ClientX,
                 ClientY = this.ClientY
             };
-        }
-
-        //operation
-        public Monster ServerModelMapper(SharedMonster monster) {
-            return new Monster(monster);
         }
     }
 }

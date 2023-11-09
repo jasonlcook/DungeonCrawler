@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿//**********************************************************************************************************************
+//  API controller 
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 
 using BlazorDungeonCrawler.Shared.Responses;
 using BlazorDungeonCrawler.Server.Data;
 
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
-using Microsoft.Extensions.Logging;
 
 namespace BlazorDungeonCrawler.Server.Controllers {
 
