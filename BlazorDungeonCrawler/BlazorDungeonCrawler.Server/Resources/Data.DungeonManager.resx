@@ -255,6 +255,9 @@
   <data name="MessageMonsterDamage" xml:space="preserve">
     <value>MONSTER DAMAGE: [MONSTER_DAMAGE].</value>
   </data>
+  <data name="MessageMonsterGeneration" xml:space="preserve">
+    <value>[MONSTER_TYPE]</value>
+  </data>
   <data name="MessageMonsterHealth" xml:space="preserve">
     <value>MONSTER HEALTH: [MONSTER_HEALTH].</value>
   </data>
