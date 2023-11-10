@@ -217,6 +217,9 @@ namespace BlazorDungeonCrawler.Client.Pages {
         }
 
         private async Task AutomaticallyAdvanceDungeon() {
+            ErrorReports = new();
+            InformationReports = new();
+
             if (dungeon == null || dungeon.Id == Guid.Empty) { throw new Exception("Dungeon element was badly formed."); }
 
             try {
