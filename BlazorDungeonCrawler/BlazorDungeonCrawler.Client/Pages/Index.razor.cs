@@ -163,8 +163,11 @@ namespace BlazorDungeonCrawler.Client.Pages {
                                 try {
                                     dungeon = await DungeonManager.GetDungeon(cookieId);
                                 } catch (Exception ex) {
-                                    dungeon = await DungeonManager.GenerateNewDungeon();
                                     ErrorReports.Add(ex.Message);
+                                    InformationReports.Add("Your previous Dungeon has been removed. Please accept a new one as an apology.");
+
+                                    dungeon = await DungeonManager.GenerateNewDungeon();
+                                    
                                 }                                
                             } else {
                                 dungeon = await DungeonManager.GenerateNewDungeon();
