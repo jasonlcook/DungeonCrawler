@@ -193,27 +193,30 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsterMessage = messageMonsterCampSingle.Replace("[MONSTER_NAME]", monsters.GetName());
                         } else {
                             string messageMonsterCampMultiple = _localiser["MessageMonsterCampMultiple"];
-                            monsterMessage = messageMonsterCampMultiple.Replace("[MONSTER_COUNT]]", monsters.Count().ToString()).Replace("[MONSTER_NAME]", monsters.GetName());
+                            monsterMessage = messageMonsterCampMultiple.Replace("[MONSTER_COUNT]", monsters.Count().ToString()).Replace("[MONSTER_NAME]", monsters.GetName());
                         }
 
                         string monsterDetails = string.Empty;
-                        List<int> monsterDetailsRoll = new();
                         List<int> monsterDetailsRollCollection = new();
+
                         List<Message> monsterDetailsMessages = new();
                         foreach (Monster monster in monsters.Get()) {
-                            string messageMonsterDamage = _localiser["MessageMonsterDamage"];
-                            monsterDetails = string.Format(messageMonsterDamage.Replace("[MONSTER_DAMAGE]", monster.Damage.ToString()));
-
-                            string messageMonsterHealth = _localiser["MessageMonsterHealth"];
-                            monsterDetails += string.Format(messageMonsterDamage.Replace("[MONSTER_HEALTH]", monster.Health.ToString()));
-
-                            string messageMonsterProtection = _localiser["MessageMonsterProtection"];
-                            monsterDetails += string.Format(messageMonsterProtection.Replace("[MONSTER_PROTECTION]", monster.Protection.ToString()));
-
-                            monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
+                            List<int> monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
-                            monsterDetailsMessages.Add(new(monsterDetails, null, monsterDetailsRoll));
+                            string messageMonsterGeneration = _localiser["MessageMonsterGeneration"];
+                            Message monsterDetailsMessage = new(string.Format(messageMonsterGeneration.Replace("[MONSTER_TYPE]", monster.TypeName)), null, monsterDetailsRoll);
+
+                            string messageMonsterDamage = _localiser["MessageMonsterDamage"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterDamage.Replace("[MONSTER_DAMAGE]", monster.Damage.ToString())), null, monster.Damage));
+
+                            string messageMonsterHealth = _localiser["MessageMonsterHealth"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterHealth.Replace("[MONSTER_HEALTH]", monster.Health.ToString())), null, monster.Health));
+
+                            string messageMonsterProtection = _localiser["MessageMonsterProtection"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterProtection.Replace("[MONSTER_PROTECTION]", monster.Protection.ToString())), null, monster.Protection));
+
+                            monsterDetailsMessages.Add(monsterDetailsMessage);
                         }
 
                         Message monsterGeneration = new(monsterMessage, null, monsterDetailsRollCollection);
@@ -456,27 +459,30 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsterMessage = messageWanderingMonsterSingle.Replace("[MONSTER_NAME]", monsters.GetName());
                         } else {
                             string messageWanderingMonsterMultiple = _localiser["MessageWanderingMonsterMultiple"];
-                            monsterMessage = messageWanderingMonsterMultiple.Replace("[MONSTER_COUNT]]", monsters.Count().ToString()).Replace("[MONSTER_NAME]", monsters.GetName());
+                            monsterMessage = messageWanderingMonsterMultiple.Replace("[MONSTER_COUNT]", monsters.Count().ToString()).Replace("[MONSTER_NAME]", monsters.GetName());
                         }
 
                         string monsterDetails = string.Empty;
-                        List<int> monsterDetailsRoll = new();
                         List<int> monsterDetailsRollCollection = new();
+
                         List<Message> monsterDetailsMessages = new();
                         foreach (Monster monster in monsters.Get()) {
-                            string messageMonsterDamage = _localiser["MessageMonsterDamage"];
-                            monsterDetails = string.Format(messageMonsterDamage.Replace("[MONSTER_DAMAGE]", monster.Damage.ToString()));
-
-                            string messageMonsterHealth = _localiser["MessageMonsterHealth"];
-                            monsterDetails += string.Format(messageMonsterDamage.Replace("[MONSTER_HEALTH]", monster.Health.ToString()));
-
-                            string messageMonsterProtection = _localiser["MessageMonsterProtection"];
-                            monsterDetails += string.Format(messageMonsterProtection.Replace("[MONSTER_PROTECTION]", monster.Protection.ToString()));
-
-                            monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
+                            List<int> monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
-                            monsterDetailsMessages.Add(new(monsterDetails, null, monsterDetailsRoll));
+                            string messageMonsterGeneration = _localiser["MessageMonsterGeneration"];
+                            Message monsterDetailsMessage = new(string.Format(messageMonsterGeneration.Replace("[MONSTER_TYPE]", monster.TypeName)), null, monsterDetailsRoll);
+
+                            string messageMonsterDamage = _localiser["MessageMonsterDamage"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterDamage.Replace("[MONSTER_DAMAGE]", monster.Damage.ToString())), null, monster.Damage));
+
+                            string messageMonsterHealth = _localiser["MessageMonsterHealth"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterHealth.Replace("[MONSTER_HEALTH]", monster.Health.ToString())), null, monster.Health));
+
+                            string messageMonsterProtection = _localiser["MessageMonsterProtection"];
+                            monsterDetailsMessage.AddChild(new(string.Format(messageMonsterProtection.Replace("[MONSTER_PROTECTION]", monster.Protection.ToString())), null, monster.Protection));
+
+                            monsterDetailsMessages.Add(monsterDetailsMessage);
                         }
 
                         Message monsterGeneration = new(monsterMessage, null, monsterDetailsRollCollection);
@@ -844,7 +850,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
         //***********************************************************
         //********************************************* DescendStairs
-        
+
         //	Process confirmation of changing to lower floor
 
         public async Task<SharedDungeon> DescendStairs(Guid dungeonId) {
@@ -1039,7 +1045,6 @@ namespace BlazorDungeonCrawler.Server.Data {
             if (selectedTile == null || selectedTile.Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor selected Tile"); }
             if (selectedTile.Monsters == null || selectedTile.Monsters.Count == 0) { throw new ArgumentNullException("Dungeon Floor Tile Monsters"); }
 
-
             List<SharedMonster> monsters = selectedTile.Monsters.OrderBy(m => m.Index).ToList();
 
             //Adventurer details
@@ -1122,7 +1127,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             }
 
                             string messageAdventurerAttackDetails = _localiser["MessageAdventurerAttackDetails"];
-                            adventurerCombatResult.AddChild(new(messageAdventurerAttackHits.Replace("[ADVENTURER_ATTACK]", adventurerAttackDice.ToString()).Replace("[MONSTER_DODGE]", monsterDodgeRolls.ToString()), adventurerAttackDice, monsterDodgeRolls));
+                            adventurerCombatResult.AddChild(new(messageAdventurerAttackDetails.Replace("[ADVENTURER_ATTACK]", adventurerAttackValue.ToString()).Replace("[MONSTER_DODGE]", monsterDodgeValue.ToString()), adventurerAttackDice, monsterDodgeRolls));
                         } else {
                             monsterHealth = 0;
 
