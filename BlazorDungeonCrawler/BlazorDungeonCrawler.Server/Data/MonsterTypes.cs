@@ -176,6 +176,7 @@ namespace BlazorDungeonCrawler.Server.Data
                         Name = "Xorn",
                         FloorStart = 10,
                         FloorEnd = 10,
+                        MaxPackNumber = 1,
                         HealthDiceCount = 5,
                         DamageDiceCount = 1,
                         ProtectionDiceCount = 1,
