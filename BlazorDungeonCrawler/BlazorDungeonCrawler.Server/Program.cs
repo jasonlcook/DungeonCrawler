@@ -35,10 +35,11 @@ builder.Logging.AddDebug();                 // add logging to debug window
 
 // report logging to application insights
 builder.Logging.AddApplicationInsights(
-    configureTelemetryConfiguration: (config) =>
-        config.ConnectionString = "InstrumentationKey=8090da4c-d1ed-4233-aca7-1cdea70a4a3c;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/",
-        configureApplicationInsightsLoggerOptions: (options) => { }
-    );
+    configureTelemetryConfiguration: (config) => {
+        config.ConnectionString = builder.Configuration.GetValue<string>("ApplicationInsights:ConnectionString");
+    },
+    configureApplicationInsightsLoggerOptions: (options) => { }
+);
 
 var app = builder.Build();
 
