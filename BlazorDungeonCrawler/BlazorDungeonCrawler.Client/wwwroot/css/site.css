@@ -244,7 +244,7 @@ body {
     }
 
     #log .log-entry .log-actions {
-        margin: 5px 0px;
+        margin: 5px 10px;
         border-color: #000;
         border-style: solid;
         border-width: 1px 0px 0 0px;
@@ -272,21 +272,29 @@ body {
             background-color: antiquewhite;
         }
 
-    #log .log-entry .log-actions .log-action-child {
-        margin: -5px 0 0 0;
+    #log .log-entry .log-actions .log-action-child .log-action-child-message {
+        margin: 0 0 0 10px;
+        padding: 2px 5px;
+        display: block;
     }
 
-        #log .log-entry .log-actions .log-action-child .log-action-child-message {
-            margin: 0 0 0 20px;
-            padding: 2px 5px;
-            display: block;
+        #log .log-entry .log-actions .log-action-child .log-action-child-message:active,
+        #log .log-entry .log-actions .log-action-child .log-action-child-message:hover,
+        #log .log-entry .log-actions .log-action-child .log-action-child-message:focus {
+            background-color: antiquewhite;
         }
 
-            #log .log-entry .log-actions .log-action-child .log-action-child-message:active,
-            #log .log-entry .log-actions .log-action-child .log-action-child-message:hover,
-            #log .log-entry .log-actions .log-action-child .log-action-child-message:focus {
-                background-color: antiquewhite;
-            }
+    #log .log-entry .log-actions .log-action-child .log-action-grandchild .log-action-grandchild-message {
+        margin: 0 0 0 20px;
+        padding: 2px 5px;
+        display: block;
+    }
+
+        #log .log-entry .log-actions .log-action-child .log-action-grandchild .log-action-grandchild-message:active,
+        #log .log-entry .log-actions .log-action-child .log-action-grandchild .log-action-grandchild-message:hover,
+        #log .log-entry .log-actions .log-action-child .log-action-grandchild .log-action-grandchild-message:focus {
+            background-color: antiquewhite;
+        }
 
 /* Dungeon */
 #play-area {

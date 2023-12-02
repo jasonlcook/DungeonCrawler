@@ -12,10 +12,19 @@
                         </span>
                         @if (childMessage.Children != null && childMessage.Children.Count > 0) {
                             <div class="log-action-child">
-                                @foreach (Message grandchildMessage in childMessage.Children) {
-                                    <span class="log-action-child-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(grandchildMessage.SafeDice, grandchildMessage.DangerDice))">
-                                        @grandchildMessage.Text
+                                @foreach (Message grandChildMessages in childMessage.Children) {
+                                    <span class="log-action-child-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(grandChildMessages.SafeDice, grandChildMessages.DangerDice))">
+                                        @grandChildMessages.Text
                                     </span>
+                                    @if (grandChildMessages.Children != null && grandChildMessages.Children.Count > 0) {
+                                        <div class="log-action-grandchild">
+                                            @foreach (Message greatGrandChildMessage in grandChildMessages.Children) {
+                                                <span class="log-action-grandchild-message" @onmouseenter="@(() => CallParentUpdateDiceFunction(greatGrandChildMessage.SafeDice, greatGrandChildMessage.DangerDice))">
+                                                    @greatGrandChildMessage.Text
+                                                </span>
+                                            }
+                                        </div>
+                                    }
                                 }
                             </div>
                         }
