@@ -141,6 +141,9 @@
   <data name="MessageAdventurerAttackHits" xml:space="preserve">
     <value>ADVENTURER ATTACK: MONSTER HIT FOR [MONSTER_WOUNDS_RECEIVED] WITH [MONSTER_HEALTH_REMAINING] REMAINING.</value>
   </data>
+  <data name="MessageAdventurerCombatInitiation" xml:space="preserve">
+    <value>ADVENTURER ROLL: [ADVENTURER_COMBAT_INITIATION].</value>
+  </data>
   <data name="MessageAdventurerFleeFail" xml:space="preserve">
     <value>ADVENTURER FAILED TO FLEE.</value>
   </data>
@@ -181,7 +184,7 @@
     <value>ARMOUR TYPE: [ARMOUR_TYPE] (ROLL: [ARMOUR_TYPE_VALUE]).</value>
   </data>
   <data name="MessageArmourValue" xml:space="preserve">
-    <value>ARMOUR VALUE: [ARMOUR_VALUE] ]  ([ARMOUR_TYPE_VALUE] * [ARMOUR_CONDITION_VALUE]).</value>
+    <value>ARMOUR VALUE: [ARMOUR_VALUE] ([ARMOUR_TYPE_VALUE] * [ARMOUR_CONDITION_VALUE]).</value>
   </data>
   <data name="MessageAttacksMiss" xml:space="preserve">
     <value>NO DAMAGE DONE</value>
@@ -252,6 +255,9 @@
   <data name="MessageMonsterCampSingle" xml:space="preserve">
     <value>MONSTER CAMP: A [MONSTER_NAME].</value>
   </data>
+  <data name="MessageMonsterCombatInitiation" xml:space="preserve">
+    <value>MONSTER ROLL: [MONSTER_COMBAT_INITIATION].</value>
+  </data>
   <data name="MessageMonsterDamage" xml:space="preserve">
     <value>MONSTER DAMAGE: [MONSTER_DAMAGE].</value>
   </data>
@@ -271,7 +277,7 @@
     <value>MONSTER PROTECTION: [MONSTER_PROTECTION].</value>
   </data>
   <data name="MessagePotionDrink" xml:space="preserve">
-    <value>DRINK A [POTION_DESCRIPTION].</value>
+    <value>POTION: [POTION_DESCRIPTION].</value>
   </data>
   <data name="MessagePotionDuration" xml:space="preserve">
     <value>POTION DURATION:  [POTION_DURATION] (ROLL: [POTION_DURATION_VALUE]).</value>
@@ -301,6 +307,6 @@
     <value>WEAPON TYPE: [WEAPON_TYPE] (ROLL: [WEAPON_TYPE_VALUE]).</value>
   </data>
   <data name="MessageWeaponValue" xml:space="preserve">
-    <value>WEAPON VALUE: [WEAPON_VALUE] ]  ([WEAPON_TYPE_VALUE] * [WEAPON_CONDITION_VALUE]).</value>
+    <value>WEAPON VALUE: [WEAPON_VALUE] ([WEAPON_TYPE_VALUE] * [WEAPON_CONDITION_VALUE]).</value>
   </data>
 </root>

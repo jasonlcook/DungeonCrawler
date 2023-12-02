@@ -200,7 +200,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         List<Message> monsterDetailsMessages = new();
                         foreach (Monster monster in monsters.Get()) {
-                            List<int> monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
+                            List<int> monsterDetailsRoll = new() {  monster.Health, monster.Damage, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
                             Message monsterDetailsMessage = new(_messageManager.MonsterGeneration(monster.TypeName), null, monsterDetailsRoll);
@@ -357,7 +357,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             Message armourMessages = new(armourMessage, new List<int> { armourConditionValue, armourTypeValue }, null);
 
                             armourMessages.AddChild(new(_messageManager.AdventurerArmourCondition(armour.Condition, armourConditionValue), armourConditionValue, null));
-                            armourMessages.AddChild(new(_messageManager.AdventurerArmourType(armour.Type, armourTypeValue), armourConditionValue, null));
+                            armourMessages.AddChild(new(_messageManager.AdventurerArmourType(armour.Type, armourTypeValue), armourTypeValue, null));
                             armourMessages.AddChild(new(_messageManager.AdventurerArmourValue(armour.ArmourValue, armour.TypeValue, armour.ConditionValue), armourConditionValue, null));
 
                             messages.Add(armourMessages);
@@ -437,7 +437,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                         List<Message> monsterDetailsMessages = new();
                         foreach (Monster monster in monsters.Get()) {
-                            List<int> monsterDetailsRoll = new() { monster.Damage, monster.Health, monster.Protection };
+                            List<int> monsterDetailsRoll = new() { monster.Health, monster.Damage, monster.Protection };
                             monsterDetailsRollCollection.AddRange(monsterDetailsRoll);
 
                             Message monsterDetailsMessage = new(_messageManager.MonsterGeneration(monster.TypeName), null, monsterDetailsRoll);
@@ -1024,9 +1024,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (adventurerRoll > monsterRoll) {
                     adventurerInitiatesCombat = true;
                     combatInitiated = new(_messageManager.AdventurerInitiatesCombat(), adventurerRoll, monsterRoll);
+                    combatInitiated.AddChild(new(_messageManager.AdventurerCombatInitiation(adventurerRoll), adventurerRoll, null));
+                    combatInitiated.AddChild(new(_messageManager.MonsterCombatInitiation(monsterRoll), null, monsterRoll));
                 } else {
                     adventurerInitiatesCombat = false;
                     combatInitiated = new(_messageManager.MonsterInitiatesCombats(), adventurerRoll, monsterRoll);
+                    combatInitiated.AddChild(new(_messageManager.MonsterCombatInitiation(monsterRoll), null, monsterRoll));
+                    combatInitiated.AddChild(new(_messageManager.AdventurerCombatInitiation(adventurerRoll), adventurerRoll, null));
                 }
 
                 dungeon.CombatInitiated = true;

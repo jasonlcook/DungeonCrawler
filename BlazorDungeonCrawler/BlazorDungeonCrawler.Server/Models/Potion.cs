@@ -42,7 +42,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         //  return the current potion details description as text  
         public string Description() {
-            return $"Drink a {Size} of {Duration} duration {Type} potion.";
+            return $"Drink a {Size} of {Duration} duration {Type} potion";
         }
 
         //  Type

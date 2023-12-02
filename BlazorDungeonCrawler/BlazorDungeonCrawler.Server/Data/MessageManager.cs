@@ -110,7 +110,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         //      Value
         public string AdventurerWeaponValue(int weaponValue, int weaponTypeValue, int weaponsConditionValue) {
             string messageWeaponValue = _localiser["MessageWeaponValue"];
-            return messageWeaponValue.Replace("WEAPON_VALUE", weaponValue.ToString()).Replace("[WEAPON_TYPE_VALUE]", weaponTypeValue.ToString()).Replace("[WEAPON_CONDITION_VALUE]", weaponsConditionValue.ToString());
+            return messageWeaponValue.Replace("[WEAPON_VALUE]", weaponValue.ToString()).Replace("[WEAPON_TYPE_VALUE]", weaponTypeValue.ToString()).Replace("[WEAPON_CONDITION_VALUE]", weaponsConditionValue.ToString());
         }
 
         //  Armours
@@ -123,7 +123,7 @@ namespace BlazorDungeonCrawler.Server.Data {
         //      Rejected
         public string AdventurerArmourRejected(string weaponsDescription) {
             string messageWeaponRejected = _localiser["MessageArmourRejected"];
-            return messageWeaponRejected.Replace("[WEAPON_DESCRIPTION]", weaponsDescription);
+            return messageWeaponRejected.Replace("[ARMOUR_DESCRIPTION]", weaponsDescription);
         }
 
         //      Condition
@@ -257,9 +257,21 @@ namespace BlazorDungeonCrawler.Server.Data {
             return _localiser["MessageAdventurerInitiatesCombat"];
         }
 
+        //          Roll
+        public string AdventurerCombatInitiation(int adventurerCombatInitiationRoll) {
+            string messageAdventurerCombatInitiation = _localiser["MessageAdventurerCombatInitiation"];
+            return messageAdventurerCombatInitiation.Replace("[ADVENTURER_COMBAT_INITIATION]", adventurerCombatInitiationRoll.ToString());
+        }        
+
         //      Monster 
         public string MonsterInitiatesCombats() {
             return _localiser["MessageMonsterInitiatesCombats"];
+        }
+
+        //          Roll
+        public string MonsterCombatInitiation(int monsterCombatInitiationRoll) {
+            string messageMonsterCombatInitiation = _localiser["MessageMonsterCombatInitiation"];
+            return messageMonsterCombatInitiation.Replace("[MONSTER_COMBAT_INITIATION]", monsterCombatInitiationRoll.ToString());
         }
 
         //  Adventurer
