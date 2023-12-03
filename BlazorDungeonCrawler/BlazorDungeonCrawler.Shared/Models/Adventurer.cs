@@ -31,14 +31,14 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int ShieldPotionDuration { get; set; }
 
 
-        public int Weapon { get; set; }
-
-
         public int ArmourHelmet { get; set; }
         public int ArmourBreastplate { get; set; }
         public int ArmourGauntlet { get; set; }
         public int ArmourGreave { get; set; }
         public int ArmourBoots { get; set; }
+
+
+        public int Weapon { get; set; }
 
 
         public Adventurer() {

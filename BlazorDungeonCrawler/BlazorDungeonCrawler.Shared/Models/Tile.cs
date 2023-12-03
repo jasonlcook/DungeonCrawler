@@ -15,12 +15,12 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public DungeonEvents Type { get; set; }
 
 
-        public bool Current { get; set; }
         public bool Hidden { get; set; }
         public bool Selectable { get; set; }
-
-
+        public bool Current { get; set; }
         public bool FightWon { get; set; }
+
+
         public List<Monster> Monsters { get; set; }
 
         public Tile() {

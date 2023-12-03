@@ -13,11 +13,11 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Guid Id { get; private set; }                //Database Id
 
         public double Datestamp { get; set; }               //A short datestamp used to order the messages
-        
+
         public string Text { get; set; }                    //The message text
-        
-        public List<Message> Children { get; private set; } //Nested child messages (Used for action details)
-        
+
+        public Messages Children { get; private set; } //Nested child messages (Used for action details)
+
         //  Dice
         public List<int>? SafeDice { get; private set; }    //Adventurer dice
         public List<int>? DangerDice { get; private set; }  //Monster dice
@@ -51,6 +51,15 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //******************** Mapping
+        //  DB > Class
+        public Message(SharedMessage message) {
+            this.Id = message.Id;
+            this.Datestamp = message.Datestamp;
+            this.Text = message.Text;
+            this.Children = new Messages(message.Children);
+            this.SafeDice = message.SafeDice.Split(',')?.Select(Int32.Parse)?.ToList(); 
+            this.DangerDice = message.DangerDice.Split(',')?.Select(Int32.Parse)?.ToList(); 
+        }
 
         //  Class > DB
         public SharedMessage SharedModelMapper() {
@@ -80,9 +89,9 @@ namespace BlazorDungeonCrawler.Server.Models {
                 sharedMessage.DangerDice = stringBuilder.ToString().Substring(0, stringBuilder.Length - 1);
             }
 
-            if (Children != null && Children.Count > 0) {
+            if (Children != null && Children.Count() > 0) {
                 List<SharedMessage> children = new();
-                foreach (var message in Children) {
+                foreach (var message in Children.Get()) {
                     children.Add(message.SharedModelMapper());
                 }
 

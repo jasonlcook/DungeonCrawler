@@ -7,14 +7,14 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public Guid Id { get; set; } 
 
 
-        public int Depth { get; set; } 
+        public int Depth { get; set; }
+
+
+        public List<Tile> Tiles { get; set; }
 
 
         public int Rows { get; set; } 
         public int Columns { get; set; }
-
-
-        public List<Tile> Tiles { get; set; }
 
         public Floor() {
             Id = Guid.Empty;

@@ -10,12 +10,12 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public string TypeName { get; set; }
 
 
+        public int Experience { get; set; }
+
+
         public int Health { get; set; }
         public int Damage { get; set; }
         public int Protection { get; set; }
-
-
-        public int Experience { get; set; }
 
 
         public int ClientX { get; set; }

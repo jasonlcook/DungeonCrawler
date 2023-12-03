@@ -2,7 +2,6 @@
 //  Adventurer
 //  Server version of the Database and Client class containing mothods for updating state and mapping between Shared
 //  version
-
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
@@ -33,7 +32,6 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int ProtectionBase { get; set; }             //Initial protection from monster attacks
         public int ShieldPotion { get; set; }               //Amount of additional protection the potion affords
         public int ShieldPotionDuration { get; set; }       //How many steps the shield potion will last
-        public int Weapon { get; set; }                     //Current weapon attack value
 
         //      Armour
         //      If any of the below values are above zero that piece of armour is being worn providing that amount of
@@ -43,6 +41,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int ArmourGauntlet { get; set; }
         public int ArmourGreave { get; set; }
         public int ArmourBoots { get; set; }
+
+        //  Weapon
+        public int Weapon { get; set; }                     //Current weapon attack value
 
         //****************************
         //*************** Constructors
