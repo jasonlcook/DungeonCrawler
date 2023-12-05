@@ -37,11 +37,11 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         //****************************
         //*************** Constructors
-        public Dungeon(Adventurer adventurer, Floors floors, Messages messages) {
+        public Dungeon() {
             this.Id = Guid.NewGuid();
-            this.Adventurer = adventurer;
-            this.Floors = floors;
-            this.Messages = messages;
+            this.Adventurer = new();
+            this.Floors = new();
+            this.Messages = new();
             this.ApiVersion = string.Empty;
         }
 
