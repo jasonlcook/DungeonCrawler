@@ -13,6 +13,8 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Queries.Get {
         }
 
         public async Task<Dungeon?> Get(Guid dungeonId) {
+            if (dungeonId == Guid.Empty) { throw new ArgumentNullException("Dungeon query get without Id"); }
+
             try {
                 _logger.LogInformation("Dungeon retrieved");
 
