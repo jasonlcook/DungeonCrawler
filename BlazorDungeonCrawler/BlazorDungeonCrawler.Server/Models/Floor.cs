@@ -14,7 +14,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int Depth { get; set; }                      //Current floor depth
 
 
-        public List<Tile> Tiles { get; set; }               //the collection of tiles that make up the dungeon floor
+        public Tiles Tiles { get; set; }               //the collection of tiles that make up the dungeon floor
         
 
         //  Details of the floor layout used to both populate the floor with the correct amount of tile and and position the floor on the client
@@ -50,7 +50,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             Tiles = new();
             foreach (SharedTile tile in floor.Tiles) {
-                Tiles.Add(new Tile(tile));
+                Tiles.Add(new(tile));
             }
         }
 
@@ -65,7 +65,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             floor.Tiles = new();
 
-            foreach (Tile tile in this.Tiles) {
+            foreach (Tile tile in this.Tiles.Get()) {
                 floor.Tiles.Add(tile.SharedModelMapper());
             }
 
@@ -73,9 +73,17 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //****************************
+        //****************** Accessors
+
+        //  retrieve tiles
+        public Tiles GetTiles() {
+            return Tiles;
+        }
+
+        //****************************
         //****************** Operation
 
-        //Retrive the floor size
+        //  retrieve the floor size
         public void GetRowsAndColumnsForCurrentDepth() {
             switch (Depth) {
                 case 1:

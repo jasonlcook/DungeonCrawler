@@ -39,12 +39,42 @@ namespace BlazorDungeonCrawler.Server.Models {
             return sharedFloors;
         }
 
+
         //****************************
-        //****************** Operation
+        //****************** Accessors
+
+        //********************* Floors        
         
-        //Add additional floor to the dungeon
+        //  add a child element
         public void Add(Floor floor) {
             _floors.Add(floor);
+        }
+
+        //********************** Floor
+
+        //  return floor at depth
+        public Floor Get(int depth) {
+            if (_floors == null || _floors.Count == 0) { throw new ArgumentNullException("Dungeon Floors"); }
+
+            foreach (Floor floor in _floors) {
+                if (floor.Depth == depth) {
+                    return floor;
+                }
+            }
+
+            return new();
+        }
+
+        //  update a child element
+        public void Update(Floor _floor) {
+            Floor floor;
+            for (int i = 0; i < _floors.Count; i++)
+            {
+                floor = _floors[i];
+                if (floor.Id == _floor.Id) {
+                    floor = _floor;
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 //  Messages
 //  A collection of the generated messages
 
+using BlazorDungeonCrawler.Shared.Models;
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 
 namespace BlazorDungeonCrawler.Server.Models {
@@ -39,18 +40,26 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //****************************
-        //****************** Operation
+        //****************** Accessors
+
+        //  return count of child elements
         public int Count() {
             return _messages.Count();
         }
 
-        public List<Message> Get() {
-            return _messages;
-        }
-
-        //Add additional message to message log
+        //  add a child element
         public void Add(Message message) {
             _messages.Add(message);
+        }
+
+        //  add child elements
+        public void AddRange(Messages messages) {
+            _messages.AddRange(messages.Get());
+        }
+
+        //  return all messages
+        public List<Message> Get() {
+            return _messages;
         }
     }
 }

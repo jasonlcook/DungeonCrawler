@@ -14,7 +14,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         public Guid Id { get; set; }                        //Database Id
 
-        
+
         public DungeonEvents Type { get; set; }             //Current tyle type
 
 
@@ -23,7 +23,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public bool Selectable { get; set; }                //Is the tile currently selectable (accessable by the adventurer)
 
         public bool Current { get; set; }                   //Is the Adventurer currently located on this tile
-                
+
         public bool FightWon { get; set; }                  //Is there a fight currently ongoing on this tile
 
 
@@ -87,6 +87,16 @@ namespace BlazorDungeonCrawler.Server.Models {
             }
 
             return tile;
+        }
+
+        //****************************
+        //****************** Operation
+
+        //  return monsters for this tile
+        public List<Monster> GetMonsters() {
+            if (Id == Guid.Empty) { throw new ArgumentNullException("Dungeon Floor tile"); }
+
+            return Monsters.OrderBy(m => m.Index).ToList();
         }
     }
 }

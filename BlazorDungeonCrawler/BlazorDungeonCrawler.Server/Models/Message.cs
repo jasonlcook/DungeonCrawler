@@ -57,8 +57,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.Datestamp = message.Datestamp;
             this.Text = message.Text;
             this.Children = new Messages(message.Children);
-            this.SafeDice = message.SafeDice.Split(',')?.Select(Int32.Parse)?.ToList(); 
-            this.DangerDice = message.DangerDice.Split(',')?.Select(Int32.Parse)?.ToList(); 
+
+            if (message.SafeDice != null && !string.IsNullOrEmpty(message.SafeDice)) {
+                this.SafeDice = message.SafeDice.Split(',')?.Select(Int32.Parse)?.ToList();
+            }
+
+            if (message.DangerDice != null && !string.IsNullOrEmpty(message.DangerDice)) {
+                this.DangerDice = message.DangerDice.Split(',')?.Select(Int32.Parse)?.ToList();
+            }            
         }
 
         //  Class > DB
@@ -102,13 +108,11 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //****************************
-        //****************** Operation
+        //****************** Accessors
 
-        //Add additional nested message for message action
+        //  add additional nested message for message action
         public void AddChild(Message message) {
             Children.Add(message);
         }
-
-
     }
 }

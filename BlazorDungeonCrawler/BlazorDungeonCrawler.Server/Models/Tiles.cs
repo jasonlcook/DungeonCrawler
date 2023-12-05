@@ -15,9 +15,12 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         //****************************
         //*************** Constructors
-        public Tiles(int depth, int floorRows, int floorColumns) {
-            _tiles = new();
 
+        public Tiles() {
+            _tiles = new();
+        }
+
+        public Tiles(int depth, int floorRows, int floorColumns) : base(){
             List<int> _tileIndexes = new();
 
             //      Initiate
@@ -134,12 +137,127 @@ namespace BlazorDungeonCrawler.Server.Models {
         }
 
         //****************************
-        //****************** Operation
+        //****************** Accessors
 
-        //  Return all tiles
-        public List<Tile> GetTiles() {
+        //********************** Tiles
+        //  return count of child elements
+        public int Count() {
+            return _tiles.Count;
+        }
+
+        //  retrieve tiles
+        public List<Tile> Get() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
             return _tiles;
         }
+
+        //  add a child element
+        public void Add(Tile tile) {
+            _tiles.Add(tile);
+        }
+
+        //  update a child element
+        public void Update(Tile currentTile) {
+            Tile tile;
+            for (int i = 0; i < _tiles.Count; i++) {
+                tile = _tiles[i];
+                if (tile.Id == currentTile.Id) {
+                    tile = currentTile;
+                }
+            }
+        }
+
+        //  retrieve selectable tiles
+        public List<Tile> GetSelectable() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles
+                .Where(t => t.Selectable == true)
+                .ToList();
+        }
+
+        //  retrieve hidden selectable tiles
+        public List<Tile> GetHiddenSelectable() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.Where(t => t.Selectable == true).Where(t => t.Hidden == true).ToList();
+        }
+
+        //  retrieve selectable tiles except descending stairs
+        public List<Tile> GetSelectableCurrentFloor() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.Where(t => t.Selectable == true)
+                .Where(t => t.Type != DungeonEvents.StairsDescending)
+                .ToList();
+        }
+
+        //  retrieve selectable tiles except stairs and entrance
+        public List<Tile> GetSelectableUnhighlightable() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles
+                .Where(t => t.Selectable == true)
+                .Where(t => t.Type != DungeonEvents.StairsDescending)
+                .Where(t => t.Type != DungeonEvents.StairsAscending)
+                .Where(t => t.Type != DungeonEvents.DungeonEntrance)
+                .ToList();
+        }
+
+        //  retrieve hidden tiles
+        public List<Tile> GetHidden() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.Where(t => t.Hidden == true).ToList();
+        }
+
+        //*********************** Tile
+
+        //  retrieve a tile
+        public Tile Get(Guid tileId) {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.Where(t => t.Id == tileId).FirstOrDefault();
+        }
+
+        //  retrieve the current tile
+        public Tile GetCurrent() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.FirstOrDefault(t => t.Current);
+        }
+
+        //  retrieve the dungeon entrance tile
+        public Tile GetDungeonEntrance() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.FirstOrDefault(t => t.Type == DungeonEvents.DungeonEntrance);
+        }
+
+        //  retrieve the ascending stairs tile
+        public Tile GetStairsAscending() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.FirstOrDefault(t => t.Type == DungeonEvents.StairsAscending);
+        }
+
+        //  retrieve the descending stairs tile
+        public Tile GetStairsDescending() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.FirstOrDefault(t => t.Type == DungeonEvents.StairsDescending);
+        }
+
+        //  retrieve the macguffin tile
+        public Tile GetMacguffin() {
+            if (_tiles == null || _tiles.Count == 0) { throw new ArgumentNullException("Dungeon Floor tiles"); }
+
+            return _tiles.FirstOrDefault(t => t.Type == DungeonEvents.Macguffin);
+        }
+
+        //****************************
+        //****************** Operation
 
         //  Unhide all tiles
         public void Unhide() {
