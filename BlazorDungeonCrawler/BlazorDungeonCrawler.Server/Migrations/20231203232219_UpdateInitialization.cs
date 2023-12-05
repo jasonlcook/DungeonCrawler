@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BlazorDungeonCrawler.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class UpdateInitialization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

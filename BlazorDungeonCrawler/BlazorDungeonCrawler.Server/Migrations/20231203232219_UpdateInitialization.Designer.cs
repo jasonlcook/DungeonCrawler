@@ -13,8 +13,7 @@ namespace BlazorDungeonCrawler.Server.Migrations
 {
     [DbContext(typeof(DungeonDbContext))]
     [Migration("20231203232219_test")]
-    partial class test
-    {
+    partial class UpdateInitialization {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
