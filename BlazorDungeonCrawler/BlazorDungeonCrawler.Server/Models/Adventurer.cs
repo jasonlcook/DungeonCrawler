@@ -27,7 +27,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int DamageBase { get; set; }                 //Initial damage dealt to monsters
         public int DamagePotion { get; set; }               //Amount of additional damage from potion effect
         public int DamagePotionDuration { get; set; }       //How many steps the potion will last
-        
+
         //  Protection
         public int ProtectionBase { get; set; }             //Initial protection from monster attacks
         public int ShieldPotion { get; set; }               //Amount of additional protection the potion affords
@@ -36,7 +36,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         //      Armour
         //      If any of the below values are above zero that piece of armour is being worn providing that amount of
         //      additional protection
-        public int ArmourHelmet { get; set; }               
+        public int ArmourHelmet { get; set; }
         public int ArmourBreastplate { get; set; }
         public int ArmourGauntlet { get; set; }
         public int ArmourGreave { get; set; }
@@ -47,9 +47,11 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         //****************************
         //*************** Constructors
-        public Adventurer(int health, int damage, int protection) {
+        public Adventurer() {
             this.Id = Guid.NewGuid();
+        }
 
+        public Adventurer(int health, int damage, int protection) : base() {
             this.IsAlive = true;
 
             this.ExperienceLevel = 1;
