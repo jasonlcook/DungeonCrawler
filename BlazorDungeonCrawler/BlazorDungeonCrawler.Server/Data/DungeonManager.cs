@@ -18,10 +18,7 @@ using BlazorDungeonCrawler.Server.Database.Resources.Queries.Get;
 //  Namespace aliasing
 //  The database is built using the shared models, however the related models methods are limited in scope to the server project.
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
-using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
-using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
-using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
 namespace BlazorDungeonCrawler.Server.Data {
