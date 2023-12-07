@@ -1,5 +1,6 @@
 ﻿//Adventure message log 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Message {
@@ -14,6 +15,14 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public string SafeDice { get; set; }
         public string DangerDice { get; set; }
+
+        [ForeignKey("Message")]
+        public Guid? MessageId { get; set; }
+
+
+        [ForeignKey("Dungeon")]
+        public Guid? DungeonId { get; set; }
+
 
         public Message() {
             Id = Guid.Empty;

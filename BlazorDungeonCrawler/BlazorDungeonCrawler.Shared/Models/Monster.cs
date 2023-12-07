@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Monster {
@@ -20,6 +21,11 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public int ClientX { get; set; }
         public int ClientY { get; set; }
+
+
+        [ForeignKey("Tiles")]
+        public Guid TileId { get; set; }
+
 
         public Monster() {
             Id = Guid.Empty;

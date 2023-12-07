@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorDungeonCrawler.Shared.Models {
     public class Floor {
@@ -15,6 +16,11 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
         public int Rows { get; set; } 
         public int Columns { get; set; }
+
+
+        [ForeignKey("Dungeon")]
+        public Guid DungeonId { get; set; }
+
 
         public Floor() {
             Id = Guid.Empty;

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorDungeonCrawler.Server.Migrations
 {
     [DbContext(typeof(DungeonDbContext))]
-    [Migration("20231203232219_test")]
+    [Migration("20231203232219_UpdateInitialization")]
     partial class UpdateInitialization {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
