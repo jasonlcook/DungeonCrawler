@@ -17,10 +17,12 @@ namespace BlazorDungeonCrawler.Server.Models {
         //*************** Constructors
 
         public Tiles() {
-            _tiles = new();
+            this._tiles = new();
         }
 
-        public Tiles(int depth, int floorRows, int floorColumns) : base(){
+        public Tiles(int depth, int floorRows, int floorColumns) {
+            this._tiles = new();
+
             List<int> _tileIndexes = new();
 
             //      Initiate
@@ -45,7 +47,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 }
 
                 tileType = Dice.RollDSix();
-                _tiles.Add(new Tile() {
+                this._tiles.Add(new Tile() {
                     Row = row,
                     Column = column,
                     Type = DungeonEvent.GetType(tileType)
