@@ -17,6 +17,10 @@ namespace BlazorDungeonCrawler.Server.Models {
             _floors = new();
         }
 
+        public Floors(Floor floor) {
+            _floors = new() { floor };
+        }
+        
         //******************** Mapping
 
         //  DB > Class
@@ -74,6 +78,16 @@ namespace BlazorDungeonCrawler.Server.Models {
                 if (floor.Id == _floor.Id) {
                     floor = _floor;
                 }
+            }
+        }
+
+        //****************************
+        //****************** Operation
+
+        public void UnsetCurrent() {
+            foreach (Floor floor in _floors)
+            {
+                floor.IsCurrent = false;
             }
         }
     }

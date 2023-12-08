@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Shared.Models {
@@ -27,7 +25,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
 
 
         [ForeignKey("Floor")]
-        public Guid FloorId { get; set; }
+        public Guid FloorId { get; set; }   
 
 
         public Tile() {

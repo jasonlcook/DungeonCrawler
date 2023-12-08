@@ -3,6 +3,7 @@
 //  Server version of the Database and Client class containing mothods for updating state and mapping between Shared
 //  version
 
+using BlazorDungeonCrawler.Shared.Models;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
@@ -13,19 +14,26 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Guid Id { get; set; }                        //Database Id
 
         public int Index { get; set; }                      //Monster's place in party
-        
+
         public string TypeName { get; set; }                //Monster display name
         
+
         public int Experience { get; set; }                 //Amount of experience gained by killing the monster
+
 
         public int Health { get; set; }                     //Current health points
         public int Damage { get; set; }                     //Damage dealt to adventurer
         public int Protection { get; set; }                 //Protection from adventurer's attacks
 
+
+        public Guid TileId { get; set; }                    //ForeignKey to parent record
+
+
         //  Counter position
         //  Each monster is displayed as a counter showing its current health.The location of the counter is set when the tile is generated.
         public int ClientX { get; set; }
         public int ClientY { get; set; }
+
 
         //****************************
         //*************** Constructors
@@ -44,6 +52,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             Experience = monster.Experience;
             ClientX = monster.ClientX;
             ClientY = monster.ClientY;
+            TileId = monster.TileId;
         }
 
         //******************** Mapping
@@ -64,8 +73,9 @@ namespace BlazorDungeonCrawler.Server.Models {
                 Protection = this.Protection,
                 Experience = this.Experience,
                 ClientX = this.ClientX,
-                ClientY = this.ClientY
-            };
+                ClientY = this.ClientY,
+                TileId = this.TileId
+        };
         }
     }
 }

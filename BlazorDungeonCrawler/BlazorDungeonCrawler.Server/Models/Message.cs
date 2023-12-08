@@ -2,6 +2,8 @@
 //  Message
 //  A message that will be dispayed in the client log
 
+using BlazorDungeonCrawler.Shared.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 using SharedMessage = BlazorDungeonCrawler.Shared.Models.Message;
@@ -21,6 +23,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         //  Dice
         public List<int>? SafeDice { get; private set; }    //Adventurer dice
         public List<int>? DangerDice { get; private set; }  //Monster dice
+
+        public Guid? MessageId { get; set; }                //ForeignKey to possible parent record
+        public Guid? DungeonId { get; set; }                //ForeignKey to possible parent record
 
         //****************************
         //*************** Constructors
@@ -64,7 +69,10 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             if (message.DangerDice != null && !string.IsNullOrEmpty(message.DangerDice)) {
                 this.DangerDice = message.DangerDice.Split(',')?.Select(Int32.Parse)?.ToList();
-            }            
+            }
+
+            MessageId = message.MessageId;
+            DungeonId = message.DungeonId;
         }
 
         //  Class > DB
@@ -72,7 +80,9 @@ namespace BlazorDungeonCrawler.Server.Models {
             SharedMessage sharedMessage = new SharedMessage() {
                 Id = this.Id,
                 Datestamp = this.Datestamp,
-                Text = this.Text
+                Text = this.Text,
+                MessageId = this.MessageId,
+                DungeonId = this.DungeonId
             };
 
             if (SafeDice != null && SafeDice.Count > 0) {

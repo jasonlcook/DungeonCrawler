@@ -29,6 +29,8 @@ namespace BlazorDungeonCrawler.Server.Models {
 
         public List<Monster> Monsters { get; set; }         //List of monsters currently on this tile
 
+        public Guid FloorId { get; set; }                   //ForeignKey to parent record
+
 
         //  Position 
         //  The location of the tile on the floor grid
