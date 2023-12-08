@@ -14,6 +14,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public List<Tile> Tiles { get; set; }
 
 
+        public bool IsCurrent { get; set; }
+
+
         public int Rows { get; set; } 
         public int Columns { get; set; }
 

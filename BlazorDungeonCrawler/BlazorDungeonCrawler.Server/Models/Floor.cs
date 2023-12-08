@@ -14,13 +14,16 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int Depth { get; set; }                      //Current floor depth
 
 
-        public Tiles Tiles { get; set; }               //the collection of tiles that make up the dungeon floor
-        
+        public Tiles Tiles { get; set; }                    //the collection of tiles that make up the dungeon floor
+
+        public bool IsCurrent { get; set; }                 //flag for current floor
+
+        public Guid DungeonId { get; set; }                 //ForeignKey to parent record
 
         //  Details of the floor layout used to both populate the floor with the correct amount of tile and and position the floor on the client
         public int Rows { get; set; }
         public int Columns { get; set; }
-        
+
 
         //****************************
         //*************** Constructors
@@ -36,6 +39,8 @@ namespace BlazorDungeonCrawler.Server.Models {
 
             Tiles = new();
 
+            IsCurrent = false;
+
             GetRowsAndColumnsForCurrentDepth();
         }
 
@@ -45,6 +50,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public Floor(SharedFloor floor) {
             Id = floor.Id;
             Depth = floor.Depth;
+            IsCurrent = floor.IsCurrent;
             Rows = floor.Rows;
             Columns = floor.Columns;
 
@@ -52,6 +58,8 @@ namespace BlazorDungeonCrawler.Server.Models {
             foreach (SharedTile tile in floor.Tiles) {
                 Tiles.Add(new(tile));
             }
+
+            DungeonId = floor.DungeonId;
         }
 
         //  Class > DB
@@ -59,8 +67,10 @@ namespace BlazorDungeonCrawler.Server.Models {
             SharedFloor floor = new() {
                 Id = this.Id,
                 Depth = this.Depth,
+                IsCurrent = this.IsCurrent,
                 Rows = this.Rows,
-                Columns = this.Columns
+                Columns = this.Columns,
+                DungeonId = this.DungeonId
             };
 
             floor.Tiles = new();
