@@ -16,11 +16,11 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Queries.Get {
             if (dungeonId == Guid.Empty) { throw new ArgumentNullException("Dungeon query get without Id"); }
 
             try {
-                _logger.LogInformation("Dungeon retrieved");
+                _logger.LogInformation("Retrieving Dungeon");
 
                 return await _dbContext.Dungeons
                     .Include("Adventurer")
-                    .Include("Floors")
+                    .Include(d => d.Floors.Where(f => f.IsCurrent == true))
                     .Include("Floors.Tiles")
                     .Include("Floors.Tiles.Monsters")
                     .Include(d => d.Messages.Where(m => m.DungeonId == dungeonId).OrderByDescending(m => m.Datestamp).Take(10))
