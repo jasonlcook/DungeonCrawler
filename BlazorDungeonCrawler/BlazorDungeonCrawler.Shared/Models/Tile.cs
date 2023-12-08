@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 using BlazorDungeonCrawler.Shared.Enumerators;
 
 namespace BlazorDungeonCrawler.Shared.Models {
