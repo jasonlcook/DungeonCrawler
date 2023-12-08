@@ -18,6 +18,7 @@ using BlazorDungeonCrawler.Server.Database.Resources.Queries.Get;
 //  Namespace aliasing
 //  The database is built using the shared models, however the related models methods are limited in scope to the server project.
 using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
+using SharedFloor = BlazorDungeonCrawler.Shared.Models.Floor;
 using SharedTile = BlazorDungeonCrawler.Shared.Models.Tile;
 using SharedMonster = BlazorDungeonCrawler.Shared.Models.Monster;
 
@@ -73,6 +74,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             int depth = 1;
             Floor newFloor = new(depth);
+            newFloor.IsCurrent = true;
 
             //	  Tiles
             newFloor.Tiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
@@ -236,28 +238,41 @@ namespace BlazorDungeonCrawler.Server.Data {
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
 
                     int increasedDepth = dungeon.Depth + 1;
-                    Floor deeperFloor = dungeon.Floors.Get(increasedDepth);
+
+                    FloorQueries floorDescendingQueries = new(_contextFactory.CreateDbContext(), _logger);
+                    SharedFloor sharedFloor = await floorDescendingQueries.Get(dungeonId, increasedDepth);
 
                     //If deeper floor does not exist create it
-                    if (deeperFloor == null || deeperFloor.Id == Guid.Empty) {
+                    if (sharedFloor == null || sharedFloor.Id == Guid.Empty) {
                         //Next floor
                         Floor newFloor = new(increasedDepth);
-
                         messages.Add(new(_messageManager.DungeonIncreasedDepth(increasedDepth)));
 
                         //  Tiles
                         Tiles newFloorTiles = new(newFloor.Depth, newFloor.Rows, newFloor.Columns);
                         newFloor.Tiles = newFloorTiles;
 
-                        deeperFloor = newFloor;
-
-                        dungeon.Floors.Add(deeperFloor);
-
+                        //  Create
                         FloorCreate floorCreate = new(_contextFactory.CreateDbContext(), _logger);
-                        await floorCreate.Create(dungeon.Id, deeperFloor.SharedModelMapper());
+                        await floorCreate.Create(dungeon.Id, newFloor.SharedModelMapper());
+
+                        //Set stiars discover prompt 
                         dungeon.StairsDiscovered = true;
                     } else {
-                        dungeon.Depth = increasedDepth;
+                        FloorUpdate floorDescendingUpdate = new(_contextFactory.CreateDbContext(), _logger);
+
+                        currentFloor.IsCurrent = false;
+                        await floorDescendingUpdate.Update(currentFloor.SharedModelMapper());
+
+                        sharedFloor.IsCurrent = true;
+                        await floorDescendingUpdate.Update(sharedFloor);
+
+                        Floor deeperFloor = new(sharedFloor);
+
+                        dungeon.Depth = deeperFloor.Depth;
+
+                        dungeon.Floors = new(deeperFloor);
+
                         currentFloor = deeperFloor;
                         currentFloorTiles = deeperFloor.Tiles;
                     }
@@ -268,13 +283,29 @@ namespace BlazorDungeonCrawler.Server.Data {
                     //  Set surrounding selecteable tiles for when the user returns to this floor
                     currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
 
-                    int decreaseDepth = dungeon.Depth -= 1;
-                    dungeon.Depth = decreaseDepth;
+                    //update floor left
+                    Floor floorLeft = dungeon.Floors.Get(dungeon.Depth);
+                    floorLeft.IsCurrent = false;
 
-                    currentFloor = dungeon.Floors.Get(decreaseDepth);
+                    FloorUpdate floorUpdate = new(_contextFactory.CreateDbContext(), _logger);
+                    await floorUpdate.Update(floorLeft.SharedModelMapper());
+
+                    //get floor enterd
+                    int decreaseDepth = dungeon.Depth -= 1;
+
+                    FloorQueries floorAscendingQueries = new(_contextFactory.CreateDbContext(), _logger);
+                    Floor floorEntered = new(await floorAscendingQueries.Get(dungeonId, decreaseDepth));
+
+                    if (floorEntered == null || floorEntered.Id == Guid.Empty || floorEntered.Tiles == null) {
+                        throw new Exception("Floor not found");
+                    }
+
+                    floorEntered.IsCurrent = true;
+                    dungeon.Floors = new(floorEntered);
+
                     if (currentFloor == null || currentFloor.Id == Guid.Empty || currentFloor.Tiles == null) { throw new ArgumentNullException("Floor"); }
 
-                    currentFloorTiles = currentFloor.Tiles;
+                    currentFloorTiles = floorEntered.Tiles;
 
                     setSelectable = false;
                     break;
@@ -815,11 +846,26 @@ namespace BlazorDungeonCrawler.Server.Data {
             if (dungeon == null || dungeon.Id != dungeonId) { throw new ArgumentNullException("Dungeon"); }
             if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
 
+            //update floor left
+            Floor floorLeft = dungeon.Floors.Get(dungeon.Depth);
+            floorLeft.IsCurrent = false;
+
+            FloorUpdate floorUpdate = new(_contextFactory.CreateDbContext(), _logger);
+            await floorUpdate.Update(floorLeft.SharedModelMapper());
+
+            //get floor enterd
             int increasedDepth = dungeon.Depth += 1;
-            Floor currentFloor = dungeon.Floors.Get(increasedDepth);
-            if (currentFloor == null || currentFloor.Id == Guid.Empty || currentFloor.Tiles == null) {
+
+            FloorQueries floorQueries = new(_contextFactory.CreateDbContext(), _logger);
+            Floor floorEntered = new(await floorQueries.Get(dungeonId, increasedDepth));
+
+            if (floorEntered == null || floorEntered.Id == Guid.Empty || floorEntered.Tiles == null) {
                 throw new Exception("Floor not found");
             }
+
+            floorEntered.IsCurrent = true;
+
+            dungeon.Floors = new(floorEntered);
 
             dungeon.StairsDiscovered = false;
 
@@ -1255,7 +1301,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             //Update Tiles
             currentFloor.Tiles = currentFloorTiles;
 
-            
+
             //Update Dungon
             SharedDungeon sharedDungeon = dungeon.SharedModelMapper();
 
