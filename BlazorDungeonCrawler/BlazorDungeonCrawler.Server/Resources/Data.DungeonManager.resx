@@ -202,7 +202,7 @@
     <value>FIGHTS FLED [FIGHTS_FLED].</value>
   </data>
   <data name="MessageEndOfGameFightsTotal" xml:space="preserve">
-    <value>FLOOR [FLOOR_DEPTH]: FIGHTS [FIGHTS_TOTAL]."</value>
+    <value>FLOOR [FLOOR_DEPTH]: FIGHTS [FIGHTS_TOTAL].</value>
   </data>
   <data name="MessageEndOfGameFightsWon" xml:space="preserve">
     <value>FIGHTS WON [FIGHTS_WON].</value>
