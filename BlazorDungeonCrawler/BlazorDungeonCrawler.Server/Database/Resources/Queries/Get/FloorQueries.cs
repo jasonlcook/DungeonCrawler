@@ -30,5 +30,32 @@ namespace BlazorDungeonCrawler.Server.Database.Resources.Queries.Get {
                 throw new Exception("Database error while attempting to retrieve the Floor.");
             }
         }
+
+        public async Task<List<Floor>> GetUnhiddenFloors(Guid dungeonId) {
+            if (dungeonId == Guid.Empty) { throw new ArgumentNullException("Floor query get without dungeon Id"); }
+
+            try {
+                _logger.LogInformation("Retrieving Floors");
+
+                List<Floor> floors =  await _dbContext.Floors
+                    .Where(f => f.DungeonId == dungeonId)
+                    .Include("Tiles")
+                    .Include("Tiles.Monsters")
+                    .ToListAsync();
+
+                foreach (Floor floor in floors)
+                {
+                    foreach (Tile tile in floor.Tiles)
+                    {
+                        tile.Hidden = false;
+                    }
+                }
+
+                return floors;
+            } catch (Exception ex) {
+                _logger.LogError($"FloorQueries Get Error: {ex.Message}");
+                throw new Exception("Database error while attempting to retrieve the Floor.");
+            }
+        }
     }
 }

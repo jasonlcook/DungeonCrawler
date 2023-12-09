@@ -170,6 +170,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                 if (tile.Id == tileId) {
                     selectedTile = tile;
 
+                    selectedTile.Visited = true;
                     selectedTile.Hidden = false;
                     selectedTile.Current = true;
                 }
@@ -182,7 +183,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                     } else {
                         dungeon.GameOver = true;
 
-                        Message gameOverMessage = GenerateGameOverMessage(_messageManager.DungeonExitSuccess(), dungeon.SharedModelMapper());
+                        Message gameOverMessage = await GenerateGameOverMessage(_messageManager.DungeonExitSuccess(), dungeon.SharedModelMapper());
                         messages.Add(gameOverMessage);
 
                         currentFloorTiles.Unhide();
@@ -939,7 +940,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         adventurer.IsAlive = false;
 
                         dungeon.GameOver = true;
-                        Message gameOverMessage = GenerateGameOverMessage(_messageManager.MonsterKilledAdventure(adventurerWounds), dungeon.SharedModelMapper());
+                        Message gameOverMessage = await GenerateGameOverMessage(_messageManager.MonsterKilledAdventure(adventurerWounds), dungeon.SharedModelMapper());
                         monsterFlee = gameOverMessage;
 
                         selectedTile.Type = DungeonEvents.FightLost;
@@ -1240,7 +1241,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 currentFloorTiles.Unhide();
 
-                                gameOverMessage = GenerateGameOverMessage(importantMessage, dungeon.SharedModelMapper());
+                                gameOverMessage = await GenerateGameOverMessage(importantMessage, dungeon.SharedModelMapper());
 
                                 break;
                             }
@@ -1317,19 +1318,24 @@ namespace BlazorDungeonCrawler.Server.Data {
         //	End of game summary
         //	Once the Adventurer dies, or returns victorious to the Dungeon entrance, a summery of the game will be generated from the database.
 
-        public Message GenerateGameOverMessage(string message, SharedDungeon dungeon) {
+        public async Task<Message> GenerateGameOverMessage(string message, SharedDungeon dungeon) {
             Message endOfGameMessage = new(message);
 
             //Floor            
             if (dungeon.Floors == null) { throw new ArgumentNullException("Dungeon Floors"); }
             int floorsDiscovered = dungeon.Floors.Count();
 
+            FloorQueries floorDescendingQueries = new(_contextFactory.CreateDbContext(), _logger);
+            List<SharedFloor> sharedFloor = await floorDescendingQueries.GetUnhiddenFloors(dungeon.Id);
+
+            dungeon.Floors = new(sharedFloor);
+
             endOfGameMessage.AddChild(new(_messageManager.EndOfGameFloors(floorsDiscovered)));
 
             //Tiles
             foreach (var floor in dungeon.Floors.OrderBy(f => f.Depth).ToList()) {
                 int tilesTotal = floor.Tiles.Count();
-                int tilesFound = floor.Tiles.Where(t => t.Hidden == false).ToList().Count();
+                int tilesFound = floor.Tiles.Where(t => t.Visited == true).ToList().Count();
                 endOfGameMessage.AddChild(new(_messageManager.EndOfGameFloorDetails(floor.Depth, tilesFound, tilesTotal)));
             }
 
