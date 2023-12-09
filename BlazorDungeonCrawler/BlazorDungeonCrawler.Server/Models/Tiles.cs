@@ -89,6 +89,7 @@ namespace BlazorDungeonCrawler.Server.Models {
 
                 //if it is a starting tile set it as current un visible
                 if (randomSelectedTile.Type == DungeonEvents.DungeonEntrance || randomSelectedTile.Type == DungeonEvents.StairsAscending) {
+                    randomSelectedTile.Visited = true;
                     randomSelectedTile.Hidden = false;
                     randomSelectedTile.Current = true;
 
@@ -119,6 +120,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                     Column = tile.Column,
                     Type = tile.Type,
                     Current = tile.Current,
+                    Visited = tile.Visited,
                     Hidden = tile.Hidden,
                     Selectable = tile.Selectable,
                     FightWon = tile.FightWon,

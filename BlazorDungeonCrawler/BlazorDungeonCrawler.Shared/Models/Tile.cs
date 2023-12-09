@@ -17,6 +17,7 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public DungeonEvents Type { get; set; }
 
 
+        public bool Visited { get; set; }
         public bool Hidden { get; set; }
         public bool Selectable { get; set; }
         public bool Current { get; set; }

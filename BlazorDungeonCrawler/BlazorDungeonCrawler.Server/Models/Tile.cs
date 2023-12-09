@@ -18,7 +18,8 @@ namespace BlazorDungeonCrawler.Server.Models {
         public DungeonEvents Type { get; set; }             //Current tyle type
 
 
-        public bool Hidden { get; set; }                    //Is the tile type known 
+        public bool Visited { get; set; }                   //Has tile been visited
+        public bool Hidden { get; set; }                    //Is the tile being shown 
 
         public bool Selectable { get; set; }                //Is the tile currently selectable (accessable by the adventurer)
 
@@ -45,6 +46,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             Type = DungeonEvents.Unknown;
 
             Current = false;
+            Visited = false;
             Hidden = true;
             FightWon = false;
 
@@ -57,6 +59,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             Column = tile.Column;
             Type = tile.Type;
             Current = tile.Current;
+            Visited = tile.Visited;
             Hidden = tile.Hidden;
             Selectable = tile.Selectable;
             FightWon = tile.FightWon;
@@ -77,6 +80,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 Column = this.Column,
                 Type = this.Type,
                 Current = this.Current,
+                Visited = this.Visited,
                 Hidden = this.Hidden,
                 Selectable = this.Selectable,
                 FightWon = this.FightWon
