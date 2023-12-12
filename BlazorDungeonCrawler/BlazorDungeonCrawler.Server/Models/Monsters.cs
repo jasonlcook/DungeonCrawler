@@ -40,13 +40,14 @@ namespace BlazorDungeonCrawler.Server.Models {
                 packCount = Dice.RandomNumber(1, currentMonsterType.MaxPackNumber);
             }
 
-            int health, damage, protection, rollValue;
-            List<int> healthDice = new(), damageDice = new(), protectionDice = new();
+            int dexterityValue, healthValue, damageValue, protectionValue, rollValue;
+            List<int> dexterityDice = new(), healthDice = new(), damageDice = new(), protectionDice = new();
 
             for (int i = 0; i < packCount; i++) {
-                health = 0;
-                damage = 0;
-                protection = 0;
+                dexterityValue = 0;
+                healthValue = 0;
+                damageValue = 0;
+                protectionValue = 0;
 
                 Monster monster = new Monster() {
                     Id = Guid.NewGuid(),
@@ -54,28 +55,35 @@ namespace BlazorDungeonCrawler.Server.Models {
                     TypeName = currentMonsterType.Name
                 };
 
+                for (int dex = 0; dex < currentMonsterType.DexterityDiceCount; dex++) {
+                    rollValue = Dice.RollDSix();
+                    dexterityDice.Add(rollValue);
+                    dexterityValue += rollValue;
+                }
+                monster.Dexterity = dexterityValue;
+
                 for (int h = 0; h < currentMonsterType.HealthDiceCount; h++) {
                     rollValue = Dice.RollDSix();
                     healthDice.Add(rollValue);
-                    health += rollValue;
+                    healthValue += rollValue;
                 }
-                monster.Health = health;
+                monster.Health = healthValue;
 
-                for (int d = 0; d < currentMonsterType.DamageDiceCount; d++) {
+                for (int dam = 0; dam < currentMonsterType.DamageDiceCount; dam++) {
                     rollValue = Dice.RollDSix();
                     damageDice.Add(rollValue);
-                    damage += rollValue;
+                    damageValue += rollValue;
                 }
-                monster.Damage = damage;
+                monster.Damage = damageValue;
 
-                for (int p = 0; p < currentMonsterType.DamageDiceCount; p++) {
+                for (int pro = 0; pro < currentMonsterType.ProtectionDiceCount; pro++) {
                     rollValue = Dice.RollDSix();
                     protectionDice.Add(rollValue);
-                    protection += rollValue;
+                    protectionValue += rollValue;
                 }
-                monster.Protection = protection;
+                monster.Protection = protectionValue;
 
-                monster.Experience = (monster.Health + monster.Damage + monster.Protection) / 2;
+                monster.Experience = (monster.Dexterity + monster.Health + monster.Damage + monster.Protection) / 2;
 
                 _monsters.Add(monster);
             }

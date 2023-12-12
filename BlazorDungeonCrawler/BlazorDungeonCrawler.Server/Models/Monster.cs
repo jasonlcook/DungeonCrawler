@@ -21,6 +21,7 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int Experience { get; set; }                 //Amount of experience gained by killing the monster
 
 
+        public int Dexterity { get; set; }                  //Dexterity
         public int Health { get; set; }                     //Current health points
         public int Damage { get; set; }                     //Damage dealt to adventurer
         public int Protection { get; set; }                 //Protection from adventurer's attacks
@@ -46,6 +47,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             Id = monster.Id;
             Index = monster.Index;
             TypeName = monster.TypeName;
+            Dexterity = monster.Dexterity;
             Health = monster.Health;
             Damage = monster.Damage;
             Protection = monster.Protection;
@@ -68,6 +70,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 Id = this.Id,
                 Index = this.Index,
                 TypeName = this.TypeName,
+                Dexterity = this.Dexterity,
                 Health = this.Health,
                 Damage = this.Damage,
                 Protection = this.Protection,

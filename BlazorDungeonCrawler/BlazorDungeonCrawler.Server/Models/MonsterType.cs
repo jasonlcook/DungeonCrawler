@@ -16,7 +16,8 @@ namespace BlazorDungeonCrawler.Server.Models
 
         public int MaxPackNumber { get; set; }              //Maximum amount to generate
 
-
+        
+        public int DexterityDiceCount { get; set; }         //Amount of die used to generate dexterity stat
         public int HealthDiceCount { get; set; }            //Amount of die used to generate health stat
         public int DamageDiceCount { get; set; }            //Amount of die used to generate damage stat
         public int ProtectionDiceCount { get; set; }        //Amount of die used to generate protection stat
