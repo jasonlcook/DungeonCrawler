@@ -2,6 +2,7 @@
 //  Adventurer
 //  Server version of the Database and Client class containing mothods for updating state and mapping between Shared
 //  version
+using BlazorDungeonCrawler.Shared.Models;
 using SharedAdventurer = BlazorDungeonCrawler.Shared.Models.Adventurer;
 
 namespace BlazorDungeonCrawler.Server.Models {
@@ -16,6 +17,9 @@ namespace BlazorDungeonCrawler.Server.Models {
         public int ExperienceLevel { get; set; }            //Current experience level
         public int Experience { get; set; }                 //Amount of experience points
         public int NextExperienceLevelCost { get; set; }    //Required experience points for next level
+
+        //  Dexterity
+        public int DexterityBase { get; set; }              //Dexterity
 
         //  Health
         public int HealthBase { get; set; }                 //Current health points
@@ -72,6 +76,7 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.IsAlive = adventurer.IsAlive;
             this.ExperienceLevel = adventurer.ExperienceLevel;
             this.Experience = adventurer.Experience;
+            this.DexterityBase = adventurer.DexterityBase;
             this.NextExperienceLevelCost = adventurer.NextExperienceLevelCost;
             this.HealthBase = adventurer.HealthBase;
             this.HealthInitial = adventurer.HealthInitial;
@@ -98,6 +103,7 @@ namespace BlazorDungeonCrawler.Server.Models {
                 IsAlive = this.IsAlive,
                 ExperienceLevel = this.ExperienceLevel,
                 Experience = this.Experience,
+                DexterityBase = this.DexterityBase,
                 NextExperienceLevelCost = this.NextExperienceLevelCost,
                 HealthBase = this.HealthBase,
                 HealthInitial = this.HealthInitial,
@@ -136,6 +142,13 @@ namespace BlazorDungeonCrawler.Server.Models {
                 this.ExperienceLevel += 1;
                 NextExperienceLevelCost = GetLevelCost(ExperienceLevel);
 
+                int dexterityUpgrade = DexterityBase / 2;
+                if (dexterityUpgrade < 1) {
+                    dexterityUpgrade = 1;
+                }
+
+                DexterityBase += dexterityUpgrade;
+
                 int healthUpgrade = HealthInitial / 2;
                 if (healthUpgrade < 1) {
                     healthUpgrade = 1;
@@ -161,6 +174,12 @@ namespace BlazorDungeonCrawler.Server.Models {
                 LevelUp();
             }
         }
+
+        //  Dexterity
+        public int GetDexterity() {
+            return DexterityBase;
+        }
+
 
         //  Damage
         public int GetDamage() {

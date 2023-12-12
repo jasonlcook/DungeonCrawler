@@ -15,6 +15,9 @@ namespace BlazorDungeonCrawler.Shared.Models {
         public int NextExperienceLevelCost { get; set; }
 
 
+        public int DexterityBase { get; set; }
+
+
         public int HealthBase { get; set; }
         public int HealthInitial { get; set; }
         public int AuraPotion { get; set; }
