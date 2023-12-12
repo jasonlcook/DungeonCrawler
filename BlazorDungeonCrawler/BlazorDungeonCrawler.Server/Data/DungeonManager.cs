@@ -1031,9 +1031,9 @@ namespace BlazorDungeonCrawler.Server.Data {
             Adventurer adventurer = dungeon.Adventurer;
             adventurer.DurationDecrement();
 
+            int adventurerDexterity = adventurer.GetDexterity();
             int adventurerDamage = adventurer.GetDamage();
             int adventurerProtection = adventurer.GetProtection();
-
 
             Message? summaryMessage = null;
 
@@ -1068,20 +1068,13 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
                 Monster currentMonster = monsters[monsterindex];
 
+                int monsterDexterity = currentMonster.Dexterity;
                 int monsterProtection = currentMonster.Protection;
                 int monsterHealth = currentMonster.Health;
 
-                //Adventurer attack
-                List<int> adventurerAttackDice = Dice.RollMiltipleDSixs(1);
-                int adventurerAttackValue = Dice.AddRollValues(adventurerAttackDice);
-
-                //Monster dodge
-                List<int> monsterDodgeRolls = Dice.RollMiltipleDSixs(1);
-                int monsterDodgeValue = Dice.AddRollValues(monsterDodgeRolls);
-
                 //Monster wounds
                 int monsterWounds = 0;
-                if (adventurerAttackValue > monsterDodgeValue) {
+                if (adventurerDexterity > monsterDexterity) {
                     monsterWounds = adventurerDamage - monsterProtection;
 
                     if (monsterWounds < 1) {
@@ -1109,7 +1102,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 adventurerCombatResult.AddChild(combatInitiated);
                             }
 
-                            adventurerCombatResult.AddChild(new(_messageManager.AdventurerAttackDetails(adventurerAttackValue, monsterDodgeValue), adventurerAttackDice, monsterDodgeRolls));
+                            adventurerCombatResult.AddChild(new(_messageManager.AdventurerAttackDetails(adventurerDexterity, monsterDexterity), adventurerDexterity, monsterDexterity));
                         } else {
                             monsterHealth = 0;
 
@@ -1188,29 +1181,23 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                     selectedTile.Monsters = monsters;
                 } else {
-                    adventurerCombatResult = new(_messageManager.AdventurerAttackDodged(monsterDodgeValue, adventurerAttackValue), adventurerAttackDice, monsterDodgeRolls);
+                    adventurerCombatResult = new(_messageManager.AdventurerAttackDodged(monsterDexterity, adventurerDexterity), adventurerDexterity, monsterDexterity);
                 }
             }
 
             //Monster attack
             if (dungeon.InCombat) {
-                int monsterDamage, monsterProtection, monsterHealth;
+                int monsterDexterity, monsterDamage, monsterProtection, monsterHealth;
                 foreach (Monster monster in monsters) {
                     //Monster details
+                    monsterDexterity = monster.Dexterity;
                     monsterDamage = monster.Damage;
                     monsterProtection = monster.Protection;
                     monsterHealth = monster.Health;
-
-                    List<int> monsterAttackDice = Dice.RollMiltipleDSixs(1);
-                    int monsterAttackValue = Dice.AddRollValues(monsterAttackDice);
-
-                    //Adventurer dodge
-                    List<int> adventurerDodgeRolls = Dice.RollMiltipleDSixs(1);
-                    int adventurerDodgeValue = Dice.AddRollValues(adventurerDodgeRolls);
-
+                                        
                     //Adventurer wounds
                     int adventurerWounds = 0;
-                    if (monsterAttackValue > adventurerDodgeValue) {
+                    if (monsterDexterity > adventurerDexterity) {
                         adventurerWounds = monsterDamage - adventurerProtection;
 
                         if (adventurerWounds > 0) {
@@ -1250,7 +1237,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 monsterCombatResult.AddChild(combatInitiated);
                             }
 
-                            monsterCombatResult.AddChild(new(_messageManager.MonsterAttackHitDetails(monsterAttackValue, adventurerDodgeValue), adventurerDodgeRolls, monsterAttackDice));
+                            monsterCombatResult.AddChild(new(_messageManager.MonsterAttackHitDetails(monsterDexterity, adventurerDexterity), adventurerDexterity, monsterDexterity));
                         } else {
                             string monsterCombatWiff = _messageManager.MonsterAttackNoDamage();
 
@@ -1261,7 +1248,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                         }
                     } else {
 
-                        monsterCombatResult = new(_messageManager.MonsterAttackMissDetails(adventurerDodgeValue, monsterAttackValue), adventurerDodgeRolls, monsterAttackDice);
+                        monsterCombatResult = new(_messageManager.MonsterAttackMissDetails(adventurerDexterity, monsterDexterity), adventurerDexterity, monsterDexterity);
 
                         if (combatInitiated != null) {
                             monsterCombatResult.AddChild(combatInitiated);
