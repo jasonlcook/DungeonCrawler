@@ -287,27 +287,9 @@ namespace BlazorDungeonCrawler.Server.Data {
             return messageAdventurerAttackHits.Replace("[MONSTER_WOUNDS_RECEIVED]", monsterWounds.ToString()).Replace("[MONSTER_HEALTH_REMAINING]", adventurerCurrentHealth.ToString());
         }
 
-        //      Details
-        public string AdventurerAttackDetails(int adventurerAttackValue, int monsterDodgeValue) {
-            string messageAdventurerAttackDetails = _localiser["MessageAdventurerAttackDetails"];
-            return messageAdventurerAttackDetails.Replace("[ADVENTURER_ATTACK]", adventurerAttackValue.ToString()).Replace("[MONSTER_DODGE]", monsterDodgeValue.ToString());
-        }
-
-        //      Dodged
-        public string AdventurerAttackDodged(int monsterDodgeValue, int adventurerAttackValue) {
-            string messageAdventurerAttackDodged = _localiser["MessageAdventurerAttackDodged"];
-            return messageAdventurerAttackDodged.Replace("[MONSTER_DODGE]", monsterDodgeValue.ToString()).Replace("[ADVENTURER_ATTACK]", adventurerAttackValue.ToString());
-        }
-
         //      Miss
         public string AttacksMiss() {
             return _localiser["MessageAttacksMiss"];
-        }
-
-        //          details
-        public string MonsterAttackMissDetails(int adventurerDodgeValue, int monsterAttackValue) {
-            string messageMonsterAttackMissDetails = _localiser["MessageMonsterAttackMissDetails"];
-            return messageMonsterAttackMissDetails.Replace("[ADVENTURER_DODGE]", adventurerDodgeValue.ToString()).Replace("[MONSTER_ATTACK]", monsterAttackValue.ToString());
         }
 
         //      Wiff
@@ -328,10 +310,17 @@ namespace BlazorDungeonCrawler.Server.Data {
             return messageMonsterAttackHit.Replace("[ADVENTURER_WOUNDS]", adventurerWounds.ToString()).Replace("[ADVENTURER_HEALTH]", adventurerHealthBase.ToString());
         }
 
-        //      Details
-        public string MonsterAttackHitDetails(int monsterAttackValue, int adventurerDodgeValue) {
-            string messageMonsterAttackHitDetails = _localiser["MessageMonsterAttackHitDetails"];
-            return messageMonsterAttackHitDetails.Replace("[MONSTER_ATTACK]", monsterAttackValue.ToString()).Replace("[ADVENTURER_DODGE]", adventurerDodgeValue.ToString());
+        //      Dexterity
+        //          Won
+        public string MonsterWinsDexterityRoll(int monsterDexterity, int adventurerDexterity) {
+            string messageMonsterAttackHitDetails = _localiser["MessageMonsterWinsDexterityRoll"];
+            return messageMonsterAttackHitDetails.Replace("[MONSTER_DEXTERITY]", monsterDexterity.ToString()).Replace("[ADVENTURER_DEXTERITY]", adventurerDexterity.ToString());
+        }
+
+        //          Lost
+        public string MonsterLostDexterityRoll(int adventurerDexterity, int monsterDexterity) {
+            string messageMonsterAttackMissDetails = _localiser["MessageMonsterLostDexterityRoll"];
+            return messageMonsterAttackMissDetails.Replace("[ADVENTURER_DEXTERITY]", adventurerDexterity.ToString()).Replace("[MONSTER_DEXTERITY]", monsterDexterity.ToString());
         }
 
         //      Damage

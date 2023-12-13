@@ -135,12 +135,6 @@
   <data name="MessageAdventureProtection" xml:space="preserve">
     <value>ADVENTURER PROTECTION: [ADVENTURER_PROTECTION].</value>
   </data>
-  <data name="MessageAdventurerAttackDetails" xml:space="preserve">
-    <value>ADVENTURER'S ATTACK [ADVENTURER_ATTACK] WINS OVER MONSTER DODGE [MONSTER_DODGE].</value>
-  </data>
-  <data name="MessageAdventurerAttackDodged" xml:space="preserve">
-    <value>ADVENTURER ATTACK: MONSTER DODGE [MONSTER_DODGE] WINS OVER ADVENTURER ATTACK [ADVENTURER_ATTACK].</value>
-  </data>
   <data name="MessageAdventurerAttackHits" xml:space="preserve">
     <value>ADVENTURER ATTACK: MONSTER HIT FOR [MONSTER_WOUNDS_RECEIVED] WITH [MONSTER_HEALTH_REMAINING] REMAINING.</value>
   </data>
@@ -243,12 +237,6 @@
   <data name="MessageMonsterAttackHitDamage" xml:space="preserve">
     <value>MONSTER DAMAGE [MONSTER_DAMAGE] ADVENTURER PROTECTION [ADVENTURER_PROTECTION].</value>
   </data>
-  <data name="MessageMonsterAttackHitDetails" xml:space="preserve">
-    <value>MONSTER ATTACK: MONSTER ATTACK [MONSTER_ATTACK] WINS OVER ADVENTURER DODGE [ADVENTURER_DODGE]</value>
-  </data>
-  <data name="MessageMonsterAttackMissDetails" xml:space="preserve">
-    <value>MONSTER ATTACK: ADVENTURER DODGE [ADVENTURER_DODGE] WINS OVER MONSTER ATTACK [MONSTER_ATTACK]</value>
-  </data>
   <data name="MessageMonsterAttackNoDamage" xml:space="preserve">
     <value>MONSTER ATTACK: NO DAMAGE DONE TO ADVENTURER.</value>
   </data>
@@ -276,8 +264,14 @@
   <data name="MessageMonsterKilledAdventure" xml:space="preserve">
     <value>MONSTER ATTACK: ADVENTURER DIED WITH [ADVENTURER_WOUNDS] WOUNDS.</value>
   </data>
+  <data name="MessageMonsterLostDexterityRoll" xml:space="preserve">
+    <value>MONSTER ATTACK: ADVENTURER DEXTERITY [ADVENTURER_DEXTERITY] WINS OVER MONSTER DEXTERITY [MONSTER_DEXTERITY]</value>
+  </data>
   <data name="MessageMonsterProtection" xml:space="preserve">
     <value>MONSTER PROTECTION: [MONSTER_PROTECTION].</value>
+  </data>
+  <data name="MessageMonsterWinsDexterityRoll" xml:space="preserve">
+    <value>MONSTER ATTACK: MONSTER DEXTERITY [MONSTER_DEXTERITY] WINS OVER ADVENTURER DEXTERITY [ADVENTURER_DEXTERITY]</value>
   </data>
   <data name="MessagePotionDrink" xml:space="preserve">
     <value>POTION: [POTION_DESCRIPTION].</value>

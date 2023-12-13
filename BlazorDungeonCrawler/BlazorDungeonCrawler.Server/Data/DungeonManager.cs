@@ -928,6 +928,8 @@ namespace BlazorDungeonCrawler.Server.Data {
                 int adventurerProtection = adventurer.GetProtection();
                 int monsterDamage = currentMonster.Damage;
 
+                //There is no dexterity check as the adventurer failed to flee
+
                 //Adventurer wounds
                 int adventurerWounds = monsterDamage - adventurerProtection;
                 if (adventurerWounds > 0) {
@@ -1047,6 +1049,8 @@ namespace BlazorDungeonCrawler.Server.Data {
 
             bool adventurerInitiatesCombat = true;
             if (!dungeon.CombatInitiated) {
+                //When combat is Initiated a adventurer and monster roll a d6 the winner will start the first round
+
                 int adventurerRoll = Dice.RollDSix();
                 int monsterRoll = Dice.RollDSix();
 
@@ -1065,146 +1069,150 @@ namespace BlazorDungeonCrawler.Server.Data {
                 dungeon.CombatInitiated = true;
             }
 
+            //Adventurer's attack (this is skipped if they lost the combat initiation roll for the first round or it is a subsequent round)
             if (adventurerInitiatesCombat) {
                 //Monster defend
                 int monsterindex = Dice.RandomNumber(0, (monsters.Count() - 1));
                 Monster currentMonster = monsters[monsterindex];
 
-                int monsterDexterity = currentMonster.Dexterity;
+                //int monsterDexterity = currentMonster.Dexterity;
                 int monsterProtection = currentMonster.Protection;
                 int monsterHealth = currentMonster.Health;
 
-                //Monster wounds
-                int monsterWounds = 0;
-                if (adventurerDexterity > monsterDexterity) {
-                    monsterWounds = adventurerDamage - monsterProtection;
+                int monsterWounds = adventurerDamage - monsterProtection;
 
-                    if (monsterWounds < 1) {
-                        monsterWounds = 1;
-                    }
+                if (monsterWounds < 1) {
+                    monsterWounds = 1;
+                }
 
-                    if (monsterWounds > 0) {
-                        int currentHealth = monsterHealth - monsterWounds;
-                        if (currentHealth > 0) {
-                            currentMonster.Health = currentHealth;
+                if (monsterWounds > 0) {
+                    //Monster sustains wounds
 
-                            monsters[monsterindex] = currentMonster;
+                    int currentHealth = monsterHealth - monsterWounds;
+                    if (currentHealth > 0) {
+                        //Monster still alive
+                        currentMonster.Health = currentHealth;
 
-                            SharedMonster sharedMonster = currentMonster.SharedModelMapper();
+                        monsters[monsterindex] = currentMonster;
 
-                            MonsterUpdate monsterUpdate = new(_contextFactory.CreateDbContext(), _logger);
-                            await monsterUpdate.Update(sharedMonster);
+                        SharedMonster sharedMonster = currentMonster.SharedModelMapper();
 
-                            string importantMessage = _messageManager.AdventurerAttackHits(monsterWounds, currentHealth);
+                        MonsterUpdate monsterUpdate = new(_contextFactory.CreateDbContext(), _logger);
+                        await monsterUpdate.Update(sharedMonster);
 
-                            summaryMessage = new(importantMessage);
-                            adventurerCombatResult = new(importantMessage);
+                        string importantMessage = _messageManager.AdventurerAttackHits(monsterWounds, currentHealth);
 
-                            if (combatInitiated != null) {
-                                adventurerCombatResult.AddChild(combatInitiated);
-                            }
+                        summaryMessage = new(importantMessage);
+                        adventurerCombatResult = new(importantMessage);
 
-                            adventurerCombatResult.AddChild(new(_messageManager.AdventurerAttackDetails(adventurerDexterity, monsterDexterity), adventurerDexterity, monsterDexterity));
-                        } else {
-                            monsterHealth = 0;
-
-                            adventurer.Experience += currentMonster.Experience;
-
-                            //if the user kills the Beholder
-                            string monsterKilled;
-                            if (currentMonster.TypeName == "Beholder") {
-                                monsterKilled = _messageManager.FinalBossFightWon();
-                                dungeon.MacGuffinFound = true;
-                            } else {
-                                monsterKilled = _messageManager.FinalBossFightWon(monsterWounds);
-                            }
-
-                            summaryMessage = new(monsterKilled);
-                            adventurerCombatResult = new(monsterKilled);
-
-                            if (combatInitiated != null) {
-                                adventurerCombatResult.AddChild(combatInitiated);
-                            }
-
-                            //remove monster at stack
-                            MonsterDelete monsterDelete = new(_contextFactory.CreateDbContext(), _logger);
-                            await monsterDelete.Delete(currentMonster.Id);
-
-                            monsters.RemoveAt(monsterindex);
-
-                            //checked for remaining monsters
-                            if (monsters.Count == 0) {
-                                //Update Adventurer
-                                int previousAdventurerLevel = adventurer.ExperienceLevel;
-                                int previousAdventurerHealth = adventurer.HealthBase;
-                                int previousAdventurerDamage = adventurer.DamageBase;
-                                int previousAdventurerProtection = adventurer.ProtectionBase;
-
-                                adventurer.LevelUp();
-                                if (adventurer.ExperienceLevel > previousAdventurerLevel) {
-                                    int currentAdventurerLevel = adventurer.ExperienceLevel;
-                                    int currentAdventurerHealth = adventurer.HealthBase;
-                                    int currentAdventurerDamage = adventurer.DamageBase;
-                                    int currentAdventurerProtection = adventurer.ProtectionBase;
-
-                                    Message levelUp = new(_messageManager.AdventurerLevelUp(currentAdventurerLevel));
-                                    int levelUpHealth = currentAdventurerHealth - previousAdventurerHealth;
-                                    levelUp.AddChild(new(_messageManager.AdventurerLevelUpHealth(adventurer.HealthBase, levelUpHealth)));
-
-                                    int levelUpDamage = currentAdventurerDamage - previousAdventurerDamage;
-                                    levelUp.AddChild(new(_messageManager.AdventurerLevelUpDamage(adventurer.DamageBase, levelUpDamage)));
-
-                                    int levelUpProtection = currentAdventurerProtection - previousAdventurerProtection;
-                                    levelUp.AddChild(new(_messageManager.AdventurerLevelUpProtection(adventurer.ProtectionBase, levelUpProtection)));
-
-                                    adventurerCombatResult.AddChild(levelUp);
-                                }
-
-                                //Update Dungeon
-                                dungeon.InCombat = false;
-                                dungeon.CombatTile = Guid.Empty;
-                                dungeon.CombatInitiated = false;
-
-                                //Update Level
-                                selectedTile.FightWon = true;
-                                selectedTile.Type = DungeonEvents.FightWon;
-
-                                currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
-                            };
+                        if (combatInitiated != null) {
+                            adventurerCombatResult.AddChild(combatInitiated);
                         }
                     } else {
-                        string adventurerCombatWiff = _messageManager.AdventurerWiff();
+                        //Monster killed
+                        adventurer.Experience += currentMonster.Experience;
 
-                        summaryMessage = new(adventurerCombatWiff);
-                        adventurerCombatResult = new(adventurerCombatWiff);
+                        //if the user kills the Beholder
+                        string monsterKilled;
+                        if (currentMonster.TypeName == "Beholder") {
+                            monsterKilled = _messageManager.FinalBossFightWon();
+                            dungeon.MacGuffinFound = true;
+                        } else {
+                            monsterKilled = _messageManager.FinalBossFightWon(monsterWounds);
+                        }
 
-                        adventurerCombatResult.AddChild(new(_messageManager.AdventurerWiffDetails(adventurerDamage, monsterProtection)));
+                        summaryMessage = new(monsterKilled);
+                        adventurerCombatResult = new(monsterKilled);
+
+                        if (combatInitiated != null) {
+                            adventurerCombatResult.AddChild(combatInitiated);
+                        }
+
+                        //remove monster at stack
+                        MonsterDelete monsterDelete = new(_contextFactory.CreateDbContext(), _logger);
+                        await monsterDelete.Delete(currentMonster.Id);
+
+                        monsters.RemoveAt(monsterindex);
+
+                        //checked for remaining monsters
+                        if (monsters.Count == 0) {
+                            //Update Adventurer
+                            int previousAdventurerLevel = adventurer.ExperienceLevel;
+                            int previousAdventurerHealth = adventurer.HealthBase;
+                            int previousAdventurerDamage = adventurer.DamageBase;
+                            int previousAdventurerProtection = adventurer.ProtectionBase;
+
+                            adventurer.LevelUp();
+                            if (adventurer.ExperienceLevel > previousAdventurerLevel) {
+                                int currentAdventurerLevel = adventurer.ExperienceLevel;
+                                int currentAdventurerHealth = adventurer.HealthBase;
+                                int currentAdventurerDamage = adventurer.DamageBase;
+                                int currentAdventurerProtection = adventurer.ProtectionBase;
+
+                                Message levelUp = new(_messageManager.AdventurerLevelUp(currentAdventurerLevel));
+                                int levelUpHealth = currentAdventurerHealth - previousAdventurerHealth;
+                                levelUp.AddChild(new(_messageManager.AdventurerLevelUpHealth(adventurer.HealthBase, levelUpHealth)));
+
+                                int levelUpDamage = currentAdventurerDamage - previousAdventurerDamage;
+                                levelUp.AddChild(new(_messageManager.AdventurerLevelUpDamage(adventurer.DamageBase, levelUpDamage)));
+
+                                int levelUpProtection = currentAdventurerProtection - previousAdventurerProtection;
+                                levelUp.AddChild(new(_messageManager.AdventurerLevelUpProtection(adventurer.ProtectionBase, levelUpProtection)));
+
+                                adventurerCombatResult.AddChild(levelUp);
+                            }
+
+                            //Update Dungeon
+                            dungeon.InCombat = false;
+                            dungeon.CombatTile = Guid.Empty;
+                            dungeon.CombatInitiated = false;
+
+                            //Update Level
+                            selectedTile.FightWon = true;
+                            selectedTile.Type = DungeonEvents.FightWon;
+
+                            currentFloorTiles.SetSelectableTiles(selectedTile.Row, selectedTile.Column);
+                        };
                     }
-
-                    selectedTile.Monsters = monsters;
                 } else {
-                    adventurerCombatResult = new(_messageManager.AdventurerAttackDodged(monsterDexterity, adventurerDexterity), adventurerDexterity, monsterDexterity);
+                    string adventurerCombatWiff = _messageManager.AdventurerWiff();
+
+                    summaryMessage = new(adventurerCombatWiff);
+                    adventurerCombatResult = new(adventurerCombatWiff);
+
+                    adventurerCombatResult.AddChild(new(_messageManager.AdventurerWiffDetails(adventurerDamage, monsterProtection)));
                 }
+
+                selectedTile.Monsters = monsters;
             }
 
             //Monster attack
             if (dungeon.InCombat) {
                 int monsterDexterity, monsterDamage, monsterProtection, monsterHealth;
+
+                //Each monster attacks the adventurer
                 foreach (Monster monster in monsters) {
                     //Monster details
                     monsterDexterity = monster.Dexterity;
                     monsterDamage = monster.Damage;
                     monsterProtection = monster.Protection;
                     monsterHealth = monster.Health;
-                                        
+
                     //Adventurer wounds
                     int adventurerWounds = 0;
+
+                    //Monst will only get to attack if they have a higher dexterity
                     if (monsterDexterity > adventurerDexterity) {
+                        //Monster wins dexterity
+
                         adventurerWounds = monsterDamage - adventurerProtection;
 
                         if (adventurerWounds > 0) {
+                            //Adventurer sustains wounds
+
                             int currentHealth = adventurer.HealthBase - adventurerWounds;
                             if (currentHealth > 0) {
+                                //Adventurer still alive
                                 adventurer.HealthBase = currentHealth;
 
                                 string importantMessage = _messageManager.MonsterAttackHit(adventurerWounds, adventurer.HealthBase);
@@ -1214,6 +1222,7 @@ namespace BlazorDungeonCrawler.Server.Data {
 
                                 monsterCombatResult.AddChild(new(_messageManager.MonsterAttackHitDamage(monsterDamage, adventurerProtection)));
                             } else {
+                                //Adventurer killed
                                 adventurer.HealthBase = 0;
                                 adventurer.IsAlive = false;
 
@@ -1239,7 +1248,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                                 monsterCombatResult.AddChild(combatInitiated);
                             }
 
-                            monsterCombatResult.AddChild(new(_messageManager.MonsterAttackHitDetails(monsterDexterity, adventurerDexterity), adventurerDexterity, monsterDexterity));
+                            monsterCombatResult.AddChild(new(_messageManager.MonsterWinsDexterityRoll(monsterDexterity, adventurerDexterity), adventurerDexterity, monsterDexterity));
                         } else {
                             string monsterCombatWiff = _messageManager.MonsterAttackNoDamage();
 
@@ -1249,8 +1258,7 @@ namespace BlazorDungeonCrawler.Server.Data {
                             monsterCombatResult.AddChild(new(_messageManager.MonsterAttackHitDamage(monsterDamage, adventurerProtection)));
                         }
                     } else {
-
-                        monsterCombatResult = new(_messageManager.MonsterAttackMissDetails(adventurerDexterity, monsterDexterity), adventurerDexterity, monsterDexterity);
+                        monsterCombatResult = new(_messageManager.MonsterLostDexterityRoll(adventurerDexterity, monsterDexterity), adventurerDexterity, monsterDexterity);
 
                         if (combatInitiated != null) {
                             monsterCombatResult.AddChild(combatInitiated);
