@@ -40,6 +40,12 @@ namespace BlazorDungeonCrawler.Server.Data {
             return _localiser["MessageAdventureGeneration"];
         }
 
+        //      Dexterity
+        public string AdventureDexterity(int dexterity) {
+            string messageAdventureHealth = _localiser["MessageAdventureDexterity"];
+            return messageAdventureHealth.Replace("[ADVENTURER_DEXTERITY]", dexterity.ToString());
+        }
+
         //      Health
         public string AdventureHealth(int health) {
             string messageAdventureHealth = _localiser["MessageAdventureHealth"];
