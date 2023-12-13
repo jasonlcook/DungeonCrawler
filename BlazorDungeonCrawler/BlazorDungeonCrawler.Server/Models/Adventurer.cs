@@ -55,13 +55,14 @@ namespace BlazorDungeonCrawler.Server.Models {
             this.Id = Guid.NewGuid();
         }
 
-        public Adventurer(int health, int damage, int protection) : base() {
+        public Adventurer(int dexterity, int health, int damage, int protection) : base() {
             this.IsAlive = true;
 
             this.ExperienceLevel = 1;
             this.Experience = 0;
             this.NextExperienceLevelCost = GetLevelCost(this.ExperienceLevel + 1);
 
+            this.DexterityBase = dexterity;
             this.HealthInitial = health;
             this.HealthBase = health;
             this.DamageBase = damage;

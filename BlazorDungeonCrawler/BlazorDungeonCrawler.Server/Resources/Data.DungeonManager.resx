@@ -123,6 +123,9 @@
   <data name="MessageAdventureDamage" xml:space="preserve">
     <value>ADVENTURER DAMAGE: [ADVENTURER_DAMAGE].</value>
   </data>
+  <data name="MessageAdventureDexterity" xml:space="preserve">
+    <value>ADVENTURER DEXTERITY: [ADVENTURER_DEXTERITY].</value>
+  </data>
   <data name="MessageAdventureGeneration" xml:space="preserve">
     <value>ADVENTURE GENERATION.</value>
   </data>
