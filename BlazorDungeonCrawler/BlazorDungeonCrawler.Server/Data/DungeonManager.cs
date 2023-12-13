@@ -53,6 +53,7 @@ namespace BlazorDungeonCrawler.Server.Data {
             //	Create
             //	  Adventurer
             int health = Dice.RollDSix();
+            int dexterity = Dice.RollDSix();
             int damage = Dice.RollDSix();
             int protection = Dice.RollDSix();
 
@@ -61,13 +62,14 @@ namespace BlazorDungeonCrawler.Server.Data {
             Message message = new(_messageManager.AdventureGeneration(health, damage, protection), adventurerRolls, null);
 
             message.AddChild(new(_messageManager.AdventureHealth(health), health, null));
+            message.AddChild(new(_messageManager.AdventureDexterity(dexterity), dexterity, null));
             message.AddChild(new(_messageManager.AdventureDamage(damage), damage, null));
             message.AddChild(new(_messageManager.AdventureProtection(protection), protection, null));
 
             Messages messages = new();
             messages.Add(message);
 
-            Adventurer adventurer = new(health, damage, protection);
+            Adventurer adventurer = new(dexterity, health, damage, protection);
 
             //	  Floors
             Floors floors = new();
