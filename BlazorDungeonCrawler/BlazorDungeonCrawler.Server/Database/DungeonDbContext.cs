@@ -7,6 +7,9 @@ namespace BlazorDungeonCrawler.Server.Database {
 
         public DungeonDbContext(DbContextOptions<DungeonDbContext> options) : base(options) { }
 
+        public DbSet<AccessToken> AccessTokens { get; set; }
+        public DbSet<AccessTokenLog> AccessTokenLogs { get; set; }
+
         public DbSet<Dungeon> Dungeons { get; set; }
         public DbSet<Adventurer> Adventurers { get; set; }
         public DbSet<Floor> Floors { get; set; }
