@@ -22,6 +22,28 @@ body {
         margin: 0 0 0 10px;
     }
 
+#access-token {
+    padding: 15px 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+    #access-token button {
+        font-size: .8em;
+        border: 1px solid #000;
+        display: block;
+        font-family: inherit;
+        font-size: inherit;
+        background: #fff;
+    }
+
+        #access-token button:hover,
+        #access-token button:focus {
+            background-color: aliceblue;
+        }
+
 /* Loading */
 #dungeon .loading {
     animation: loading 4s ease-in-out infinite;

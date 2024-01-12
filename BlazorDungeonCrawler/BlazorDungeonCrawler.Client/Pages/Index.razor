@@ -1,57 +1,14 @@
 ﻿@page "/"
 
-@using BlazorDungeonCrawler.Shared.Enumerators;
-@using BlazorDungeonCrawler.Shared.Responses;
 @using BlazorDungeonCrawler.Shared.Interfaces;
-@using BlazorDungeonCrawler.Client.Pages;
 
-@inject IJSRuntime JS
-@inject IDungeonDataManager DungeonManager
-@inject HttpClient Http
+@inject IAccessTokenDataManager AccessToken
 
 <div id="external-frame">
-    <div id="dungeon-floor">
-        <span class="label">Depth</span>
-        <span class="value" id="current-floor">@DungeonDepth.ToString()</span>
-    </div>
-    <div id="play-area">
-        <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
-        @if (dungeon != null) {
-            @if (dungeon.GameOver) {
-                <ActionDialog DialogText="GAME OVER" OnCallAcceptFunction=@NewGame AcceptLabel="New Game?" />
-            }
-
-            @if (dungeon.InCombat) {
-                <ActionDialog DialogText="MONSTER FIGHT" OnCallAcceptFunction=@MonsterFight AcceptLabel="Fight" OnCallRejectFunction=@MonsterFlee RejectLabel="Flee" />
-            }
-
-            @if (dungeon.StairsDiscovered) {
-                <ActionDialog DialogText="STAIRS" OnCallAcceptFunction=@DescendStairs AcceptLabel="Descend" OnCallRejectFunction=@RemainOnFloor RejectLabel="Stay" />
-            }
-        }
-        <Tiles NewDungeon=NewDungeon DungeonTiles=DungeonTiles DungeonDepth=DungeonDepth HighlightAscending=MacGuffinFound OnClickCallback=@SelectTile />
-        <LevelSelect DungeonFloors=DungeonFloors GameOver=GameOver DungeonDepth=DungeonDepth OnClickCallback=@SelectDungeonDepth />
-    </div>
-    <AdvanceDungeon OnCallClickFunction=@AutomaticallyAdvanceDungeon ButtonState=@AdvanceDisabled />
-    <div id="character-sheet">
-        <div id="adventurer-stats">
-            <AdventurerAttribute Attributes=AdventurerExperienceStats />
-            <AdventurerAttribute Attributes=AdventurerHealthStats />
-            <AdventurerAttribute Attributes=AdventurerDamageStats />
-            <AdventurerAttribute Attributes=AdventurerProtectionStats />
-        </div>
-        <div id="dice">
-            <DiceRolls SafeDice=@SafeDice DangerDice=@DangerDice />
-        </div>
-    </div>
-    <div id="log">
-        <Logs Messages=Messages OnMouseEnterCallback=@UpdateDice />
+    <Reports ErrorReports=ErrorReports InformationReports=InformationReports />
+    <div id="access-token">
+        <label>Please enter an access token</label>
+        <input type="text" @bind=UserToken placeholder="Token" />
+        <button type="button" @onclick=@SubmitToken disabled=@ButtonDisabled>Submit</button>
     </div>
 </div>
-<div id="external-frame-footer">
-    <div id="version">
-        <span class="api-version">@ApiVersion</span>
-        <span class="client-version">Client V0.2.1</span>
-    </div>
-</div>
-<CookieConsent FoundCookie=FoundCookie RejectedCookie=RejectedCookie DungeonId=DungeonId />

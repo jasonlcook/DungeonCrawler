@@ -11,7 +11,10 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddScoped<IAccessTokenDataManager, ApiAccessTokenManager>();
 builder.Services.AddScoped<IDungeonDataManager, ApiDungeonManager>();
+
 builder.Services.Configure<ConfigurationElements>(builder.Configuration.GetSection("ConfigurationElements"));
 
 await builder.Build().RunAsync();
