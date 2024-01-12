@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.Client", "BlazorDungeonCrawler.Client\BlazorDungeonCrawler.Client.csproj", "{BC9D8875-D69A-4CB3-8637-F6301B82C22E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDungeonCrawler.AdminConsole", "BlazorDungeonCrawler.AdminConsole\BlazorDungeonCrawler.AdminConsole.csproj", "{4BA8586B-81A0-4063-8A62-57148596E3DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDungeonCrawler.AdminConsole", "BlazorDungeonCrawler.AdminConsole\BlazorDungeonCrawler.AdminConsole.csproj", "{4BA8586B-81A0-4063-8A62-57148596E3DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
