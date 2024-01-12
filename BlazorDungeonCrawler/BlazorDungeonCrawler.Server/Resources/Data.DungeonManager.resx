@@ -120,6 +120,9 @@
   <data name="ErrorDungeonNoFound" xml:space="preserve">
     <value>REQUESTED DUNGEON COULD NOT BE FOUND.</value>
   </data>
+  <data name="ErrorTokenNoFound" xml:space="preserve">
+    <value>REQUESTED TOKEN COULD NOT BE FOUND.</value>
+  </data>
   <data name="MessageAdventureDamage" xml:space="preserve">
     <value>ADVENTURER DAMAGE: [ADVENTURER_DAMAGE].</value>
   </data>

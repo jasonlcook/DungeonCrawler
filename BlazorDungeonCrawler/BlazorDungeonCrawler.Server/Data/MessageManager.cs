@@ -16,6 +16,12 @@ namespace BlazorDungeonCrawler.Server.Data {
             return _localiser["ErrorDungeonNoFound"];
         }
 
+        //Access Token 
+        //  No Token found
+        public string ErrorTokenNoFound() {
+            return _localiser["ErrorTokenNoFound"];
+        }
+
         //Dungeon
         //  Exit
         //      Fail

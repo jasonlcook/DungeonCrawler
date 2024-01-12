@@ -12,7 +12,7 @@ using SharedDungeon = BlazorDungeonCrawler.Shared.Models.Dungeon;
 namespace BlazorDungeonCrawler.Server.Controllers {
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/dungeon")]
     public class DungeonController : Controller {
         private ILogger<DungeonController> _logger;
         private DungeonManager _dungeonManager;

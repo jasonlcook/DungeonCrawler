@@ -4,12 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using BlazorDungeonCrawler.Server.Data;
 using BlazorDungeonCrawler.Server.Database;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.AddSingleton<AccessTokenManager>();
 builder.Services.AddSingleton<DungeonManager>();
+
 builder.Services.AddDbContextFactory<DungeonDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorDungeonCrawler")));
 
 builder.Services.AddLocalization(options => {
@@ -41,7 +44,7 @@ builder.Logging.AddApplicationInsights(
     configureApplicationInsightsLoggerOptions: (options) => { }
 );
 
-var app = builder.Build();
+WebApplication? app = builder.Build();
 
 if (!app.Environment.IsDevelopment()) {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -59,6 +62,11 @@ app.UseCors("AllowAnyOriginMethodHeader");
 app.UseResponseCompression();
 
 app.MapBlazorHub();
+
+//app.MapControllerRoute(name: "accesstoken", pattern: "api/{controller=AccessToken}");
+//app.MapControllerRoute(name: "default", pattern: "api/{controller=Dungeon}");
+
+
 app.MapFallbackToPage("/_Host");
 
 app.Run();
